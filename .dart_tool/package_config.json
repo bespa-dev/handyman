@@ -68,6 +68,12 @@
       "languageVersion": "2.10"
     },
     {
+      "name": "bottom_navy_bar",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/bottom_navy_bar-5.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.2"
+    },
+    {
       "name": "build",
       "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/build-1.3.0",
       "packageUri": "lib/",
@@ -848,7 +854,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-09-18T15:46:00.284528Z",
+  "generated": "2020-09-20T19:40:20.373979Z",
   "generator": "pub",
   "generatorVersion": "2.10.0-110.0.dev"
 }
