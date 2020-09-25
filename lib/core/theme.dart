@@ -3,10 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'constants.dart';
 
+// latoTextTheme
 /// Light theme
 ThemeData themeData(BuildContext context) => ThemeData(
       appBarTheme: appBarTheme,
       primaryColor: kPrimaryColor,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
       accentColor: kAccentLightColor,
       scaffoldBackgroundColor: Colors.white,
       colorScheme: ColorScheme.light(
@@ -17,7 +19,12 @@ ThemeData themeData(BuildContext context) => ThemeData(
       accentIconTheme: IconThemeData(color: kAccentIconLightColor),
       primaryIconTheme: IconThemeData(color: kPrimaryIconLightColor),
       textTheme: GoogleFonts.rubikTextTheme().copyWith(
-        headline3: TextStyle(color: kTitleTextColorLight),
+        headline1:
+            TextStyle(color: kTitleTextColorLight, fontWeight: FontWeight.w500),
+        headline2:
+            TextStyle(color: kTitleTextColorLight, fontWeight: FontWeight.w500),
+        headline3:
+            TextStyle(color: kTitleTextColorLight, fontWeight: FontWeight.w500),
         headline4: TextStyle(color: kTitleTextColorLight),
         headline5: TextStyle(color: kTitleTextColorLight),
         headline6: TextStyle(color: kTitleTextColorLight),
@@ -34,6 +41,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
 /// Dark theme
 ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
       appBarTheme: appBarTheme,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
       primaryColor: kPrimaryColor,
       accentColor: kAccentDarkColor,
       scaffoldBackgroundColor: Color(0xFF0D0C0E),
@@ -46,6 +54,8 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
       accentIconTheme: IconThemeData(color: kAccentIconDarkColor),
       primaryIconTheme: IconThemeData(color: kPrimaryIconDarkColor),
       textTheme: GoogleFonts.rubikTextTheme().copyWith(
+        headline1: TextStyle(color: kTitleTextColorDark),
+        headline2: TextStyle(color: kTitleTextColorDark),
         headline3: TextStyle(color: kTitleTextColorDark),
         headline4: TextStyle(color: kTitleTextColorDark),
         headline5: TextStyle(color: kTitleTextColorDark),

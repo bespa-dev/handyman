@@ -29,4 +29,3 @@ void main() async {
 
   runApp(HandyManApp());
 }
-// visualDensity: VisualDensity.adaptivePlatformDensity,
