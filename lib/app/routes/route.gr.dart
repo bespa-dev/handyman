@@ -16,6 +16,7 @@ import '../pages/client/provider_details.dart';
 import '../pages/client/service_details.dart';
 import '../pages/login.dart';
 import '../pages/onboarding.dart';
+import '../pages/provider/dashboard.dart';
 import '../pages/provider/settings.dart';
 import '../pages/register.dart';
 import '../pages/splash.dart';
@@ -31,6 +32,7 @@ class Routes {
   static const String homePage = '/home-page';
   static const String serviceProviderDetails = '/service-provider-details';
   static const String providerSettingsPage = '/provider-settings-page';
+  static const String dashboardPage = '/dashboard-page';
   static const String serviceDetailsPage = '/service-details-page';
   static const all = <String>{
     splashPage,
@@ -42,6 +44,7 @@ class Routes {
     homePage,
     serviceProviderDetails,
     providerSettingsPage,
+    dashboardPage,
     serviceDetailsPage,
   };
 }
@@ -63,6 +66,8 @@ class Router extends RouterBase {
         page: ServiceProviderDetails, guards: [AuthGuard, ClientGuard]),
     RouteDef(Routes.providerSettingsPage,
         page: ProviderSettingsPage, guards: [AuthGuard, ProviderGuard]),
+    RouteDef(Routes.dashboardPage,
+        page: DashboardPage, guards: [AuthGuard, ProviderGuard]),
     RouteDef(Routes.serviceDetailsPage,
         page: ServiceDetailsPage, guards: [AuthGuard, ClientGuard]),
   ];
@@ -126,6 +131,12 @@ class Router extends RouterBase {
     ProviderSettingsPage: (data) {
       return buildAdaptivePageRoute<dynamic>(
         builder: (context) => ProviderSettingsPage(),
+        settings: data,
+      );
+    },
+    DashboardPage: (data) {
+      return buildAdaptivePageRoute<dynamic>(
+        builder: (context) => DashboardPage(),
         settings: data,
       );
     },

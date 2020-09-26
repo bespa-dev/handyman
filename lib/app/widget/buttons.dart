@@ -9,6 +9,7 @@ class ButtonOutlined extends StatelessWidget {
     @required this.onTap,
     @required this.label,
     this.icon,
+    this.enabled = true,
   }) : super(key: key);
 
   final String label;
@@ -16,6 +17,7 @@ class ButtonOutlined extends StatelessWidget {
   final IconData icon;
   final ThemeData themeData;
   final Function onTap;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class ButtonOutlined extends StatelessWidget {
         decoration: BoxDecoration(
           color: themeData.scaffoldBackgroundColor,
           border: Border.all(
-            color: themeData.scaffoldBackgroundColor,
+            color: enabled ? themeData.primaryColor : themeData.disabledColor,
           ),
           borderRadius: BorderRadius.circular(getProportionateScreenWidth(32)),
         ),
@@ -41,13 +43,14 @@ class ButtonOutlined extends StatelessWidget {
           children: [
             Text(
               label.toUpperCase(),
-              style: themeData.textTheme.button,
+              style: themeData.textTheme.button
+                  .copyWith(color: enabled ? themeData.primaryColor : themeData.disabledColor),
             ),
             icon == null
                 ? SizedBox.shrink()
                 : Icon(
                     icon,
-                    color: themeData.textTheme.button.color,
+                    color: enabled ? themeData.primaryColor : themeData.disabledColor,
                   ),
           ],
         ),
@@ -103,6 +106,7 @@ class ButtonPrimary extends StatelessWidget {
     this.color,
     this.icon,
     this.textColor,
+    this.enabled = true,
   }) : super(key: key);
 
   final String label;
@@ -112,6 +116,7 @@ class ButtonPrimary extends StatelessWidget {
   final IconData icon;
   final ThemeData themeData;
   final Function onTap;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -124,11 +129,15 @@ class ButtonPrimary extends StatelessWidget {
         width: width,
         height: kMinInteractiveDimension,
         decoration: BoxDecoration(
-          color: color ?? themeData.primaryColor,
+          color: enabled
+              ? color ?? themeData.primaryColor
+              : themeData.disabledColor,
           borderRadius: BorderRadius.circular(getProportionateScreenWidth(32)),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: icon == null
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.spaceAround,
           children: [
             Text(
               label.toUpperCase(),
@@ -139,14 +148,14 @@ class ButtonPrimary extends StatelessWidget {
             icon == null
                 ? SizedBox.shrink()
                 : Padding(
-              padding: const EdgeInsets.only(
-                left: 24,
-              ),
-              child: Icon(
-                icon,
-                color: textColor ?? Colors.white,
-              ),
-            ),
+                    padding: const EdgeInsets.only(
+                      left: 24,
+                    ),
+                    child: Icon(
+                      icon,
+                      color: textColor ?? Colors.white,
+                    ),
+                  ),
           ],
         ),
       ),

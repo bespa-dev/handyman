@@ -16,24 +16,23 @@ class _HandyManAppState extends State<HandyManApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<PrefsProvider>(
+            create: (context) => PrefsProvider()),
         ChangeNotifierProvider<ThemeProvider>(
-            create: (_) => ThemeProvider(context)),
-        ChangeNotifierProvider<PrefsProvider>(create: (_) => PrefsProvider()),
+            create: (context) => ThemeProvider(context)),
       ],
-      builder: (ctx, _) {
-        final themeProvider = ctx.watch<ThemeProvider>();
-        return MaterialApp(
+      child: Consumer<ThemeProvider>(
+        builder: (ctx, theme, child) => MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: themeData(context),
           darkTheme: darkThemeData(context),
-          themeMode:
-              /*themeProvider.isLightTheme ? ThemeMode.light :*/ ThemeMode.dark,
+          themeMode: theme.isLightTheme ? ThemeMode.light : ThemeMode.dark,
           builder: ExtendedNavigator<gr.Router>(
             router: gr.Router(),
             guards: [],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

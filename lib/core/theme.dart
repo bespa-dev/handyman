@@ -5,7 +5,7 @@ import 'constants.dart';
 
 /// Fonts
 final _kTitleFontFamily = GoogleFonts.playfairDisplay().fontFamily;
-final _kBodyFontFamily = GoogleFonts.raleway().fontFamily;
+final _kBodyFontFamily = GoogleFonts.rubik().fontFamily;
 
 // latoTextTheme
 /// Light theme
@@ -62,7 +62,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
         button: TextStyle(
             color: kBodyTextColorDark,
             fontFamily: _kBodyFontFamily,
-            fontWeight: FontWeight.w500),
+            fontWeight: FontWeight.w600),
       ),
     );
 
@@ -121,7 +121,7 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
         button: TextStyle(
             color: kBodyTextColorLight,
             fontFamily: _kBodyFontFamily,
-            fontWeight: FontWeight.w500),
+            fontWeight: FontWeight.w600),
       ),
     );
 

@@ -6,6 +6,7 @@ import 'package:handyman/app/pages/client/provider_details.dart';
 import 'package:handyman/app/pages/client/service_details.dart';
 import 'package:handyman/app/pages/login.dart';
 import 'package:handyman/app/pages/onboarding.dart';
+import 'package:handyman/app/pages/provider/dashboard.dart';
 import 'package:handyman/app/pages/provider/settings.dart';
 import 'package:handyman/app/pages/register.dart';
 import 'package:handyman/app/pages/splash.dart';
@@ -25,6 +26,7 @@ import 'guard.dart';
         page: ServiceProviderDetails, guards: [AuthGuard, ClientGuard]),
     AdaptiveRoute(
         page: ProviderSettingsPage, guards: [AuthGuard, ProviderGuard]),
+    AdaptiveRoute(page: DashboardPage, guards: [AuthGuard, ProviderGuard]),
     AdaptiveRoute(page: ServiceDetailsPage, guards: [AuthGuard, ClientGuard]),
   ],
 )
