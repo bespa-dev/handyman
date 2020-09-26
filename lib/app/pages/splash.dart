@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
@@ -21,6 +22,8 @@ class _SplashPageState extends State<SplashPage> {
     return Consumer<ThemeProvider>(
       builder: (_, theme, child) => Scaffold(
         appBar: AppBar(
+          centerTitle: true,
+          title: Image.asset(kLogoAsset),
           actions: [
             IconButton(
               icon: Icon(theme.isLightTheme ? Feather.moon : Feather.sun),
@@ -34,13 +37,10 @@ class _SplashPageState extends State<SplashPage> {
           child: Column(
             children: [
               Text(
-                kAppName,
-                style: themeData.textTheme.headline3,
-              ),
-              SizedBox(height: getProportionateScreenHeight(8)),
-              Text(
                 kAppSlogan,
-                style: themeData.textTheme.bodyText1,
+                style: themeData.textTheme.headline3.copyWith(
+                  fontFamily: GoogleFonts.raleway().fontFamily,
+                ),
               ),
               SizedBox(height: getProportionateScreenHeight(24)),
               AspectRatio(
