@@ -17,8 +17,9 @@ ThemeData themeData(BuildContext context) => ThemeData(
       scaffoldBackgroundColor: Colors.white,
       colorScheme: ColorScheme.light(
         secondary: kSecondaryLightColor,
+        surface: Colors.white,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: /*Colors.white*/ kBackgroundLightColor,
       iconTheme: IconThemeData(color: kBodyTextColorLight),
       accentIconTheme: IconThemeData(color: kAccentIconLightColor),
       primaryIconTheme: IconThemeData(color: kPrimaryIconLightColor),

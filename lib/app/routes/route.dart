@@ -19,15 +19,15 @@ import 'guard.dart';
     AdaptiveRoute(page: LoginPage),
     AdaptiveRoute(page: RegisterPage),
     AdaptiveRoute(page: OnboardingPage),
-    AdaptiveRoute(page: AccountCompletionPage, guards: [AuthGuard]),
-    AdaptiveRoute(page: AccountSelectionPage, guards: [AuthGuard]),
-    AdaptiveRoute(page: HomePage, guards: [AuthGuard, ClientGuard]),
+    AdaptiveRoute(page: AccountCompletionPage/*, guards: [AuthGuard]*/),
+    AdaptiveRoute(page: AccountSelectionPage/*, guards: [AuthGuard]*/),
+    AdaptiveRoute(page: HomePage/*, guards: [AuthGuard, ClientGuard]*/),
     AdaptiveRoute(
-        page: ServiceProviderDetails, guards: [AuthGuard, ClientGuard]),
+        page: ServiceProviderDetails/*, guards: [AuthGuard, ClientGuard]*/),
     AdaptiveRoute(
-        page: ProviderSettingsPage, guards: [AuthGuard, ProviderGuard]),
-    AdaptiveRoute(page: DashboardPage, guards: [AuthGuard, ProviderGuard]),
-    AdaptiveRoute(page: ServiceDetailsPage, guards: [AuthGuard, ClientGuard]),
+        page: ProviderSettingsPage/*, guards: [AuthGuard, ProviderGuard]*/),
+    AdaptiveRoute(page: DashboardPage/*, guards: [AuthGuard, ProviderGuard]*/),
+    AdaptiveRoute(page: ServiceDetailsPage/*, guards: [AuthGuard, ClientGuard]*/),
   ],
 )
 class $Router {}

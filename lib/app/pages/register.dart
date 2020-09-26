@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/buttons.dart';
@@ -9,6 +10,7 @@ import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -24,15 +26,28 @@ class _RegisterPageState extends State<RegisterPage> {
       _nameController = TextEditingController(text: "Michael Pinto");
 
   // Perform login
-  void _performLogin() async {
+  void _performRegister() async {
     _formKey.currentState.save();
     setState(() {
       _isLoading = !_isLoading;
     });
+    final username = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    // TODO: SEND TO SERVER FOR AUTHENTICATION
+
     await Future.delayed(const Duration(seconds: 2));
     setState(() {
       _isLoading = !_isLoading;
     });
+
+    var prefsProvider = Provider.of<PrefsProvider>(context, listen: false);
+    prefsProvider
+      ..saveUserType(kProviderString)
+      ..saveUserId(Uuid().v4());
+    // Complete user's account
+    context.navigator.popAndPush(Routes.accountCompletionPage);
   }
 
   @override
@@ -116,7 +131,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           PasswordInput(
                             controller: _passwordController,
                             labelText: "Password",
-                            onFieldSubmitted: (_) => _performLogin(),
+                            onFieldSubmitted: (_) => _performRegister(),
                             enabled: !_isLoading,
                             validator: (input) =>
                                 input.isEmpty || input.length < 6
@@ -126,7 +141,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ButtonOutlined(
                             width: getProportionateScreenWidth(200),
                             themeData: themeData,
-                            onTap: _performLogin,
+                            onTap: _performRegister,
                             enabled: !_isLoading,
                             icon: Icons.arrow_right_alt,
                             label: "Sign up",

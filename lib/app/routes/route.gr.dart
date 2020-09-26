@@ -20,7 +20,6 @@ import '../pages/provider/dashboard.dart';
 import '../pages/provider/settings.dart';
 import '../pages/register.dart';
 import '../pages/splash.dart';
-import 'guard.dart';
 
 class Routes {
   static const String splashPage = '/';
@@ -57,19 +56,13 @@ class Router extends RouterBase {
     RouteDef(Routes.loginPage, page: LoginPage),
     RouteDef(Routes.registerPage, page: RegisterPage),
     RouteDef(Routes.onboardingPage, page: OnboardingPage),
-    RouteDef(Routes.accountCompletionPage,
-        page: AccountCompletionPage, guards: [AuthGuard]),
-    RouteDef(Routes.accountSelectionPage,
-        page: AccountSelectionPage, guards: [AuthGuard]),
-    RouteDef(Routes.homePage, page: HomePage, guards: [AuthGuard, ClientGuard]),
-    RouteDef(Routes.serviceProviderDetails,
-        page: ServiceProviderDetails, guards: [AuthGuard, ClientGuard]),
-    RouteDef(Routes.providerSettingsPage,
-        page: ProviderSettingsPage, guards: [AuthGuard, ProviderGuard]),
-    RouteDef(Routes.dashboardPage,
-        page: DashboardPage, guards: [AuthGuard, ProviderGuard]),
-    RouteDef(Routes.serviceDetailsPage,
-        page: ServiceDetailsPage, guards: [AuthGuard, ClientGuard]),
+    RouteDef(Routes.accountCompletionPage, page: AccountCompletionPage),
+    RouteDef(Routes.accountSelectionPage, page: AccountSelectionPage),
+    RouteDef(Routes.homePage, page: HomePage),
+    RouteDef(Routes.serviceProviderDetails, page: ServiceProviderDetails),
+    RouteDef(Routes.providerSettingsPage, page: ProviderSettingsPage),
+    RouteDef(Routes.dashboardPage, page: DashboardPage),
+    RouteDef(Routes.serviceDetailsPage, page: ServiceDetailsPage),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;

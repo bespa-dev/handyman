@@ -14,16 +14,18 @@ const kPrimaryColor = Color(0xFF442C2E);
 // const kPrimaryColor = Color(0xFFFF97B3);
 const kSecondaryLightColor = Color(0xFFFEDBD0);
 const kSecondaryDarkColor = Color(0xFF404040);
-const kAccentLightColor = Color(0xFFB3BFD7);
+const kAccentLightColor = Color(0xFFFEEAE6);
+// const kAccentLightColor = Color(0xFFB3BFD7);
 const kAccentDarkColor = Color(0xFF4E4E4E);
 const kBackgroundDarkColor = Color(0xFF3A3A3A);
+const kBackgroundLightColor = Color(0xFFFEEAE6);
 const kSurfaceDarkColor = Color(0xFF222225);
 
 /// Icon Colors
-const kAccentIconLightColor = Color(0xFFFEEAE6);
+const kAccentIconLightColor = Color(0xFF442C2E);
 // const kAccentIconLightColor = Color(0xFFECEFF5);
 const kAccentIconDarkColor = Color(0xFF303030);
-const kPrimaryIconLightColor = Color(0xFFFEEAE6);
+const kPrimaryIconLightColor = Color(0xFF442C2E);
 const kPrimaryIconDarkColor = Color(0xFF232323);
 
 /// Text Colors

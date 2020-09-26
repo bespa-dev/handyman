@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/buttons.dart';
@@ -9,6 +10,7 @@ import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -28,10 +30,23 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _isLoading = !_isLoading;
     });
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    // TODO: SEND TO SERVER FOR AUTHENTICATION
+
     await Future.delayed(const Duration(seconds: 2));
     setState(() {
       _isLoading = !_isLoading;
     });
+
+    // Save user account
+    var prefsProvider = Provider.of<PrefsProvider>(context, listen: false);
+    prefsProvider
+      ..saveUserType(kClientString)
+      ..saveUserId(Uuid().v4());
+    // Complete user's account
+    context.navigator.popAndPush(Routes.accountSelectionPage);
   }
 
   @override
