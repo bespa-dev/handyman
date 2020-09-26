@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 /// App
 const kAppName = "Handyman";
 const kAppSlogan = "Simple. Safe. Reliable.";
+const kProviderString = "provider";
+const kClientString = "client";
 
 /// Colors
 const kPrimaryColor = Color(0xFFFF97B3);
@@ -22,7 +24,7 @@ const kPrimaryIconDarkColor = Color(0xFF232323);
 /// Text Colors
 const kBodyTextColorLight = Color(0xFFA1B0CA);
 const kBodyTextColorDark = Color(0xFF7C7C7C);
-const kTitleTextColorLight = Color(0xFFA1B0CA);
+const kTitleTextColorLight = Color(0xFF131313);
 // const kTitleTextColorLight = Color(0xFF101112);
 const kTitleTextColorDark = Colors.white;
 

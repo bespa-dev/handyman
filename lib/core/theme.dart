@@ -18,7 +18,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
       iconTheme: IconThemeData(color: kBodyTextColorLight),
       accentIconTheme: IconThemeData(color: kAccentIconLightColor),
       primaryIconTheme: IconThemeData(color: kPrimaryIconLightColor),
-      textTheme: GoogleFonts.rubikTextTheme().copyWith(
+      textTheme: GoogleFonts.latoTextTheme().copyWith(
         headline1:
             TextStyle(color: kTitleTextColorLight, fontWeight: FontWeight.w500),
         headline2:
@@ -53,10 +53,13 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
       iconTheme: IconThemeData(color: kBodyTextColorDark),
       accentIconTheme: IconThemeData(color: kAccentIconDarkColor),
       primaryIconTheme: IconThemeData(color: kPrimaryIconDarkColor),
-      textTheme: GoogleFonts.rubikTextTheme().copyWith(
-        headline1: TextStyle(color: kTitleTextColorDark),
-        headline2: TextStyle(color: kTitleTextColorDark),
-        headline3: TextStyle(color: kTitleTextColorDark),
+      textTheme: GoogleFonts.latoTextTheme().copyWith(
+        headline1:
+            TextStyle(color: kTitleTextColorDark, fontWeight: FontWeight.w500),
+        headline2:
+            TextStyle(color: kTitleTextColorDark, fontWeight: FontWeight.w500),
+        headline3:
+            TextStyle(color: kTitleTextColorDark, fontWeight: FontWeight.w500),
         headline4: TextStyle(color: kTitleTextColorDark),
         headline5: TextStyle(color: kTitleTextColorDark),
         headline6: TextStyle(color: kTitleTextColorDark),
