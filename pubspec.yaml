@@ -64,3 +64,6 @@ flutter:
     - assets/logo/app_title.webp
     - assets/logo/2x/app_title.webp
     - assets/logo/3x/app_title.webp
+    - assets/banner/banner_one.webp
+    - assets/banner/2x/banner_one.webp
+    - assets/banner/3x/banner_one.webp

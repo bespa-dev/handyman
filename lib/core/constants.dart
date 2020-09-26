@@ -6,6 +6,7 @@ const kAppSlogan = "Simple. Safe. Reliable.";
 const kProviderString = "provider";
 const kClientString = "client";
 const kLogoAsset = "assets/logo/app_title.webp";
+const kBannerAsset = "assets/banner/banner_one.webp";
 
 /// Colors
 const kPrimaryColor = Color(0xFFFF97B3);

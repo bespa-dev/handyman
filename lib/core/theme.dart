@@ -3,6 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'constants.dart';
 
+/// Fonts
+final _kTitleFontFamily = GoogleFonts.playfairDisplay().fontFamily;
+final _kBodyFontFamily = GoogleFonts.raleway().fontFamily;
+
 // latoTextTheme
 /// Light theme
 ThemeData themeData(BuildContext context) => ThemeData(
@@ -18,23 +22,47 @@ ThemeData themeData(BuildContext context) => ThemeData(
       iconTheme: IconThemeData(color: kBodyTextColorLight),
       accentIconTheme: IconThemeData(color: kAccentIconLightColor),
       primaryIconTheme: IconThemeData(color: kPrimaryIconLightColor),
-      textTheme: GoogleFonts.latoTextTheme().copyWith(
-        headline1:
-            TextStyle(color: kTitleTextColorLight, fontWeight: FontWeight.w500),
-        headline2:
-            TextStyle(color: kTitleTextColorLight, fontWeight: FontWeight.w500),
-        headline3:
-            TextStyle(color: kTitleTextColorLight, fontWeight: FontWeight.w500),
-        headline4: TextStyle(color: kTitleTextColorLight),
-        headline5: TextStyle(color: kTitleTextColorLight),
-        headline6: TextStyle(color: kTitleTextColorLight),
-        bodyText1: TextStyle(color: kBodyTextColorLight),
-        bodyText2: TextStyle(color: kBodyTextColorLight),
-        subtitle1: TextStyle(color: kBodyTextColorLight),
-        subtitle2: TextStyle(color: kBodyTextColorLight),
-        overline: TextStyle(color: kBodyTextColorLight),
-        caption: TextStyle(color: kBodyTextColorLight),
-        button: TextStyle(color: kBodyTextColorDark),
+      textTheme: TextTheme(
+        headline1: TextStyle(
+            fontFamily: _kTitleFontFamily,
+            color: kTitleTextColorLight,
+            fontWeight: FontWeight.w500),
+        headline2: TextStyle(
+            fontFamily: _kTitleFontFamily,
+            color: kTitleTextColorLight,
+            fontWeight: FontWeight.w500),
+        headline3: TextStyle(
+            fontFamily: _kTitleFontFamily,
+            color: kTitleTextColorLight,
+            fontWeight: FontWeight.w500),
+        headline4: TextStyle(
+            fontFamily: _kTitleFontFamily,
+            color: kTitleTextColorLight,
+            fontWeight: FontWeight.w500),
+        headline5: TextStyle(
+            color: kTitleTextColorLight,
+            fontFamily: _kTitleFontFamily,
+            fontWeight: FontWeight.w500),
+        headline6: TextStyle(
+            color: kTitleTextColorLight,
+            fontFamily: _kTitleFontFamily,
+            fontWeight: FontWeight.w500),
+        bodyText1:
+            TextStyle(color: kBodyTextColorLight, fontFamily: _kBodyFontFamily),
+        bodyText2:
+            TextStyle(color: kBodyTextColorLight, fontFamily: _kBodyFontFamily),
+        subtitle1:
+            TextStyle(color: kBodyTextColorLight, fontFamily: _kBodyFontFamily),
+        subtitle2:
+            TextStyle(color: kBodyTextColorLight, fontFamily: _kBodyFontFamily),
+        overline:
+            TextStyle(color: kBodyTextColorLight, fontFamily: _kBodyFontFamily),
+        caption:
+            TextStyle(color: kBodyTextColorLight, fontFamily: _kBodyFontFamily),
+        button: TextStyle(
+            color: kBodyTextColorDark,
+            fontFamily: _kBodyFontFamily,
+            fontWeight: FontWeight.w500),
       ),
     );
 
@@ -53,23 +81,47 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
       iconTheme: IconThemeData(color: kBodyTextColorDark),
       accentIconTheme: IconThemeData(color: kAccentIconDarkColor),
       primaryIconTheme: IconThemeData(color: kPrimaryIconDarkColor),
-      textTheme: GoogleFonts.latoTextTheme().copyWith(
-        headline1:
-            TextStyle(color: kTitleTextColorDark, fontWeight: FontWeight.w500),
-        headline2:
-            TextStyle(color: kTitleTextColorDark, fontWeight: FontWeight.w500),
-        headline3:
-            TextStyle(color: kTitleTextColorDark, fontWeight: FontWeight.w500),
-        headline4: TextStyle(color: kTitleTextColorDark),
-        headline5: TextStyle(color: kTitleTextColorDark),
-        headline6: TextStyle(color: kTitleTextColorDark),
-        bodyText1: TextStyle(color: kBodyTextColorDark),
-        bodyText2: TextStyle(color: kBodyTextColorDark),
-        subtitle1: TextStyle(color: kBodyTextColorDark),
-        subtitle2: TextStyle(color: kBodyTextColorDark),
-        overline: TextStyle(color: kBodyTextColorDark),
-        caption: TextStyle(color: kBodyTextColorDark),
-        button: TextStyle(color: kBodyTextColorLight),
+      textTheme: TextTheme(
+        headline1: TextStyle(
+            color: kTitleTextColorDark,
+            fontWeight: FontWeight.w500,
+            fontFamily: _kTitleFontFamily),
+        headline2: TextStyle(
+            color: kTitleTextColorDark,
+            fontWeight: FontWeight.w500,
+            fontFamily: _kTitleFontFamily),
+        headline3: TextStyle(
+            color: kTitleTextColorDark,
+            fontWeight: FontWeight.w500,
+            fontFamily: _kTitleFontFamily),
+        headline4: TextStyle(
+            color: kTitleTextColorDark,
+            fontFamily: _kTitleFontFamily,
+            fontWeight: FontWeight.w500),
+        headline5: TextStyle(
+            color: kTitleTextColorDark,
+            fontFamily: _kTitleFontFamily,
+            fontWeight: FontWeight.w500),
+        headline6: TextStyle(
+            color: kTitleTextColorDark,
+            fontFamily: _kTitleFontFamily,
+            fontWeight: FontWeight.w500),
+        bodyText1:
+            TextStyle(color: kBodyTextColorDark, fontFamily: _kBodyFontFamily),
+        bodyText2:
+            TextStyle(color: kBodyTextColorDark, fontFamily: _kBodyFontFamily),
+        subtitle1:
+            TextStyle(color: kBodyTextColorDark, fontFamily: _kBodyFontFamily),
+        subtitle2:
+            TextStyle(color: kBodyTextColorDark, fontFamily: _kBodyFontFamily),
+        overline:
+            TextStyle(color: kBodyTextColorDark, fontFamily: _kBodyFontFamily),
+        caption:
+            TextStyle(color: kBodyTextColorDark, fontFamily: _kBodyFontFamily),
+        button: TextStyle(
+            color: kBodyTextColorLight,
+            fontFamily: _kBodyFontFamily,
+            fontWeight: FontWeight.w500),
       ),
     );
 

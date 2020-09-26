@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
@@ -21,59 +19,51 @@ class _SplashPageState extends State<SplashPage> {
 
     return Consumer<ThemeProvider>(
       builder: (_, theme, child) => Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Image.asset(kLogoAsset),
-          actions: [
-            IconButton(
-              icon: Icon(theme.isLightTheme ? Feather.moon : Feather.sun),
-              color: themeData.iconTheme.color,
-              onPressed: () => theme.toggleTheme(),
-            )
-          ],
-        ),
-        body: Container(
-          width: double.infinity,
-          child: Column(
-            children: [
-              Text(
-                kAppSlogan,
-                style: themeData.textTheme.headline3.copyWith(
-                  fontFamily: GoogleFonts.raleway().fontFamily,
+        body: SafeArea(
+          child: Container(
+            width: double.infinity,
+            child: Column(
+              children: [
+                Text(
+                  kAppSlogan,
+                  style: themeData.textTheme.headline3,
                 ),
-              ),
-              SizedBox(height: getProportionateScreenHeight(24)),
-              AspectRatio(
-                aspectRatio: 1,
-                child: Container(
-                  margin: EdgeInsets.symmetric(
-                    horizontal: getProportionateScreenWidth(64),
-                  ),
-                  decoration: BoxDecoration(
-                      color: themeData.colorScheme.surface,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          offset: Offset(0, 0),
-                          color: kShadowColor.withOpacity(0.14),
-                          blurRadius: 64,
-                        ),
-                      ]),
-                  child: Icon(
-                    Icons.handyman_outlined,
-                    size: getProportionateScreenHeight(96),
+                SizedBox(height: getProportionateScreenHeight(24)),
+                AspectRatio(
+                  aspectRatio: 1,
+                  child: Container(
+                    clipBehavior: Clip.hardEdge,
+                    margin: EdgeInsets.symmetric(
+                      horizontal: getProportionateScreenWidth(64),
+                    ),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            offset: Offset(0, 0),
+                            color: kShadowColor.withOpacity(0.14),
+                            blurRadius: 64,
+                          ),
+                        ]),
+                    child: Image.asset(
+                      kBannerAsset,
+                      fit: BoxFit.contain,
+                      height: getProportionateScreenHeight(200),
+                      width: getProportionateScreenWidth(200),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: getProportionateScreenHeight(16)),
-              ButtonPrimary(
-                icon: Icons.arrow_right_alt,
-                width: getProportionateScreenWidth(250),
-                themeData: themeData,
-                onTap: () {},
-                label: "Get started",
-              ),
-            ],
+                SizedBox(height: getProportionateScreenHeight(16)),
+                ButtonPrimary(
+                  icon: Icons.arrow_right_alt,
+                  width: getProportionateScreenWidth(250),
+                  themeData: themeData,
+                  onTap: () {},
+                  label: "Get started",
+                ),
+              ],
+            ),
           ),
         ),
       ),

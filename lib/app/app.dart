@@ -14,25 +14,26 @@ class HandyManApp extends StatefulWidget {
 class _HandyManAppState extends State<HandyManApp> {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ThemeProvider>(
-      create: (context) => ThemeProvider(),
-      child: Consumer<ThemeProvider>(
-        builder: (context, theme, child) => MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => PrefsProvider()),
-          ],
-          builder: (_, widget) => MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: themeData(context),
-            darkTheme: darkThemeData(context),
-            themeMode: theme.isLightTheme ? ThemeMode.light : ThemeMode.dark,
-            builder: ExtendedNavigator<gr.Router>(
-              router: gr.Router(),
-              guards: [],
-            ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ThemeProvider>(
+            create: (_) => ThemeProvider(context)),
+        ChangeNotifierProvider<PrefsProvider>(create: (_) => PrefsProvider()),
+      ],
+      builder: (ctx, _) {
+        final themeProvider = ctx.watch<ThemeProvider>();
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: themeData(context),
+          darkTheme: darkThemeData(context),
+          themeMode:
+              /*themeProvider.isLightTheme ? ThemeMode.light :*/ ThemeMode.dark,
+          builder: ExtendedNavigator<gr.Router>(
+            router: gr.Router(),
+            guards: [],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
