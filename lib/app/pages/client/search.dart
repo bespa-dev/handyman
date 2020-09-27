@@ -29,8 +29,8 @@ class SearchPage extends SearchDelegate {
     // FIXME: Fix theme
     return isLightTheme
         ? ThemeData.light().copyWith(
-            primaryColor: kPrimaryColor,
-            primaryColorBrightness: Brightness.dark,
+            // primaryColor: kPrimaryColor,
+            // primaryColorBrightness: Brightness.dark,
           )
         : ThemeData.dark();
   }
