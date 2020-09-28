@@ -1,8 +1,11 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/pages/client/search.dart';
+import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:provider/provider.dart';
@@ -13,10 +16,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool _preferGridFormat = true;
+  final _dropdownItems = const <String>[
+    "Featured",
+    "Most Rated",
+    "Recent",
+    "Popular",
+    "Recommended",
+  ];
+  String _currentFilter = "Featured";
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     return Scaffold(
+      key: _scaffoldKey,
       body: SafeArea(
         child: Consumer<ThemeProvider>(
           builder: (_, themeProvider, __) => Consumer<PrefsProvider>(
@@ -27,7 +42,7 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(height: getProportionateScreenHeight(8)),
+                    SizedBox(height: getProportionateScreenHeight(12)),
                     GestureDetector(
                       onTap: () {},
                       child: Padding(
@@ -53,6 +68,7 @@ class _HomePageState extends State<HomePage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 IconButton(
+                                  tooltip: "Toggle theme",
                                   icon: Icon(themeProvider.isLightTheme
                                       ? Feather.moon
                                       : Feather.sun),
@@ -64,6 +80,7 @@ class _HomePageState extends State<HomePage> {
                                   height: kToolbarHeight - 8,
                                 ),
                                 IconButton(
+                                  tooltip: "Search",
                                   icon: Icon(Feather.search),
                                   onPressed: () => showSearch(
                                     context: context,
@@ -77,7 +94,128 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     SizedBox(height: getProportionateScreenHeight(8)),
-                    
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: getProportionateScreenWidth(16)),
+                        child: Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                DropdownButton(
+                                  value: _currentFilter,
+                                  items: _dropdownItems
+                                      .map<DropdownMenuItem<String>>(
+                                        (value) => DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: (String newItem) {
+                                    setState(() {
+                                      _currentFilter = newItem;
+                                      _getCategoriesWithFilter();
+                                    });
+                                  },
+                                  icon: Icon(Feather.chevron_down),
+                                  underline: Container(
+                                    color: themeData.scaffoldBackgroundColor,
+                                    height: 2,
+                                  ),
+                                ),
+                                Spacer(),
+                                IconButton(
+                                  tooltip: "Toggle view",
+                                  icon: Icon(_preferGridFormat
+                                      ? Icons.sort
+                                      : Feather.grid),
+                                  onPressed: () => setState(() {
+                                    _preferGridFormat = !_preferGridFormat;
+                                  }),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: getProportionateScreenHeight(16)),
+                            Expanded(
+                              child: _preferGridFormat
+                                  ? GridView(
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        childAspectRatio: 4 / 3,
+                                        crossAxisSpacing:
+                                            getProportionateScreenWidth(8),
+                                        mainAxisSpacing:
+                                            getProportionateScreenHeight(4),
+                                      ),
+                                      clipBehavior: Clip.hardEdge,
+                                      children: _dropdownItems
+                                          .map(
+                                            (e) => Card(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  getProportionateScreenWidth(
+                                                      12),
+                                                ),
+                                              ),
+                                              color: Colors.redAccent,
+                                              clipBehavior: Clip.hardEdge,
+                                              child: InkWell(
+                                                borderRadius: BorderRadius.circular(
+                                                    getProportionateScreenWidth(
+                                                        12)),
+                                                onTap: () =>
+                                                    context.navigator.push(
+                                                  Routes.categoryProvidersPage,
+                                                  arguments:
+                                                      CategoryProvidersPageArguments(
+                                                          category: e),
+                                                ),
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Flexible(
+                                                      child: Image.asset(
+                                                        kBannerAsset,
+                                                        width: double.infinity,
+                                                        height:
+                                                            getProportionateScreenHeight(
+                                                                300),
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
+                                      physics: BouncingScrollPhysics(),
+                                    )
+                                  : ListView.builder(
+                                      physics: BouncingScrollPhysics(),
+                                      itemBuilder: (_, index) => ListTile(
+                                        onTap: () => context.navigator.push(
+                                          Routes.categoryProvidersPage,
+                                          arguments:
+                                              CategoryProvidersPageArguments(
+                                                  category:
+                                                      _dropdownItems[index]),
+                                        ),
+                                        onLongPress: () {},
+                                        title: Text(_dropdownItems[index]),
+                                      ),
+                                      itemCount: _dropdownItems.length,
+                                    ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 )
               ],
@@ -87,4 +225,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  // TODO: Order the categories based on the current filter
+  void _getCategoriesWithFilter() async {}
 }

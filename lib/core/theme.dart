@@ -5,6 +5,7 @@ import 'constants.dart';
 
 /// Fonts
 final _kTitleFontFamily = GoogleFonts.playfairDisplay().fontFamily;
+// final _kTitleFontFamily = GoogleFonts.raleway().fontFamily;
 final _kBodyFontFamily = GoogleFonts.rubik().fontFamily;
 
 // latoTextTheme
@@ -126,4 +127,13 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
       ),
     );
 
-AppBarTheme appBarTheme = AppBarTheme(color: Colors.transparent, elevation: 0);
+AppBarTheme appBarTheme = AppBarTheme(
+  color: Colors.transparent,
+  elevation: 0,
+  textTheme: TextTheme(
+    headline6: TextStyle(
+        // color: kTitleTextColorDark,
+        fontFamily: _kBodyFontFamily,
+        fontWeight: FontWeight.w500),
+  ),
+);

@@ -10,6 +10,8 @@ const kBannerAsset = "assets/banner/banner_two.webp";
 const kBackgroundAsset = "assets/bg/bg.webp";
 
 /// Colors
+const kGreenColor = Colors.lightGreen;
+const kWhiteColor = Colors.white;
 const kPrimaryColor = Color(0xFF442C2E);
 // const kPrimaryColor = Color(0xFFFF97B3);
 const kSecondaryLightColor = Color(0xFFFEDBD0);

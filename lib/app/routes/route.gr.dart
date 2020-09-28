@@ -13,6 +13,7 @@ import '../pages/account_completion.dart';
 import '../pages/account_selection.dart';
 import '../pages/client/home.dart';
 import '../pages/client/provider_details.dart';
+import '../pages/client/providers.dart';
 import '../pages/client/service_details.dart';
 import '../pages/login.dart';
 import '../pages/onboarding.dart';
@@ -29,6 +30,7 @@ class Routes {
   static const String accountCompletionPage = '/account-completion-page';
   static const String accountSelectionPage = '/account-selection-page';
   static const String homePage = '/home-page';
+  static const String categoryProvidersPage = '/category-providers-page';
   static const String serviceProviderDetails = '/service-provider-details';
   static const String providerSettingsPage = '/provider-settings-page';
   static const String dashboardPage = '/dashboard-page';
@@ -41,6 +43,7 @@ class Routes {
     accountCompletionPage,
     accountSelectionPage,
     homePage,
+    categoryProvidersPage,
     serviceProviderDetails,
     providerSettingsPage,
     dashboardPage,
@@ -59,6 +62,7 @@ class Router extends RouterBase {
     RouteDef(Routes.accountCompletionPage, page: AccountCompletionPage),
     RouteDef(Routes.accountSelectionPage, page: AccountSelectionPage),
     RouteDef(Routes.homePage, page: HomePage),
+    RouteDef(Routes.categoryProvidersPage, page: CategoryProvidersPage),
     RouteDef(Routes.serviceProviderDetails, page: ServiceProviderDetails),
     RouteDef(Routes.providerSettingsPage, page: ProviderSettingsPage),
     RouteDef(Routes.dashboardPage, page: DashboardPage),
@@ -109,6 +113,18 @@ class Router extends RouterBase {
         settings: data,
       );
     },
+    CategoryProvidersPage: (data) {
+      final args = data.getArgs<CategoryProvidersPageArguments>(
+        orElse: () => CategoryProvidersPageArguments(),
+      );
+      return buildAdaptivePageRoute<dynamic>(
+        builder: (context) => CategoryProvidersPage(
+          key: args.key,
+          category: args.category,
+        ),
+        settings: data,
+      );
+    },
     ServiceProviderDetails: (data) {
       final args = data.getArgs<ServiceProviderDetailsArguments>(
         orElse: () => ServiceProviderDetailsArguments(),
@@ -151,6 +167,13 @@ class Router extends RouterBase {
 /// ************************************************************************
 /// Arguments holder classes
 /// *************************************************************************
+
+/// CategoryProvidersPage arguments holder class
+class CategoryProvidersPageArguments {
+  final Key key;
+  final String category;
+  CategoryProvidersPageArguments({this.key, this.category});
+}
 
 /// ServiceProviderDetails arguments holder class
 class ServiceProviderDetailsArguments {
