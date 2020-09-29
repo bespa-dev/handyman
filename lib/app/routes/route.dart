@@ -4,7 +4,6 @@ import 'package:handyman/app/pages/account_selection.dart';
 import 'package:handyman/app/pages/client/home.dart';
 import 'package:handyman/app/pages/client/provider_details.dart';
 import 'package:handyman/app/pages/client/providers.dart';
-import 'package:handyman/app/pages/client/service_details.dart';
 import 'package:handyman/app/pages/login.dart';
 import 'package:handyman/app/pages/onboarding.dart';
 import 'package:handyman/app/pages/provider/dashboard.dart';
@@ -28,8 +27,6 @@ import 'package:handyman/app/pages/splash.dart';
     AdaptiveRoute(
         page: ProviderSettingsPage /*, guards: [AuthGuard, ProviderGuard]*/),
     AdaptiveRoute(page: DashboardPage /*, guards: [AuthGuard, ProviderGuard]*/),
-    AdaptiveRoute(
-        page: ServiceDetailsPage /*, guards: [AuthGuard, ClientGuard]*/),
   ],
 )
 class $Router {}

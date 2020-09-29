@@ -1,13 +1,12 @@
-import 'dart:math';
-
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/pages/client/search.dart';
-import 'package:handyman/app/routes/route.gr.dart';
-import 'package:handyman/core/constants.dart';
+import 'package:handyman/app/widget/artisan_card.dart';
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
+import 'package:handyman/data/local_database.dart';
+import 'package:handyman/data/provider/artisan_api_provider.dart';
 
 class CategoryProvidersPage extends StatefulWidget {
   final String category;
@@ -111,210 +110,53 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
               ],
             ),
             SizedBox(height: getProportionateScreenHeight(16)),
-            Expanded(
-              child: _preferGridFormat
-                  ? GridView(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: getProportionateScreenWidth(8),
-                        mainAxisSpacing: getProportionateScreenHeight(4),
+            FutureBuilder<List<Artisan>>(
+                future: sl.get<ArtisanProvider>().getArtisans(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting)
+                    return Container(
+                      height: kHeight - getProportionateScreenHeight(kHeight * 0.3),
+                      width: kWidth,
+                      child: Center(
+                        child: Text("Fetching providers"),
                       ),
-                      physics: BouncingScrollPhysics(),
-                      children: [
-                        Card(
-                          clipBehavior: Clip.hardEdge,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              getProportionateScreenWidth(8),
-                            ),
-                          ),
-                          child: GestureDetector(
-                            onTap: () => context.navigator.push(
-                              Routes.serviceDetailsPage,
-                              arguments: ServiceDetailsPageArguments(
-                                service: "Some dummy service",
-                              ),
-                            ),
-                            child: Container(
-                              height: getProportionateScreenHeight(300),
-                              width: double.infinity,
-                              child: Stack(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical:
-                                            getProportionateScreenHeight(8)),
-                                    child: Center(
-                                        child: Image.asset(kBannerAsset,
-                                            fit: BoxFit.cover)),
-                                  ),
-                                  Positioned(
-                                    top: 0,
-                                    right: 0,
-                                    child: Container(
-                                      height: getProportionateScreenHeight(48),
-                                      width: getProportionateScreenWidth(48),
-                                      decoration: BoxDecoration(
-                                        color: kGreenColor,
-                                        borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(24),
-                                        ),
-                                      ),
-                                      child: Icon(
-                                        Feather.award,
-                                        color: kWhiteColor,
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    top: getProportionateScreenHeight(80),
-                                    left: 0,
-                                    right: 0,
-                                    bottom: 0,
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              getProportionateScreenWidth(8)),
-                                      decoration: BoxDecoration(
-                                        color: themeData.scaffoldBackgroundColor
-                                            .withOpacity(0.9),
-                                        borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(8),
-                                          topLeft: Radius.circular(8),
-                                        ),
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "Quabynah Bilson Jr.",
-                                            style:
-                                                themeData.textTheme.headline6,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          SizedBox(
-                                              height:
-                                                  getProportionateScreenHeight(
-                                                      4)),
-                                          Text(
-                                            "Ali Connors AC Repairs",
-                                            style: themeData.textTheme.caption,
-                                            overflow: TextOverflow.fade,
-                                            maxLines: 2,
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          SizedBox(
-                                              height:
-                                                  getProportionateScreenHeight(
-                                                      8)),
-                                          Text(
-                                            "\$233",
-                                            style: themeData.textTheme.headline6
-                                                .copyWith(
-                                              color: themeData.primaryColor,
-                                              fontFamily: themeData.textTheme
-                                                  .bodyText1.fontFamily,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : ListView.separated(
-                      clipBehavior: Clip.hardEdge,
-                      physics: BouncingScrollPhysics(),
-                      itemBuilder: (_, index) => Container(
-                        margin: EdgeInsets.only(
-                            bottom: getProportionateScreenHeight(4)),
-                        width: kWidth,
-                        child: Card(
-                          clipBehavior: Clip.hardEdge,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              getProportionateScreenWidth(8),
-                            ),
-                          ),
-                          child: GestureDetector(
-                            onTap: () => context.navigator.push(
-                              Routes.serviceDetailsPage,
-                              arguments: ServiceDetailsPageArguments(
-                                service: "Some dummy service",
-                              ),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.all(
-                                  getProportionateScreenHeight(8)),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    clipBehavior: Clip.hardEdge,
-                                    height: getProportionateScreenHeight(48),
-                                    width: getProportionateScreenWidth(48),
-                                    decoration: BoxDecoration(
-                                      color: themeData.accentColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Image.asset(kBannerAsset,
-                                        fit: BoxFit.cover),
-                                  ),
-                                  SizedBox(
-                                      width: getProportionateScreenWidth(8)),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Quabynah Bilson",
-                                        maxLines: 1,
-                                        style: themeData.textTheme.headline6
-                                            .copyWith(
-                                          fontSize: themeData
-                                              .textTheme.bodyText1.fontSize,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                          height:
-                                              getProportionateScreenHeight(4)),
-                                      Text("Ali Connors AC Repairs",
-                                          maxLines: 2,
-                                          overflow: TextOverflow.fade,
-                                          style: themeData.textTheme.caption),
-                                    ],
-                                  ),
-                                  Spacer(),
-                                  Text(
-                                    "\$23.99",
-                                    style:
-                                        themeData.textTheme.headline6.copyWith(
-                                      color: themeData.primaryColor,
-                                      fontFamily: themeData
-                                          .textTheme.bodyText1.fontFamily,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                    );
+                  else if (snapshot.hasError)
+                    return Container(
+                      height: kHeight - getProportionateScreenHeight(kHeight * 0.3),
+                      width: kWidth,
+                      child: Center(
+                        child: Text("Error while fetching providers"),
                       ),
-                      separatorBuilder: (_, __) =>
-                          SizedBox(height: getProportionateScreenHeight(2)),
-                      itemCount: Random().nextInt(12),
-                    ),
-            ),
+                    );
+                  final artisans = snapshot.data;
+                  return Expanded(
+                    child: _preferGridFormat
+                        ? GridView.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: getProportionateScreenWidth(8),
+                              mainAxisSpacing: getProportionateScreenHeight(4),
+                            ),
+                            physics: BouncingScrollPhysics(),
+                            itemBuilder: (_, index) => GridArtisanCardItem(
+                              artisan: artisans[index],
+                            ),
+                            itemCount: artisans.length,
+                          )
+                        : ListView.separated(
+                            clipBehavior: Clip.hardEdge,
+                            physics: BouncingScrollPhysics(),
+                            itemBuilder: (_, index) => ListArtisanCardItem(
+                              artisan: artisans[index],
+                            ),
+                            separatorBuilder: (_, __) => SizedBox(
+                                height: getProportionateScreenHeight(2)),
+                            itemCount: artisans.length,
+                          ),
+                  );
+                }),
           ],
         ),
       ),
@@ -322,5 +164,7 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
   }
 
   // TODO: Get providers for this category
-  void _fetchProviderForCategory() async {}
+  void _fetchProviderForCategory() async {
+    // await sl.get<ArtisanProvider>().getArtisans();
+  }
 }

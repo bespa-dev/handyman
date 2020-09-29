@@ -14,7 +14,6 @@ import '../pages/account_selection.dart';
 import '../pages/client/home.dart';
 import '../pages/client/provider_details.dart';
 import '../pages/client/providers.dart';
-import '../pages/client/service_details.dart';
 import '../pages/login.dart';
 import '../pages/onboarding.dart';
 import '../pages/provider/dashboard.dart';
@@ -34,7 +33,6 @@ class Routes {
   static const String serviceProviderDetails = '/service-provider-details';
   static const String providerSettingsPage = '/provider-settings-page';
   static const String dashboardPage = '/dashboard-page';
-  static const String serviceDetailsPage = '/service-details-page';
   static const all = <String>{
     splashPage,
     loginPage,
@@ -47,7 +45,6 @@ class Routes {
     serviceProviderDetails,
     providerSettingsPage,
     dashboardPage,
-    serviceDetailsPage,
   };
 }
 
@@ -66,7 +63,6 @@ class Router extends RouterBase {
     RouteDef(Routes.serviceProviderDetails, page: ServiceProviderDetails),
     RouteDef(Routes.providerSettingsPage, page: ProviderSettingsPage),
     RouteDef(Routes.dashboardPage, page: DashboardPage),
-    RouteDef(Routes.serviceDetailsPage, page: ServiceDetailsPage),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
@@ -132,7 +128,7 @@ class Router extends RouterBase {
       return buildAdaptivePageRoute<dynamic>(
         builder: (context) => ServiceProviderDetails(
           key: args.key,
-          provider: args.provider,
+          artisan: args.artisan,
         ),
         settings: data,
       );
@@ -146,18 +142,6 @@ class Router extends RouterBase {
     DashboardPage: (data) {
       return buildAdaptivePageRoute<dynamic>(
         builder: (context) => DashboardPage(),
-        settings: data,
-      );
-    },
-    ServiceDetailsPage: (data) {
-      final args = data.getArgs<ServiceDetailsPageArguments>(
-        orElse: () => ServiceDetailsPageArguments(),
-      );
-      return buildAdaptivePageRoute<dynamic>(
-        builder: (context) => ServiceDetailsPage(
-          key: args.key,
-          service: args.service,
-        ),
         settings: data,
       );
     },
@@ -178,13 +162,6 @@ class CategoryProvidersPageArguments {
 /// ServiceProviderDetails arguments holder class
 class ServiceProviderDetailsArguments {
   final Key key;
-  final dynamic provider;
-  ServiceProviderDetailsArguments({this.key, this.provider});
-}
-
-/// ServiceDetailsPage arguments holder class
-class ServiceDetailsPageArguments {
-  final Key key;
-  final dynamic service;
-  ServiceDetailsPageArguments({this.key, this.service});
+  final dynamic artisan;
+  ServiceProviderDetailsArguments({this.key, this.artisan});
 }
