@@ -32,12 +32,13 @@ class _HomePageState extends State<HomePage> {
     final themeData = Theme.of(context);
     return Scaffold(
       key: _scaffoldKey,
-      body: SafeArea(
-        child: Consumer<ThemeProvider>(
-          builder: (_, themeProvider, __) => Consumer<PrefsProvider>(
-            builder: (_, prefsProvider, __) => Stack(
+      body: Consumer<ThemeProvider>(
+        builder: (_, themeProvider, __) => Consumer<PrefsProvider>(
+          builder: (_, prefsProvider, __) => SafeArea(
+            child: Stack(
               fit: StackFit.expand,
               children: [
+
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,

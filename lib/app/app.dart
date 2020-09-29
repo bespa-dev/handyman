@@ -28,6 +28,9 @@ class _HandyManAppState extends State<HandyManApp> {
           theme: themeData(context),
           darkTheme: darkThemeData(context),
           themeMode: theme.isLightTheme ? ThemeMode.light : ThemeMode.dark,
+          navigatorObservers: <NavigatorObserver>[
+            /* TODO: Add observers here for navigator*/
+          ],
           builder: ExtendedNavigator<gr.Router>(
             router: gr.Router(),
             guards: [AuthGuard(), ClientGuard(), ProviderGuard()],
