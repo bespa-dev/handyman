@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 
 class ButtonOutlined extends StatelessWidget {
@@ -23,9 +24,10 @@ class ButtonOutlined extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(getProportionateScreenWidth(32)),
+      borderRadius:
+          BorderRadius.circular(getProportionateScreenWidth(kSpacingX36)),
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 500),
+        duration: kScaleDuration,
         curve: Curves.fastOutSlowIn,
         width: width,
         height: kMinInteractiveDimension,
@@ -34,7 +36,8 @@ class ButtonOutlined extends StatelessWidget {
           border: Border.all(
             color: enabled ? themeData.primaryColor : themeData.disabledColor,
           ),
-          borderRadius: BorderRadius.circular(getProportionateScreenWidth(32)),
+          borderRadius:
+              BorderRadius.circular(getProportionateScreenWidth(kSpacingX36)),
         ),
         child: Row(
           mainAxisAlignment: icon == null
@@ -43,14 +46,18 @@ class ButtonOutlined extends StatelessWidget {
           children: [
             Text(
               label.toUpperCase(),
-              style: themeData.textTheme.button
-                  .copyWith(color: enabled ? themeData.primaryColor : themeData.disabledColor),
+              style: themeData.textTheme.button.copyWith(
+                  color: enabled
+                      ? themeData.primaryColor
+                      : themeData.disabledColor),
             ),
             icon == null
                 ? SizedBox.shrink()
                 : Icon(
                     icon,
-                    color: enabled ? themeData.primaryColor : themeData.disabledColor,
+                    color: enabled
+                        ? themeData.primaryColor
+                        : themeData.disabledColor,
                   ),
           ],
         ),
@@ -83,7 +90,7 @@ class ButtonIconOnly extends StatelessWidget {
       child: Container(
         height: kToolbarHeight,
         width: kToolbarHeight,
-        padding: const EdgeInsets.all(4),
+        padding: const EdgeInsets.all(kSpacingX4),
         decoration: BoxDecoration(
           border: Border.all(color: color ?? themeData.accentColor),
           borderRadius: BorderRadius.circular(kToolbarHeight),
@@ -121,10 +128,11 @@ class ButtonPrimary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.circular(getProportionateScreenWidth(32)),
+      borderRadius:
+          BorderRadius.circular(getProportionateScreenWidth(kSpacingX36)),
       onTap: onTap,
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 500),
+        duration: kScaleDuration,
         curve: Curves.fastOutSlowIn,
         width: width,
         height: kMinInteractiveDimension,
@@ -132,7 +140,8 @@ class ButtonPrimary extends StatelessWidget {
           color: enabled
               ? color ?? themeData.primaryColor
               : themeData.disabledColor,
-          borderRadius: BorderRadius.circular(getProportionateScreenWidth(32)),
+          borderRadius:
+              BorderRadius.circular(getProportionateScreenWidth(kSpacingX36)),
         ),
         child: Row(
           mainAxisAlignment: icon == null
@@ -181,9 +190,9 @@ class ButtonClear extends FlatButton {
           ),
           onPressed: enabled ? onPressed : null,
           color: enabled
-              ? themeData.accentColor.withOpacity(0)
+              ? themeData.accentColor.withOpacity(kSpacingNone)
               : themeData.disabledColor,
-          disabledColor: themeData.accentColor.withOpacity(0),
+          disabledColor: themeData.accentColor.withOpacity(kSpacingNone),
           disabledTextColor: themeData.disabledColor,
         );
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
+import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:random_color/random_color.dart';
@@ -32,18 +33,18 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
     return Card(
       clipBehavior: Clip.hardEdge,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(kSpacingX8),
       ),
       child: Container(
         width: kWidth,
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(),
         padding: EdgeInsets.symmetric(
-          vertical: getProportionateScreenHeight(8),
-          horizontal: getProportionateScreenWidth(12),
+          vertical: getProportionateScreenHeight(kSpacingX8),
+          horizontal: getProportionateScreenWidth(kSpacingX12),
         ),
         margin: EdgeInsets.symmetric(
-          horizontal: getProportionateScreenWidth(8),
+          horizontal: getProportionateScreenWidth(kSpacingX8),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +54,7 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
               ringColor: RandomColor()
                   .randomColor(colorBrightness: ColorBrightness.dark),
             ),
-            SizedBox(width: getProportionateScreenWidth(16)),
+            SizedBox(width: getProportionateScreenWidth(kSpacingX16)),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -66,7 +67,7 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: getProportionateScreenHeight(8)),
+                SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
                 ConstrainedBox(
                   constraints: BoxConstraints.expand(
                       width: kWidth * 0.6, height: kHeight * 0.1),

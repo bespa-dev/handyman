@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 /// Dimensions
 const double kSpacingNone = 0.0;
-const double kSpacingNormal = 8.0;
-const double kSpacingMid = 12.0;
+const double kSpacingX2 = 2.0;
+const double kSpacingX4 = 4.0;
+const double kSpacingX8 = 8.0;
+const double kSpacingX12 = 12.0;
 const double kSpacingX16 = 16.0;
 const double kSpacingX24 = 24.0;
 const double kSpacingX36 = 36.0;
@@ -11,8 +13,15 @@ const double kSpacingX48 = 48.0;
 const double kSpacingX64 = 64.0;
 const double kSpacingX72 = 72.0;
 const double kSpacingX96 = 96.0;
+const double kSpacingX120 = 120.0;
 const double kSpacingX200 = 200.0;
 const double kSpacingX250 = 250.0;
+const double kSpacingX300 = 300.0;
+const double kOpacityX14 = 0.14;
+const double kOpacityX35 = 0.35;
+const double kOpacityX50 = 0.5;
+const double kOpacityX70 = 0.7;
+const double kOpacityX90 = 0.9;
 
 /// App
 const kAppName = "Handyman";

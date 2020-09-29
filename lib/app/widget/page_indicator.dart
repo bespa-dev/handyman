@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:meta/meta.dart';
 
@@ -34,7 +35,8 @@ class _PageIndicatorState extends State<PageIndicator> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.only(left: getProportionateScreenWidth(24)),
+          padding:
+              EdgeInsets.only(left: getProportionateScreenWidth(kSpacingX24)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: _buildPageIndicator(),
@@ -63,18 +65,18 @@ class _PageIndicatorState extends State<PageIndicator> {
   }
 
   Widget _indicator(bool isActive) => AnimatedContainer(
-        duration: Duration(milliseconds: 150),
+        duration: kScaleDuration,
         margin: EdgeInsets.symmetric(
-          horizontal: getProportionateScreenWidth(4),
+          horizontal: getProportionateScreenWidth(kSpacingX4),
         ),
-        height: getProportionateScreenHeight(8),
+        height: getProportionateScreenHeight(kSpacingX8),
         width: isActive
-            ? getProportionateScreenWidth(24)
-            : getProportionateScreenWidth(16),
+            ? getProportionateScreenWidth(kSpacingX24)
+            : getProportionateScreenWidth(kSpacingX16),
         decoration: BoxDecoration(
           color: isActive ? _themeData.primaryColor : _themeData.disabledColor,
           borderRadius: BorderRadius.all(
-            Radius.circular(getProportionateScreenWidth(12)),
+            Radius.circular(getProportionateScreenWidth(kSpacingX12)),
           ),
         ),
       );

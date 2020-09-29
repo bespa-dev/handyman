@@ -27,7 +27,7 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
       clipBehavior: Clip.hardEdge,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(
-          getProportionateScreenWidth(8),
+          getProportionateScreenWidth(kSpacingX8),
         ),
       ),
       child: GestureDetector(
@@ -38,7 +38,7 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
           ),
         ),
         child: Container(
-          height: getProportionateScreenHeight(300),
+          height: getProportionateScreenHeight(kSpacingX300),
           width: double.infinity,
           child: Stack(
             children: [
@@ -49,19 +49,19 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                                 .randomColor(
                                   colorBrightness: ColorBrightness.dark,
                                 )
-                                .withOpacity(0.14),
+                                .withOpacity(kOpacityX14),
                           ),
                       fit: BoxFit.cover)),
               Positioned(
-                top: 0,
-                right: 0,
+                top: kSpacingNone,
+                right: kSpacingNone,
                 child: Container(
-                  height: getProportionateScreenHeight(48),
-                  width: getProportionateScreenWidth(48),
+                  height: getProportionateScreenHeight(kSpacingX48),
+                  width: getProportionateScreenWidth(kSpacingX48),
                   decoration: BoxDecoration(
                     color: kGreenColor,
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(24),
+                      bottomLeft: Radius.circular(kSpacingX24),
                     ),
                   ),
                   child: Icon(
@@ -71,18 +71,19 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                 ),
               ),
               Positioned(
-                top: getProportionateScreenHeight(80),
-                left: 0,
-                right: 0,
-                bottom: 0,
+                top: getProportionateScreenHeight(kSpacingX72),
+                left: kSpacingNone,
+                right: kSpacingNone,
+                bottom: kSpacingNone,
                 child: Container(
                   padding: EdgeInsets.symmetric(
-                      horizontal: getProportionateScreenWidth(8)),
+                      horizontal: getProportionateScreenWidth(kSpacingX8)),
                   decoration: BoxDecoration(
-                    color: themeData.scaffoldBackgroundColor.withOpacity(0.9),
+                    color: themeData.scaffoldBackgroundColor
+                        .withOpacity(kOpacityX90),
                     borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(8),
-                      topLeft: Radius.circular(8),
+                      topRight: Radius.circular(kSpacingX8),
+                      topLeft: Radius.circular(kSpacingX8),
                     ),
                   ),
                   child: Column(
@@ -96,7 +97,8 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                         maxLines: 1,
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: getProportionateScreenHeight(4)),
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX4)),
                       Text(
                         widget.artisan.business,
                         style: themeData.textTheme.caption,
@@ -104,7 +106,8 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                         maxLines: 2,
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: getProportionateScreenHeight(8)),
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX8)),
                       Text(
                         "\$${widget.artisan.price}",
                         style: themeData.textTheme.headline6.copyWith(
@@ -141,13 +144,13 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
     final kWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      margin: EdgeInsets.only(bottom: getProportionateScreenHeight(4)),
+      margin: EdgeInsets.only(bottom: getProportionateScreenHeight(kSpacingX4)),
       width: kWidth,
       child: Card(
         clipBehavior: Clip.hardEdge,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
-            getProportionateScreenWidth(8),
+            getProportionateScreenWidth(kSpacingX8),
           ),
         ),
         child: GestureDetector(
@@ -158,7 +161,7 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.all(getProportionateScreenHeight(8)),
+            padding: EdgeInsets.all(getProportionateScreenHeight(kSpacingX8)),
             child: Row(
               children: [
                 UserAvatar(
@@ -166,7 +169,7 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
                   ringColor: RandomColor()
                       .randomColor(colorBrightness: ColorBrightness.dark),
                 ),
-                SizedBox(width: getProportionateScreenWidth(8)),
+                SizedBox(width: getProportionateScreenWidth(kSpacingX8)),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,7 +181,7 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
                         fontSize: themeData.textTheme.bodyText1.fontSize,
                       ),
                     ),
-                    SizedBox(height: getProportionateScreenHeight(4)),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX4)),
                     Text(
                       widget.artisan.business,
                       maxLines: 2,

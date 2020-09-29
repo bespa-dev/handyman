@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/widget/buttons.dart';
+import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 
 class UserProfileCard extends StatefulWidget {
@@ -34,25 +35,26 @@ class _UserProfileCardState extends State<UserProfileCard> {
             onTap: () {
               widget.hasSelection(true, index);
             },
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(kSpacingX24),
             child: Container(
               clipBehavior: Clip.hardEdge,
               height: kHeight * 0.3,
               width: kWidth,
-              margin: EdgeInsets.only(right: getProportionateScreenWidth(24)),
+              margin: EdgeInsets.only(
+                  right: getProportionateScreenWidth(kSpacingX24)),
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: themeData.cardColor,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(kSpacingX24),
               ),
               child: Stack(
                 fit: StackFit.expand,
                 children: [
                   Container(
                     alignment: Alignment.topCenter,
-                    padding:
-                        EdgeInsets.only(top: getProportionateScreenHeight(36)),
-                    color: themeData.accentColor.withOpacity(0.35),
+                    padding: EdgeInsets.only(
+                        top: getProportionateScreenHeight(kSpacingX36)),
+                    color: themeData.accentColor.withOpacity(kOpacityX35),
                     child: Icon(
                       index == 0 ? Feather.user : Icons.handyman_outlined,
                       size: kHeight * 0.1,
@@ -60,13 +62,14 @@ class _UserProfileCardState extends State<UserProfileCard> {
                   ),
                   Positioned(
                     top: kHeight * 0.18,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
+                    left: kSpacingNone,
+                    right: kSpacingNone,
+                    bottom: kSpacingNone,
                     child: Container(
-                      color: themeData.scaffoldBackgroundColor.withOpacity(0.7),
+                      color: themeData.scaffoldBackgroundColor
+                          .withOpacity(kOpacityX70),
                       padding: EdgeInsets.symmetric(
-                          horizontal: getProportionateScreenWidth(24)),
+                          horizontal: getProportionateScreenWidth(kSpacingX24)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -79,13 +82,16 @@ class _UserProfileCardState extends State<UserProfileCard> {
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(height: getProportionateScreenHeight(4)),
+                          SizedBox(
+                              height: getProportionateScreenHeight(kSpacingX4)),
                           Text(
                             widget.description[index],
                             style: themeData.textTheme.bodyText1,
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(height: getProportionateScreenHeight(12)),
+                          SizedBox(
+                              height:
+                                  getProportionateScreenHeight(kSpacingX12)),
                           ButtonOutlined(
                             width: kWidth * 0.3,
                             themeData: themeData,

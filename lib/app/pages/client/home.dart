@@ -57,18 +57,20 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(height: getProportionateScreenHeight(12)),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX12)),
                     GestureDetector(
                       onTap: () {},
                       child: Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: getProportionateScreenWidth(16)),
+                            horizontal:
+                                getProportionateScreenWidth(kSpacingX16)),
                         child: Material(
                           clipBehavior: Clip.hardEdge,
                           elevation: 1,
                           type: MaterialType.card,
                           borderOnForeground: false,
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(kSpacingX4)),
                           child: Container(
                             height: kToolbarHeight,
                             width: double.infinity,
@@ -78,7 +80,8 @@ class _HomePageState extends State<HomePage> {
                               shape: BoxShape.rectangle,
                             ),
                             padding: EdgeInsets.symmetric(
-                                horizontal: getProportionateScreenWidth(4)),
+                                horizontal:
+                                    getProportionateScreenWidth(kSpacingX4)),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -107,14 +110,15 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: getProportionateScreenHeight(8)),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
                     Expanded(
                       child: FutureBuilder<List<ServiceCategory>>(
                           future: _categoriesFuture,
                           builder: (context, snapshot) {
                             return Container(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: getProportionateScreenWidth(16)),
+                                  horizontal:
+                                      getProportionateScreenWidth(kSpacingX16)),
                               child: Column(
                                 children: [
                                   Row(
@@ -158,7 +162,8 @@ class _HomePageState extends State<HomePage> {
                                     ],
                                   ),
                                   SizedBox(
-                                      height: getProportionateScreenHeight(16)),
+                                      height: getProportionateScreenHeight(
+                                          kSpacingX16)),
                                   snapshot.hasData
                                       ? Expanded(
                                           child: _preferGridFormat

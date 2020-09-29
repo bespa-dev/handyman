@@ -27,8 +27,8 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           childAspectRatio: 4 / 3,
-          crossAxisSpacing: getProportionateScreenWidth(8),
-          mainAxisSpacing: getProportionateScreenHeight(4),
+          crossAxisSpacing: getProportionateScreenWidth(kSpacingX8),
+          mainAxisSpacing: getProportionateScreenHeight(kSpacingX4),
         ),
         clipBehavior: Clip.hardEdge,
         itemBuilder: (_, index) {
@@ -42,14 +42,14 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
                 child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(
-                      getProportionateScreenWidth(12),
+                      getProportionateScreenWidth(kSpacingX12),
                     ),
                   ),
                   color: themeData.cardColor,
                   clipBehavior: Clip.hardEdge,
                   child: InkWell(
-                    borderRadius:
-                        BorderRadius.circular(getProportionateScreenWidth(12)),
+                    borderRadius: BorderRadius.circular(
+                        getProportionateScreenWidth(kSpacingX12)),
                     onTap: () => context.navigator.push(
                       Routes.categoryProvidersPage,
                       arguments:
@@ -62,13 +62,14 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
                           fit: BoxFit.cover,
                         ),
                         Positioned(
-                          top: 80,
-                          right: 0,
-                          left: 0,
-                          bottom: 0,
+                          top: kSpacingX72,
+                          right: kSpacingNone,
+                          left: kSpacingNone,
+                          bottom: kSpacingNone,
                           child: Container(
                             decoration: BoxDecoration(
-                              color: themeData.primaryColor.withOpacity(0.14),
+                              color: themeData.primaryColor
+                                  .withOpacity(kOpacityX14),
                             ),
                             alignment: Alignment.center,
                             child: Column(
@@ -82,7 +83,8 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
                                   ),
                                 ),
                                 SizedBox(
-                                    height: getProportionateScreenHeight(4)),
+                                    height: getProportionateScreenHeight(
+                                        kSpacingX4)),
                                 Text(
                                   "127 available",
                                   // FIXME: Added # of registered artisans here
@@ -128,7 +130,7 @@ class _ListCategoryCardItemState extends State<ListCategoryCardItem> {
           final category = widget.categories[index];
           return AnimationConfiguration.staggeredList(
             position: index,
-            duration: const Duration(milliseconds: 350),
+            duration: kScaleDuration,
             child: SlideAnimation(
               verticalOffset: 50.0,
               child: FadeInAnimation(

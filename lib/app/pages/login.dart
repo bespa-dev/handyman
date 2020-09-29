@@ -68,9 +68,9 @@ class _LoginPageState extends State<LoginPage> {
                     )
                   : SizedBox.shrink(),
               Positioned(
-                top: getProportionateScreenHeight(36),
-                left: getProportionateScreenWidth(64),
-                right: getProportionateScreenWidth(64),
+                top: getProportionateScreenHeight(kSpacingX36),
+                left: getProportionateScreenWidth(kSpacingX64),
+                right: getProportionateScreenWidth(kSpacingX64),
                 child: Container(
                   child: Image.asset(
                     kLogoAsset,
@@ -85,17 +85,17 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Container(
                     margin: EdgeInsets.symmetric(
-                        horizontal: getProportionateScreenWidth(24)),
+                        horizontal: getProportionateScreenWidth(kSpacingX24)),
                     child: Text(
                       "Sign in to get started",
                       style: themeData.textTheme.headline4,
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  SizedBox(height: getProportionateScreenHeight(48)),
+                  SizedBox(height: getProportionateScreenHeight(kSpacingX48)),
                   Container(
                     margin: EdgeInsets.symmetric(
-                        horizontal: getProportionateScreenWidth(48)),
+                        horizontal: getProportionateScreenWidth(kSpacingX48)),
                     child: Form(
                       key: _formKey,
                       child: Column(
@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                                     : null,
                           ),
                           ButtonOutlined(
-                            width: getProportionateScreenWidth(200),
+                            width: getProportionateScreenWidth(kSpacingX200),
                             themeData: themeData,
                             onTap: _performLogin,
                             enabled: !_isLoading,
@@ -134,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: getProportionateScreenHeight(64)),
+                  SizedBox(height: getProportionateScreenHeight(kSpacingX64)),
                   RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(

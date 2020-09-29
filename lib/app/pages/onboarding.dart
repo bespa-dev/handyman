@@ -64,8 +64,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     width: kWidth,
                     height: kHeight,
                     padding: EdgeInsets.symmetric(
-                      horizontal: getProportionateScreenWidth(16),
-                      vertical: getProportionateScreenHeight(64),
+                      horizontal: getProportionateScreenWidth(kSpacingX16),
+                      vertical: getProportionateScreenHeight(kSpacingX64),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -80,7 +80,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                                     "assets/artisans/${index + 1}.webp"),
                           ),
                         ),
-                        SizedBox(height: getProportionateScreenHeight(36)),
+                        SizedBox(
+                            height: getProportionateScreenHeight(kSpacingX36)),
                         Text(
                           _titles[index],
                           textAlign: TextAlign.center,
@@ -89,7 +90,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                                 themeData.textTheme.bodyText1.fontFamily,
                           ),
                         ),
-                        SizedBox(height: getProportionateScreenHeight(16)),
+                        SizedBox(
+                            height: getProportionateScreenHeight(kSpacingX16)),
                         Text(
                           kLoremText,
                           style: themeData.textTheme.bodyText1,
@@ -102,13 +104,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 ),
               ),
               Positioned(
-                top: getProportionateScreenHeight(64),
+                top: getProportionateScreenHeight(kSpacingX64),
                 right: 0,
                 child: InkWell(
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(getProportionateScreenWidth(24)),
-                    bottomLeft:
-                        Radius.circular(getProportionateScreenWidth(24)),
+                    topLeft: Radius.circular(
+                        getProportionateScreenWidth(kSpacingX24)),
+                    bottomLeft: Radius.circular(
+                        getProportionateScreenWidth(kSpacingX24)),
                   ),
                   onTap: () => context.navigator.popAndPush(
                     prefs.isLoggedIn
@@ -124,10 +127,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     decoration: BoxDecoration(
                       color: themeData.primaryColor,
                       borderRadius: BorderRadius.only(
-                        topLeft:
-                            Radius.circular(getProportionateScreenWidth(24)),
-                        bottomLeft:
-                            Radius.circular(getProportionateScreenWidth(24)),
+                        topLeft: Radius.circular(
+                            getProportionateScreenWidth(kSpacingX24)),
+                        bottomLeft: Radius.circular(
+                            getProportionateScreenWidth(kSpacingX24)),
                       ),
                     ),
                     child: Text(
@@ -140,8 +143,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 ),
               ),
               Positioned(
-                bottom: getProportionateScreenHeight(48),
-                left: getProportionateScreenWidth(16),
+                bottom: getProportionateScreenHeight(kSpacingX48),
+                left: getProportionateScreenWidth(kSpacingX16),
                 child: PageIndicator(
                   pages: 3,
                   showSkip: false,

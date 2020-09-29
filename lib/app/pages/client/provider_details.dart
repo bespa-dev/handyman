@@ -97,24 +97,24 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    SizedBox(height: getProportionateScreenHeight(8)),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
                     UserAvatar(
                       url: widget.artisan.avatar,
                       onTap: () {},
-                      radius: getProportionateScreenHeight(120),
+                      radius: getProportionateScreenHeight(kSpacingX120),
                       ringColor: _ringColor,
                     ),
-                    SizedBox(height: getProportionateScreenHeight(16)),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
                     Text(
                       widget.artisan.name,
                       style: _themeData.textTheme.headline4,
                     ),
-                    SizedBox(height: getProportionateScreenHeight(4)),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX4)),
                     Text(
                       widget.artisan.business,
                       style: _themeData.textTheme.caption,
                     ),
-                    SizedBox(height: getProportionateScreenHeight(16)),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
                     Expanded(
                       child: _currentIndex == 0
                           ? _buildPhotoTab()
@@ -157,22 +157,22 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
   Widget _buildPhotoTab() => Container(
         clipBehavior: Clip.hardEdge,
         padding: EdgeInsets.symmetric(
-          vertical: getProportionateScreenHeight(24),
-          horizontal: getProportionateScreenWidth(8),
+          vertical: getProportionateScreenHeight(kSpacingX24),
+          horizontal: getProportionateScreenWidth(kSpacingX8),
         ),
         decoration: BoxDecoration(
-          color: _themeData.scaffoldBackgroundColor.withOpacity(0.75),
+          color: _themeData.cardColor.withOpacity(kOpacityX50),
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(48),
-            topRight: Radius.circular(48),
+            topLeft: Radius.circular(kSpacingX16),
+            topRight: Radius.circular(kSpacingX16),
           ),
         ),
         child: AnimationLimiter(
           child: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              mainAxisSpacing: getProportionateScreenHeight(8),
-              crossAxisSpacing: getProportionateScreenWidth(8),
+              mainAxisSpacing: getProportionateScreenHeight(kSpacingX8),
+              crossAxisSpacing: getProportionateScreenWidth(kSpacingX8),
               childAspectRatio: 4 / 3,
             ),
             physics: kScrollPhysics,
@@ -192,8 +192,8 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                         color: RandomColor()
                             .randomColor(
                                 colorBrightness: ColorBrightness.veryLight)
-                            .withOpacity(0.75),
-                        borderRadius: BorderRadius.circular(16),
+                            .withOpacity(kOpacityX70),
+                        borderRadius: BorderRadius.circular(kSpacingX16),
                       ),
                     ),
                   ),
@@ -207,10 +207,10 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
   Widget _buildReviewTab() => Container(
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
-          color: _themeData.scaffoldBackgroundColor.withOpacity(0.75),
+          color: _themeData.cardColor.withOpacity(kOpacityX50),
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(48),
-            topRight: Radius.circular(48),
+            topLeft: Radius.circular(kSpacingX16),
+            topRight: Radius.circular(kSpacingX16),
           ),
         ),
       );

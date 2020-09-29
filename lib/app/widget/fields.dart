@@ -19,25 +19,25 @@ class TextFormInput extends TextFormField {
     int maxLines = 1,
     Color color,
   }) : super(
-    keyboardType: keyboardType,
-    textInputAction: textInputAction,
-    controller: controller,
-    enabled: enabled,
-    validator: validator,
-    obscureText: obscureText,
-    cursorWidth: 1,
-    decoration: InputDecoration(
-      labelText: labelText,
-      hintText: hintText,
-      helperText: helperText,
-      suffixIcon: suffixIcon,
-    ),
-    focusNode: focusNode,
-    onFieldSubmitted: onFieldSubmitted ?? (_) {},
-    autofocus: autofocus,
-    maxLines: maxLines,
-    style: TextStyle(color: color ?? kPrimaryColor),
-  );
+          keyboardType: keyboardType,
+          textInputAction: textInputAction,
+          controller: controller,
+          enabled: enabled,
+          validator: validator,
+          obscureText: obscureText,
+          cursorWidth: 1,
+          decoration: InputDecoration(
+            labelText: labelText,
+            hintText: hintText,
+            helperText: helperText,
+            suffixIcon: suffixIcon,
+          ),
+          focusNode: focusNode,
+          onFieldSubmitted: onFieldSubmitted ?? (_) {},
+          autofocus: autofocus,
+          maxLines: maxLines,
+          style: TextStyle(color: color ?? kPrimaryColor),
+        );
 }
 
 class PasswordInput extends StatefulWidget {
@@ -87,7 +87,7 @@ class _PasswordInputState extends State<PasswordInput> {
       suffixIcon: IconButton(
         icon: Icon(
           _obscure ? Icons.visibility : Icons.visibility_off,
-          size: 20,
+          size: kSpacingX24,
         ),
         onPressed: () => setState(() => _obscure = !_obscure),
       ),

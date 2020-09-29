@@ -42,36 +42,40 @@ class _SplashPageState extends State<SplashPage> {
                       Spacer(),
                       Expanded(
                         child: Container(
-                          height: getProportionateScreenHeight(250),
-                          width: getProportionateScreenWidth(250),
+                          height: getProportionateScreenHeight(kSpacingX250),
+                          width: getProportionateScreenWidth(kSpacingX250),
                           clipBehavior: Clip.hardEdge,
                           margin: EdgeInsets.symmetric(
-                            horizontal: getProportionateScreenWidth(64),
+                            horizontal:
+                                getProportionateScreenWidth(kSpacingX64),
                           ),
                           decoration: BoxDecoration(
                               color: themeData.scaffoldBackgroundColor),
                           child: Image.asset(
                             kBannerAsset,
                             fit: BoxFit.contain,
-                            height: getProportionateScreenHeight(250),
-                            width: getProportionateScreenWidth(250),
+                            height: getProportionateScreenHeight(kSpacingX250),
+                            width: getProportionateScreenWidth(kSpacingX250),
                           ),
                         ),
                       ),
-                      SizedBox(height: getProportionateScreenHeight(64)),
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX64)),
                       Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: getProportionateScreenWidth(16)),
+                            horizontal:
+                                getProportionateScreenWidth(kSpacingX16)),
                         child: Text(
                           kAppSlogan,
                           style: themeData.textTheme.headline3,
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      SizedBox(height: getProportionateScreenHeight(24)),
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX24)),
                       ButtonPrimary(
                         icon: Icons.arrow_right_alt,
-                        width: getProportionateScreenWidth(250),
+                        width: getProportionateScreenWidth(kSpacingX250),
                         themeData: themeData,
                         onTap: () =>
                             context.navigator.popAndPush(provider.isLoggedIn

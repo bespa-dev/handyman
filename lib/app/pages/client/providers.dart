@@ -79,12 +79,12 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                 width: kWidth,
                 height: kHeight,
                 padding: EdgeInsets.symmetric(
-                    horizontal: getProportionateScreenWidth(16)),
+                    horizontal: getProportionateScreenWidth(kSpacingX16)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: getProportionateScreenHeight(8)),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
                     Text(
                       "Showing results for...",
                       style: themeData.textTheme.caption,
@@ -93,7 +93,7 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                       widget.category.name,
                       style: themeData.textTheme.headline3,
                     ),
-                    SizedBox(height: getProportionateScreenHeight(4)),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX4)),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -130,7 +130,7 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: getProportionateScreenHeight(16)),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
                     FutureBuilder<List<Artisan>>(
                         future: sl
                             .get<ArtisanProvider>()
@@ -164,9 +164,11 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                                           SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 2,
                                         crossAxisSpacing:
-                                            getProportionateScreenWidth(8),
+                                            getProportionateScreenWidth(
+                                                kSpacingX8),
                                         mainAxisSpacing:
-                                            getProportionateScreenHeight(4),
+                                            getProportionateScreenHeight(
+                                                kSpacingX4),
                                       ),
                                       physics: kScrollPhysics,
                                       itemBuilder: (_, index) =>
@@ -191,8 +193,7 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                                     itemBuilder: (_, index) =>
                                         AnimationConfiguration.staggeredList(
                                       position: index,
-                                      duration:
-                                          const Duration(milliseconds: 350),
+                                      duration: kScaleDuration,
                                       child: SlideAnimation(
                                         verticalOffset: 50.0,
                                         child: FadeInAnimation(
@@ -203,8 +204,8 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                                       ),
                                     ),
                                     separatorBuilder: (_, __) => SizedBox(
-                                        height:
-                                            getProportionateScreenHeight(2)),
+                                        height: getProportionateScreenHeight(
+                                            kSpacingX2)),
                                     itemCount: artisans.length,
                                   ),
                           );

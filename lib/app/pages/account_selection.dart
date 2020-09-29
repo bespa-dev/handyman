@@ -65,7 +65,7 @@ class _AccountSelectionPageState extends State<AccountSelectionPage> {
                       "Sign in as...",
                       style: themeData.textTheme.headline4,
                     ),
-                    SizedBox(height: getProportionateScreenHeight(24)),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX24)),
                     UserProfileCard(
                       profiles: _profiles,
                       description: _desc,
@@ -80,9 +80,9 @@ class _AccountSelectionPageState extends State<AccountSelectionPage> {
                         setState(() {});
                       },
                     ),
-                    SizedBox(height: getProportionateScreenHeight(48)),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX48)),
                     ButtonPrimary(
-                      width: getProportionateScreenWidth(200),
+                      width: getProportionateScreenWidth(kSpacingX200),
                       themeData: themeData,
                       onTap: () => context.navigator.popAndPush(
                         _currentProfile == _profiles[0]

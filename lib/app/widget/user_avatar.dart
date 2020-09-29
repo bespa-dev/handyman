@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:handyman/core/constants.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
@@ -14,7 +15,7 @@ class UserAvatar extends StatelessWidget {
     @required this.url,
     @required this.ringColor,
     this.onTap,
-    this.radius = 48.0,
+    this.radius = kSpacingX48,
   }) : super(key: key);
 
   @override
@@ -34,7 +35,7 @@ class UserAvatar extends StatelessWidget {
             color: themeData.scaffoldBackgroundColor,
             border: Border.all(
               color: ringColor,
-              width: 4,
+              width: kSpacingX4,
             ),
           ),
           child: Image.network(
@@ -49,7 +50,7 @@ class UserAvatar extends StatelessWidget {
               width: radius,
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
-                color: themeData.primaryColor.withOpacity(0.14),
+                color: themeData.primaryColor.withOpacity(kOpacityX14),
                 shape: BoxShape.circle,
               ),
               child: Icon(Feather.user, size: radius / 2.5, color: ringColor),

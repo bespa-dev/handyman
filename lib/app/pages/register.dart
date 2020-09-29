@@ -69,9 +69,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     )
                   : SizedBox.shrink(),
               Positioned(
-                top: getProportionateScreenHeight(36),
-                left: getProportionateScreenWidth(64),
-                right: getProportionateScreenWidth(64),
+                top: getProportionateScreenHeight(kSpacingX36),
+                left: getProportionateScreenWidth(kSpacingX64),
+                right: getProportionateScreenWidth(kSpacingX64),
                 child: Container(
                   child: Image.asset(
                     kLogoAsset,
@@ -86,17 +86,17 @@ class _RegisterPageState extends State<RegisterPage> {
                 children: [
                   Container(
                     margin: EdgeInsets.symmetric(
-                        horizontal: getProportionateScreenWidth(24)),
+                        horizontal: getProportionateScreenWidth(kSpacingX24)),
                     child: Text(
                       "Sign up with us to get started",
                       style: themeData.textTheme.headline4,
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  SizedBox(height: getProportionateScreenHeight(48)),
+                  SizedBox(height: getProportionateScreenHeight(kSpacingX48)),
                   Container(
                     margin: EdgeInsets.symmetric(
-                        horizontal: getProportionateScreenWidth(48)),
+                        horizontal: getProportionateScreenWidth(kSpacingX48)),
                     child: Form(
                       key: _formKey,
                       child: Column(
@@ -136,7 +136,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     : null,
                           ),
                           ButtonOutlined(
-                            width: getProportionateScreenWidth(200),
+                            width: getProportionateScreenWidth(kSpacingX200),
                             themeData: themeData,
                             onTap: _performRegister,
                             enabled: !_isLoading,
@@ -147,7 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: getProportionateScreenHeight(64)),
+                  SizedBox(height: getProportionateScreenHeight(kSpacingX64)),
                   RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(
