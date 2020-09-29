@@ -5,19 +5,12 @@ import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/size_config.dart';
 
 class UserProfileCard extends StatefulWidget {
-  final Function(int) onTap;
-  final Function(bool) hasSelection;
-  final int activeIndex;
+  final Function(bool, int) hasSelection;
   final List<String> profiles;
   final List<String> description;
 
   const UserProfileCard(
-      {Key key,
-      this.onTap,
-      this.activeIndex,
-      this.profiles,
-      this.description,
-      this.hasSelection})
+      {Key key, this.profiles, this.description, this.hasSelection})
       : super(key: key);
 
   @override
@@ -39,7 +32,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
         itemBuilder: (_, index) {
           return InkWell(
             onTap: () {
-              widget.hasSelection(true);
+              widget.hasSelection(true, index);
             },
             borderRadius: BorderRadius.circular(24),
             child: Container(
@@ -110,12 +103,12 @@ class _UserProfileCardState extends State<UserProfileCard> {
           );
         },
         options: CarouselOptions(
-          initialPage: widget.activeIndex,
+          initialPage: 0,
           autoPlay: false,
-          onPageChanged: (newIndex, _) => widget.onTap(newIndex),
           enableInfiniteScroll: false,
           height: kHeight * 0.35,
           aspectRatio: 16 / 9,
+          onPageChanged: (index, _) => widget.hasSelection(false, index),
         ),
       ),
     );

@@ -20,7 +20,7 @@ class _HandyManAppState extends State<HandyManApp> {
         ChangeNotifierProvider<PrefsProvider>(
             create: (context) => PrefsProvider()),
         ChangeNotifierProvider<ThemeProvider>(
-            create: (context) => ThemeProvider(context)),
+            create: (context) => ThemeProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (ctx, theme, child) => MaterialApp(

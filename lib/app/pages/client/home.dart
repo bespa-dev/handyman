@@ -82,8 +82,7 @@ class _HomePageState extends State<HomePage> {
                                   icon: Icon(themeProvider.isLightTheme
                                       ? Feather.moon
                                       : Feather.sun),
-                                  onPressed: () =>
-                                      themeProvider.toggleTheme(context),
+                                  onPressed: () => themeProvider.toggleTheme(),
                                 ),
                                 Image.asset(
                                   kLogoAsset,

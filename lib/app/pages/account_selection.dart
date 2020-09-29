@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/buttons.dart';
@@ -17,11 +18,11 @@ class AccountSelectionPage extends StatefulWidget {
 
 class _AccountSelectionPageState extends State<AccountSelectionPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  String _currentProfile = "Customer";
+  String _currentProfile = kClientString;
   bool _hasSelection = false;
   final _profiles = const <String>[
-    "Customer",
-    "Artisan",
+    kClientString,
+    kProviderString,
   ];
   final _desc = const <String>[
     "Allows you to book services at anytime",
@@ -41,61 +42,62 @@ class _AccountSelectionPageState extends State<AccountSelectionPage> {
       ),
       extendBodyBehindAppBar: true,
       extendBody: true,
-      body: Consumer<ThemeProvider>(
-        builder: (_, provider, __) => Stack(
-          fit: StackFit.expand,
-          children: [
-            provider.isLightTheme
-                ? Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(kBackgroundAsset),
-                        fit: BoxFit.cover,
+      body: Consumer<PrefsProvider>(
+        builder: (_, prefs, __) => Consumer<ThemeProvider>(
+          builder: (_, provider, __) => Stack(
+            fit: StackFit.expand,
+            children: [
+              provider.isLightTheme
+                  ? Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(kBackgroundAsset),
+                          fit: BoxFit.cover,
+                        ),
                       ),
+                    )
+                  : SizedBox.shrink(),
+              SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Sign in as...",
+                      style: themeData.textTheme.headline4,
                     ),
-                  )
-                : SizedBox.shrink(),
-            SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Sign in as...",
-                    style: themeData.textTheme.headline4,
-                  ),
-                  SizedBox(height: getProportionateScreenHeight(24)),
-                  UserProfileCard(
-                    profiles: _profiles,
-                    description: _desc,
-                    activeIndex: _profiles.indexOf(_currentProfile),
-                    hasSelection: (isProfileSelected) {
-                      setState(() {
+                    SizedBox(height: getProportionateScreenHeight(24)),
+                    UserProfileCard(
+                      profiles: _profiles,
+                      description: _desc,
+                      hasSelection: (isProfileSelected, activeIndex) {
                         _hasSelection = isProfileSelected;
-                      });
-                    },
-                    onTap: (index) {
-                      setState(() {
-                        _currentProfile = _profiles[index];
-                      });
-                    },
-                  ),
-                  SizedBox(height: getProportionateScreenHeight(48)),
-                  ButtonPrimary(
-                    width: getProportionateScreenWidth(200),
-                    themeData: themeData,
-                    onTap: () => context.navigator.popAndPush(
-                      _currentProfile == _profiles[0]
-                          ? Routes.homePage
-                          : Routes.dashboardPage,
+                        _currentProfile = _profiles[activeIndex];
+                        prefs.saveUserType(
+                            _currentProfile == _profiles[activeIndex]
+                                ? kClientString
+                                : kProviderString);
+                        debugPrint(_currentProfile);
+                        setState(() {});
+                      },
                     ),
-                    icon: _hasSelection ? Icons.arrow_right_alt : null,
-                    label: _hasSelection ? "Continue" : "Waiting...",
-                    enabled: _hasSelection,
-                  )
-                ],
+                    SizedBox(height: getProportionateScreenHeight(48)),
+                    ButtonPrimary(
+                      width: getProportionateScreenWidth(200),
+                      themeData: themeData,
+                      onTap: () => context.navigator.popAndPush(
+                        _currentProfile == _profiles[0]
+                            ? Routes.homePage
+                            : Routes.dashboardPage,
+                      ),
+                      icon: _hasSelection ? Icons.arrow_right_alt : null,
+                      label: _hasSelection ? "Continue" : "Waiting...",
+                      enabled: _hasSelection,
+                    )
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

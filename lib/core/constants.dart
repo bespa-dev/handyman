@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 /// App
 const kAppName = "Handyman";
 const kAppSlogan = "Simple. Safe. Reliable.";
-const kProviderString = "provider";
-const kClientString = "client";
+const kProviderString = "Artisan";
+const kClientString = "Customer";
 const kLogoAsset = "assets/logo/app_title.webp";
 const kBannerAsset = "assets/banner/banner_two.webp";
 const kBackgroundAsset = "assets/bg/bg.webp";

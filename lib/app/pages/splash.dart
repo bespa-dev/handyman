@@ -74,16 +74,13 @@ class _SplashPageState extends State<SplashPage> {
                         width: getProportionateScreenWidth(250),
                         themeData: themeData,
                         onTap: () =>
-                            // FIXME: Fix this node
-                            context.navigator.popAndPush(
-                                /*provider.isLoggedIn
+                            context.navigator.popAndPush(provider.isLoggedIn
                                 ? provider.userType == null
                                     ? Routes.accountSelectionPage
                                     : provider.userType == kClientString
                                         ? Routes.homePage
                                         : Routes.dashboardPage
-                                : Routes.loginPage*/
-                                Routes.accountSelectionPage),
+                                : Routes.loginPage),
                         label: provider.isLoggedIn ? "Proceed" : "Get started",
                       ),
                       Spacer(),
