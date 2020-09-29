@@ -1,13 +1,15 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/pages/client/search.dart';
-import 'package:handyman/app/routes/route.gr.dart';
+import 'package:handyman/app/widget/category_card.dart';
 import 'package:handyman/core/constants.dart';
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
+import 'package:handyman/data/entities/category.dart';
+import 'package:handyman/data/local_database.dart';
+import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,13 +19,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _preferGridFormat = true;
-  final _dropdownItems = const <String>[
-    "Featured",
-    "Most Rated",
-    "Recent",
-    "Popular",
-    "Recommended",
-  ];
+  Future<List<ServiceCategory>> _categoriesFuture =
+      sl.get<ArtisanProvider>().getCategories();
+
+  final _dropdownItems = Map.from({
+    CategoryGroup.FEATURED: "Featured",
+    CategoryGroup.MOST_RATED: "Most Rated",
+    CategoryGroup.RECENT: "Recent",
+    CategoryGroup.POPULAR: "Popular",
+    CategoryGroup.RECOMMENDED: "Recommended",
+  });
   String _currentFilter = "Featured";
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -104,126 +109,69 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(height: getProportionateScreenHeight(8)),
                     Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: getProportionateScreenWidth(16)),
-                        child: Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                DropdownButton(
-                                  value: _currentFilter,
-                                  items: _dropdownItems
-                                      .map<DropdownMenuItem<String>>(
-                                        (value) => DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Text(value),
+                      child: FutureBuilder<List<ServiceCategory>>(
+                          future: _categoriesFuture,
+                          builder: (context, snapshot) {
+                            return Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: getProportionateScreenWidth(16)),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      DropdownButton(
+                                        value: _currentFilter,
+                                        items: _dropdownItems.values
+                                            .map<DropdownMenuItem<String>>(
+                                              (value) =>
+                                                  DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value),
+                                              ),
+                                            )
+                                            .toList(),
+                                        onChanged: (String newItem) {
+                                          setState(() {
+                                            _currentFilter = newItem;
+                                            _getCategoriesWithFilter();
+                                          });
+                                        },
+                                        icon: Icon(Feather.chevron_down),
+                                        underline: Container(
+                                          color: kTransparent,
+                                          height: 2,
                                         ),
-                                      )
-                                      .toList(),
-                                  onChanged: (String newItem) {
-                                    setState(() {
-                                      _currentFilter = newItem;
-                                      _getCategoriesWithFilter();
-                                    });
-                                  },
-                                  icon: Icon(Feather.chevron_down),
-                                  underline: Container(
-                                    color: kTransparent,
-                                    height: 2,
+                                      ),
+                                      Spacer(),
+                                      IconButton(
+                                        tooltip: "Toggle view",
+                                        icon: Icon(_preferGridFormat
+                                            ? Icons.sort
+                                            : Feather.grid),
+                                        onPressed: () => setState(() {
+                                          _preferGridFormat =
+                                              !_preferGridFormat;
+                                        }),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                Spacer(),
-                                IconButton(
-                                  tooltip: "Toggle view",
-                                  icon: Icon(_preferGridFormat
-                                      ? Icons.sort
-                                      : Feather.grid),
-                                  onPressed: () => setState(() {
-                                    _preferGridFormat = !_preferGridFormat;
-                                  }),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: getProportionateScreenHeight(16)),
-                            Expanded(
-                              child: _preferGridFormat
-                                  ? GridView(
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        childAspectRatio: 4 / 3,
-                                        crossAxisSpacing:
-                                            getProportionateScreenWidth(8),
-                                        mainAxisSpacing:
-                                            getProportionateScreenHeight(4),
-                                      ),
-                                      clipBehavior: Clip.hardEdge,
-                                      children: _dropdownItems
-                                          .map(
-                                            (e) => Card(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                  getProportionateScreenWidth(
-                                                      12),
-                                                ),
-                                              ),
-                                              color: Colors.redAccent,
-                                              clipBehavior: Clip.hardEdge,
-                                              child: InkWell(
-                                                borderRadius: BorderRadius.circular(
-                                                    getProportionateScreenWidth(
-                                                        12)),
-                                                onTap: () =>
-                                                    context.navigator.push(
-                                                  Routes.categoryProvidersPage,
-                                                  arguments:
-                                                      CategoryProvidersPageArguments(
-                                                          category: e),
-                                                ),
-                                                child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    Flexible(
-                                                      child: Image.asset(
-                                                        kBannerAsset,
-                                                        width: double.infinity,
-                                                        height:
-                                                            getProportionateScreenHeight(
-                                                                300),
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                          .toList(),
-                                      physics: BouncingScrollPhysics(),
-                                    )
-                                  : ListView.builder(
-                                      physics: BouncingScrollPhysics(),
-                                      itemBuilder: (_, index) => ListTile(
-                                        onTap: () => context.navigator.push(
-                                          Routes.categoryProvidersPage,
-                                          arguments:
-                                              CategoryProvidersPageArguments(
-                                                  category:
-                                                      _dropdownItems[index]),
-                                        ),
-                                        onLongPress: () {},
-                                        title: Text(_dropdownItems[index]),
-                                      ),
-                                      itemCount: _dropdownItems.length,
-                                    ),
-                            ),
-                          ],
-                        ),
-                      ),
+                                  SizedBox(
+                                      height: getProportionateScreenHeight(16)),
+                                  snapshot.hasData
+                                      ? Expanded(
+                                          child: _preferGridFormat
+                                              ? GridCategoryCardItem(
+                                                  categories: snapshot.data)
+                                              : ListCategoryCardItem(
+                                                  categories: snapshot.data),
+                                        )
+                                      : Container(),
+                                ],
+                              ),
+                            );
+                          }),
                     ),
                   ],
                 )
@@ -235,6 +183,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // TODO: Order the categories based on the current filter
-  void _getCategoriesWithFilter() async {}
+  void _getCategoriesWithFilter() {
+    _categoriesFuture = sl.get<ArtisanProvider>().getCategories(
+          categoryGroup: _dropdownItems.keys
+              .where((element) =>
+                  _currentFilter ==
+                  _dropdownItems.values.elementAt(element.index))
+              .first,
+        );
+    setState(() {});
+  }
 }

@@ -86,3 +86,4 @@ flutter:
     - assets/artisans/3x/4.webp
     - assets/artisans/3x/5.webp
     - assets/sample_artisan.json
+    - assets/sample_categories.json

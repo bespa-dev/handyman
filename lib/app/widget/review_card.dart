@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
+import 'package:random_color/random_color.dart';
 import 'package:uuid/uuid.dart';
 
 class CustomerReviewCard extends StatefulWidget {
@@ -14,7 +15,6 @@ class CustomerReviewCard extends StatefulWidget {
 }
 
 class _CustomerReviewCardState extends State<CustomerReviewCard> {
-  Artisan _artisan;
   Customer _customer;
 
   @override
@@ -48,14 +48,18 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            UserAvatar(url: _customer?.avatar ?? ""),
+            UserAvatar(
+              url: _customer?.avatar ?? "",
+              ringColor: RandomColor()
+                  .randomColor(colorBrightness: ColorBrightness.dark),
+            ),
             SizedBox(width: getProportionateScreenWidth(16)),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  _customer?.name ?? "Quabynah Bilson Jr.",
+                  _customer?.name ?? "",
                   style: themeData.textTheme.headline6.copyWith(
                     fontFamily: themeData.textTheme.bodyText1.fontFamily,
                   ),
@@ -67,7 +71,7 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
                   constraints: BoxConstraints.expand(
                       width: kWidth * 0.6, height: kHeight * 0.1),
                   child: Text(
-                    widget.review.review ?? "No comments found",
+                    widget.review.review ?? "",
                     style: themeData.textTheme.bodyText2,
                     maxLines: 3,
                     textAlign: TextAlign.start,
@@ -87,13 +91,6 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
       id: Uuid().v4(),
       name: "Grace Willocks",
       email: "grace@gmail.com",
-    );
-    _artisan = Artisan(
-      id: Uuid().v4(),
-      name: "Ishmael Isaacs",
-      email: "isaac@gmail.com",
-      price: 34.49,
-      category: "plumbing",
     );
     setState(() {});
   }

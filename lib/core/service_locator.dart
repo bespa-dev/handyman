@@ -1,6 +1,5 @@
 import 'package:get_it/get_it.dart';
-import 'package:handyman/app/model/prefs_provider.dart';
-import 'package:handyman/app/model/theme_provider.dart';
+import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,6 +13,5 @@ Future<void> registerServiceLocator() async {
 
   // Register Provider
   sl.registerLazySingleton<ArtisanProvider>(() => ArtisanProvider.instance);
-  sl.registerLazySingleton<PrefsProvider>(() => PrefsProvider());
-  sl.registerLazySingleton<ThemeProvider>(() => ThemeProvider());
+  sl.registerSingleton<LocalDatabase>(LocalDatabase.instance);
 }

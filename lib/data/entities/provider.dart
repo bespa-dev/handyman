@@ -6,11 +6,14 @@ class ServiceProvider extends Table {
 
   TextColumn get name => text()();
 
-  TextColumn get business => text().nullable()();
+  TextColumn get business => text()();
+
+  TextColumn get phone => text().nullable()();
 
   TextColumn get email => text()();
 
-  TextColumn get category => text().withDefault(Constant("general"))();
+  TextColumn get category =>
+      text().withDefault(Constant("598d67f5-b84b-4572-9058-57f36463aeac"))();
 
   IntColumn get startWorkingHours =>
       integer().withDefault(Constant(DateTime.now().hour))();

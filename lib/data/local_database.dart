@@ -28,12 +28,16 @@ LazyDatabase _openConnection() {
 @UseMoor(
   tables: [ServiceProvider, User, Bookings, Review, CategoryItem],
   queries: {
-    "userById": "SELECT * FROM user WHERE id = ?",
+    "customerById": "SELECT * FROM user WHERE id = ?",
+    "artisanById": "SELECT * FROM service_provider WHERE id = ?",
+    "artisans": "SELECT * FROM service_provider ORDER BY id desc",
   },
   daos: [ProviderDao],
 )
 class LocalDatabase extends _$LocalDatabase {
-  LocalDatabase() : super(_openConnection());
+  LocalDatabase._() : super(_openConnection());
+
+  static LocalDatabase get instance => LocalDatabase._();
 
   @override
   int get schemaVersion => 1;
@@ -48,17 +52,12 @@ class LocalDatabase extends _$LocalDatabase {
       });
 }
 
-@UseDao(
-  tables: [ServiceProvider],
-  queries: {
-    "providerById": "SELECT * FROM service_provider WHERE id = ?",
-  },
-)
+@UseDao(tables: [ServiceProvider])
 class ProviderDao extends DatabaseAccessor<LocalDatabase>
     with _$ProviderDaoMixin {
   ProviderDao(LocalDatabase db) : super(db);
 
-  Future addProviders(List<Artisan> providers) {
+  void addProviders(List<Artisan> providers) {
     providers.forEach((person) async {
       await into(serviceProvider)
           .insert(person, mode: InsertMode.insertOrReplace);

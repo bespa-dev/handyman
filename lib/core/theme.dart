@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 
 import 'constants.dart';
 
@@ -12,6 +13,23 @@ final _kBodyFontFamily = GoogleFonts.rubik().fontFamily;
 /// Light theme
 ThemeData themeData(BuildContext context) => ThemeData(
       appBarTheme: appBarTheme,
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        backgroundColor: kPrimaryColor,
+        foregroundColor: kWhiteColor,
+      ),
+      tabBarTheme: TabBarTheme(
+        labelColor: kPrimaryColor,
+        indicatorSize: TabBarIndicatorSize.label,
+        unselectedLabelColor: kUnselectedLabelColorLight,
+        indicator: MD2Indicator(
+          indicatorHeight: 3,
+          indicatorColor: kPrimaryColor,
+          indicatorSize: MD2IndicatorSize.normal,
+        ),
+      ),
       primaryColor: kPrimaryColor,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       accentColor: kAccentLightColor,
@@ -71,8 +89,25 @@ ThemeData themeData(BuildContext context) => ThemeData(
 /// Dark theme
 ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
       appBarTheme: appBarTheme,
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        backgroundColor: kPrimaryColorDark,
+        foregroundColor: kWhiteColor,
+      ),
+      tabBarTheme: TabBarTheme(
+        labelColor: kPrimaryColorDark,
+        indicatorSize: TabBarIndicatorSize.label,
+        unselectedLabelColor: kUnselectedLabelColorDark,
+        indicator: MD2Indicator(
+          indicatorHeight: 3,
+          indicatorColor: kPrimaryColorDark,
+          indicatorSize: MD2IndicatorSize.normal,
+        ),
+      ),
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      primaryColor: kPrimaryColor,
+      primaryColor: kPrimaryColorDark,
       accentColor: kAccentDarkColor,
       scaffoldBackgroundColor: Color(0xFF0D0C0E),
       colorScheme: ColorScheme.light(

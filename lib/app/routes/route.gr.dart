@@ -155,7 +155,7 @@ class Router extends RouterBase {
 /// CategoryProvidersPage arguments holder class
 class CategoryProvidersPageArguments {
   final Key key;
-  final String category;
+  final dynamic category;
   CategoryProvidersPageArguments({this.key, this.category});
 }
 

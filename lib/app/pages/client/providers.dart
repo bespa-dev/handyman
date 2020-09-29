@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/pages/client/search.dart';
 import 'package:handyman/app/widget/artisan_card.dart';
@@ -12,7 +13,7 @@ import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:provider/provider.dart';
 
 class CategoryProvidersPage extends StatefulWidget {
-  final String category;
+  final ServiceCategory category;
 
   const CategoryProvidersPage({Key key, this.category}) : super(key: key);
 
@@ -89,7 +90,7 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                       style: themeData.textTheme.caption,
                     ),
                     Text(
-                      widget.category,
+                      widget.category.name,
                       style: themeData.textTheme.headline3,
                     ),
                     SizedBox(height: getProportionateScreenHeight(4)),
@@ -131,7 +132,9 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                     ),
                     SizedBox(height: getProportionateScreenHeight(16)),
                     FutureBuilder<List<Artisan>>(
-                        future: sl.get<ArtisanProvider>().getArtisans(),
+                        future: sl
+                            .get<ArtisanProvider>()
+                            .getArtisans(category: widget.category.id),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting)
@@ -140,7 +143,7 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                                   getProportionateScreenHeight(kHeight * 0.3),
                               width: kWidth,
                               child: Center(
-                                child: Text("Fetching providers"),
+                                child: Text("Fetching handymen..."),
                               ),
                             );
                           else if (snapshot.hasError)
@@ -155,28 +158,49 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                           final artisans = snapshot.data;
                           return Expanded(
                             child: _preferGridFormat
-                                ? GridView.builder(
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      crossAxisSpacing:
-                                          getProportionateScreenWidth(8),
-                                      mainAxisSpacing:
-                                          getProportionateScreenHeight(4),
+                                ? AnimationLimiter(
+                                    child: GridView.builder(
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing:
+                                            getProportionateScreenWidth(8),
+                                        mainAxisSpacing:
+                                            getProportionateScreenHeight(4),
+                                      ),
+                                      physics: kScrollPhysics,
+                                      itemBuilder: (_, index) =>
+                                          AnimationConfiguration.staggeredGrid(
+                                        position: index,
+                                        duration: kScaleDuration,
+                                        columnCount: 2,
+                                        child: ScaleAnimation(
+                                          child: FadeInAnimation(
+                                            child: GridArtisanCardItem(
+                                              artisan: artisans[index],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      itemCount: artisans.length,
                                     ),
-                                    physics: BouncingScrollPhysics(),
-                                    itemBuilder: (_, index) =>
-                                        GridArtisanCardItem(
-                                      artisan: artisans[index],
-                                    ),
-                                    itemCount: artisans.length,
                                   )
                                 : ListView.separated(
                                     clipBehavior: Clip.hardEdge,
-                                    physics: BouncingScrollPhysics(),
+                                    physics: kScrollPhysics,
                                     itemBuilder: (_, index) =>
-                                        ListArtisanCardItem(
-                                      artisan: artisans[index],
+                                        AnimationConfiguration.staggeredList(
+                                      position: index,
+                                      duration:
+                                          const Duration(milliseconds: 350),
+                                      child: SlideAnimation(
+                                        verticalOffset: 50.0,
+                                        child: FadeInAnimation(
+                                          child: ListArtisanCardItem(
+                                            artisan: artisans[index],
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                     separatorBuilder: (_, __) => SizedBox(
                                         height:

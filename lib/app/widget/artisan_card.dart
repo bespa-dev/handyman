@@ -6,6 +6,7 @@ import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
+import 'package:random_color/random_color.dart';
 
 class GridArtisanCardItem extends StatefulWidget {
   final Artisan artisan;
@@ -44,7 +45,11 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
               Center(
                   child: Image.network(widget.artisan.avatar,
                       errorBuilder: (_, __, chunk) => Container(
-                            color: themeData.errorColor.withOpacity(0.14),
+                            color: RandomColor()
+                                .randomColor(
+                                  colorBrightness: ColorBrightness.dark,
+                                )
+                                .withOpacity(0.14),
                           ),
                       fit: BoxFit.cover)),
               Positioned(
@@ -156,7 +161,11 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
             padding: EdgeInsets.all(getProportionateScreenHeight(8)),
             child: Row(
               children: [
-                UserAvatar(url: widget.artisan.avatar),
+                UserAvatar(
+                  url: widget.artisan.avatar,
+                  ringColor: RandomColor()
+                      .randomColor(colorBrightness: ColorBrightness.dark),
+                ),
                 SizedBox(width: getProportionateScreenWidth(8)),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,

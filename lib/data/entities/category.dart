@@ -8,6 +8,16 @@ class CategoryItem extends Table {
 
   TextColumn get avatar => text()();
 
+  IntColumn get group => integer().withDefault(Constant(0))();
+
   @override
   Set<Column> get primaryKey => {id};
+}
+
+enum CategoryGroup {
+  FEATURED,
+  MOST_RATED,
+  RECENT,
+  POPULAR,
+  RECOMMENDED,
 }
