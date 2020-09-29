@@ -22,10 +22,10 @@ import '../pages/register.dart';
 import '../pages/splash.dart';
 
 class Routes {
-  static const String splashPage = '/';
+  static const String onboardingPage = '/';
+  static const String splashPage = '/splash-page';
   static const String loginPage = '/login-page';
   static const String registerPage = '/register-page';
-  static const String onboardingPage = '/onboarding-page';
   static const String accountCompletionPage = '/account-completion-page';
   static const String accountSelectionPage = '/account-selection-page';
   static const String homePage = '/home-page';
@@ -34,10 +34,10 @@ class Routes {
   static const String providerSettingsPage = '/provider-settings-page';
   static const String dashboardPage = '/dashboard-page';
   static const all = <String>{
+    onboardingPage,
     splashPage,
     loginPage,
     registerPage,
-    onboardingPage,
     accountCompletionPage,
     accountSelectionPage,
     homePage,
@@ -52,10 +52,10 @@ class Router extends RouterBase {
   @override
   List<RouteDef> get routes => _routes;
   final _routes = <RouteDef>[
+    RouteDef(Routes.onboardingPage, page: OnboardingPage),
     RouteDef(Routes.splashPage, page: SplashPage),
     RouteDef(Routes.loginPage, page: LoginPage),
     RouteDef(Routes.registerPage, page: RegisterPage),
-    RouteDef(Routes.onboardingPage, page: OnboardingPage),
     RouteDef(Routes.accountCompletionPage, page: AccountCompletionPage),
     RouteDef(Routes.accountSelectionPage, page: AccountSelectionPage),
     RouteDef(Routes.homePage, page: HomePage),
@@ -67,6 +67,12 @@ class Router extends RouterBase {
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
   final _pagesMap = <Type, AutoRouteFactory>{
+    OnboardingPage: (data) {
+      return buildAdaptivePageRoute<dynamic>(
+        builder: (context) => OnboardingPage(),
+        settings: data,
+      );
+    },
     SplashPage: (data) {
       return buildAdaptivePageRoute<dynamic>(
         builder: (context) => SplashPage(),
@@ -82,12 +88,6 @@ class Router extends RouterBase {
     RegisterPage: (data) {
       return buildAdaptivePageRoute<dynamic>(
         builder: (context) => RegisterPage(),
-        settings: data,
-      );
-    },
-    OnboardingPage: (data) {
-      return buildAdaptivePageRoute<dynamic>(
-        builder: (context) => OnboardingPage(),
         settings: data,
       );
     },

@@ -1728,16 +1728,13 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   $CategoryItemTable _categoryItem;
   $CategoryItemTable get categoryItem =>
       _categoryItem ??= $CategoryItemTable(this);
+  ProviderDao _providerDao;
+  ProviderDao get providerDao =>
+      _providerDao ??= ProviderDao(this as LocalDatabase);
   Selectable<Customer> userById(String var1) {
     return customSelect('SELECT * FROM user WHERE id = ?',
         variables: [Variable.withString(var1)],
         readsFrom: {user}).map(user.mapFromRow);
-  }
-
-  Selectable<Artisan> providerById(String var1) {
-    return customSelect('SELECT * FROM service_provider WHERE id = ?',
-        variables: [Variable.withString(var1)],
-        readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
   }
 
   @override
@@ -1745,4 +1742,17 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
       [serviceProvider, user, bookings, review, categoryItem];
+}
+
+// **************************************************************************
+// DaoGenerator
+// **************************************************************************
+
+mixin _$ProviderDaoMixin on DatabaseAccessor<LocalDatabase> {
+  $ServiceProviderTable get serviceProvider => attachedDatabase.serviceProvider;
+  Selectable<Artisan> providerById(String var1) {
+    return customSelect('SELECT * FROM service_provider WHERE id = ?',
+        variables: [Variable.withString(var1)],
+        readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
+  }
 }

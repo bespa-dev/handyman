@@ -1,11 +1,12 @@
 [
   {
     "id": "52134ac6-ae9f-4aae-a83b-b94564fa6b55",
-    "name": "Tom Cobley",
+    "name": "Tom Cobbley",
     "email": "tom@gmail.com",
-    "business": "Tom Cobley Inc.",
+    "business": "Tom Cobbley Inc.",
     "price": 12.99,
-    "avatar": ""
+    "avatar": "",
+    "category": "plumbing"
   },
   {
     "id": "54a897c6-6eb3-44b4-8499-21a28f847982",
@@ -13,7 +14,8 @@
     "email": "joebloggs@gmail.com",
     "business": "Joe Bloggs Inc.",
     "price": 23.99,
-    "avatar": ""
+    "avatar": "",
+    "category": "plumbing"
   },
   {
     "id": "b71536de-56da-4419-bca8-487eaba3b2db",
@@ -21,7 +23,8 @@
     "email": "frednecks@gmail.com",
     "business": "Fred Nerks Inc.",
     "price": 120.99,
-    "avatar": ""
+    "avatar": "",
+    "category": "plumbing"
   },
   {
     "id": "a56cce93-07b0-4fd9-bcc0-3643b4305d52",
@@ -29,7 +32,8 @@
     "email": "auchterturra@gmail.com",
     "business": "Auchterturra Inc.",
     "price": 122.99,
-    "avatar": ""
+    "avatar": "",
+    "category": "plumbing"
   },
   {
     "id": "ae7a0df5-02c0-4b9e-8cc7-fae14ede58ff",
@@ -37,7 +41,8 @@
     "email": "juanperez@gmail.com",
     "business": "Juan Perez Inc.",
     "price": 20.49,
-    "avatar": ""
+    "avatar": "",
+    "category": "plumbing"
   },
   {
     "id": "87d56d6d-89d1-4af5-a267-84fad3af00ec",
@@ -45,7 +50,8 @@
     "email": "doylebuller@gmail.com",
     "business": "Doyle Buller Inc.",
     "price": 15.49,
-    "avatar": ""
+    "avatar": "",
+    "category": "plumbing"
   },
   {
     "id": "75704fa0-5a86-452e-ae73-83be54978dc6",
@@ -53,7 +59,8 @@
     "email": "lizzysesco@gmail.com",
     "business": "Elizabeth Sesco Inc.",
     "price": 2.99,
-    "avatar": ""
+    "avatar": "",
+    "category": "plumbing"
   },
   {
     "id": "673c204a-c81d-4c60-8584-3ab931d22615",
@@ -61,7 +68,8 @@
     "email": "louie@gmail.com",
     "business": "Louie Lucy Enterprise",
     "price": 134.99,
-    "avatar": ""
+    "avatar": "",
+    "category": "plumbing"
   },
   {
     "id": "b595d228-2db0-4aa7-b8e6-d5c8fba05099",
@@ -69,7 +77,8 @@
     "email": "caleb@gmail.com",
     "business": "Caleb Carillo Inc.",
     "price": 19.99,
-    "avatar": ""
+    "avatar": "",
+    "category": "plumbing"
   },
   {
     "id": "fd8263b0-d33d-4d24-b374-c1a51481b745",
@@ -77,7 +86,8 @@
     "email": "eugenia@gmail.com",
     "business": "Eugenia Hartford Inc.",
     "price": 67.99,
-    "avatar": ""
+    "avatar": "",
+    "category": "plumbing"
   },
   {
     "id": "30dc61f6-59af-42c4-8a8e-cd2153dbf266",
@@ -85,14 +95,16 @@
     "email": "jovita@gmail.com",
     "business": "Jovita Dehart Inc.",
     "price": 11.99,
-    "avatar": ""
+    "avatar": "",
+    "category": "plumbing"
   },
   {
     "id": "69a720f0-a102-48cb-a221-434cbf9e01e8",
     "name": "Rosalind Greenwell",
     "email": "rosalind@gmail.com",
-    "business": "Rosalind Greenwell INc.",
+    "business": "Rosalind Greenwell Inc.",
     "price": 8.49,
-    "avatar": ""
+    "avatar": "",
+    "category": "plumbing"
   }
 ]

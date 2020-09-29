@@ -42,10 +42,7 @@ class _RegisterPageState extends State<RegisterPage> {
       _isLoading = !_isLoading;
     });
 
-    var prefsProvider = Provider.of<PrefsProvider>(context, listen: false);
-    prefsProvider
-      ..saveUserType(kProviderString)
-      ..saveUserId(Uuid().v4());
+    Provider.of<PrefsProvider>(context, listen: false).saveUserId(Uuid().v4());
     // Complete user's account
     context.navigator.popAndPush(Routes.accountCompletionPage);
   }

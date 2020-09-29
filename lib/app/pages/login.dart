@@ -36,15 +36,12 @@ class _LoginPageState extends State<LoginPage> {
     // TODO: SEND TO SERVER FOR AUTHENTICATION
 
     await Future.delayed(const Duration(seconds: 2));
+    // Save user account
+    Provider.of<PrefsProvider>(context, listen: false).saveUserId(Uuid().v4());
     setState(() {
       _isLoading = !_isLoading;
     });
 
-    // Save user account
-    var prefsProvider = Provider.of<PrefsProvider>(context, listen: false);
-    prefsProvider
-      ..saveUserType(kClientString)
-      ..saveUserId(Uuid().v4());
     // Complete user's account
     context.navigator.popAndPush(Routes.accountSelectionPage);
   }

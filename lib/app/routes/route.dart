@@ -13,10 +13,10 @@ import 'package:handyman/app/pages/splash.dart';
 
 @MaterialAutoRouter(
   routes: [
-    AdaptiveRoute(page: SplashPage, initial: true),
+    AdaptiveRoute(page: OnboardingPage, initial: true),
+    AdaptiveRoute(page: SplashPage),
     AdaptiveRoute(page: LoginPage),
     AdaptiveRoute(page: RegisterPage),
-    AdaptiveRoute(page: OnboardingPage),
     AdaptiveRoute(page: AccountCompletionPage /*, guards: [AuthGuard]*/),
     AdaptiveRoute(page: AccountSelectionPage /*, guards: [AuthGuard]*/),
     AdaptiveRoute(page: HomePage /*, guards: [AuthGuard, ClientGuard]*/),

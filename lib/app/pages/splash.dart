@@ -16,8 +16,6 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
-    // Must be called on initial page
-    SizeConfig().init(context);
     ThemeData themeData = Theme.of(context);
 
     return Consumer<ThemeProvider>(
@@ -76,11 +74,16 @@ class _SplashPageState extends State<SplashPage> {
                         width: getProportionateScreenWidth(250),
                         themeData: themeData,
                         onTap: () =>
-                            context.navigator.popAndPush(provider.isLoggedIn
-                                ? provider.userType == kClientString
-                                    ? Routes.homePage
-                                    : Routes.dashboardPage
-                                : Routes.loginPage),
+                            // FIXME: Fix this node
+                            context.navigator.popAndPush(
+                                /*provider.isLoggedIn
+                                ? provider.userType == null
+                                    ? Routes.accountSelectionPage
+                                    : provider.userType == kClientString
+                                        ? Routes.homePage
+                                        : Routes.dashboardPage
+                                : Routes.loginPage*/
+                                Routes.accountSelectionPage),
                         label: provider.isLoggedIn ? "Proceed" : "Get started",
                       ),
                       Spacer(),

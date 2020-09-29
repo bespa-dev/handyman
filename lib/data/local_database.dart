@@ -25,16 +25,13 @@ LazyDatabase _openConnection() {
   });
 }
 
-@UseMoor(tables: [
-  ServiceProvider,
-  User,
-  Bookings,
-  Review,
-  CategoryItem
-], queries: {
-  "userById": "SELECT * FROM user WHERE id = ?",
-  "providerById": "SELECT * FROM service_provider WHERE id = ?",
-})
+@UseMoor(
+  tables: [ServiceProvider, User, Bookings, Review, CategoryItem],
+  queries: {
+    "userById": "SELECT * FROM user WHERE id = ?",
+  },
+  daos: [ProviderDao],
+)
 class LocalDatabase extends _$LocalDatabase {
   LocalDatabase() : super(_openConnection());
 
@@ -49,4 +46,22 @@ class LocalDatabase extends _$LocalDatabase {
         debugPrint("Before open");
         return Future.value();
       });
+}
+
+@UseDao(
+  tables: [ServiceProvider],
+  queries: {
+    "providerById": "SELECT * FROM service_provider WHERE id = ?",
+  },
+)
+class ProviderDao extends DatabaseAccessor<LocalDatabase>
+    with _$ProviderDaoMixin {
+  ProviderDao(LocalDatabase db) : super(db);
+
+  Future addProviders(List<Artisan> providers) {
+    providers.forEach((person) async {
+      await into(serviceProvider)
+          .insert(person, mode: InsertMode.insertOrReplace);
+    });
+  }
 }

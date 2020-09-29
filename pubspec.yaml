@@ -70,4 +70,19 @@ flutter:
     - assets/bg/bg.webp
     - assets/bg/2x/bg.webp
     - assets/bg/3x/bg.webp
+    - assets/artisans/1.webp
+    - assets/artisans/2.webp
+    - assets/artisans/3.webp
+    - assets/artisans/4.webp
+    - assets/artisans/5.webp
+    - assets/artisans/2x/1.webp
+    - assets/artisans/2x/2.webp
+    - assets/artisans/2x/3.webp
+    - assets/artisans/2x/4.webp
+    - assets/artisans/2x/5.webp
+    - assets/artisans/3x/1.webp
+    - assets/artisans/3x/2.webp
+    - assets/artisans/3x/3.webp
+    - assets/artisans/3x/4.webp
+    - assets/artisans/3x/5.webp
     - assets/sample_artisan.json
