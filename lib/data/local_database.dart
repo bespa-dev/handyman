@@ -1,13 +1,16 @@
 import 'dart:io';
 
-import 'package:handyman/data/entities/booking.dart';
-import 'package:handyman/data/entities/provider.dart';
-import 'package:handyman/data/entities/review.dart';
-import 'package:handyman/data/entities/user.dart';
+import 'package:flutter/material.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+
+import 'entities/booking.dart';
+import 'entities/category.dart';
+import 'entities/provider.dart';
+import 'entities/review.dart';
+import 'entities/user.dart';
 
 part 'local_database.g.dart';
 
@@ -22,10 +25,28 @@ LazyDatabase _openConnection() {
   });
 }
 
-@UseMoor(tables: [ServiceProvider, User, Bookings, Review])
+@UseMoor(tables: [
+  ServiceProvider,
+  User,
+  Bookings,
+  Review,
+  CategoryItem
+], queries: {
+  "userById": "SELECT * FROM user WHERE id = ?",
+  "providerById": "SELECT * FROM service_provider WHERE id = ?",
+})
 class LocalDatabase extends _$LocalDatabase {
   LocalDatabase() : super(_openConnection());
 
   @override
   int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(onCreate: (m) {
+        debugPrint("Created database");
+        return Future.value();
+      }, beforeOpen: (_) {
+        debugPrint("Before open");
+        return Future.value();
+      });
 }

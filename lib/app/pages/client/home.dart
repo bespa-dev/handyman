@@ -38,7 +38,16 @@ class _HomePageState extends State<HomePage> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-
+                themeProvider.isLightTheme
+                    ? Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(kBackgroundAsset),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
+                    : SizedBox.shrink(),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -122,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                                   },
                                   icon: Icon(Feather.chevron_down),
                                   underline: Container(
-                                    color: themeData.scaffoldBackgroundColor,
+                                    color: kTransparent,
                                     height: 2,
                                   ),
                                 ),

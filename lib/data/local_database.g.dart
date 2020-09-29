@@ -12,19 +12,28 @@ class Artisan extends DataClass implements Insertable<Artisan> {
   final String name;
   final String business;
   final String email;
+  final String category;
+  final int startWorkingHours;
+  final int endWorkingHours;
   final String avatar;
   final double price;
+  final double rating;
   Artisan(
       {@required this.id,
       @required this.name,
       this.business,
       @required this.email,
+      @required this.category,
+      @required this.startWorkingHours,
+      @required this.endWorkingHours,
       this.avatar,
-      @required this.price});
+      @required this.price,
+      @required this.rating});
   factory Artisan.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
+    final intType = db.typeSystem.forDartType<int>();
     final doubleType = db.typeSystem.forDartType<double>();
     return Artisan(
       id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
@@ -33,10 +42,18 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           .mapFromDatabaseResponse(data['${effectivePrefix}business']),
       email:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}email']),
+      category: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}category']),
+      startWorkingHours: intType.mapFromDatabaseResponse(
+          data['${effectivePrefix}start_working_hours']),
+      endWorkingHours: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}end_working_hours']),
       avatar:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}avatar']),
       price:
           doubleType.mapFromDatabaseResponse(data['${effectivePrefix}price']),
+      rating:
+          doubleType.mapFromDatabaseResponse(data['${effectivePrefix}rating']),
     );
   }
   @override
@@ -54,11 +71,23 @@ class Artisan extends DataClass implements Insertable<Artisan> {
     if (!nullToAbsent || email != null) {
       map['email'] = Variable<String>(email);
     }
+    if (!nullToAbsent || category != null) {
+      map['category'] = Variable<String>(category);
+    }
+    if (!nullToAbsent || startWorkingHours != null) {
+      map['start_working_hours'] = Variable<int>(startWorkingHours);
+    }
+    if (!nullToAbsent || endWorkingHours != null) {
+      map['end_working_hours'] = Variable<int>(endWorkingHours);
+    }
     if (!nullToAbsent || avatar != null) {
       map['avatar'] = Variable<String>(avatar);
     }
     if (!nullToAbsent || price != null) {
       map['price'] = Variable<double>(price);
+    }
+    if (!nullToAbsent || rating != null) {
+      map['rating'] = Variable<double>(rating);
     }
     return map;
   }
@@ -72,10 +101,21 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           : Value(business),
       email:
           email == null && nullToAbsent ? const Value.absent() : Value(email),
+      category: category == null && nullToAbsent
+          ? const Value.absent()
+          : Value(category),
+      startWorkingHours: startWorkingHours == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startWorkingHours),
+      endWorkingHours: endWorkingHours == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endWorkingHours),
       avatar:
           avatar == null && nullToAbsent ? const Value.absent() : Value(avatar),
       price:
           price == null && nullToAbsent ? const Value.absent() : Value(price),
+      rating:
+          rating == null && nullToAbsent ? const Value.absent() : Value(rating),
     );
   }
 
@@ -87,8 +127,12 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       name: serializer.fromJson<String>(json['name']),
       business: serializer.fromJson<String>(json['business']),
       email: serializer.fromJson<String>(json['email']),
+      category: serializer.fromJson<String>(json['category']),
+      startWorkingHours: serializer.fromJson<int>(json['startWorkingHours']),
+      endWorkingHours: serializer.fromJson<int>(json['endWorkingHours']),
       avatar: serializer.fromJson<String>(json['avatar']),
       price: serializer.fromJson<double>(json['price']),
+      rating: serializer.fromJson<double>(json['rating']),
     );
   }
   @override
@@ -99,8 +143,12 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       'name': serializer.toJson<String>(name),
       'business': serializer.toJson<String>(business),
       'email': serializer.toJson<String>(email),
+      'category': serializer.toJson<String>(category),
+      'startWorkingHours': serializer.toJson<int>(startWorkingHours),
+      'endWorkingHours': serializer.toJson<int>(endWorkingHours),
       'avatar': serializer.toJson<String>(avatar),
       'price': serializer.toJson<double>(price),
+      'rating': serializer.toJson<double>(rating),
     };
   }
 
@@ -109,15 +157,23 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           String name,
           String business,
           String email,
+          String category,
+          int startWorkingHours,
+          int endWorkingHours,
           String avatar,
-          double price}) =>
+          double price,
+          double rating}) =>
       Artisan(
         id: id ?? this.id,
         name: name ?? this.name,
         business: business ?? this.business,
         email: email ?? this.email,
+        category: category ?? this.category,
+        startWorkingHours: startWorkingHours ?? this.startWorkingHours,
+        endWorkingHours: endWorkingHours ?? this.endWorkingHours,
         avatar: avatar ?? this.avatar,
         price: price ?? this.price,
+        rating: rating ?? this.rating,
       );
   @override
   String toString() {
@@ -126,8 +182,12 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           ..write('name: $name, ')
           ..write('business: $business, ')
           ..write('email: $email, ')
+          ..write('category: $category, ')
+          ..write('startWorkingHours: $startWorkingHours, ')
+          ..write('endWorkingHours: $endWorkingHours, ')
           ..write('avatar: $avatar, ')
-          ..write('price: $price')
+          ..write('price: $price, ')
+          ..write('rating: $rating')
           ..write(')'))
         .toString();
   }
@@ -137,8 +197,20 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       id.hashCode,
       $mrjc(
           name.hashCode,
-          $mrjc(business.hashCode,
-              $mrjc(email.hashCode, $mrjc(avatar.hashCode, price.hashCode))))));
+          $mrjc(
+              business.hashCode,
+              $mrjc(
+                  email.hashCode,
+                  $mrjc(
+                      category.hashCode,
+                      $mrjc(
+                          startWorkingHours.hashCode,
+                          $mrjc(
+                              endWorkingHours.hashCode,
+                              $mrjc(
+                                  avatar.hashCode,
+                                  $mrjc(
+                                      price.hashCode, rating.hashCode))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -147,8 +219,12 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           other.name == this.name &&
           other.business == this.business &&
           other.email == this.email &&
+          other.category == this.category &&
+          other.startWorkingHours == this.startWorkingHours &&
+          other.endWorkingHours == this.endWorkingHours &&
           other.avatar == this.avatar &&
-          other.price == this.price);
+          other.price == this.price &&
+          other.rating == this.rating);
 }
 
 class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
@@ -156,23 +232,35 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
   final Value<String> name;
   final Value<String> business;
   final Value<String> email;
+  final Value<String> category;
+  final Value<int> startWorkingHours;
+  final Value<int> endWorkingHours;
   final Value<String> avatar;
   final Value<double> price;
+  final Value<double> rating;
   const ServiceProviderCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.business = const Value.absent(),
     this.email = const Value.absent(),
+    this.category = const Value.absent(),
+    this.startWorkingHours = const Value.absent(),
+    this.endWorkingHours = const Value.absent(),
     this.avatar = const Value.absent(),
     this.price = const Value.absent(),
+    this.rating = const Value.absent(),
   });
   ServiceProviderCompanion.insert({
     @required String id,
     @required String name,
     this.business = const Value.absent(),
     @required String email,
+    this.category = const Value.absent(),
+    this.startWorkingHours = const Value.absent(),
+    this.endWorkingHours = const Value.absent(),
     this.avatar = const Value.absent(),
     this.price = const Value.absent(),
+    this.rating = const Value.absent(),
   })  : id = Value(id),
         name = Value(name),
         email = Value(email);
@@ -181,16 +269,24 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     Expression<String> name,
     Expression<String> business,
     Expression<String> email,
+    Expression<String> category,
+    Expression<int> startWorkingHours,
+    Expression<int> endWorkingHours,
     Expression<String> avatar,
     Expression<double> price,
+    Expression<double> rating,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (business != null) 'business': business,
       if (email != null) 'email': email,
+      if (category != null) 'category': category,
+      if (startWorkingHours != null) 'start_working_hours': startWorkingHours,
+      if (endWorkingHours != null) 'end_working_hours': endWorkingHours,
       if (avatar != null) 'avatar': avatar,
       if (price != null) 'price': price,
+      if (rating != null) 'rating': rating,
     });
   }
 
@@ -199,15 +295,23 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       Value<String> name,
       Value<String> business,
       Value<String> email,
+      Value<String> category,
+      Value<int> startWorkingHours,
+      Value<int> endWorkingHours,
       Value<String> avatar,
-      Value<double> price}) {
+      Value<double> price,
+      Value<double> rating}) {
     return ServiceProviderCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       business: business ?? this.business,
       email: email ?? this.email,
+      category: category ?? this.category,
+      startWorkingHours: startWorkingHours ?? this.startWorkingHours,
+      endWorkingHours: endWorkingHours ?? this.endWorkingHours,
       avatar: avatar ?? this.avatar,
       price: price ?? this.price,
+      rating: rating ?? this.rating,
     );
   }
 
@@ -226,11 +330,23 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     if (email.present) {
       map['email'] = Variable<String>(email.value);
     }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (startWorkingHours.present) {
+      map['start_working_hours'] = Variable<int>(startWorkingHours.value);
+    }
+    if (endWorkingHours.present) {
+      map['end_working_hours'] = Variable<int>(endWorkingHours.value);
+    }
     if (avatar.present) {
       map['avatar'] = Variable<String>(avatar.value);
     }
     if (price.present) {
       map['price'] = Variable<double>(price.value);
+    }
+    if (rating.present) {
+      map['rating'] = Variable<double>(rating.value);
     }
     return map;
   }
@@ -242,8 +358,12 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
           ..write('name: $name, ')
           ..write('business: $business, ')
           ..write('email: $email, ')
+          ..write('category: $category, ')
+          ..write('startWorkingHours: $startWorkingHours, ')
+          ..write('endWorkingHours: $endWorkingHours, ')
           ..write('avatar: $avatar, ')
-          ..write('price: $price')
+          ..write('price: $price, ')
+          ..write('rating: $rating')
           ..write(')'))
         .toString();
   }
@@ -302,6 +422,37 @@ class $ServiceProviderTable extends ServiceProvider
     );
   }
 
+  final VerificationMeta _categoryMeta = const VerificationMeta('category');
+  GeneratedTextColumn _category;
+  @override
+  GeneratedTextColumn get category => _category ??= _constructCategory();
+  GeneratedTextColumn _constructCategory() {
+    return GeneratedTextColumn('category', $tableName, false,
+        defaultValue: Constant("general"));
+  }
+
+  final VerificationMeta _startWorkingHoursMeta =
+      const VerificationMeta('startWorkingHours');
+  GeneratedIntColumn _startWorkingHours;
+  @override
+  GeneratedIntColumn get startWorkingHours =>
+      _startWorkingHours ??= _constructStartWorkingHours();
+  GeneratedIntColumn _constructStartWorkingHours() {
+    return GeneratedIntColumn('start_working_hours', $tableName, false,
+        defaultValue: Constant(DateTime.now().hour));
+  }
+
+  final VerificationMeta _endWorkingHoursMeta =
+      const VerificationMeta('endWorkingHours');
+  GeneratedIntColumn _endWorkingHours;
+  @override
+  GeneratedIntColumn get endWorkingHours =>
+      _endWorkingHours ??= _constructEndWorkingHours();
+  GeneratedIntColumn _constructEndWorkingHours() {
+    return GeneratedIntColumn('end_working_hours', $tableName, false,
+        defaultValue: Constant(DateTime.now().hour + 12));
+  }
+
   final VerificationMeta _avatarMeta = const VerificationMeta('avatar');
   GeneratedTextColumn _avatar;
   @override
@@ -323,9 +474,28 @@ class $ServiceProviderTable extends ServiceProvider
         defaultValue: Constant(20.99));
   }
 
+  final VerificationMeta _ratingMeta = const VerificationMeta('rating');
+  GeneratedRealColumn _rating;
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, name, business, email, avatar, price];
+  GeneratedRealColumn get rating => _rating ??= _constructRating();
+  GeneratedRealColumn _constructRating() {
+    return GeneratedRealColumn('rating', $tableName, false,
+        defaultValue: Constant(3.5));
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        business,
+        email,
+        category,
+        startWorkingHours,
+        endWorkingHours,
+        avatar,
+        price,
+        rating
+      ];
   @override
   $ServiceProviderTable get asDslTable => this;
   @override
@@ -358,6 +528,22 @@ class $ServiceProviderTable extends ServiceProvider
     } else if (isInserting) {
       context.missing(_emailMeta);
     }
+    if (data.containsKey('category')) {
+      context.handle(_categoryMeta,
+          category.isAcceptableOrUnknown(data['category'], _categoryMeta));
+    }
+    if (data.containsKey('start_working_hours')) {
+      context.handle(
+          _startWorkingHoursMeta,
+          startWorkingHours.isAcceptableOrUnknown(
+              data['start_working_hours'], _startWorkingHoursMeta));
+    }
+    if (data.containsKey('end_working_hours')) {
+      context.handle(
+          _endWorkingHoursMeta,
+          endWorkingHours.isAcceptableOrUnknown(
+              data['end_working_hours'], _endWorkingHoursMeta));
+    }
     if (data.containsKey('avatar')) {
       context.handle(_avatarMeta,
           avatar.isAcceptableOrUnknown(data['avatar'], _avatarMeta));
@@ -365,6 +551,10 @@ class $ServiceProviderTable extends ServiceProvider
     if (data.containsKey('price')) {
       context.handle(
           _priceMeta, price.isAcceptableOrUnknown(data['price'], _priceMeta));
+    }
+    if (data.containsKey('rating')) {
+      context.handle(_ratingMeta,
+          rating.isAcceptableOrUnknown(data['rating'], _ratingMeta));
     }
     return context;
   }
@@ -1284,6 +1474,246 @@ class $ReviewTable extends Review with TableInfo<$ReviewTable, CustomerReview> {
   }
 }
 
+class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
+  final String id;
+  final String name;
+  final String avatar;
+  ServiceCategory(
+      {@required this.id, @required this.name, @required this.avatar});
+  factory ServiceCategory.fromData(
+      Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final stringType = db.typeSystem.forDartType<String>();
+    return ServiceCategory(
+      id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
+      avatar:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}avatar']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<String>(id);
+    }
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    if (!nullToAbsent || avatar != null) {
+      map['avatar'] = Variable<String>(avatar);
+    }
+    return map;
+  }
+
+  CategoryItemCompanion toCompanion(bool nullToAbsent) {
+    return CategoryItemCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      avatar:
+          avatar == null && nullToAbsent ? const Value.absent() : Value(avatar),
+    );
+  }
+
+  factory ServiceCategory.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return ServiceCategory(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      avatar: serializer.fromJson<String>(json['avatar']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'avatar': serializer.toJson<String>(avatar),
+    };
+  }
+
+  ServiceCategory copyWith({String id, String name, String avatar}) =>
+      ServiceCategory(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        avatar: avatar ?? this.avatar,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('ServiceCategory(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('avatar: $avatar')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      $mrjf($mrjc(id.hashCode, $mrjc(name.hashCode, avatar.hashCode)));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is ServiceCategory &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.avatar == this.avatar);
+}
+
+class CategoryItemCompanion extends UpdateCompanion<ServiceCategory> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> avatar;
+  const CategoryItemCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.avatar = const Value.absent(),
+  });
+  CategoryItemCompanion.insert({
+    @required String id,
+    @required String name,
+    @required String avatar,
+  })  : id = Value(id),
+        name = Value(name),
+        avatar = Value(avatar);
+  static Insertable<ServiceCategory> custom({
+    Expression<String> id,
+    Expression<String> name,
+    Expression<String> avatar,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (avatar != null) 'avatar': avatar,
+    });
+  }
+
+  CategoryItemCompanion copyWith(
+      {Value<String> id, Value<String> name, Value<String> avatar}) {
+    return CategoryItemCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      avatar: avatar ?? this.avatar,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (avatar.present) {
+      map['avatar'] = Variable<String>(avatar.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CategoryItemCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('avatar: $avatar')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CategoryItemTable extends CategoryItem
+    with TableInfo<$CategoryItemTable, ServiceCategory> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $CategoryItemTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedTextColumn _id;
+  @override
+  GeneratedTextColumn get id => _id ??= _constructId();
+  GeneratedTextColumn _constructId() {
+    return GeneratedTextColumn(
+      'id',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  GeneratedTextColumn _name;
+  @override
+  GeneratedTextColumn get name => _name ??= _constructName();
+  GeneratedTextColumn _constructName() {
+    return GeneratedTextColumn(
+      'name',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _avatarMeta = const VerificationMeta('avatar');
+  GeneratedTextColumn _avatar;
+  @override
+  GeneratedTextColumn get avatar => _avatar ??= _constructAvatar();
+  GeneratedTextColumn _constructAvatar() {
+    return GeneratedTextColumn(
+      'avatar',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [id, name, avatar];
+  @override
+  $CategoryItemTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'category_item';
+  @override
+  final String actualTableName = 'category_item';
+  @override
+  VerificationContext validateIntegrity(Insertable<ServiceCategory> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name'], _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('avatar')) {
+      context.handle(_avatarMeta,
+          avatar.isAcceptableOrUnknown(data['avatar'], _avatarMeta));
+    } else if (isInserting) {
+      context.missing(_avatarMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ServiceCategory map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return ServiceCategory.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $CategoryItemTable createAlias(String alias) {
+    return $CategoryItemTable(_db, alias);
+  }
+}
+
 abstract class _$LocalDatabase extends GeneratedDatabase {
   _$LocalDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $ServiceProviderTable _serviceProvider;
@@ -1295,9 +1725,24 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   $BookingsTable get bookings => _bookings ??= $BookingsTable(this);
   $ReviewTable _review;
   $ReviewTable get review => _review ??= $ReviewTable(this);
+  $CategoryItemTable _categoryItem;
+  $CategoryItemTable get categoryItem =>
+      _categoryItem ??= $CategoryItemTable(this);
+  Selectable<Customer> userById(String var1) {
+    return customSelect('SELECT * FROM user WHERE id = ?',
+        variables: [Variable.withString(var1)],
+        readsFrom: {user}).map(user.mapFromRow);
+  }
+
+  Selectable<Artisan> providerById(String var1) {
+    return customSelect('SELECT * FROM service_provider WHERE id = ?',
+        variables: [Variable.withString(var1)],
+        readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
+  }
+
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [serviceProvider, user, bookings, review];
+      [serviceProvider, user, bookings, review, categoryItem];
 }

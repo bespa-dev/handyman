@@ -93,6 +93,7 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
       name: "Ishmael Isaacs",
       email: "isaac@gmail.com",
       price: 34.49,
+      category: "plumbing",
     );
     setState(() {});
   }
