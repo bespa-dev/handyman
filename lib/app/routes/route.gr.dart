@@ -14,6 +14,7 @@ import '../pages/account_selection.dart';
 import '../pages/client/home.dart';
 import '../pages/client/provider_details.dart';
 import '../pages/client/providers.dart';
+import '../pages/conversation.dart';
 import '../pages/login.dart';
 import '../pages/onboarding.dart';
 import '../pages/provider/dashboard.dart';
@@ -28,6 +29,7 @@ class Routes {
   static const String registerPage = '/register-page';
   static const String accountCompletionPage = '/account-completion-page';
   static const String accountSelectionPage = '/account-selection-page';
+  static const String conversationPage = '/conversation-page';
   static const String homePage = '/home-page';
   static const String categoryProvidersPage = '/category-providers-page';
   static const String serviceProviderDetails = '/service-provider-details';
@@ -40,6 +42,7 @@ class Routes {
     registerPage,
     accountCompletionPage,
     accountSelectionPage,
+    conversationPage,
     homePage,
     categoryProvidersPage,
     serviceProviderDetails,
@@ -58,6 +61,7 @@ class Router extends RouterBase {
     RouteDef(Routes.registerPage, page: RegisterPage),
     RouteDef(Routes.accountCompletionPage, page: AccountCompletionPage),
     RouteDef(Routes.accountSelectionPage, page: AccountSelectionPage),
+    RouteDef(Routes.conversationPage, page: ConversationPage),
     RouteDef(Routes.homePage, page: HomePage),
     RouteDef(Routes.categoryProvidersPage, page: CategoryProvidersPage),
     RouteDef(Routes.serviceProviderDetails, page: ServiceProviderDetails),
@@ -100,6 +104,19 @@ class Router extends RouterBase {
     AccountSelectionPage: (data) {
       return buildAdaptivePageRoute<dynamic>(
         builder: (context) => AccountSelectionPage(),
+        settings: data,
+      );
+    },
+    ConversationPage: (data) {
+      final args = data.getArgs<ConversationPageArguments>(
+        orElse: () => ConversationPageArguments(),
+      );
+      return buildAdaptivePageRoute<dynamic>(
+        builder: (context) => ConversationPage(
+          key: args.key,
+          sender: args.sender,
+          recipient: args.recipient,
+        ),
         settings: data,
       );
     },
@@ -151,6 +168,14 @@ class Router extends RouterBase {
 /// ************************************************************************
 /// Arguments holder classes
 /// *************************************************************************
+
+/// ConversationPage arguments holder class
+class ConversationPageArguments {
+  final Key key;
+  final dynamic sender;
+  final dynamic recipient;
+  ConversationPageArguments({this.key, this.sender, this.recipient});
+}
 
 /// CategoryProvidersPage arguments holder class
 class CategoryProvidersPageArguments {

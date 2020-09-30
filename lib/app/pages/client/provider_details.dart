@@ -2,12 +2,16 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/pages/client/search.dart';
+import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
+import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:random_color/random_color.dart';
 
@@ -25,13 +29,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
   int _currentIndex = 0;
   bool _isBooked = false;
   ThemeData _themeData;
-  final _galleryImages = <String>[
-    kBannerAsset,
-    kBannerAsset,
-    kBannerAsset,
-    kBannerAsset,
-    kBannerAsset,
-  ];
+  final _apiService = sl.get<ApiProviderService>();
 
   final _ringColor =
       RandomColor().randomColor(colorBrightness: ColorBrightness.dark);
@@ -42,115 +40,133 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
     final kHeight = MediaQuery.of(context).size.height;
     final kWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      key: _scaffoldKey,
-      extendBodyBehindAppBar: true,
-      extendBody: true,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Feather.x),
-          color: _themeData.iconTheme.color,
-          onPressed: () => context.navigator.pop(),
-        ),
-        actions: [
-          IconButton(
-            tooltip: "Search",
-            icon: Icon(Feather.search),
+    return Consumer<PrefsProvider>(
+      builder: (_, prefsProvider, __) => Scaffold(
+        key: _scaffoldKey,
+        extendBodyBehindAppBar: true,
+        extendBody: true,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Feather.x),
             color: _themeData.iconTheme.color,
-            onPressed: () => showSearch(
-              context: context,
-              delegate: SearchPage(),
+            onPressed: () => context.navigator.pop(),
+          ),
+          actions: [
+            IconButton(
+              tooltip: "Search",
+              icon: Icon(Feather.search),
+              color: _themeData.iconTheme.color,
+              onPressed: () => showSearch(
+                context: context,
+                delegate: SearchPage(),
+              ),
             ),
-          ),
-          IconButton(
-            tooltip: "Call",
-            icon: Icon(Feather.phone),
-            color: _themeData.iconTheme.color,
-            onPressed: null, // TODO: Add call option
-          ),
-          IconButton(
-            tooltip: "Chat",
-            icon: Icon(Icons.chat_bubble_outline_outlined),
-            color: _themeData.iconTheme.color,
-            onPressed: null, // TODO: Add chat option
-          ),
-        ],
-      ),
-      body: Consumer<ThemeProvider>(
-        builder: (_, provider, __) => Stack(
-          fit: StackFit.expand,
-          children: [
-            provider.isLightTheme
-                ? Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(kBackgroundAsset),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  )
-                : SizedBox.shrink(),
-            SafeArea(
-              child: Container(
-                height: kHeight,
-                width: kWidth,
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
-                    UserAvatar(
-                      url: widget.artisan.avatar,
-                      onTap: () {},
-                      radius: getProportionateScreenHeight(kSpacingX120),
-                      ringColor: _ringColor,
-                    ),
-                    SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
-                    Text(
-                      widget.artisan.name,
-                      style: _themeData.textTheme.headline4,
-                    ),
-                    SizedBox(height: getProportionateScreenHeight(kSpacingX4)),
-                    Text(
-                      widget.artisan.business,
-                      style: _themeData.textTheme.caption,
-                    ),
-                    SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
-                    Expanded(
-                      child: _currentIndex == 0
-                          ? _buildPhotoTab()
-                          : _buildReviewTab(),
-                    ),
-                  ],
+            IconButton(
+              tooltip: "Call",
+              icon: Icon(Feather.phone),
+              color: _themeData.iconTheme.color,
+              onPressed: null, // TODO: Add call option
+            ),
+            IconButton(
+              tooltip: "Chat",
+              icon: Icon(Icons.chat_bubble_outline_outlined),
+              color: _themeData.iconTheme.color,
+              onPressed: () => context.navigator.push(
+                Routes.conversationPage,
+                arguments: ConversationPageArguments(
+                  sender: prefsProvider.userId,
+                  recipient: widget.artisan.id,
                 ),
               ),
             ),
           ],
         ),
+        body: Consumer<ThemeProvider>(
+          builder: (_, provider, __) => Stack(
+            fit: StackFit.expand,
+            children: [
+              provider.isLightTheme
+                  ? Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(kBackgroundAsset),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  : SizedBox.shrink(),
+              SafeArea(
+                child: Container(
+                  height: kHeight,
+                  width: kWidth,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX8)),
+                      UserAvatar(
+                        url: widget.artisan.avatar,
+                        onTap: () {},
+                        radius: getProportionateScreenHeight(kSpacingX120),
+                        ringColor: _ringColor,
+                      ),
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX16)),
+                      Text(
+                        widget.artisan.name,
+                        style: _themeData.textTheme.headline4,
+                      ),
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX4)),
+                      Text(
+                        widget.artisan.business,
+                        style: _themeData.textTheme.caption,
+                      ),
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX16)),
+                      Expanded(
+                        child: _currentIndex == 0
+                            ? _buildPhotoTab()
+                            : _currentIndex == 1
+                                ? _buildReviewTab()
+                                : _buildBookingsTab(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+            onTap: (newIndex) {
+              setState(() {
+                _currentIndex = newIndex;
+              });
+            },
+            currentIndex: _currentIndex,
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Feather.image),
+                label: "Photos",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Feather.users),
+                label: "Reviews",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Feather.bookmark),
+                label: "Bookings",
+              ),
+            ]),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () {
+        //     _isBooked = !_isBooked;
+        //     setState(() {});
+        //   },
+        //   child: Icon(_isBooked ? Feather.user_check : Feather.user_plus),
+        // ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          onTap: (newIndex) {
-            setState(() {
-              _currentIndex = newIndex;
-            });
-          },
-          currentIndex: _currentIndex,
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Feather.image),
-              label: "Photos",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Feather.users),
-              label: "Reviews",
-            ),
-          ]),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     _isBooked = !_isBooked;
-      //     setState(() {});
-      //   },
-      //   child: Icon(_isBooked ? Feather.user_check : Feather.user_plus),
-      // ),
     );
   }
 
@@ -176,7 +192,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
               childAspectRatio: 4 / 3,
             ),
             physics: kScrollPhysics,
-            itemCount: _galleryImages.length,
+            itemCount: 5 /*FIXME: Add gallery size here*/,
             itemBuilder: (_, index) {
               // final photo = _galleryImages[index];
 
@@ -204,14 +220,38 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
         ),
       );
 
-  Widget _buildReviewTab() => Container(
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(
-          color: _themeData.cardColor.withOpacity(kOpacityX50),
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(kSpacingX16),
-            topRight: Radius.circular(kSpacingX16),
-          ),
-        ),
+  Widget _buildReviewTab() => Consumer<PrefsProvider>(
+        builder: (_, prefs, __) => StreamBuilder<List<CustomerReview>>(
+            stream: _apiService.getReviews(widget.artisan.id),
+            builder: (context, snapshot) {
+              return Container(
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                  color: _themeData.cardColor.withOpacity(kOpacityX50),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(kSpacingX16),
+                    topRight: Radius.circular(kSpacingX16),
+                  ),
+                ),
+              );
+            }),
+      );
+
+  Widget _buildBookingsTab() => Consumer<PrefsProvider>(
+        builder: (_, prefs, __) => StreamBuilder<List<Booking>>(
+            stream: _apiService.getMyBookingsForProvider(
+                prefs.userId, widget.artisan.id),
+            builder: (context, snapshot) {
+              return Container(
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                  color: _themeData.cardColor.withOpacity(kOpacityX50),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(kSpacingX16),
+                    topRight: Radius.circular(kSpacingX16),
+                  ),
+                ),
+              );
+            }),
       );
 }

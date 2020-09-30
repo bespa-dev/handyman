@@ -1526,12 +1526,12 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
   final String id;
   final String name;
   final String avatar;
-  final int group;
+  final int groupName;
   ServiceCategory(
       {@required this.id,
       @required this.name,
       @required this.avatar,
-      @required this.group});
+      @required this.groupName});
   factory ServiceCategory.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
@@ -1543,7 +1543,8 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
       name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
       avatar:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}avatar']),
-      group: intType.mapFromDatabaseResponse(data['${effectivePrefix}group']),
+      groupName:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}group']),
     );
   }
   @override
@@ -1558,8 +1559,8 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
     if (!nullToAbsent || avatar != null) {
       map['avatar'] = Variable<String>(avatar);
     }
-    if (!nullToAbsent || group != null) {
-      map['group'] = Variable<int>(group);
+    if (!nullToAbsent || groupName != null) {
+      map['group'] = Variable<int>(groupName);
     }
     return map;
   }
@@ -1570,8 +1571,9 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       avatar:
           avatar == null && nullToAbsent ? const Value.absent() : Value(avatar),
-      group:
-          group == null && nullToAbsent ? const Value.absent() : Value(group),
+      groupName: groupName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(groupName),
     );
   }
 
@@ -1582,7 +1584,7 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       avatar: serializer.fromJson<String>(json['avatar']),
-      group: serializer.fromJson<int>(json['group']),
+      groupName: serializer.fromJson<int>(json['groupName']),
     );
   }
   @override
@@ -1592,17 +1594,17 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
       'avatar': serializer.toJson<String>(avatar),
-      'group': serializer.toJson<int>(group),
+      'groupName': serializer.toJson<int>(groupName),
     };
   }
 
   ServiceCategory copyWith(
-          {String id, String name, String avatar, int group}) =>
+          {String id, String name, String avatar, int groupName}) =>
       ServiceCategory(
         id: id ?? this.id,
         name: name ?? this.name,
         avatar: avatar ?? this.avatar,
-        group: group ?? this.group,
+        groupName: groupName ?? this.groupName,
       );
   @override
   String toString() {
@@ -1610,14 +1612,14 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('avatar: $avatar, ')
-          ..write('group: $group')
+          ..write('groupName: $groupName')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => $mrjf($mrjc(id.hashCode,
-      $mrjc(name.hashCode, $mrjc(avatar.hashCode, group.hashCode))));
+      $mrjc(name.hashCode, $mrjc(avatar.hashCode, groupName.hashCode))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -1625,25 +1627,25 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
           other.id == this.id &&
           other.name == this.name &&
           other.avatar == this.avatar &&
-          other.group == this.group);
+          other.groupName == this.groupName);
 }
 
 class CategoryItemCompanion extends UpdateCompanion<ServiceCategory> {
   final Value<String> id;
   final Value<String> name;
   final Value<String> avatar;
-  final Value<int> group;
+  final Value<int> groupName;
   const CategoryItemCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.avatar = const Value.absent(),
-    this.group = const Value.absent(),
+    this.groupName = const Value.absent(),
   });
   CategoryItemCompanion.insert({
     @required String id,
     @required String name,
     @required String avatar,
-    this.group = const Value.absent(),
+    this.groupName = const Value.absent(),
   })  : id = Value(id),
         name = Value(name),
         avatar = Value(avatar);
@@ -1651,13 +1653,13 @@ class CategoryItemCompanion extends UpdateCompanion<ServiceCategory> {
     Expression<String> id,
     Expression<String> name,
     Expression<String> avatar,
-    Expression<int> group,
+    Expression<int> groupName,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (avatar != null) 'avatar': avatar,
-      if (group != null) 'group': group,
+      if (groupName != null) 'group': groupName,
     });
   }
 
@@ -1665,12 +1667,12 @@ class CategoryItemCompanion extends UpdateCompanion<ServiceCategory> {
       {Value<String> id,
       Value<String> name,
       Value<String> avatar,
-      Value<int> group}) {
+      Value<int> groupName}) {
     return CategoryItemCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       avatar: avatar ?? this.avatar,
-      group: group ?? this.group,
+      groupName: groupName ?? this.groupName,
     );
   }
 
@@ -1686,8 +1688,8 @@ class CategoryItemCompanion extends UpdateCompanion<ServiceCategory> {
     if (avatar.present) {
       map['avatar'] = Variable<String>(avatar.value);
     }
-    if (group.present) {
-      map['group'] = Variable<int>(group.value);
+    if (groupName.present) {
+      map['group'] = Variable<int>(groupName.value);
     }
     return map;
   }
@@ -1698,7 +1700,7 @@ class CategoryItemCompanion extends UpdateCompanion<ServiceCategory> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('avatar: $avatar, ')
-          ..write('group: $group')
+          ..write('groupName: $groupName')
           ..write(')'))
         .toString();
   }
@@ -1745,17 +1747,17 @@ class $CategoryItemTable extends CategoryItem
     );
   }
 
-  final VerificationMeta _groupMeta = const VerificationMeta('group');
-  GeneratedIntColumn _group;
+  final VerificationMeta _groupNameMeta = const VerificationMeta('groupName');
+  GeneratedIntColumn _groupName;
   @override
-  GeneratedIntColumn get group => _group ??= _constructGroup();
-  GeneratedIntColumn _constructGroup() {
+  GeneratedIntColumn get groupName => _groupName ??= _constructGroupName();
+  GeneratedIntColumn _constructGroupName() {
     return GeneratedIntColumn('group', $tableName, false,
         defaultValue: Constant(0));
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, name, avatar, group];
+  List<GeneratedColumn> get $columns => [id, name, avatar, groupName];
   @override
   $CategoryItemTable get asDslTable => this;
   @override
@@ -1785,8 +1787,8 @@ class $CategoryItemTable extends CategoryItem
       context.missing(_avatarMeta);
     }
     if (data.containsKey('group')) {
-      context.handle(
-          _groupMeta, group.isAcceptableOrUnknown(data['group'], _groupMeta));
+      context.handle(_groupNameMeta,
+          groupName.isAcceptableOrUnknown(data['group'], _groupNameMeta));
     }
     return context;
   }
@@ -1822,22 +1824,18 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   ProviderDao _providerDao;
   ProviderDao get providerDao =>
       _providerDao ??= ProviderDao(this as LocalDatabase);
+  CategoryDao _categoryDao;
+  CategoryDao get categoryDao =>
+      _categoryDao ??= CategoryDao(this as LocalDatabase);
+  BookingDao _bookingDao;
+  BookingDao get bookingDao =>
+      _bookingDao ??= BookingDao(this as LocalDatabase);
+  ReviewDao _reviewDao;
+  ReviewDao get reviewDao => _reviewDao ??= ReviewDao(this as LocalDatabase);
   Selectable<Customer> customerById(String var1) {
     return customSelect('SELECT * FROM user WHERE id = ?',
         variables: [Variable.withString(var1)],
         readsFrom: {user}).map(user.mapFromRow);
-  }
-
-  Selectable<Artisan> artisanById(String var1) {
-    return customSelect('SELECT * FROM service_provider WHERE id = ?',
-        variables: [Variable.withString(var1)],
-        readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
-  }
-
-  Selectable<Artisan> artisans() {
-    return customSelect('SELECT * FROM service_provider ORDER BY id desc',
-        variables: [],
-        readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
   }
 
   @override
@@ -1853,4 +1851,56 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
 
 mixin _$ProviderDaoMixin on DatabaseAccessor<LocalDatabase> {
   $ServiceProviderTable get serviceProvider => attachedDatabase.serviceProvider;
+  Selectable<Artisan> artisanById(String var1) {
+    return customSelect('SELECT * FROM service_provider WHERE id = ?',
+        variables: [Variable.withString(var1)],
+        readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
+  }
+
+  Selectable<Artisan> artisans() {
+    return customSelect('SELECT * FROM service_provider ORDER BY id desc',
+        variables: [],
+        readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
+  }
+}
+mixin _$CategoryDaoMixin on DatabaseAccessor<LocalDatabase> {
+  $CategoryItemTable get categoryItem => attachedDatabase.categoryItem;
+  Selectable<ServiceCategory> categoryById(String var1) {
+    return customSelect('SELECT * FROM category_item WHERE id = ?',
+        variables: [Variable.withString(var1)],
+        readsFrom: {categoryItem}).map(categoryItem.mapFromRow);
+  }
+}
+mixin _$BookingDaoMixin on DatabaseAccessor<LocalDatabase> {
+  $BookingsTable get bookings => attachedDatabase.bookings;
+  Selectable<Booking> bookingsForCustomer(String var1) {
+    return customSelect(
+        'SELECT * FROM bookings WHERE customer_id = ? ORDER BY created_at DESC',
+        variables: [Variable.withString(var1)],
+        readsFrom: {bookings}).map(bookings.mapFromRow);
+  }
+
+  Selectable<Booking> bookingsForCustomerAndProvider(String var1, String var2) {
+    return customSelect(
+        'SELECT * FROM bookings WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC',
+        variables: [Variable.withString(var1), Variable.withString(var2)],
+        readsFrom: {bookings}).map(bookings.mapFromRow);
+  }
+}
+mixin _$ReviewDaoMixin on DatabaseAccessor<LocalDatabase> {
+  $ReviewTable get review => attachedDatabase.review;
+  Selectable<CustomerReview> reviewsForProvider(String var1) {
+    return customSelect(
+        'SELECT * FROM review WHERE customer_id = ? ORDER BY created_at DESC',
+        variables: [Variable.withString(var1)],
+        readsFrom: {review}).map(review.mapFromRow);
+  }
+
+  Selectable<CustomerReview> reviewsForCustomerAndProvider(
+      String var1, String var2) {
+    return customSelect(
+        'SELECT * FROM review WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC',
+        variables: [Variable.withString(var1), Variable.withString(var2)],
+        readsFrom: {review}).map(review.mapFromRow);
+  }
 }

@@ -133,7 +133,7 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                     SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
                     FutureBuilder<List<Artisan>>(
                         future: sl
-                            .get<ArtisanProvider>()
+                            .get<ApiProviderService>()
                             .getArtisans(category: widget.category.id),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==

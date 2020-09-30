@@ -8,16 +8,15 @@ import 'package:handyman/data/entities/category.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:meta/meta.dart';
 
-class ArtisanProvider {
+class ApiProviderService {
   final _database = sl.get<LocalDatabase>();
 
-  ArtisanProvider._();
+  ApiProviderService._();
 
-  static ArtisanProvider get instance => ArtisanProvider._();
+  static ApiProviderService get instance => ApiProviderService._();
 
   /// Get all [Artisan]s from data source
   Future<List<Artisan>> getArtisans({@required String category}) async {
-    await Future.delayed(const Duration(milliseconds: 350));
     final data = await rootBundle.loadString("assets/sample_artisan.json");
     var decodedData = json.decode(data);
     final List<dynamic> artisans =
@@ -31,21 +30,36 @@ class ArtisanProvider {
     return results;
   }
 
+  /// Get all [ServiceCategory] from data source
   Future<List<ServiceCategory>> getCategories(
       {CategoryGroup categoryGroup = CategoryGroup.FEATURED}) async {
-    debugPrint("Selected category -> $categoryGroup");
-    await Future.delayed(const Duration(milliseconds: 350));
-    final data = await rootBundle.loadString("assets/sample_categories.json");
-    var decodedData = json.decode(data);
-    final List<dynamic> categories =
-        decodedData != null ? List.from(decodedData) : [];
-    final results = <ServiceCategory>[];
-    for (var json in categories) {
-      final item = ServiceCategory.fromJson(json);
-      if (item.group == categoryGroup.index) {
-        results.add(item);
+    var categoryList = await _database.categoryDao.categoryById("var1").get();
+    if (categoryList.isNotEmpty)
+      return categoryList;
+    else {
+      final results = <ServiceCategory>[];
+      final data = await rootBundle.loadString("assets/sample_categories.json");
+      var decodedData = json.decode(data);
+      final List<dynamic> categories =
+          decodedData != null ? List.from(decodedData) : [];
+      for (var json in categories) {
+        final item = ServiceCategory.fromJson(json);
+        if (item.groupName == categoryGroup.index) results.add(item);
       }
+      _database.categoryDao.addItems(results);
+      return results;
     }
-    return results;
   }
+
+  Stream<List<CustomerReview>> getReviews(String id) =>
+      _database.reviewDao.reviewsForProvider(id).watch();
+
+  Stream<List<Booking>> getMyBookings(String id) =>
+      _database.bookingDao.bookingsForCustomer(id).watch();
+
+  Stream<List<Booking>> getMyBookingsForProvider(
+          String customerId, String providerId) =>
+      _database.bookingDao
+          .bookingsForCustomerAndProvider(customerId, providerId)
+          .watch();
 }

@@ -29,10 +29,8 @@ LazyDatabase _openConnection() {
   tables: [ServiceProvider, User, Bookings, Review, CategoryItem],
   queries: {
     "customerById": "SELECT * FROM user WHERE id = ?",
-    "artisanById": "SELECT * FROM service_provider WHERE id = ?",
-    "artisans": "SELECT * FROM service_provider ORDER BY id desc",
   },
-  daos: [ProviderDao],
+  daos: [ProviderDao, CategoryDao, BookingDao, ReviewDao],
 )
 class LocalDatabase extends _$LocalDatabase {
   LocalDatabase._() : super(_openConnection());
@@ -40,7 +38,7 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(onCreate: (m) {
@@ -52,7 +50,13 @@ class LocalDatabase extends _$LocalDatabase {
       });
 }
 
-@UseDao(tables: [ServiceProvider])
+@UseDao(
+  tables: [ServiceProvider],
+  queries: {
+    "artisanById": "SELECT * FROM service_provider WHERE id = ?",
+    "artisans": "SELECT * FROM service_provider ORDER BY id desc",
+  },
+)
 class ProviderDao extends DatabaseAccessor<LocalDatabase>
     with _$ProviderDaoMixin {
   ProviderDao(LocalDatabase db) : super(db);
@@ -63,4 +67,61 @@ class ProviderDao extends DatabaseAccessor<LocalDatabase>
           .insert(person, mode: InsertMode.insertOrReplace);
     });
   }
+}
+
+@UseDao(
+  tables: [CategoryItem],
+  queries: {
+    "categoryById": "SELECT * FROM category_item WHERE id = ?",
+    // "categoryByGroup": "SELECT * FROM category_item WHERE group_name = ?",
+  },
+)
+class CategoryDao extends DatabaseAccessor<LocalDatabase>
+    with _$CategoryDaoMixin {
+  CategoryDao(LocalDatabase db) : super(db);
+
+  void addItems(List<ServiceCategory> items) {
+    items.forEach((item) async {
+      await into(categoryItem).insert(item, mode: InsertMode.insertOrReplace);
+    });
+  }
+}
+
+@UseDao(
+  tables: [Bookings],
+  queries: {
+    "bookingsForCustomer":
+        "SELECT * FROM bookings WHERE customer_id = ? ORDER BY created_at DESC",
+    "bookingsForCustomerAndProvider":
+        "SELECT * FROM bookings WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC"
+  },
+)
+class BookingDao extends DatabaseAccessor<LocalDatabase>
+    with _$BookingDaoMixin {
+  BookingDao(LocalDatabase db) : super(db);
+
+  void addItems(List<Booking> items) {
+    items.forEach((item) async {
+      await into(bookings).insert(item, mode: InsertMode.insertOrReplace);
+    });
+  }
+
+  Future<int> addItem(Booking item) =>
+      into(bookings).insert(item, mode: InsertMode.insertOrReplace);
+}
+
+@UseDao(
+  tables: [Review],
+  queries: {
+    "reviewsForProvider":
+        "SELECT * FROM review WHERE customer_id = ? ORDER BY created_at DESC",
+    "reviewsForCustomerAndProvider":
+        "SELECT * FROM review WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC"
+  },
+)
+class ReviewDao extends DatabaseAccessor<LocalDatabase> with _$ReviewDaoMixin {
+  ReviewDao(LocalDatabase db) : super(db);
+
+  Future<int> addItem(CustomerReview item) =>
+      into(review).insert(item, mode: InsertMode.insertOrReplace);
 }

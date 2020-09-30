@@ -56,10 +56,10 @@ const kBackgroundLightColor = Color(0xFFFEEAE6);
 const kSurfaceDarkColor = Color(0xFF222225);
 
 /// Icon Colors
-const kAccentIconLightColor = Color(0xFF442C2E);
+const kAccentIconLightColor = Color(0xFF535B9D);
 // const kAccentIconLightColor = Color(0xFFECEFF5);
 const kAccentIconDarkColor = Color(0xFF303030);
-const kPrimaryIconLightColor = Color(0xFF442C2E);
+const kPrimaryIconLightColor = Color(0xFF535B9D);
 const kPrimaryIconDarkColor = Color(0xFF232323);
 
 /// Text Colors
@@ -72,4 +72,4 @@ const kUnselectedLabelColorDark = Color(0xFF5F6368);
 // const kTitleTextColorLight = Color(0xFF101112);
 const kTitleTextColorDark = Colors.white;
 
-const kShadowColor = Color(0xFF364564);
+const kShadowColor = Color(0xFF7C7C7C);

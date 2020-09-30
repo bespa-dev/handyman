@@ -12,6 +12,6 @@ Future<void> registerServiceLocator() async {
       () => SharedPreferences.getInstance());
 
   // Register Provider
-  sl.registerLazySingleton<ArtisanProvider>(() => ArtisanProvider.instance);
+  sl.registerLazySingleton<ApiProviderService>(() => ApiProviderService.instance);
   sl.registerSingleton<LocalDatabase>(LocalDatabase.instance);
 }

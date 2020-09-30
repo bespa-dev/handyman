@@ -20,7 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool _preferGridFormat = true;
   Future<List<ServiceCategory>> _categoriesFuture =
-      sl.get<ArtisanProvider>().getCategories();
+      sl.get<ApiProviderService>().getCategories();
 
   final _dropdownItems = Map.from({
     CategoryGroup.FEATURED: "Featured",
@@ -189,7 +189,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _getCategoriesWithFilter() {
-    _categoriesFuture = sl.get<ArtisanProvider>().getCategories(
+    _categoriesFuture = sl.get<ApiProviderService>().getCategories(
           categoryGroup: _dropdownItems.keys
               .where((element) =>
                   _currentFilter ==
