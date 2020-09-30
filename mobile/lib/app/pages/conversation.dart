@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/model/theme_provider.dart';
+import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
+import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -17,18 +19,6 @@ class ConversationPage extends StatefulWidget {
 
 class _ConversationPageState extends State<ConversationPage> {
   final _apiService = sl.get<ApiProviderService>();
-  Stream<dynamic> _liveSender;
-  Stream<dynamic> _liveRecipient;
-
-  void _fetchMetadata() async {
-
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchMetadata();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +33,43 @@ class _ConversationPageState extends State<ConversationPage> {
           builder: (_, themeProvider, __) => Container(
             child: Stack(
               fit: StackFit.expand,
-              children: [],
+              children: [
+                themeProvider.isLightTheme
+                    ? Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(kBackgroundAsset),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
+                    : SizedBox.shrink(),
+                SafeArea(
+                  child: StreamBuilder<Artisan>(
+                    stream: _apiService.getArtisanById(id: widget.recipient),
+                    builder: (_, snapshot) {
+                      if (snapshot.hasError)
+                        return Positioned.fill(
+                            child: Text("No recipient found"));
+                      else
+                        return _buildChatWidget(snapshot.data);
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildChatWidget(Artisan artisan) {
+    debugPrint(artisan.toString());
+    return Column(
+        children: [
+          Text(artisan?.name ?? "no name"),
+        ],
+      );
   }
 }

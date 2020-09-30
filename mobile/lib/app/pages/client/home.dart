@@ -1,9 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/pages/client/search.dart';
+import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/category_card.dart';
+import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
@@ -11,6 +14,7 @@ import 'package:handyman/data/entities/category.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:random_color/random_color.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -89,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             padding: EdgeInsets.symmetric(
                                 horizontal:
-                                    getProportionateScreenWidth(kSpacingX4)),
+                                    getProportionateScreenWidth(kSpacingX16)),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -101,18 +105,22 @@ class _HomePageState extends State<HomePage> {
                                   onPressed: () => themeProvider.toggleTheme(),
                                 ),
                                 Expanded(
-                                  child: Image.asset(
-                                    kLogoAsset,
-                                    height: kToolbarHeight - 8,
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: getProportionateScreenWidth(kSpacingX8)),
+                                    child: Text(
+                                      "Search for artisans & more",
+                                      style: themeData.textTheme.headline6,
+                                    ),
                                   ),
                                 ),
-                                IconButton(
-                                  tooltip: "Search",
-                                  icon: Icon(Feather.search),
-                                  onPressed: () => showSearch(
-                                    context: context,
-                                    delegate: SearchPage(),
-                                  ),
+                                UserAvatar(
+                                  url:
+                                      "https://images.unsplash.com/photo-1598547461182-45d03f6661e4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
+                                  radius: kSpacingX36,
+                                  onTap: () => context.navigator
+                                      .push(Routes.profilePage),
+                                  ringColor: RandomColor(1).randomColor(
+                                      colorBrightness: ColorBrightness.dark),
                                 ),
                               ],
                             ),

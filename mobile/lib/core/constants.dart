@@ -46,20 +46,24 @@ const kScaleDuration = const Duration(milliseconds: 350);
 const kScrollPhysics = const BouncingScrollPhysics();
 
 /// Colors
-const kGreenColor = Colors.lightGreen;
+const kGreenColor = Color(0xFF009688);
 const kWhiteColor = Colors.white;
 const kTransparent = Colors.transparent;
+const kPlaceholderColor = Color(0x70000000);
+const kDisabledColor = Color(0x1f000000);
 
-// const kPrimaryColor = Color(0xFF00A173);
-const kPrimaryColor = Color(0xFF5d1049);
-const kSecondaryLightColor = Color(0xFFe30425);
-// const kSecondaryLightColor = Color(0xFF00A173);
+// const kPrimaryColor = Color(0xFF5d1049);
+// const kSecondaryLightColor = Color(0xFFe30425);
+const kPrimaryColor = Color(0xFF0E37EA);
+const kSecondaryLightColor = Color(0xFFEBB609);
+const kErrorLightColor = Color(0xffE91E63);
 const kAccentLightColor = kSecondaryLightColor;
-const kBackgroundLightColor = Color(0xFFe2f3f5);
-const kCardLightColor = Color(0xFFe2f3f5);
+const kBackgroundLightColor = kWhiteColor;
+const kCardLightColor = kWhiteColor;
 
 const kPrimaryColorDark = Color(0xFFFF7597);
 const kSecondaryDarkColor = Color(0xFFFF0266);
+const kErrorDarkColor = Color(0xffEC407A);
 const kAccentDarkColor = kWhiteColor;
 const kBackgroundDarkColor = Color(0xFF202124);
 // const kBackgroundDarkColor = Color(0xFF24191C);
@@ -77,10 +81,11 @@ const kPrimaryIconDarkColor = kWhiteColor;
 /// Text Colors
 const kBodyTextColorLight = Color(0xFF232323);
 const kTitleTextColorLight = Color(0xFF131313);
-const kUnselectedLabelColorLight = Color(0xFF5F6368);
+const kUnselectedLabelColorLight = Color(0xFF7C7C7C);
 
 const kBodyTextColorDark = Color(0xFF7C7C7C);
 const kUnselectedLabelColorDark = Color(0xFF5F6368);
-const kTitleTextColorDark = Colors.white;
+const kTitleTextColorDark = Color(0xFF7C7C7C);
 
-const kShadowColor = Color(0xFF7C7C7C);
+const kShadowColor = Color(0xFFDEDEDE);
+const kShadowDarkColor = Color(0xFF7C7C7C);

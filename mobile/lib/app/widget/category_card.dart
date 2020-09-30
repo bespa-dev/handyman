@@ -154,11 +154,11 @@ class _ListCategoryCardItemState extends State<ListCategoryCardItem> {
                       ringColor: themeData.scaffoldBackgroundColor,
                     ),
                     trailing: IconButton(
-                      icon: Icon(Icons.arrow_right_alt),
+                      icon: Icon(Icons.arrow_right_alt, color: themeData.iconTheme.color,),
                       onPressed: () => context.navigator.push(
                         Routes.categoryProvidersPage,
                         arguments: CategoryProvidersPageArguments(
-                            category: category.name),
+                            category: category),
                       ),
                     ),
                     subtitle: Text(

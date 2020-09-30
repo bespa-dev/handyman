@@ -12,6 +12,9 @@ final _kBodyFontFamily = GoogleFonts.rubik().fontFamily;
 /// Light theme
 ThemeData themeData(BuildContext context) => ThemeData(
       appBarTheme: appBarTheme,
+      shadowColor: kShadowColor,
+      disabledColor: kDisabledColor,
+      errorColor: kErrorLightColor,
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -66,6 +69,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
         headline6: TextStyle(
             color: kTitleTextColorLight,
             fontFamily: _kBodyFontFamily,
+            fontSize: 18,
             fontWeight: FontWeight.w500),
         bodyText1:
             TextStyle(color: kBodyTextColorLight, fontFamily: _kBodyFontFamily),
@@ -88,7 +92,10 @@ ThemeData themeData(BuildContext context) => ThemeData(
 
 /// Dark theme
 ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
+      shadowColor: kShadowDarkColor,
+      errorColor: kErrorDarkColor,
       appBarTheme: appBarTheme,
+      // disabledColor: kDisabledColor,
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -143,6 +150,7 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
         headline6: TextStyle(
             color: kTitleTextColorDark,
             fontFamily: _kBodyFontFamily,
+            fontSize: 18,
             fontWeight: FontWeight.w500),
         bodyText1:
             TextStyle(color: kBodyTextColorDark, fontFamily: _kBodyFontFamily),
@@ -170,6 +178,7 @@ AppBarTheme appBarTheme = AppBarTheme(
     headline6: TextStyle(
       fontFamily: _kBodyFontFamily,
       fontWeight: FontWeight.w500,
+      fontSize: 18,
     ),
   ),
 );

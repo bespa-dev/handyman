@@ -20,18 +20,30 @@ class ApiProviderService {
 
   /// Get all [Artisan]s from data source
   Future<List<Artisan>> getArtisans({@required String category}) async {
+    // Decode artisans from json array
     final data = await rootBundle.loadString("assets/sample_artisan.json");
     var decodedData = json.decode(data);
-    final List<dynamic> artisans =
-        decodedData != null ? List.from(decodedData) : [];
-    final results = <Artisan>[];
-    for (var json in artisans) {
-      final item = Artisan.fromJson(json);
-      if (item.category == category) results.add(item);
-    }
-    _database.providerDao.addProviders(results);
-    return results;
+
+    // Convert each object to `Artisan` object
+    final List<dynamic> artisans = decodedData ??= [];
+
+    // Add to database
+    _database.providerDao
+        .addProviders(artisans.map((e) => Artisan.fromJson(e)).toList());
+
+    // Traverse json array
+    final results = artisans
+        .map((e) => Artisan.fromJson(e))
+        .where((item) => item.category == category)
+        .toList();
+    return /*_database.categoryDao.categoryByGroup(categoryGroup.index).get();*/ results;
   }
+
+  Stream<Artisan> getArtisanById({@required String id}) =>
+      _database.providerDao.artisanById(id).watchSingle();
+
+  Stream<Customer> getCustomerById({@required String id}) =>
+      _database.customerById(id).watchSingle();
 
   /// Get all [ServiceCategory] from data source
   Future<List<ServiceCategory>> getCategories(

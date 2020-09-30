@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import '../pages/account_completion.dart';
 import '../pages/account_selection.dart';
 import '../pages/client/home.dart';
+import '../pages/client/profile.dart';
 import '../pages/client/provider_details.dart';
 import '../pages/client/providers.dart';
 import '../pages/conversation.dart';
@@ -31,6 +32,7 @@ class Routes {
   static const String accountSelectionPage = '/account-selection-page';
   static const String conversationPage = '/conversation-page';
   static const String homePage = '/home-page';
+  static const String profilePage = '/profile-page';
   static const String categoryProvidersPage = '/category-providers-page';
   static const String serviceProviderDetails = '/service-provider-details';
   static const String providerSettingsPage = '/provider-settings-page';
@@ -44,6 +46,7 @@ class Routes {
     accountSelectionPage,
     conversationPage,
     homePage,
+    profilePage,
     categoryProvidersPage,
     serviceProviderDetails,
     providerSettingsPage,
@@ -63,6 +66,7 @@ class Router extends RouterBase {
     RouteDef(Routes.accountSelectionPage, page: AccountSelectionPage),
     RouteDef(Routes.conversationPage, page: ConversationPage),
     RouteDef(Routes.homePage, page: HomePage),
+    RouteDef(Routes.profilePage, page: ProfilePage),
     RouteDef(Routes.categoryProvidersPage, page: CategoryProvidersPage),
     RouteDef(Routes.serviceProviderDetails, page: ServiceProviderDetails),
     RouteDef(Routes.providerSettingsPage, page: ProviderSettingsPage),
@@ -123,6 +127,12 @@ class Router extends RouterBase {
     HomePage: (data) {
       return buildAdaptivePageRoute<dynamic>(
         builder: (context) => HomePage(),
+        settings: data,
+      );
+    },
+    ProfilePage: (data) {
+      return buildAdaptivePageRoute<dynamic>(
+        builder: (context) => ProfilePage(),
         settings: data,
       );
     },
