@@ -18,27 +18,45 @@ class ChatListItem extends StatefulWidget {
 }
 
 class _ChatListItemState extends State<ChatListItem> {
+  double _kHeight, _kWidth;
+
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
+    final size = MediaQuery.of(context).size;
+    _kWidth = size.width;
+    _kHeight = size.height;
 
     return Consumer<PrefsProvider>(
       builder: (_, provider, __) {
         final isMe = widget.conversation.author == provider.userId;
+        final conversation = widget.conversation;
+        final color = isMe ? themeData.disabledColor : themeData.accentColor;
 
-        return Container(
-          alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-          height: kToolbarHeight,
-          width: getProportionateScreenWidth(kSpacingX250),
-          padding: EdgeInsets.symmetric(),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(kSpacingX24),
-              topRight: Radius.circular(kSpacingX24),
-              bottomLeft: isMe ? Radius.circular(kSpacingX24) : Radius.zero,
-              bottomRight: isMe ? Radius.zero : Radius.circular(kSpacingX24),
+        return ConstrainedBox(
+          constraints: BoxConstraints(
+            // height: kToolbarHeight,
+            // width: 120,
+            maxWidth: _kWidth * 0.4,
+            minHeight: kToolbarHeight,
+            minWidth: _kWidth * 0.2,
+          ),
+          child: Container(
+            alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+            padding: EdgeInsets.symmetric(
+              horizontal: getProportionateScreenWidth(kSpacingX24),
+              vertical: getProportionateScreenHeight(kSpacingX16),
             ),
-            color: themeData.primaryColor,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(kSpacingX24),
+                topRight: Radius.circular(kSpacingX24),
+                bottomLeft: isMe ? Radius.circular(kSpacingX24) : Radius.zero,
+                bottomRight: isMe ? Radius.zero : Radius.circular(kSpacingX24),
+              ),
+              color: color,
+            ),
+            child: Text(conversation.content),
           ),
         );
       },
@@ -62,6 +80,7 @@ class _ChatMessagesState extends State<ChatMessages> {
   Widget build(BuildContext context) => StreamBuilder<List<Conversation>>(
       stream: widget.messages,
       builder: (context, snapshot) {
+        // FIXME: Add swipe action for instant reply
         return snapshot.hasData
             ? AnimationLimiter(
                 child: ListView.separated(

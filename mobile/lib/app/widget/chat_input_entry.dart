@@ -38,6 +38,7 @@ class _UserInputState extends State<UserInput> {
                 dismissKeyboard = !focused;
                 currentInputSelector = InputSelector.NONE;
                 setState(() {});
+                // TODO: Show or hide keyboard here
               },
               focusState: !dismissKeyboard,
             ),
@@ -46,6 +47,7 @@ class _UserInputState extends State<UserInput> {
                 currentInputSelector = selector;
                 dismissKeyboard = true;
                 setState(() {});
+                // TODO: Show keyboard here
               },
               sendMessageEnabled: textController.text.isNotEmpty,
               onMessageSent: () {
@@ -122,14 +124,17 @@ class __UserInputTextState extends State<_UserInputText> {
             ),
           ),
           widget.textController.text.isEmpty && !widget.focusState
-              ? Container(
-                  padding: EdgeInsets.only(
-                      left: getProportionateScreenWidth(kSpacingX16)),
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Say something...",
-                    style: TextStyle(
-                      color: themeData.primaryColor.withOpacity(kOpacityX50),
+              ? GestureDetector(
+                  onTap: () => widget.onTextFieldFocused(true),
+                  child: Container(
+                    padding: EdgeInsets.only(
+                        left: getProportionateScreenWidth(kSpacingX16)),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Say something...",
+                      style: TextStyle(
+                        color: themeData.primaryColor.withOpacity(kOpacityX50),
+                      ),
                     ),
                   ),
                 )
