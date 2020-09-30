@@ -69,8 +69,9 @@ const kAccentLightColor = kSecondaryLightColor;
 const kBackgroundLightColor = kWhiteColor;
 const kCardLightColor = kWhiteColor;
 
-const kPrimaryColorDark = Color(0xFFFF7597);
-const kSecondaryDarkColor = Color(0xFFFF7597);
+const kPrimaryColorDark = Color(0xFF9BA1F6);
+// const kPrimaryColorDark = Color(0xFFFF7597);
+const kSecondaryDarkColor = Color(0xFF9BA1F6);
 const kErrorDarkColor = Color(0xffEC407A);
 const kAccentDarkColor = kWhiteColor;
 const kBackgroundDarkColor = Color(0xFF151515);
@@ -92,9 +93,11 @@ const kBodyTextColorLight = Color(0xFF232323);
 const kTitleTextColorLight = Color(0xFF131313);
 const kUnselectedLabelColorLight = Color(0xFF7C7C7C);
 
-const kBodyTextColorDark = Color(0xFF7C7C7C);
-const kUnselectedLabelColorDark = Color(0xFF5F6368);
-const kTitleTextColorDark = Color(0xFF7C7C7C);
+// const kBodyTextColorDark = Color(0xFF7C7C7C);
+// const kUnselectedLabelColorDark = Color(0xFF5F6368);
+const kBodyTextColorDark = Color(0xFFDEDEDE);
+const kUnselectedLabelColorDark = Color(0xFFDEDEDE);
+const kTitleTextColorDark = Color(0xFFDEDEDE);
 
 const kShadowColor = Color(0xFFDEDEDE);
 const kShadowDarkColor = Color(0xFF7C7C7C);

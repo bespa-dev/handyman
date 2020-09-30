@@ -50,6 +50,7 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             UserAvatar(
+              tag: _customer?.avatar,
               url: _customer?.avatar ?? "",
               ringColor: RandomColor()
                   .randomColor(colorBrightness: ColorBrightness.dark),

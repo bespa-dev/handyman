@@ -122,6 +122,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 UserAvatar(
+                                  tag: "https://images.unsplash.com/photo-1598547461182-45d03f6661e4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
                                   url:
                                       "https://images.unsplash.com/photo-1598547461182-45d03f6661e4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
                                   radius: kSpacingX36,

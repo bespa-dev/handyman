@@ -150,6 +150,7 @@ class _ListCategoryCardItemState extends State<ListCategoryCardItem> {
                           CategoryProvidersPageArguments(category: category),
                     ),
                     leading: UserAvatar(
+                      tag: category.avatar,
                       url: category.avatar,
                       ringColor: themeData.scaffoldBackgroundColor,
                     ),

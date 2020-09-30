@@ -10,6 +10,7 @@ import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/provider/artisan_api_provider.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -26,7 +27,6 @@ class ConversationPage extends StatefulWidget {
 
 class _ConversationPageState extends State<ConversationPage> {
   final _apiService = sl.get<ApiProviderService>();
-  final _messageController = TextEditingController();
   final _dummyArtisan = Stream.value(
     Artisan(
         id: Uuid().v4(),
@@ -43,30 +43,9 @@ class _ConversationPageState extends State<ConversationPage> {
         rating: 3.5),
   );
 
-  void sendMessage() async {
-    final conversation = Conversation(
-      id: Uuid().v4(),
-      author: widget.sender,
-      recipient: widget.recipient,
-      content: _messageController.text.trim(),
-      createdAt: DateTime.now().toIso8601String(),
-    );
-
-    await _apiService.sendMessage(conversation: conversation);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    for (int i = 0; i < 6; i++) {
-      debugPrint(Uuid().v4());
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    debugPrint("${widget.sender} : ${widget.recipient}");
 
     return Scaffold(
       extendBody: true,
@@ -104,7 +83,15 @@ class _ConversationPageState extends State<ConversationPage> {
   }
 
   Widget _buildChatWidget(Artisan artisan) => StreamBuilder<Customer>(
-      stream: _apiService.getCustomerById(id: widget.sender),
+      stream: /*_apiService.getCustomerById(id: widget.sender)*/ Stream.value(
+        Customer(
+          id: widget.sender,
+          avatar:
+              "https://images.unsplash.com/photo-1574981370294-edbbf06bb159?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
+          email: "quabynah@gmail.com",
+          name: "Quabynah Bilson Jr.",
+        ),
+      ),
       builder: (context, snapshot) => Stack(
             children: [
               Column(
@@ -113,21 +100,23 @@ class _ConversationPageState extends State<ConversationPage> {
                     child: ChatMessages(
                       messages: _apiService.getConversation(
                           sender: widget.sender, recipient: widget.recipient),
-                      onTap: (index) {},
                       artisan: artisan,
-                      customer: /*snapshot.data ??*/
-                          Customer(
-                        id: widget.sender,
-                        avatar:
-                            "https://images.unsplash.com/photo-1574981370294-edbbf06bb159?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
-                        email: "quabynah@gmail.com",
-                        name: "Quabynah Bilson Jr.",
-                      ),
+                      customer: snapshot.data,
                     ),
                   ),
                   UserInput(
-                    onMessageSent: (content) {
-                      debugPrint("Message to be sent -> $content");
+                    onMessageSent: (content) async {
+                      final timestamp = DateFormat.jms().format(DateTime.now());
+                      final conversation = Conversation(
+                        id: Uuid().v4(),
+                        author: widget.sender,
+                        recipient: widget.recipient,
+                        content: content,
+                        createdAt: timestamp,
+                      );
+                      debugPrint(timestamp);
+                      // FIXME: send message
+                      //await _apiService.sendMessage(conversation: conversation);
                     },
                   ),
                 ],

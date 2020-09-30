@@ -11,6 +11,7 @@ import 'package:handyman/data/local_database.dart';
 import 'package:meta/meta.dart';
 
 /// API service for application
+/// FIXME: fix bugs with moor database
 class ApiProviderService {
   final _providerDao = sl.get<LocalDatabase>().providerDao;
   final _customerDao = sl.get<LocalDatabase>().customerDao;
@@ -33,8 +34,7 @@ class ApiProviderService {
     final List<dynamic> artisans = decodedData ??= [];
 
     // Add to database
-    _providerDao
-        .addProviders(artisans.map((e) => Artisan.fromJson(e)).toList());
+    // _providerDao.addProviders(artisans.map((e) => Artisan.fromJson(e)).toList());
 
     // Traverse json array
     final results = artisans
@@ -56,7 +56,7 @@ class ApiProviderService {
   //     _messageDao.conversationWithRecipient(sender, recipient).watch();
 
   Stream<List<Conversation>> getConversation(
-          {@required String sender, @required String recipient}) async* {
+      {@required String sender, @required String recipient}) async* {
     // Decode artisans from json array
     final data = await rootBundle.loadString("assets/sample_conversation.json");
     var decodedData = json.decode(data);
@@ -65,8 +65,7 @@ class ApiProviderService {
     final List<dynamic> messages = decodedData ??= [];
 
     // Add to database
-    _messageDao
-        .addMessages(messages.map((e) => Conversation.fromJson(e)).toList());
+    // _messageDao.addMessages(messages.map((e) => Conversation.fromJson(e)).toList());
 
     // Traverse json array
     final results = messages
@@ -91,8 +90,7 @@ class ApiProviderService {
     final List<dynamic> categories = decodedData ??= [];
 
     // Add to database
-    _categoryDao
-        .addItems(categories.map((e) => ServiceCategory.fromJson(e)).toList());
+    // _categoryDao.addItems(categories.map((e) => ServiceCategory.fromJson(e)).toList());
 
     // Traverse json array
     final results = categories

@@ -208,7 +208,7 @@ class ButtonClear extends FlatButton {
               text.toUpperCase(),
               style: themeData.textTheme.button.copyWith(
                 color: textColor == null || !enabled
-                    ? themeData.accentColor
+                    ? themeData.primaryColor
                     : textColor ?? themeData.disabledColor,
               ),
             ),

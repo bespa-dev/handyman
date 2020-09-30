@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
@@ -11,6 +11,7 @@ import 'package:meta/meta.dart';
 import 'package:provider/provider.dart';
 import 'package:random_color/random_color.dart';
 
+/// Each item in the [Conversation] list
 class ChatListItem extends StatefulWidget {
   final Conversation conversation;
   final Artisan artisan;
@@ -28,14 +29,14 @@ class ChatListItem extends StatefulWidget {
 }
 
 class _ChatListItemState extends State<ChatListItem> {
-  double _kHeight, _kWidth;
+  double /*_kHeight,*/ _kWidth;
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    // final themeData = Theme.of(context);
     final size = MediaQuery.of(context).size;
     _kWidth = size.width;
-    _kHeight = size.height;
+    // _kHeight = size.height;
 
     return Consumer<PrefsProvider>(
       builder: (_, provider, __) => Consumer<ThemeProvider>(
@@ -45,80 +46,85 @@ class _ChatListItemState extends State<ChatListItem> {
           final color =
               theme.isLightTheme ? kChatBackgroundLight : kChatBackgroundDark;
           final textAlignment = isMe ? TextAlign.end : TextAlign.start;
+          final themeData = Theme.of(context);
 
-          return Row(
-            mainAxisAlignment:
-                isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              isMe
-                  ? SizedBox.shrink()
-                  : Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        UserAvatar(
-                          url: widget.artisan.avatar,
-                          radius: kSpacingX42,
-                          ringColor: RandomColor(1).randomColor(
-                              colorBrightness: ColorBrightness.dark),
-                        ),
-                        SizedBox(
-                          width: getProportionateScreenWidth(kSpacingX8),
-                        ),
-                      ],
-                    ),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: getProportionateScreenWidth(kSpacingX24),
-                  vertical: getProportionateScreenHeight(kSpacingX16),
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(kSpacingX24),
-                    topRight: Radius.circular(kSpacingX24),
-                    bottomLeft:
-                        isMe ? Radius.circular(kSpacingX24) : Radius.zero,
-                    bottomRight:
-                        isMe ? Radius.zero : Radius.circular(kSpacingX24),
-                  ),
-                  color: color,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment:
-                      isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                  children: [
-                    // TODO: Add support for images
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: _kWidth * 0.6,
-                      ),
-                      child: Text(
-                        conversation.content,
-                        textAlign: textAlignment,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              isMe
-                  ? Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: getProportionateScreenWidth(kSpacingX8),
-                        ),
-                        UserAvatar(
-                          url: widget.customer.avatar,
-                          radius: kSpacingX42,
-                          ringColor: RandomColor(14).randomColor(
-                            colorBrightness: ColorBrightness.dark,
+          return InkWell(
+            onTap: () {},
+            child: Row(
+              mainAxisAlignment:
+                  isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                isMe
+                    ? SizedBox.shrink()
+                    : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          UserAvatar(
+                            url: widget.artisan.avatar,
+                            radius: kSpacingX42,
+                            ringColor: RandomColor(1).randomColor(
+                                colorBrightness: ColorBrightness.dark),
                           ),
+                          SizedBox(
+                            width: getProportionateScreenWidth(kSpacingX8),
+                          ),
+                        ],
+                      ),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: getProportionateScreenWidth(kSpacingX24),
+                    vertical: getProportionateScreenHeight(kSpacingX16),
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(kSpacingX24),
+                      topRight: Radius.circular(kSpacingX24),
+                      bottomLeft:
+                          isMe ? Radius.circular(kSpacingX24) : Radius.zero,
+                      bottomRight:
+                          isMe ? Radius.zero : Radius.circular(kSpacingX24),
+                    ),
+                    color: color,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: isMe
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
+                    children: [
+                      // TODO: Add support for images
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: _kWidth * 0.5,
                         ),
-                      ],
-                    )
-                  : SizedBox.shrink(),
-            ],
+                        child: Text(
+                          conversation.content,
+                          textAlign: textAlignment,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                isMe
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: getProportionateScreenWidth(kSpacingX8),
+                          ),
+                          UserAvatar(
+                            url: widget.customer.avatar,
+                            radius: kSpacingX42,
+                            ringColor: RandomColor(14).randomColor(
+                              colorBrightness: ColorBrightness.dark,
+                            ),
+                          ),
+                        ],
+                      )
+                    : SizedBox.shrink(),
+              ],
+            ),
           );
         },
       ),
@@ -126,16 +132,15 @@ class _ChatListItemState extends State<ChatListItem> {
   }
 }
 
+/// List of [Conversation]s
 class ChatMessages extends StatefulWidget {
   final Stream<List<Conversation>> messages;
   final Artisan artisan;
   final Customer customer;
-  final Function(int) onTap;
 
   const ChatMessages(
       {Key key,
       @required this.messages,
-      this.onTap,
       @required this.artisan,
       @required this.customer})
       : super(key: key);
@@ -169,14 +174,10 @@ class _ChatMessagesState extends State<ChatMessages> {
                       child: SlideAnimation(
                         verticalOffset: kSlideOffset,
                         child: FadeInAnimation(
-                          child: GestureDetector(
-                            onTap: () => widget.onTap(index) ?? null,
-                            behavior: HitTestBehavior.translucent,
-                            child: ChatListItem(
-                              conversation: conversation,
-                              customer: widget.customer,
-                              artisan: widget.artisan,
-                            ),
+                          child: ChatListItem(
+                            conversation: conversation,
+                            customer: widget.customer,
+                            artisan: widget.artisan,
                           ),
                         ),
                       ),
