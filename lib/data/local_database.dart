@@ -20,7 +20,7 @@ LazyDatabase _openConnection() {
     // put the database file, called db.sqlite here, into the documents folder
     // for your app.
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'handyman_db.sqlite'));
+    final file = File(p.join(dbFolder.path, 'handyman.sqlite'));
     return VmDatabase(file);
   });
 }
@@ -38,16 +38,7 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 2;
-
-  @override
-  MigrationStrategy get migration => MigrationStrategy(onCreate: (m) {
-        debugPrint("Created database");
-        return Future.value();
-      }, beforeOpen: (_) {
-        debugPrint("Before open");
-        return Future.value();
-      });
+  int get schemaVersion => 1;
 }
 
 @UseDao(
@@ -73,7 +64,7 @@ class ProviderDao extends DatabaseAccessor<LocalDatabase>
   tables: [CategoryItem],
   queries: {
     "categoryById": "SELECT * FROM category_item WHERE id = ?",
-    // "categoryByGroup": "SELECT * FROM category_item WHERE group_name = ?",
+    "categoryByGroup": "SELECT * FROM category_item WHERE groupName = ?",
   },
 )
 class CategoryDao extends DatabaseAccessor<LocalDatabase>

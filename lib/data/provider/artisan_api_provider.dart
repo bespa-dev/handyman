@@ -33,7 +33,8 @@ class ApiProviderService {
   /// Get all [ServiceCategory] from data source
   Future<List<ServiceCategory>> getCategories(
       {CategoryGroup categoryGroup = CategoryGroup.FEATURED}) async {
-    var categoryList = await _database.categoryDao.categoryById("var1").get();
+    var categoryList =
+        await _database.categoryDao.categoryByGroup(categoryGroup.index).get();
     if (categoryList.isNotEmpty)
       return categoryList;
     else {

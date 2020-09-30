@@ -1544,7 +1544,7 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
       avatar:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}avatar']),
       groupName:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}group']),
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}groupName']),
     );
   }
   @override
@@ -1560,7 +1560,7 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
       map['avatar'] = Variable<String>(avatar);
     }
     if (!nullToAbsent || groupName != null) {
-      map['group'] = Variable<int>(groupName);
+      map['groupName'] = Variable<int>(groupName);
     }
     return map;
   }
@@ -1659,7 +1659,7 @@ class CategoryItemCompanion extends UpdateCompanion<ServiceCategory> {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (avatar != null) 'avatar': avatar,
-      if (groupName != null) 'group': groupName,
+      if (groupName != null) 'groupName': groupName,
     });
   }
 
@@ -1689,7 +1689,7 @@ class CategoryItemCompanion extends UpdateCompanion<ServiceCategory> {
       map['avatar'] = Variable<String>(avatar.value);
     }
     if (groupName.present) {
-      map['group'] = Variable<int>(groupName.value);
+      map['groupName'] = Variable<int>(groupName.value);
     }
     return map;
   }
@@ -1752,7 +1752,7 @@ class $CategoryItemTable extends CategoryItem
   @override
   GeneratedIntColumn get groupName => _groupName ??= _constructGroupName();
   GeneratedIntColumn _constructGroupName() {
-    return GeneratedIntColumn('group', $tableName, false,
+    return GeneratedIntColumn('groupName', $tableName, false,
         defaultValue: Constant(0));
   }
 
@@ -1786,9 +1786,9 @@ class $CategoryItemTable extends CategoryItem
     } else if (isInserting) {
       context.missing(_avatarMeta);
     }
-    if (data.containsKey('group')) {
+    if (data.containsKey('groupName')) {
       context.handle(_groupNameMeta,
-          groupName.isAcceptableOrUnknown(data['group'], _groupNameMeta));
+          groupName.isAcceptableOrUnknown(data['groupName'], _groupNameMeta));
     }
     return context;
   }
@@ -1868,6 +1868,12 @@ mixin _$CategoryDaoMixin on DatabaseAccessor<LocalDatabase> {
   Selectable<ServiceCategory> categoryById(String var1) {
     return customSelect('SELECT * FROM category_item WHERE id = ?',
         variables: [Variable.withString(var1)],
+        readsFrom: {categoryItem}).map(categoryItem.mapFromRow);
+  }
+
+  Selectable<ServiceCategory> categoryByGroup(int var1) {
+    return customSelect('SELECT * FROM category_item WHERE groupName = ?',
+        variables: [Variable.withInt(var1)],
         readsFrom: {categoryItem}).map(categoryItem.mapFromRow);
   }
 }

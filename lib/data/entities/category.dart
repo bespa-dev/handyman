@@ -9,7 +9,7 @@ class CategoryItem extends Table {
   TextColumn get avatar => text()();
 
   IntColumn get groupName =>
-      integer().named("group").withDefault(Constant(0))();
+      integer().named("groupName").withDefault(Constant(0))();
 
   @override
   Set<Column> get primaryKey => {id};

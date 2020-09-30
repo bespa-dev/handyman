@@ -8,6 +8,12 @@
       "languageVersion": "2.2"
     },
     {
+      "name": "algolia",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/algolia-0.1.7",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
       "name": "analyzer",
       "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/analyzer-0.39.17",
       "packageUri": "lib/",
@@ -250,6 +256,24 @@
     {
       "name": "firebase",
       "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/firebase-7.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.7"
+    },
+    {
+      "name": "firebase_analytics",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/firebase_analytics-6.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
+      "name": "firebase_analytics_platform_interface",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/firebase_analytics_platform_interface-1.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
+      "name": "firebase_analytics_web",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/firebase_analytics_web-0.1.1",
       "packageUri": "lib/",
       "languageVersion": "2.7"
     },
@@ -932,7 +956,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-09-30T01:09:52.983590Z",
+  "generated": "2020-09-30T01:51:32.190268Z",
   "generator": "pub",
   "generatorVersion": "2.10.0-110.0.dev"
 }

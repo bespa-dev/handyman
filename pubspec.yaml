@@ -1,7 +1,9 @@
 name: handyman
 description: An artisan search application.
 
-publish_to: "none"
+publish_to: "github.com"
+
+authors: "Quabynah Codelabs LLC <codelbas.quabynah@gmail.com>"
 
 version: 0.0.1+1
 
@@ -51,6 +53,9 @@ dependencies:
   cloud_firestore: ^0.14.0+2
   firebase_storage: ^4.0.0
   firebase_remote_config: ^0.4.0
+  firebase_core: ^0.5.0
+  firebase_analytics: ^6.0.0
+  algolia: ^0.1.7
 
   cupertino_icons: ^0.1.3
 
