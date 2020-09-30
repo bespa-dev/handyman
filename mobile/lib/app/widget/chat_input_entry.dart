@@ -225,7 +225,7 @@ class _InputSelectorButton extends StatelessWidget {
 }
 
 /// Area when [InputSelector] is picked
-class _SelectorExpanded extends StatelessWidget {
+class _SelectorExpanded extends StatefulWidget {
   final Function(bool) onCloseRequested;
   final Function(String) onTextAdded;
   final InputSelector currentSelector;
@@ -238,14 +238,29 @@ class _SelectorExpanded extends StatelessWidget {
       : super(key: key);
 
   @override
+  __SelectorExpandedState createState() => __SelectorExpandedState();
+}
+
+class __SelectorExpandedState extends State<_SelectorExpanded> {
+  EmojiStickerSelector _emojiSelector = EmojiStickerSelector.EMOJI;
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        currentSelector == InputSelector.EMOJI
-            ? _buildEmojiSelector(context)
-            : currentSelector == InputSelector.MAP
+        widget.currentSelector == InputSelector.EMOJI
+            ? _EmojiSelector(
+                onTextAdded: widget.onTextAdded,
+                selector: _emojiSelector,
+                onSelected: (selector) {
+                  setState(() {
+                    _emojiSelector = selector;
+                  });
+                },
+              )
+            : widget.currentSelector == InputSelector.MAP
                 ? _buildMapPanel()
-                : currentSelector == InputSelector.NONE
+                : widget.currentSelector == InputSelector.NONE
                     ? SizedBox.shrink()
                     : _buildFunctionalityNotAvailablePanel(context),
         _buildHideUIPanel(context),
@@ -255,51 +270,11 @@ class _SelectorExpanded extends StatelessWidget {
 
   Widget _buildHideUIPanel(BuildContext context) => Container(
         alignment: Alignment.center,
-        child: currentSelector != InputSelector.NONE
+        child: widget.currentSelector != InputSelector.NONE
             ? IconButton(
                 icon: Icon(Feather.chevron_down),
-                onPressed: () => onCloseRequested(true))
+                onPressed: () => widget.onCloseRequested(true))
             : SizedBox.shrink(),
-      );
-
-  Widget _buildEmojiSelector(context) => Container(
-        height: kSpacingX320,
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _ExtendedSelectorInnerButton(
-                  text: "Emoji",
-                  onClick: () {
-                    // TODO: Show emojis
-                  },
-                  selected: true,
-                ),
-                _ExtendedSelectorInnerButton(
-                  text: "Stickers",
-                  onClick: () => Scaffold.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(
-                      SnackBar(
-                        content: Text("This feature is unavailable"),
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    ),
-                  selected: false,
-                ),
-              ],
-            ),
-            Container(
-              width: double.infinity,
-              child: _EmojiTable(
-                onTextAdded: (text) {
-                  onTextAdded(text);
-                },
-              ),
-            ),
-          ],
-        ),
       );
 
   Widget _buildMapPanel() => Container(
@@ -327,15 +302,81 @@ class _SelectorExpanded extends StatelessWidget {
               style: Theme.of(context).textTheme.subtitle1,
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: getProportionateScreenHeight(kSpacingX12)),
+            SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
             Text(
               "Grab a beverage and check back later!",
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyText2.copyWith(
+                    color: Theme.of(context).disabledColor,
+                  ),
               textAlign: TextAlign.center,
             ),
           ],
         ),
       );
+}
+
+class _EmojiSelector extends StatelessWidget {
+  final Function(String) onTextAdded;
+  final EmojiStickerSelector selector;
+  final Function(EmojiStickerSelector) onSelected;
+
+  const _EmojiSelector(
+      {Key key,
+      @required this.onTextAdded,
+      @required this.selector,
+      @required this.onSelected})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // final themeData = Theme.of(context);
+    return Container(
+      height: kSpacingX320,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _ExtendedSelectorInnerButton(
+                text: "Emoji",
+                onClick: () => onSelected(EmojiStickerSelector.EMOJI),
+                selected: selector == EmojiStickerSelector.EMOJI,
+              ),
+              _ExtendedSelectorInnerButton(
+                text: "Stickers",
+                onClick: () => onSelected(EmojiStickerSelector.STICKER),
+                selected: selector == EmojiStickerSelector.STICKER,
+              ),
+            ],
+          ),
+          selector == EmojiStickerSelector.EMOJI
+              ? Expanded(child: _EmojiTable(onTextAdded: onTextAdded))
+              : Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Functionality currently not available",
+                        style: Theme.of(context).textTheme.subtitle1,
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX8)),
+                      Text(
+                        "Grab a beverage and check back later!",
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                              color: Theme.of(context).disabledColor,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+        ],
+      ),
+    );
+  }
 }
 
 /// Inner button for [EmojiStickerSelector]
@@ -354,21 +395,17 @@ class _ExtendedSelectorInnerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final backgroundColor = selected
-        ? themeData.colorScheme.secondary.withOpacity(kOpacityX70)
-        : kTransparent;
-    final color = selected
-        ? themeData.colorScheme.onSecondary
-        : themeData.colorScheme.onSurface.withOpacity(kOpacityX35);
+    final backgroundColor =
+        selected ? themeData.colorScheme.primary : kTransparent;
+    final color =
+        selected ? themeData.colorScheme.onPrimary : themeData.disabledColor;
 
-    return Container(
-      child: ButtonClear(
-        text: text,
-        onPressed: onClick,
-        themeData: themeData,
-        textColor: color,
-        backgroundColor: backgroundColor,
-      ),
+    return ButtonClear(
+      text: text,
+      onPressed: onClick,
+      themeData: themeData,
+      textColor: color,
+      backgroundColor: backgroundColor,
     );
   }
 }
@@ -382,7 +419,6 @@ class _EmojiTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: getProportionateScreenHeight(kSpacingX230),
       padding: EdgeInsets.all(kSpacingX8),
       child: GridView.custom(
         scrollDirection: Axis.vertical,
