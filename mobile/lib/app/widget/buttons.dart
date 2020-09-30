@@ -25,7 +25,7 @@ class ButtonOutlined extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: enabled ? onTap : null,
       borderRadius:
           BorderRadius.circular(getProportionateScreenWidth(kSpacingX36)),
       child: AnimatedContainer(
@@ -181,13 +181,36 @@ class ButtonClear extends FlatButton {
     @required ThemeData themeData,
     bool enabled = true,
     Color textColor,
+    double preferredHeight,
+    double preferredWidth,
+    Color backgroundColor,
   }) : super(
-          child: Text(
-            text.toUpperCase(),
-            style: themeData.textTheme.button.copyWith(
-              color: textColor == null || !enabled
-                  ? themeData.accentColor
-                  : textColor ?? themeData.disabledColor,
+          splashColor: kTransparent,
+          highlightColor: kTransparent,
+          textColor: textColor,
+          clipBehavior: Clip.hardEdge,
+          child: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: backgroundColor == null
+                  ? null
+                  : BorderRadius.circular(kSpacingX16),
+            ),
+            alignment: Alignment.center,
+            width: preferredWidth ?? getProportionateScreenWidth(kSpacingX96),
+            height:
+                preferredHeight ?? getProportionateScreenHeight(kSpacingX36),
+            padding: EdgeInsets.symmetric(
+                horizontal: getProportionateScreenWidth(kSpacingX8),
+                vertical: getProportionateScreenHeight(kSpacingX8)),
+            child: Text(
+              text.toUpperCase(),
+              style: themeData.textTheme.button.copyWith(
+                color: textColor == null || !enabled
+                    ? themeData.accentColor
+                    : textColor ?? themeData.disabledColor,
+              ),
             ),
           ),
           onPressed: enabled ? onPressed : null,

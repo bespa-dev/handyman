@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
+import 'package:handyman/core/utils.dart';
 import 'package:meta/meta.dart';
 
 enum InputSelector { NONE, MAP, DM, EMOJI, PHONE, PICTURE }
@@ -24,69 +26,62 @@ class _UserInputState extends State<UserInput> {
   final textController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.only(
-        top: getProportionateScreenHeight(kSpacingX4),
-      ),
-      child: Column(
-        children: [
-          Divider(),
-          _UserInputText(
-            textFieldValue: textController.text,
-            onTextChanged: (text) {
-              textController.text = text;
-              setState(() {});
-            },
-            keyboardShown: !dismissKeyboard,
-            onTextFieldFocused: (focused) {
-              // TODO: onTextFieldFocused
-            },
-            focusState: false,
-          ),
-          _UserInputSelector(
-            onSelectorChange: (selector) {
-              currentInputSelector = selector;
-              setState(() {});
-            },
-            sendMessageEnabled: textController.text.isNotEmpty,
-            onMessageSent: () {
-              widget.onMessageSent(textController.text.trim());
-              textController.clear();
-            },
-            currentInputSelector: currentInputSelector,
-          ),
-          _SelectorExpanded(
-            onCloseRequested: dismissKeyboard,
-            onTextAdded: (text) {
-              textController.text += text;
-              setState(() {});
-            },
-            currentSelector: currentInputSelector,
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        child: Column(
+          children: [
+            Divider(),
+            _UserInputText(
+              textController: textController,
+              keyboardShown: !dismissKeyboard,
+              onTextFieldFocused: (focused) {
+                dismissKeyboard = !focused;
+                currentInputSelector = InputSelector.NONE;
+                setState(() {});
+              },
+              focusState: !dismissKeyboard,
+            ),
+            _UserInputSelector(
+              onSelectorChange: (selector) {
+                currentInputSelector = selector;
+                dismissKeyboard = true;
+                setState(() {});
+              },
+              sendMessageEnabled: textController.text.isNotEmpty,
+              onMessageSent: () {
+                widget.onMessageSent(textController.text.trim());
+                textController.clear();
+                setState(() {});
+              },
+              currentInputSelector: currentInputSelector,
+            ),
+            _SelectorExpanded(
+              onCloseRequested: dismissKeyboard,
+              onTextAdded: (text) {
+                textController.text += text;
+                setState(() {});
+              },
+              currentSelector: currentInputSelector,
+            ),
+          ],
+        ),
+      );
 }
 
 class _UserInputText extends StatefulWidget {
-  final String textFieldValue;
-  final Function(String) onTextChanged;
+  final TextInputType keyboardType;
   final bool keyboardShown;
   final Function(bool) onTextFieldFocused;
   final bool focusState;
+  final TextEditingController textController;
 
   const _UserInputText(
       {Key key,
-      @required this.textFieldValue,
-      @required this.onTextChanged,
       @required this.keyboardShown,
       @required this.onTextFieldFocused,
-      @required this.focusState})
+      @required this.focusState,
+      this.keyboardType = TextInputType.text,
+      this.textController})
       : super(key: key);
 
   @override
@@ -96,7 +91,52 @@ class _UserInputText extends StatefulWidget {
 class __UserInputTextState extends State<_UserInputText> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    final themeData = Theme.of(context);
+
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.centerRight,
+      height: getProportionateScreenHeight(kSpacingX48),
+      child: Stack(
+        fit: StackFit.loose,
+        alignment: Alignment.bottomRight,
+        children: [
+          Container(
+            width: double.infinity,
+            padding:
+                EdgeInsets.only(left: getProportionateScreenWidth(kSpacingX16)),
+            alignment: Alignment.centerLeft,
+            child: TextFormField(
+              // controller: ,
+              textAlign: TextAlign.start,
+              keyboardType: widget.keyboardType,
+              onFieldSubmitted: (value) {},
+              onChanged: (_) {
+                widget.onTextFieldFocused(_.isNotEmpty);
+              },
+              controller: widget.textController,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              autocorrect: true,
+              textInputAction: TextInputAction.send,
+              onTap: () => widget.onTextFieldFocused(true),
+            ),
+          ),
+          widget.textController.text.isEmpty && !widget.focusState
+              ? Container(
+                  padding: EdgeInsets.only(
+                      left: getProportionateScreenWidth(kSpacingX16)),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Say something...",
+                    style: TextStyle(
+                      color: themeData.primaryColor.withOpacity(kOpacityX50),
+                    ),
+                  ),
+                )
+              : SizedBox.shrink(),
+        ],
+      ),
+    );
   }
 }
 
@@ -207,15 +247,65 @@ class _SelectorExpanded extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: currentSelector == InputSelector.EMOJI
-          ? _buildEmojiSelector()
-          : _buildFunctionalityNotAvailablePanel(context),
+          ? _buildEmojiSelector(context)
+          : currentSelector == InputSelector.MAP
+              ? _buildMapPanel()
+              : currentSelector == InputSelector.NONE
+                  ? SizedBox.shrink()
+                  : _buildFunctionalityNotAvailablePanel(context),
     );
   }
 
-  Widget _buildEmojiSelector() => Container(
+  Widget _buildEmojiSelector(context) => Container(
         height: kSpacingX320,
         child: Column(
-          children: [],
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _ExtendedSelectorInnerButton(
+                  text: "Emoji",
+                  onClick: () {
+                    // TODO: Show emojis
+                  },
+                  selected: true,
+                ),
+                _ExtendedSelectorInnerButton(
+                  text: "Stickers",
+                  onClick: () => Scaffold.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(
+                      SnackBar(
+                        content: Text("This feature is unavailable"),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    ),
+                  selected: false,
+                ),
+              ],
+            ),
+            Container(
+              width: double.infinity,
+              child: _EmojiTable(
+                onTextAdded: (text) {
+                  onTextAdded(text);
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget _buildMapPanel() => Container(
+        height: kSpacingX320,
+        child: GoogleMap(
+          initialCameraPosition: CameraPosition(
+            target: LatLng(5.11, -0.12),
+            zoom: 18.0,
+          ),
+          onTap: (address) {
+            debugPrint("tapped on -> ${address.toString()}");
+          },
         ),
       );
 
@@ -231,6 +321,7 @@ class _SelectorExpanded extends StatelessWidget {
               style: Theme.of(context).textTheme.subtitle1,
               textAlign: TextAlign.center,
             ),
+            SizedBox(height: getProportionateScreenHeight(kSpacingX12)),
             Text(
               "Grab a beverage and check back later!",
               style: Theme.of(context).textTheme.bodyText2,
@@ -239,4 +330,79 @@ class _SelectorExpanded extends StatelessWidget {
           ],
         ),
       );
+}
+
+class _ExtendedSelectorInnerButton extends StatelessWidget {
+  final String text;
+  final Function onClick;
+  final bool selected;
+
+  const _ExtendedSelectorInnerButton(
+      {Key key,
+      @required this.text,
+      @required this.onClick,
+      @required this.selected})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    final backgroundColor = selected
+        ? themeData.colorScheme.secondary.withOpacity(kOpacityX70)
+        : kTransparent;
+    final color = selected
+        ? themeData.colorScheme.onSecondary
+        : themeData.colorScheme.onSurface.withOpacity(kOpacityX35);
+
+    return Container(
+      child: ButtonClear(
+        text: text,
+        onPressed: onClick,
+        themeData: themeData,
+        textColor: color,
+        backgroundColor: backgroundColor,
+      ),
+    );
+  }
+}
+
+class _EmojiTable extends StatelessWidget {
+  final Function(String) onTextAdded;
+
+  const _EmojiTable({Key key, @required this.onTextAdded}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: getProportionateScreenHeight(kSpacingX230),
+      padding: EdgeInsets.all(kSpacingX8),
+      child: GridView.custom(
+        scrollDirection: Axis.vertical,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: EMOJI_COLUMNS,
+          crossAxisSpacing: getProportionateScreenWidth(kSpacingX4),
+        ),
+        childrenDelegate: SliverChildListDelegate.fixed(
+          [
+            ...emojis.map((emoji) => GestureDetector(
+                  onTap: () => onTextAdded(emoji),
+                  child: Container(
+                    width: getProportionateScreenWidth(kSpacingX42),
+                    height: getProportionateScreenHeight(kSpacingX42),
+                    child: Text(
+                      emoji,
+                      style: TextStyle(
+                        fontSize:
+                            Theme.of(context).textTheme.headline6.fontSize,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )),
+          ],
+        ),
+      ),
+    );
+  }
 }
