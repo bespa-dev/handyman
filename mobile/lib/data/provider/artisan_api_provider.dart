@@ -33,11 +33,11 @@ class ApiProviderService {
   /// Get all [ServiceCategory] from data source
   Future<List<ServiceCategory>> getCategories(
       {CategoryGroup categoryGroup = CategoryGroup.FEATURED}) async {
-    var categoryList =
-        await _database.categoryDao.categoryByGroup(categoryGroup.index).get();
-    if (categoryList.isNotEmpty)
-      return categoryList;
-    else {
+    // var categoryList =
+    //     await _database.categoryDao.categoryByGroup(categoryGroup.index).get();
+    // if (categoryList.isNotEmpty)
+    //   return categoryList;
+    // else {
       final results = <ServiceCategory>[];
       final data = await rootBundle.loadString("assets/sample_categories.json");
       var decodedData = json.decode(data);
@@ -45,11 +45,11 @@ class ApiProviderService {
           decodedData != null ? List.from(decodedData) : [];
       for (var json in categories) {
         final item = ServiceCategory.fromJson(json);
-        if (item.groupName == categoryGroup.index) results.add(item);
+        /*if (item.groupName == categoryGroup.index)*/ results.add(item);
       }
       _database.categoryDao.addItems(results);
       return results;
-    }
+    // }
   }
 
   Stream<List<CustomerReview>> getReviews(String id) =>

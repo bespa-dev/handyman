@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/routes/route.gr.dart';
@@ -42,16 +43,25 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
           width: double.infinity,
           child: Stack(
             children: [
-              Center(
-                  child: Image.network(widget.artisan.avatar,
-                      errorBuilder: (_, __, chunk) => Container(
-                            color: RandomColor()
-                                .randomColor(
-                                  colorBrightness: ColorBrightness.dark,
-                                )
-                                .withOpacity(kOpacityX14),
-                          ),
-                      fit: BoxFit.cover)),
+              Hero(
+                tag: widget.artisan.avatar,
+                child: CachedNetworkImage(
+                    imageUrl: widget.artisan.avatar,
+                    height: getProportionateScreenHeight(kSpacingX300),
+                    width: double.infinity,
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) => Center(
+                            child: CircularProgressIndicator(
+                                value: downloadProgress.progress)),
+                    errorWidget: (_, __, chunk) => Container(
+                          color: RandomColor()
+                              .randomColor(
+                                colorBrightness: ColorBrightness.dark,
+                              )
+                              .withOpacity(kOpacityX14),
+                        ),
+                    fit: BoxFit.cover),
+              ),
               Positioned(
                 top: kSpacingNone,
                 right: kSpacingNone,

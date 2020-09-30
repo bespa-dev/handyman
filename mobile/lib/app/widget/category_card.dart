@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/routes/route.gr.dart';
@@ -26,7 +27,7 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
         itemCount: widget.categories.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: 4 / 3,
+          // childAspectRatio: 4 / 3,
           crossAxisSpacing: getProportionateScreenWidth(kSpacingX8),
           mainAxisSpacing: getProportionateScreenHeight(kSpacingX4),
         ),
@@ -57,9 +58,19 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
                     ),
                     child: Stack(
                       children: [
-                        Image.network(
-                          category.avatar,
-                          fit: BoxFit.cover,
+                        Hero(
+                          tag: category.avatar,
+                          child: CachedNetworkImage(
+                            imageUrl: category.avatar,
+                            height: getProportionateScreenHeight(kSpacingX250),
+                            width: double.infinity,
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) => Center(
+                              child: CircularProgressIndicator(
+                                  value: downloadProgress.progress),
+                            ),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                         Positioned(
                           top: kSpacingX72,
@@ -68,8 +79,8 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
                           bottom: kSpacingNone,
                           child: Container(
                             decoration: BoxDecoration(
-                              color: themeData.primaryColor
-                                  .withOpacity(kOpacityX14),
+                              color: themeData.scaffoldBackgroundColor
+                                  .withOpacity(kOpacityX90),
                             ),
                             alignment: Alignment.center,
                             child: Column(

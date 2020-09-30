@@ -36,8 +36,8 @@ const kLoremText =
     "You can set your own location and search preferences to filter out whom you'd like to talk to. It has never been easier to find dates, love and romance. Seeking companionship with our app is easy so start. Flirt with hot chicks and guys now! Forget about searching for dates out in bars and night clubs when you can meet new people and chat right from your phone. With this dating app you can find cool girls and guys in your area to hang out with.";
 
 /// [Algolia]
-const kAlgoliaAppId = "";
-const kAlgoliaKey = "";
+const kAlgoliaAppId = "AIBRVBFA4W";
+const kAlgoliaKey = "604022a17d65f30d23e80a38f285be57";
 
 /// Durations
 const kScaleDuration = const Duration(milliseconds: 350);

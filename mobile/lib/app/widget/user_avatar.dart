@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/core/constants.dart';
@@ -38,22 +39,29 @@ class UserAvatar extends StatelessWidget {
               width: kSpacingX4,
             ),
           ),
-          child: Image.network(
-            url ?? "",
-            fit: BoxFit.cover,
-            width: radius,
-            height: radius,
-            alignment: Alignment.center,
-            errorBuilder: (_, __, chunk) => Container(
-              alignment: Alignment.center,
-              height: radius,
+          child: ClipOval(
+            clipBehavior: Clip.hardEdge,
+            child: CachedNetworkImage(
+              imageUrl: url ?? "",
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  Center(
+                      child: CircularProgressIndicator(
+                          value: downloadProgress.progress)),
+              fit: BoxFit.cover,
               width: radius,
-              clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(
-                color: themeData.primaryColor.withOpacity(kOpacityX14),
-                shape: BoxShape.circle,
+              height: radius,
+              alignment: Alignment.center,
+              errorWidget: (_, __, chunk) => Container(
+                alignment: Alignment.center,
+                height: radius,
+                width: radius,
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                  color: themeData.primaryColor.withOpacity(kOpacityX14),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Feather.user, size: radius / 2.5, color: ringColor),
               ),
-              child: Icon(Feather.user, size: radius / 2.5, color: ringColor),
             ),
           ),
         ),
