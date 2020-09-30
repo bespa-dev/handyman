@@ -6,6 +6,7 @@ class ButtonOutlined extends StatelessWidget {
   const ButtonOutlined({
     Key key,
     @required this.width,
+    @required this.height,
     @required this.themeData,
     @required this.onTap,
     @required this.label,
@@ -15,6 +16,7 @@ class ButtonOutlined extends StatelessWidget {
 
   final String label;
   final double width;
+  final double height;
   final IconData icon;
   final ThemeData themeData;
   final Function onTap;
@@ -30,7 +32,7 @@ class ButtonOutlined extends StatelessWidget {
         duration: kScaleDuration,
         curve: Curves.fastOutSlowIn,
         width: width,
-        height: kMinInteractiveDimension,
+        height: height ?? kMinInteractiveDimension,
         decoration: BoxDecoration(
           color: themeData.scaffoldBackgroundColor,
           border: Border.all(

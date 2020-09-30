@@ -28,10 +28,14 @@ LazyDatabase _openConnection() {
 
 @UseMoor(
   tables: [ServiceProvider, User, Bookings, Review, CategoryItem, Message],
-  queries: {
-    "customerById": "SELECT * FROM user WHERE id = ?",
-  },
-  daos: [ProviderDao, CategoryDao, BookingDao, ReviewDao, MessageDao],
+  daos: [
+    ProviderDao,
+    CategoryDao,
+    BookingDao,
+    ReviewDao,
+    MessageDao,
+    CustomerDao
+  ],
 )
 class LocalDatabase extends _$LocalDatabase {
   LocalDatabase._() : super(_openConnection());
@@ -41,24 +45,24 @@ class LocalDatabase extends _$LocalDatabase {
   @override
   int get schemaVersion => 1;
 
-  // @override
-  // // ignore: invalid_override_of_non_virtual_member, missing_return
-  // Future<Function> beforeOpen(QueryExecutor executor, OpeningDetails details) async {
-  //   await (executor
-  //       ..beginTransaction())
-  //       .runCustom("PRAGMA foreign_keys = ON");
-  // }
+// @override
+// // ignore: invalid_override_of_non_virtual_member, missing_return
+// Future<Function> beforeOpen(QueryExecutor executor, OpeningDetails details) async {
+//   await (executor
+//       ..beginTransaction())
+//       .runCustom("PRAGMA foreign_keys = ON");
+// }
 
-  @override
-  MigrationStrategy get migration => MigrationStrategy(
-        onUpgrade: (m, from, to) async {
-          if (from == 1) {
-            await m.addColumn(serviceProvider, serviceProvider.isCertified);
-          } else if(from == 2) {
-            await m.createTable(message);
-          }
-        },
-      );
+// @override
+// MigrationStrategy get migration => MigrationStrategy(
+//       onUpgrade: (m, from, to) async {
+//         if (from == 1) {
+//           await m.addColumn(serviceProvider, serviceProvider.isCertified);
+//         } else if(from == 2) {
+//           await m.createTable(message);
+//         }
+//       },
+//     );
 }
 
 @UseDao(
@@ -138,6 +142,7 @@ class ReviewDao extends DatabaseAccessor<LocalDatabase> with _$ReviewDaoMixin {
   Future<int> addItem(CustomerReview item) =>
       into(review).insert(item, mode: InsertMode.insertOrReplace);
 }
+
 @UseDao(
   tables: [Message],
   queries: {
@@ -145,9 +150,30 @@ class ReviewDao extends DatabaseAccessor<LocalDatabase> with _$ReviewDaoMixin {
         "SELECT * FROM message WHERE author = ? AND recipient = ? ORDER BY created_at DESC",
   },
 )
-class MessageDao extends DatabaseAccessor<LocalDatabase> with _$MessageDaoMixin {
+class MessageDao extends DatabaseAccessor<LocalDatabase>
+    with _$MessageDaoMixin {
   MessageDao(LocalDatabase db) : super(db);
 
   Future<int> sendMessage(Conversation item) =>
       into(message).insert(item, mode: InsertMode.insertOrReplace);
+
+  void addMessages(List<Conversation> messages) {
+    messages.forEach((item) async {
+      await sendMessage(item);
+    });
+  }
+}
+
+@UseDao(
+  tables: [User],
+  queries: {
+    "customerById": "SELECT * FROM user WHERE id = ?",
+  },
+)
+class CustomerDao extends DatabaseAccessor<LocalDatabase>
+    with _$CustomerDaoMixin {
+  CustomerDao(LocalDatabase db) : super(db);
+
+  Future<int> addCustomer(Customer item) =>
+      into(user).insert(item, mode: InsertMode.insertOrReplace);
 }

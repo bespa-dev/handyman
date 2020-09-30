@@ -18,6 +18,7 @@ const double kSpacingX120 = 120.0;
 const double kSpacingX200 = 200.0;
 const double kSpacingX250 = 250.0;
 const double kSpacingX300 = 300.0;
+const double kSpacingX320 = 320.0;
 const double kOpacityX14 = 0.14;
 const double kOpacityX35 = 0.35;
 const double kOpacityX50 = 0.5;
@@ -44,6 +45,7 @@ const kScaleDuration = const Duration(milliseconds: 350);
 
 /// Others
 const kScrollPhysics = const BouncingScrollPhysics();
+const kSlideOffset = 50.0;
 
 /// Colors
 const kGreenColor = Color(0xFF009688);

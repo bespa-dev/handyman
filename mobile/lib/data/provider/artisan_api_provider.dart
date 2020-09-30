@@ -12,7 +12,12 @@ import 'package:meta/meta.dart';
 
 /// API service for application
 class ApiProviderService {
-  final _database = sl.get<LocalDatabase>();
+  final _providerDao = sl.get<LocalDatabase>().providerDao;
+  final _customerDao = sl.get<LocalDatabase>().customerDao;
+  final _categoryDao = sl.get<LocalDatabase>().categoryDao;
+  final _messageDao = sl.get<LocalDatabase>().messageDao;
+  final _reviewDao = sl.get<LocalDatabase>().reviewDao;
+  final _bookingDao = sl.get<LocalDatabase>().bookingDao;
 
   ApiProviderService._();
 
@@ -28,7 +33,7 @@ class ApiProviderService {
     final List<dynamic> artisans = decodedData ??= [];
 
     // Add to database
-    _database.providerDao
+    _providerDao
         .addProviders(artisans.map((e) => Artisan.fromJson(e)).toList());
 
     // Traverse json array
@@ -40,17 +45,40 @@ class ApiProviderService {
   }
 
   Stream<Artisan> getArtisanById({@required String id}) =>
-      _database.providerDao.artisanById(id).watchSingle();
+      _providerDao.artisanById(id).watchSingle();
 
   Future<void> sendMessage({@required Conversation conversation}) =>
-      _database.messageDao.sendMessage(conversation);
+      _messageDao.sendMessage(conversation);
+
+  // TODO: Uncomment this
+  // Stream<List<Conversation>> getConversation(
+  //         {@required String sender, @required String recipient}) =>
+  //     _messageDao.conversationWithRecipient(sender, recipient).watch();
 
   Stream<List<Conversation>> getConversation(
-          {@required String sender, @required String recipient}) =>
-      _database.messageDao.conversationWithRecipient(sender, recipient).watch();
+          {@required String sender, @required String recipient}) async* {
+    // Decode artisans from json array
+    final data = await rootBundle.loadString("assets/sample_conversation.json");
+    var decodedData = json.decode(data);
+
+    // Convert each object to `Artisan` object
+    final List<dynamic> messages = decodedData ??= [];
+
+    // Add to database
+    _messageDao
+        .addMessages(messages.map((e) => Conversation.fromJson(e)).toList());
+
+    // Traverse json array
+    final results = messages
+        .map((e) => Conversation.fromJson(e))
+        // .where((item) => item.author == sender && item.recipient == recipient)
+        .toList();
+
+    yield results;
+  }
 
   Stream<Customer> getCustomerById({@required String id}) =>
-      _database.customerById(id).watchSingle();
+      _customerDao.customerById(id).watchSingle();
 
   /// Get all [ServiceCategory] from data source
   Future<List<ServiceCategory>> getCategories(
@@ -63,7 +91,7 @@ class ApiProviderService {
     final List<dynamic> categories = decodedData ??= [];
 
     // Add to database
-    _database.categoryDao
+    _categoryDao
         .addItems(categories.map((e) => ServiceCategory.fromJson(e)).toList());
 
     // Traverse json array
@@ -75,14 +103,14 @@ class ApiProviderService {
   }
 
   Stream<List<CustomerReview>> getReviews(String id) =>
-      _database.reviewDao.reviewsForProvider(id).watch();
+      _reviewDao.reviewsForProvider(id).watch();
 
   Stream<List<Booking>> getMyBookings(String id) =>
-      _database.bookingDao.bookingsForCustomer(id).watch();
+      _bookingDao.bookingsForCustomer(id).watch();
 
   Stream<List<Booking>> getMyBookingsForProvider(
           String customerId, String providerId) =>
-      _database.bookingDao
+      _bookingDao
           .bookingsForCustomerAndProvider(customerId, providerId)
           .watch();
 
@@ -102,7 +130,7 @@ class ApiProviderService {
 
       // Return transformed data from API
       return snapshot.empty
-          ? _database.providerDao.searchFor(value, categoryId ?? "").get()
+          ? _providerDao.searchFor(value, categoryId ?? "").get()
           : snapshot.hits.map((e) => Artisan.fromJson(e.data)).toList();
     } on Exception {
       return Future.value(<Artisan>[]);

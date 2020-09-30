@@ -65,7 +65,7 @@ class SearchPage extends SearchDelegate {
                 position: index,
                 duration: kScaleDuration,
                 child: SlideAnimation(
-                  verticalOffset: 50.0,
+                  verticalOffset: kSlideOffset,
                   child: FadeInAnimation(
                     child: ListArtisanCardItem(
                       artisan: artisans[index],

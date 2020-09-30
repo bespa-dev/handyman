@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/widget/buttons.dart';
+import 'package:handyman/app/widget/chat_header.dart';
+import 'package:handyman/app/widget/chat_input_entry.dart';
+import 'package:handyman/app/widget/chat_list_item.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
@@ -24,6 +27,19 @@ class ConversationPage extends StatefulWidget {
 class _ConversationPageState extends State<ConversationPage> {
   final _apiService = sl.get<ApiProviderService>();
   final _messageController = TextEditingController();
+  final _dummyUser = Stream.value(
+    Artisan(
+        id: Uuid().v4(),
+        name: "Kwasi Babone",
+        business: "LA Galaxy Inc",
+        email: "kwasi@mail.com",
+        isCertified: true,
+        category: "598d67f5-b84b-4572-9058-57f36463aeac",
+        startWorkingHours: 8,
+        endWorkingHours: 23,
+        price: 23.69,
+        rating: 3.5),
+  );
 
   void sendMessage() async {
     final conversation = Conversation(
@@ -33,12 +49,22 @@ class _ConversationPageState extends State<ConversationPage> {
       content: _messageController.text.trim(),
       createdAt: DateTime.now().toIso8601String(),
     );
+
     await _apiService.sendMessage(conversation: conversation);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    for (int i = 0; i < 6; i++) {
+      debugPrint(Uuid().v4());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
+    debugPrint("${widget.sender} : ${widget.recipient}");
 
     return Scaffold(
       extendBody: true,
@@ -61,7 +87,8 @@ class _ConversationPageState extends State<ConversationPage> {
                     : SizedBox.shrink(),
                 SafeArea(
                   child: StreamBuilder<Artisan>(
-                    stream: _apiService.getArtisanById(id: widget.recipient),
+                    stream: /*_apiService.getArtisanById(id: widget.recipient) ??*/
+                        _dummyUser,
                     builder: (_, snapshot) {
                       if (snapshot.hasError)
                         return Column(
@@ -70,11 +97,10 @@ class _ConversationPageState extends State<ConversationPage> {
                           children: [
                             Text("No recipient found"),
                             SizedBox(
-                                height: getProportionateScreenHeight(
-                                    kSpacingX24)),
+                                height:
+                                    getProportionateScreenHeight(kSpacingX24)),
                             ButtonOutlined(
-                              width:
-                                  getProportionateScreenWidth(kSpacingX200),
+                              width: getProportionateScreenWidth(kSpacingX200),
                               themeData: themeData,
                               onTap: () => context.navigator.pop(),
                               label: "Go back",
@@ -94,12 +120,30 @@ class _ConversationPageState extends State<ConversationPage> {
     );
   }
 
-  Widget _buildChatWidget(Artisan artisan) {
-    debugPrint(artisan.toString());
-    return Column(
-      children: [
-        Text(artisan?.name ?? "no name"),
-      ],
-    );
-  }
+  Widget _buildChatWidget(Artisan artisan) => Stack(
+        children: [
+          Column(
+            children: [
+              Expanded(
+                child: ChatMessages(
+                  messages: _apiService.getConversation(
+                      sender: widget.sender, recipient: widget.recipient),
+                  onTap: (index) {},
+                ),
+              ),
+              UserInput(
+                onMessageSent: (content) {
+                  debugPrint("Message to be sent -> $content");
+                },
+              ),
+            ],
+          ),
+          Positioned(
+            top: kSpacingNone,
+            left: kSpacingNone,
+            right: kSpacingNone,
+            child: ChatHeader(artisan: artisan),
+          ),
+        ],
+      );
 }

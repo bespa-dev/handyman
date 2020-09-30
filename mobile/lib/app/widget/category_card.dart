@@ -140,7 +140,7 @@ class _ListCategoryCardItemState extends State<ListCategoryCardItem> {
             position: index,
             duration: kScaleDuration,
             child: SlideAnimation(
-              verticalOffset: 50.0,
+              verticalOffset: kSlideOffset,
               child: FadeInAnimation(
                 child: Card(
                   child: ListTile(

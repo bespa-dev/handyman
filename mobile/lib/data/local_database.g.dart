@@ -2275,12 +2275,9 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   MessageDao _messageDao;
   MessageDao get messageDao =>
       _messageDao ??= MessageDao(this as LocalDatabase);
-  Selectable<Customer> customerById(String var1) {
-    return customSelect('SELECT * FROM user WHERE id = ?',
-        variables: [Variable.withString(var1)],
-        readsFrom: {user}).map(user.mapFromRow);
-  }
-
+  CustomerDao _customerDao;
+  CustomerDao get customerDao =>
+      _customerDao ??= CustomerDao(this as LocalDatabase);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
@@ -2367,5 +2364,13 @@ mixin _$MessageDaoMixin on DatabaseAccessor<LocalDatabase> {
         'SELECT * FROM message WHERE author = ? AND recipient = ? ORDER BY created_at DESC',
         variables: [Variable.withString(var1), Variable.withString(var2)],
         readsFrom: {message}).map(message.mapFromRow);
+  }
+}
+mixin _$CustomerDaoMixin on DatabaseAccessor<LocalDatabase> {
+  $UserTable get user => attachedDatabase.user;
+  Selectable<Customer> customerById(String var1) {
+    return customSelect('SELECT * FROM user WHERE id = ?',
+        variables: [Variable.withString(var1)],
+        readsFrom: {user}).map(user.mapFromRow);
   }
 }

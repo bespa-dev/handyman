@@ -99,3 +99,4 @@ flutter:
     - assets/artisans/3x/5.webp
     - assets/sample_artisan.json
     - assets/sample_categories.json
+    - assets/sample_conversation.json
