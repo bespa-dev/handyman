@@ -8,6 +8,7 @@ import 'package:handyman/data/entities/category.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:meta/meta.dart';
 
+/// API service for application
 class ApiProviderService {
   final _database = sl.get<LocalDatabase>();
 

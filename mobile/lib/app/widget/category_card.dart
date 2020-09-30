@@ -73,7 +73,7 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
                           ),
                         ),
                         Positioned(
-                          top: kSpacingX72,
+                          top: kSpacingX120,
                           right: kSpacingNone,
                           left: kSpacingNone,
                           bottom: kSpacingNone,

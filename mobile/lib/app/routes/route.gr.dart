@@ -172,8 +172,8 @@ class Router extends RouterBase {
 /// ConversationPage arguments holder class
 class ConversationPageArguments {
   final Key key;
-  final dynamic sender;
-  final dynamic recipient;
+  final String sender;
+  final String recipient;
   ConversationPageArguments({this.key, this.sender, this.recipient});
 }
 

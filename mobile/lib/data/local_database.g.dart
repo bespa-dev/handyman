@@ -13,6 +13,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
   final String business;
   final String phone;
   final String email;
+  final bool isCertified;
   final String category;
   final int startWorkingHours;
   final int endWorkingHours;
@@ -25,6 +26,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       @required this.business,
       this.phone,
       @required this.email,
+      @required this.isCertified,
       @required this.category,
       @required this.startWorkingHours,
       @required this.endWorkingHours,
@@ -35,6 +37,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
+    final boolType = db.typeSystem.forDartType<bool>();
     final intType = db.typeSystem.forDartType<int>();
     final doubleType = db.typeSystem.forDartType<double>();
     return Artisan(
@@ -46,6 +49,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}phone']),
       email:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}email']),
+      isCertified:
+          boolType.mapFromDatabaseResponse(data['${effectivePrefix}certified']),
       category: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}category']),
       startWorkingHours: intType.mapFromDatabaseResponse(
@@ -77,6 +82,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
     }
     if (!nullToAbsent || email != null) {
       map['email'] = Variable<String>(email);
+    }
+    if (!nullToAbsent || isCertified != null) {
+      map['certified'] = Variable<bool>(isCertified);
     }
     if (!nullToAbsent || category != null) {
       map['category'] = Variable<String>(category);
@@ -110,6 +118,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           phone == null && nullToAbsent ? const Value.absent() : Value(phone),
       email:
           email == null && nullToAbsent ? const Value.absent() : Value(email),
+      isCertified: isCertified == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isCertified),
       category: category == null && nullToAbsent
           ? const Value.absent()
           : Value(category),
@@ -137,6 +148,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       business: serializer.fromJson<String>(json['business']),
       phone: serializer.fromJson<String>(json['phone']),
       email: serializer.fromJson<String>(json['email']),
+      isCertified: serializer.fromJson<bool>(json['isCertified']),
       category: serializer.fromJson<String>(json['category']),
       startWorkingHours: serializer.fromJson<int>(json['startWorkingHours']),
       endWorkingHours: serializer.fromJson<int>(json['endWorkingHours']),
@@ -154,6 +166,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       'business': serializer.toJson<String>(business),
       'phone': serializer.toJson<String>(phone),
       'email': serializer.toJson<String>(email),
+      'isCertified': serializer.toJson<bool>(isCertified),
       'category': serializer.toJson<String>(category),
       'startWorkingHours': serializer.toJson<int>(startWorkingHours),
       'endWorkingHours': serializer.toJson<int>(endWorkingHours),
@@ -169,6 +182,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           String business,
           String phone,
           String email,
+          bool isCertified,
           String category,
           int startWorkingHours,
           int endWorkingHours,
@@ -181,6 +195,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
         business: business ?? this.business,
         phone: phone ?? this.phone,
         email: email ?? this.email,
+        isCertified: isCertified ?? this.isCertified,
         category: category ?? this.category,
         startWorkingHours: startWorkingHours ?? this.startWorkingHours,
         endWorkingHours: endWorkingHours ?? this.endWorkingHours,
@@ -196,6 +211,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           ..write('business: $business, ')
           ..write('phone: $phone, ')
           ..write('email: $email, ')
+          ..write('isCertified: $isCertified, ')
           ..write('category: $category, ')
           ..write('startWorkingHours: $startWorkingHours, ')
           ..write('endWorkingHours: $endWorkingHours, ')
@@ -218,15 +234,17 @@ class Artisan extends DataClass implements Insertable<Artisan> {
                   $mrjc(
                       email.hashCode,
                       $mrjc(
-                          category.hashCode,
+                          isCertified.hashCode,
                           $mrjc(
-                              startWorkingHours.hashCode,
+                              category.hashCode,
                               $mrjc(
-                                  endWorkingHours.hashCode,
+                                  startWorkingHours.hashCode,
                                   $mrjc(
-                                      avatar.hashCode,
-                                      $mrjc(price.hashCode,
-                                          rating.hashCode)))))))))));
+                                      endWorkingHours.hashCode,
+                                      $mrjc(
+                                          avatar.hashCode,
+                                          $mrjc(price.hashCode,
+                                              rating.hashCode))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -236,6 +254,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           other.business == this.business &&
           other.phone == this.phone &&
           other.email == this.email &&
+          other.isCertified == this.isCertified &&
           other.category == this.category &&
           other.startWorkingHours == this.startWorkingHours &&
           other.endWorkingHours == this.endWorkingHours &&
@@ -250,6 +269,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
   final Value<String> business;
   final Value<String> phone;
   final Value<String> email;
+  final Value<bool> isCertified;
   final Value<String> category;
   final Value<int> startWorkingHours;
   final Value<int> endWorkingHours;
@@ -262,6 +282,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     this.business = const Value.absent(),
     this.phone = const Value.absent(),
     this.email = const Value.absent(),
+    this.isCertified = const Value.absent(),
     this.category = const Value.absent(),
     this.startWorkingHours = const Value.absent(),
     this.endWorkingHours = const Value.absent(),
@@ -275,6 +296,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     @required String business,
     this.phone = const Value.absent(),
     @required String email,
+    this.isCertified = const Value.absent(),
     this.category = const Value.absent(),
     this.startWorkingHours = const Value.absent(),
     this.endWorkingHours = const Value.absent(),
@@ -291,6 +313,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     Expression<String> business,
     Expression<String> phone,
     Expression<String> email,
+    Expression<bool> isCertified,
     Expression<String> category,
     Expression<int> startWorkingHours,
     Expression<int> endWorkingHours,
@@ -304,6 +327,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       if (business != null) 'business': business,
       if (phone != null) 'phone': phone,
       if (email != null) 'email': email,
+      if (isCertified != null) 'certified': isCertified,
       if (category != null) 'category': category,
       if (startWorkingHours != null) 'start_working_hours': startWorkingHours,
       if (endWorkingHours != null) 'end_working_hours': endWorkingHours,
@@ -319,6 +343,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       Value<String> business,
       Value<String> phone,
       Value<String> email,
+      Value<bool> isCertified,
       Value<String> category,
       Value<int> startWorkingHours,
       Value<int> endWorkingHours,
@@ -331,6 +356,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       business: business ?? this.business,
       phone: phone ?? this.phone,
       email: email ?? this.email,
+      isCertified: isCertified ?? this.isCertified,
       category: category ?? this.category,
       startWorkingHours: startWorkingHours ?? this.startWorkingHours,
       endWorkingHours: endWorkingHours ?? this.endWorkingHours,
@@ -357,6 +383,9 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     }
     if (email.present) {
       map['email'] = Variable<String>(email.value);
+    }
+    if (isCertified.present) {
+      map['certified'] = Variable<bool>(isCertified.value);
     }
     if (category.present) {
       map['category'] = Variable<String>(category.value);
@@ -387,6 +416,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
           ..write('business: $business, ')
           ..write('phone: $phone, ')
           ..write('email: $email, ')
+          ..write('isCertified: $isCertified, ')
           ..write('category: $category, ')
           ..write('startWorkingHours: $startWorkingHours, ')
           ..write('endWorkingHours: $endWorkingHours, ')
@@ -463,6 +493,17 @@ class $ServiceProviderTable extends ServiceProvider
     );
   }
 
+  final VerificationMeta _isCertifiedMeta =
+      const VerificationMeta('isCertified');
+  GeneratedBoolColumn _isCertified;
+  @override
+  GeneratedBoolColumn get isCertified =>
+      _isCertified ??= _constructIsCertified();
+  GeneratedBoolColumn _constructIsCertified() {
+    return GeneratedBoolColumn('certified', $tableName, false,
+        defaultValue: Constant(false));
+  }
+
   final VerificationMeta _categoryMeta = const VerificationMeta('category');
   GeneratedTextColumn _category;
   @override
@@ -531,6 +572,7 @@ class $ServiceProviderTable extends ServiceProvider
         business,
         phone,
         email,
+        isCertified,
         category,
         startWorkingHours,
         endWorkingHours,
@@ -575,6 +617,12 @@ class $ServiceProviderTable extends ServiceProvider
           _emailMeta, email.isAcceptableOrUnknown(data['email'], _emailMeta));
     } else if (isInserting) {
       context.missing(_emailMeta);
+    }
+    if (data.containsKey('certified')) {
+      context.handle(
+          _isCertifiedMeta,
+          isCertified.isAcceptableOrUnknown(
+              data['certified'], _isCertifiedMeta));
     }
     if (data.containsKey('category')) {
       context.handle(_categoryMeta,

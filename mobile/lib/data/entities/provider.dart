@@ -12,6 +12,9 @@ class ServiceProvider extends Table {
 
   TextColumn get email => text()();
 
+  BoolColumn get isCertified =>
+      boolean().named("certified").withDefault(Constant(false))();
+
   TextColumn get category =>
       text().withDefault(Constant("598d67f5-b84b-4572-9058-57f36463aeac"))();
 

@@ -3,7 +3,8 @@ description: An artisan search application.
 
 publish_to: "github.com"
 
-authors: "Quabynah Codelabs LLC <codelbas.quabynah@gmail.com>"
+authors:
+  - "Quabynah Codelabs LLC <codelbas.quabynah@gmail.com>"
 
 version: 0.0.1+1
 

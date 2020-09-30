@@ -23,5 +23,6 @@ Future<void> registerServiceLocator() async {
   // Register Provider
   sl.registerLazySingleton<ApiProviderService>(
       () => ApiProviderService.instance);
+
   sl.registerSingleton<LocalDatabase>(LocalDatabase.instance);
 }

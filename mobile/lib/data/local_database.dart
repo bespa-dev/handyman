@@ -38,7 +38,24 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+
+  @override
+  Future<Function> beforeOpen(QueryExecutor executor, OpeningDetails details) async {
+    await (executor
+        ..beginTransaction())
+        .runCustom("PRAGMA foreign_keys = ON");
+  }
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (m, from, to) async {
+          if (from == 1) {
+            await m.addColumn(serviceProvider, serviceProvider.isCertified);
+          }
+        },
+      );
 }
 
 @UseDao(

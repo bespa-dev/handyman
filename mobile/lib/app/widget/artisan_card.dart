@@ -81,7 +81,7 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                 ),
               ),
               Positioned(
-                top: getProportionateScreenHeight(kSpacingX72),
+                top: getProportionateScreenHeight(kSpacingX96),
                 left: kSpacingNone,
                 right: kSpacingNone,
                 bottom: kSpacingNone,
