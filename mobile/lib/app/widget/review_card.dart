@@ -61,9 +61,7 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
               children: [
                 Text(
                   _customer?.name ?? "",
-                  style: themeData.textTheme.headline6.copyWith(
-                    fontFamily: themeData.textTheme.bodyText1.fontFamily,
-                  ),
+                  style: themeData.textTheme.headline6,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),

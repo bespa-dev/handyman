@@ -170,52 +170,61 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
     );
   }
 
-  Widget _buildPhotoTab() => Container(
+  Widget _buildPhotoTab() => Material(
+        type: MaterialType.card,
+        elevation: 2,
         clipBehavior: Clip.hardEdge,
-        padding: EdgeInsets.symmetric(
-          vertical: getProportionateScreenHeight(kSpacingX24),
-          horizontal: getProportionateScreenWidth(kSpacingX8),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(kSpacingX16),
+          topRight: Radius.circular(kSpacingX16),
         ),
-        decoration: BoxDecoration(
-          color: _themeData.cardColor.withOpacity(kOpacityX50),
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(kSpacingX16),
-            topRight: Radius.circular(kSpacingX16),
+        child: Container(
+          clipBehavior: Clip.hardEdge,
+          padding: EdgeInsets.symmetric(
+            vertical: getProportionateScreenHeight(kSpacingX24),
+            horizontal: getProportionateScreenWidth(kSpacingX8),
           ),
-        ),
-        child: AnimationLimiter(
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: getProportionateScreenHeight(kSpacingX8),
-              crossAxisSpacing: getProportionateScreenWidth(kSpacingX8),
-              childAspectRatio: 4 / 3,
+          decoration: BoxDecoration(
+            color: _themeData.cardColor,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(kSpacingX16),
+              topRight: Radius.circular(kSpacingX16),
             ),
-            physics: kScrollPhysics,
-            itemCount: 5 /*FIXME: Add gallery size here*/,
-            itemBuilder: (_, index) {
-              // final photo = _galleryImages[index];
+          ),
+          child: AnimationLimiter(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: getProportionateScreenHeight(kSpacingX8),
+                crossAxisSpacing: getProportionateScreenWidth(kSpacingX8),
+                childAspectRatio: 4 / 3,
+              ),
+              physics: kScrollPhysics,
+              itemCount: 5 /*FIXME: Add gallery size here*/,
+              itemBuilder: (_, index) {
+                // final photo = _galleryImages[index];
 
-              return AnimationConfiguration.staggeredGrid(
-                position: index,
-                columnCount: 2,
-                duration: kScaleDuration,
-                child: ScaleAnimation(
-                  child: FadeInAnimation(
-                    child: Container(
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                        color: RandomColor()
-                            .randomColor(
-                                colorBrightness: ColorBrightness.veryLight)
-                            .withOpacity(kOpacityX70),
-                        borderRadius: BorderRadius.circular(kSpacingX16),
+                return AnimationConfiguration.staggeredGrid(
+                  position: index,
+                  columnCount: 2,
+                  duration: kScaleDuration,
+                  child: ScaleAnimation(
+                    child: FadeInAnimation(
+                      child: Container(
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                          color: RandomColor()
+                              .randomColor(
+                                  colorBrightness: ColorBrightness.veryLight)
+                              .withOpacity(kOpacityX70),
+                          borderRadius: BorderRadius.circular(kSpacingX16),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       );
@@ -224,13 +233,22 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
         builder: (_, prefs, __) => StreamBuilder<List<CustomerReview>>(
             stream: _apiService.getReviews(widget.artisan.id),
             builder: (context, snapshot) {
-              return Container(
+              return Material(
+                type: MaterialType.card,
+                elevation: 2,
                 clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  color: _themeData.cardColor.withOpacity(kOpacityX50),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(kSpacingX16),
-                    topRight: Radius.circular(kSpacingX16),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(kSpacingX16),
+                  topRight: Radius.circular(kSpacingX16),
+                ),
+                child: Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                    color: _themeData.cardColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(kSpacingX16),
+                      topRight: Radius.circular(kSpacingX16),
+                    ),
                   ),
                 ),
               );
@@ -242,13 +260,22 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
             stream: _apiService.getMyBookingsForProvider(
                 prefs.userId, widget.artisan.id),
             builder: (context, snapshot) {
-              return Container(
+              return Material(
+                type: MaterialType.card,
+                elevation: 2,
                 clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  color: _themeData.cardColor.withOpacity(kOpacityX50),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(kSpacingX16),
-                    topRight: Radius.circular(kSpacingX16),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(kSpacingX16),
+                  topRight: Radius.circular(kSpacingX16),
+                ),
+                child: Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                    color: _themeData.cardColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(kSpacingX16),
+                      topRight: Radius.circular(kSpacingX16),
+                    ),
                   ),
                 ),
               );

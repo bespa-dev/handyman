@@ -136,6 +136,7 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                             .get<ApiProviderService>()
                             .getArtisans(category: widget.category.id),
                         builder: (context, snapshot) {
+                          final artisans = snapshot.data;
                           if (snapshot.connectionState ==
                               ConnectionState.waiting)
                             return Container(
@@ -146,16 +147,16 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                                 child: Text("Fetching handymen..."),
                               ),
                             );
-                          else if (snapshot.hasError)
+                          else if (snapshot.hasError || artisans.isEmpty)
                             return Container(
                               height: kHeight -
                                   getProportionateScreenHeight(kHeight * 0.3),
                               width: kWidth,
                               child: Center(
-                                child: Text("Error while fetching providers"),
+                                child: Text(
+                                    "No registered service providers found"),
                               ),
                             );
-                          final artisans = snapshot.data;
                           return Expanded(
                             child: _preferGridFormat
                                 ? AnimationLimiter(

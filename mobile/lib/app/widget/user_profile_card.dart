@@ -76,10 +76,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
                         children: [
                           Text(
                             widget.profiles[index],
-                            style: themeData.textTheme.headline5.copyWith(
-                              fontFamily:
-                                  themeData.textTheme.bodyText1.fontFamily,
-                            ),
+                            style: themeData.textTheme.headline5,
                             textAlign: TextAlign.center,
                           ),
                           SizedBox(

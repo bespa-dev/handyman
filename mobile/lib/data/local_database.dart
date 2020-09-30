@@ -40,13 +40,13 @@ class LocalDatabase extends _$LocalDatabase {
   @override
   int get schemaVersion => 2;
 
-
-  @override
-  Future<Function> beforeOpen(QueryExecutor executor, OpeningDetails details) async {
-    await (executor
-        ..beginTransaction())
-        .runCustom("PRAGMA foreign_keys = ON");
-  }
+  // @override
+  // // ignore: invalid_override_of_non_virtual_member, missing_return
+  // Future<Function> beforeOpen(QueryExecutor executor, OpeningDetails details) async {
+  //   await (executor
+  //       ..beginTransaction())
+  //       .runCustom("PRAGMA foreign_keys = ON");
+  // }
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -63,6 +63,8 @@ class LocalDatabase extends _$LocalDatabase {
   queries: {
     "artisanById": "SELECT * FROM service_provider WHERE id = ?",
     "artisans": "SELECT * FROM service_provider ORDER BY id desc",
+    "searchFor":
+        "SELECT * FROM service_provider WHERE name LIKE ? OR category LIKE ? ORDER BY id desc",
   },
 )
 class ProviderDao extends DatabaseAccessor<LocalDatabase>

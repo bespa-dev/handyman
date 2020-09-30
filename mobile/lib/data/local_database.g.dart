@@ -1910,6 +1910,13 @@ mixin _$ProviderDaoMixin on DatabaseAccessor<LocalDatabase> {
         variables: [],
         readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
   }
+
+  Selectable<Artisan> searchFor(String var1, String var2) {
+    return customSelect(
+        'SELECT * FROM service_provider WHERE name LIKE ? OR category LIKE ? ORDER BY id desc',
+        variables: [Variable.withString(var1), Variable.withString(var2)],
+        readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
+  }
 }
 mixin _$CategoryDaoMixin on DatabaseAccessor<LocalDatabase> {
   $CategoryItemTable get categoryItem => attachedDatabase.categoryItem;

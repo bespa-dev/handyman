@@ -62,24 +62,26 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                         ),
                     fit: BoxFit.cover),
               ),
-              Positioned(
-                top: kSpacingNone,
-                right: kSpacingNone,
-                child: Container(
-                  height: getProportionateScreenHeight(kSpacingX48),
-                  width: getProportionateScreenWidth(kSpacingX48),
-                  decoration: BoxDecoration(
-                    color: kGreenColor,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(kSpacingX24),
-                    ),
-                  ),
-                  child: Icon(
-                    Feather.award,
-                    color: kWhiteColor,
-                  ),
-                ),
-              ),
+              widget.artisan.isCertified ?? false
+                  ? Positioned(
+                      top: kSpacingNone,
+                      right: kSpacingNone,
+                      child: Container(
+                        height: getProportionateScreenHeight(kSpacingX48),
+                        width: getProportionateScreenWidth(kSpacingX48),
+                        decoration: BoxDecoration(
+                          color: kGreenColor,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(kSpacingX24),
+                          ),
+                        ),
+                        child: Icon(
+                          Feather.award,
+                          color: kWhiteColor,
+                        ),
+                      ),
+                    )
+                  : SizedBox.shrink(),
               Positioned(
                 top: getProportionateScreenHeight(kSpacingX96),
                 left: kSpacingNone,
@@ -122,7 +124,6 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                         "\$${widget.artisan.price}",
                         style: themeData.textTheme.headline6.copyWith(
                           color: themeData.primaryColor,
-                          fontFamily: themeData.textTheme.bodyText1.fontFamily,
                         ),
                       ),
                     ],
@@ -187,9 +188,7 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
                     Text(
                       widget.artisan.name,
                       maxLines: 1,
-                      style: themeData.textTheme.headline6.copyWith(
-                        fontSize: themeData.textTheme.bodyText1.fontSize,
-                      ),
+                      style: themeData.textTheme.headline6,
                     ),
                     SizedBox(height: getProportionateScreenHeight(kSpacingX4)),
                     Text(
@@ -205,7 +204,6 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
                   "\$${widget.artisan.price}",
                   style: themeData.textTheme.headline6.copyWith(
                     color: themeData.primaryColor,
-                    fontFamily: themeData.textTheme.bodyText1.fontFamily,
                   ),
                 ),
               ],

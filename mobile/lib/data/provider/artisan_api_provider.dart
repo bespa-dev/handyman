@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:algolia/algolia.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:handyman/core/service_locator.dart';
+import 'package:handyman/core/utils.dart';
 import 'package:handyman/data/entities/category.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:meta/meta.dart';
@@ -34,23 +36,23 @@ class ApiProviderService {
   /// Get all [ServiceCategory] from data source
   Future<List<ServiceCategory>> getCategories(
       {CategoryGroup categoryGroup = CategoryGroup.FEATURED}) async {
-    // var categoryList =
-    //     await _database.categoryDao.categoryByGroup(categoryGroup.index).get();
-    // if (categoryList.isNotEmpty)
-    //   return categoryList;
-    // else {
-      final results = <ServiceCategory>[];
-      final data = await rootBundle.loadString("assets/sample_categories.json");
-      var decodedData = json.decode(data);
-      final List<dynamic> categories =
-          decodedData != null ? List.from(decodedData) : [];
-      for (var json in categories) {
-        final item = ServiceCategory.fromJson(json);
-        /*if (item.groupName == categoryGroup.index)*/ results.add(item);
-      }
-      _database.categoryDao.addItems(results);
-      return results;
-    // }
+    // Decode categories from json array
+    final data = await rootBundle.loadString("assets/sample_categories.json");
+    var decodedData = json.decode(data);
+
+    // Convert each object to `ServiceCategory` object
+    final List<dynamic> categories = decodedData ??= [];
+
+    // Add to database
+    _database.categoryDao
+        .addItems(categories.map((e) => ServiceCategory.fromJson(e)).toList());
+
+    // Traverse json array
+    final results = categories
+        .map((e) => ServiceCategory.fromJson(e))
+        .where((item) => item.groupName == categoryGroup.index)
+        .toList();
+    return /*_database.categoryDao.categoryByGroup(categoryGroup.index).get();*/ results;
   }
 
   Stream<List<CustomerReview>> getReviews(String id) =>
@@ -64,4 +66,27 @@ class ApiProviderService {
       _database.bookingDao
           .bookingsForCustomerAndProvider(customerId, providerId)
           .watch();
+
+  /// Performs a search for [Artisan]s in [Algolia]
+  Future<List<Artisan>> searchFor(
+      {@required String value, String categoryId}) async {
+    try {
+      // Perform search with index
+      var query =
+          algolia.instance.index(AlgoliaUtils.kArtisanIndex).search(value);
+
+      // Get snapshot
+      var snapshot = await query.getObjects();
+
+      // Checking if has [AlgoliaQuerySnapshot]
+      debugPrint('Hits count: ${snapshot.nbHits}');
+
+      // Return transformed data from API
+      return snapshot.empty
+          ? _database.providerDao.searchFor(value, categoryId ?? "").get()
+          : snapshot.hits.map((e) => Artisan.fromJson(e.data)).toList();
+    } on Exception {
+      return Future.value(<Artisan>[]);
+    }
+  }
 }

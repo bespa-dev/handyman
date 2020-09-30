@@ -49,32 +49,38 @@ const kScrollPhysics = const BouncingScrollPhysics();
 const kGreenColor = Colors.lightGreen;
 const kWhiteColor = Colors.white;
 const kTransparent = Colors.transparent;
-const kPrimaryColor = Color(0xFF535B9D);
-const kPrimaryColorDark = Color(0xFFFF97B3);
-const kSecondaryLightColor = Color(0xFFFEDBD0);
-const kSecondaryDarkColor = Color(0xFF404040);
-const kAccentLightColor = Color(0xFFFEEAE6);
-// const kAccentLightColor = Color(0xFFB3BFD7);
-const kAccentDarkColor = Color(0xFF4E4E4E);
-const kBackgroundDarkColor = Color(0xFF3A3A3A);
-const kBackgroundLightColor = Color(0xFFFEEAE6);
+
+// const kPrimaryColor = Color(0xFF00A173);
+const kPrimaryColor = Color(0xFF5d1049);
+const kSecondaryLightColor = Color(0xFFe30425);
+// const kSecondaryLightColor = Color(0xFF00A173);
+const kAccentLightColor = kSecondaryLightColor;
+const kBackgroundLightColor = Color(0xFFe2f3f5);
+const kCardLightColor = Color(0xFFe2f3f5);
+
+const kPrimaryColorDark = Color(0xFFFF7597);
+const kSecondaryDarkColor = Color(0xFFFF0266);
+const kAccentDarkColor = kWhiteColor;
+const kBackgroundDarkColor = Color(0xFF202124);
+// const kBackgroundDarkColor = Color(0xFF24191C);
+const kCardDarkColor = Color(0xFF3C4043);
+// const kCardDarkColor = Color(0xFF3C4043);
 const kSurfaceDarkColor = Color(0xFF222225);
 
 /// Icon Colors
-const kAccentIconLightColor = Color(0xFF535B9D);
-// const kAccentIconLightColor = Color(0xFFECEFF5);
-const kAccentIconDarkColor = Color(0xFF303030);
-const kPrimaryIconLightColor = Color(0xFF535B9D);
-const kPrimaryIconDarkColor = Color(0xFF232323);
+const kAccentIconLightColor = kPrimaryColor;
+const kPrimaryIconLightColor = kPrimaryColor;
+
+const kAccentIconDarkColor = kWhiteColor;
+const kPrimaryIconDarkColor = kWhiteColor;
 
 /// Text Colors
 const kBodyTextColorLight = Color(0xFF232323);
-// const kBodyTextColorLight = Color(0xFFA1B0CA);
-const kBodyTextColorDark = Color(0xFF7C7C7C);
 const kTitleTextColorLight = Color(0xFF131313);
 const kUnselectedLabelColorLight = Color(0xFF5F6368);
+
+const kBodyTextColorDark = Color(0xFF7C7C7C);
 const kUnselectedLabelColorDark = Color(0xFF5F6368);
-// const kTitleTextColorLight = Color(0xFF101112);
 const kTitleTextColorDark = Colors.white;
 
 const kShadowColor = Color(0xFF7C7C7C);

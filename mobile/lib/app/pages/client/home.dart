@@ -59,24 +59,32 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     SizedBox(height: getProportionateScreenHeight(kSpacingX12)),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () => showSearch(
+                        context: context,
+                        delegate: SearchPage(),
+                      ),
                       child: Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal:
                                 getProportionateScreenWidth(kSpacingX16)),
                         child: Material(
                           clipBehavior: Clip.hardEdge,
-                          elevation: 1,
+                          elevation: 2,
                           type: MaterialType.card,
+                          color: themeData.cardColor,
                           borderOnForeground: false,
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(kSpacingX4)),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(kSpacingX8),
+                          ),
                           child: Container(
                             height: kToolbarHeight,
                             width: double.infinity,
                             clipBehavior: Clip.hardEdge,
                             decoration: BoxDecoration(
-                              color: themeData.colorScheme.surface,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(kSpacingX8),
+                              ),
+                              color: themeData.cardColor,
                               shape: BoxShape.rectangle,
                             ),
                             padding: EdgeInsets.symmetric(
@@ -92,9 +100,11 @@ class _HomePageState extends State<HomePage> {
                                       : Feather.sun),
                                   onPressed: () => themeProvider.toggleTheme(),
                                 ),
-                                Image.asset(
-                                  kLogoAsset,
-                                  height: kToolbarHeight - 8,
+                                Expanded(
+                                  child: Image.asset(
+                                    kLogoAsset,
+                                    height: kToolbarHeight - 8,
+                                  ),
                                 ),
                                 IconButton(
                                   tooltip: "Search",

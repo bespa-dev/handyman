@@ -88,10 +88,7 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
                               children: [
                                 Text(
                                   category.name,
-                                  style: themeData.textTheme.headline6.copyWith(
-                                    fontFamily: themeData
-                                        .textTheme.bodyText1.fontFamily,
-                                  ),
+                                  style: themeData.textTheme.headline6,
                                 ),
                                 SizedBox(
                                     height: getProportionateScreenHeight(

@@ -6,7 +6,6 @@ import 'constants.dart';
 
 /// Fonts
 final _kTitleFontFamily = GoogleFonts.playfairDisplay().fontFamily;
-// final _kTitleFontFamily = GoogleFonts.raleway().fontFamily;
 final _kBodyFontFamily = GoogleFonts.rubik().fontFamily;
 
 // latoTextTheme
@@ -33,10 +32,11 @@ ThemeData themeData(BuildContext context) => ThemeData(
       primaryColor: kPrimaryColor,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       accentColor: kAccentLightColor,
-      scaffoldBackgroundColor: Colors.white,
+      scaffoldBackgroundColor: kBackgroundLightColor,
+      cardColor: kCardLightColor,
       colorScheme: ColorScheme.light(
         secondary: kSecondaryLightColor,
-        surface: Colors.white,
+        surface: kWhiteColor,
       ),
       backgroundColor: /*Colors.white*/ kBackgroundLightColor,
       iconTheme: IconThemeData(color: kBodyTextColorLight),
@@ -61,11 +61,11 @@ ThemeData themeData(BuildContext context) => ThemeData(
             fontWeight: FontWeight.w500),
         headline5: TextStyle(
             color: kTitleTextColorLight,
-            fontFamily: _kTitleFontFamily,
+            fontFamily: _kBodyFontFamily,
             fontWeight: FontWeight.w500),
         headline6: TextStyle(
             color: kTitleTextColorLight,
-            fontFamily: _kTitleFontFamily,
+            fontFamily: _kBodyFontFamily,
             fontWeight: FontWeight.w500),
         bodyText1:
             TextStyle(color: kBodyTextColorLight, fontFamily: _kBodyFontFamily),
@@ -109,7 +109,7 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
       visualDensity: VisualDensity.adaptivePlatformDensity,
       primaryColor: kPrimaryColorDark,
       accentColor: kAccentDarkColor,
-      scaffoldBackgroundColor: Color(0xFF0D0C0E),
+      scaffoldBackgroundColor: kBackgroundDarkColor,
       colorScheme: ColorScheme.light(
         secondary: kSecondaryDarkColor,
         surface: kSurfaceDarkColor,
@@ -118,6 +118,7 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
       iconTheme: IconThemeData(color: kBodyTextColorDark),
       accentIconTheme: IconThemeData(color: kAccentIconDarkColor),
       primaryIconTheme: IconThemeData(color: kPrimaryIconDarkColor),
+      cardColor: kCardDarkColor,
       textTheme: TextTheme(
         headline1: TextStyle(
             color: kTitleTextColorDark,
@@ -137,11 +138,11 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
             fontWeight: FontWeight.w500),
         headline5: TextStyle(
             color: kTitleTextColorDark,
-            fontFamily: _kTitleFontFamily,
+            fontFamily: _kBodyFontFamily,
             fontWeight: FontWeight.w500),
         headline6: TextStyle(
             color: kTitleTextColorDark,
-            fontFamily: _kTitleFontFamily,
+            fontFamily: _kBodyFontFamily,
             fontWeight: FontWeight.w500),
         bodyText1:
             TextStyle(color: kBodyTextColorDark, fontFamily: _kBodyFontFamily),
@@ -163,12 +164,12 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
     );
 
 AppBarTheme appBarTheme = AppBarTheme(
-  color: Colors.transparent,
+  color: kTransparent,
   elevation: 0,
   textTheme: TextTheme(
     headline6: TextStyle(
-        // color: kTitleTextColorDark,
-        fontFamily: _kBodyFontFamily,
-        fontWeight: FontWeight.w500),
+      fontFamily: _kBodyFontFamily,
+      fontWeight: FontWeight.w500,
+    ),
   ),
 );
