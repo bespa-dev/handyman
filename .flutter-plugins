@@ -1,4 +1,12 @@
 # This is a generated file; do not edit or check into version control.
+cloud_firestore=C:\\Users\\quaby\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dartlang.org\\cloud_firestore-0.14.0+2\\
+cloud_firestore_web=C:\\Users\\quaby\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dartlang.org\\cloud_firestore_web-0.2.0+1\\
+firebase_auth=C:\\Users\\quaby\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dartlang.org\\firebase_auth-0.18.0+1\\
+firebase_auth_web=C:\\Users\\quaby\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dartlang.org\\firebase_auth_web-0.3.0+1\\
+firebase_core=C:\\Users\\quaby\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dartlang.org\\firebase_core-0.5.0\\
+firebase_core_web=C:\\Users\\quaby\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dartlang.org\\firebase_core_web-0.2.0\\
+firebase_remote_config=C:\\Users\\quaby\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dartlang.org\\firebase_remote_config-0.4.0\\
+firebase_storage=C:\\Users\\quaby\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dartlang.org\\firebase_storage-4.0.0\\
 flutter_image_compress=C:\\Users\\quaby\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dartlang.org\\flutter_image_compress-0.6.8\\
 flutter_local_notifications=C:\\Users\\quaby\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dartlang.org\\flutter_local_notifications-1.4.4+4\\
 flutter_plugin_android_lifecycle=C:\\Users\\quaby\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dartlang.org\\flutter_plugin_android_lifecycle-1.0.9\\

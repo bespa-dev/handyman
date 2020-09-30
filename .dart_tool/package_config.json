@@ -158,6 +158,24 @@
       "languageVersion": "2.10"
     },
     {
+      "name": "cloud_firestore",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/cloud_firestore-0.14.0+2",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
+      "name": "cloud_firestore_platform_interface",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/cloud_firestore_platform_interface-2.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
+      "name": "cloud_firestore_web",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/cloud_firestore_web-0.2.0+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
       "name": "code_builder",
       "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/code_builder-3.4.1",
       "packageUri": "lib/",
@@ -230,6 +248,60 @@
       "languageVersion": "2.2"
     },
     {
+      "name": "firebase",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/firebase-7.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.7"
+    },
+    {
+      "name": "firebase_auth",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/firebase_auth-0.18.0+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
+      "name": "firebase_auth_platform_interface",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/firebase_auth_platform_interface-2.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
+      "name": "firebase_auth_web",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/firebase_auth_web-0.3.0+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
+      "name": "firebase_core",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/firebase_core-0.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "firebase_core_platform_interface",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/firebase_core_platform_interface-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "firebase_core_web",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/firebase_core_web-0.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "firebase_remote_config",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/firebase_remote_config-0.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
+      "name": "firebase_storage",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/firebase_storage-4.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
       "name": "fixnum",
       "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/fixnum-0.10.11",
       "packageUri": "lib/",
@@ -282,6 +354,12 @@
       "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-1.0.9",
       "packageUri": "lib/",
       "languageVersion": "2.1"
+    },
+    {
+      "name": "flutter_rating_bar",
+      "rootUri": "file:///C:/Users/quaby/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/flutter_rating_bar-3.0.1+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.5"
     },
     {
       "name": "flutter_staggered_animations",
@@ -854,7 +932,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-09-29T18:14:37.985015Z",
+  "generated": "2020-09-30T01:09:52.983590Z",
   "generator": "pub",
   "generatorVersion": "2.10.0-110.0.dev"
 }

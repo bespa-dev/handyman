@@ -2,24 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android.iml" filepath="$PROJECT_DIR$/.idea/modules/android.iml" group="android" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="android/app" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/527132434/flutter_image_compress.iml" filepath="$PROJECT_DIR$/.idea/modules/527132434/flutter_image_compress.iml" group="android/flutter_image_compress" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1404937994/flutter_local_notifications.iml" filepath="$PROJECT_DIR$/.idea/modules/-1404937994/flutter_local_notifications.iml" group="android/flutter_local_notifications" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/959600406/flutter_plugin_android_lifecycle.iml" filepath="$PROJECT_DIR$/.idea/modules/959600406/flutter_plugin_android_lifecycle.iml" group="android/flutter_plugin_android_lifecycle" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1368551953/geolocator.iml" filepath="$PROJECT_DIR$/.idea/modules/1368551953/geolocator.iml" group="android/geolocator" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-975134017/google_api_availability.iml" filepath="$PROJECT_DIR$/.idea/modules/-975134017/google_api_availability.iml" group="android/google_api_availability" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1711919613/google_maps_flutter.iml" filepath="$PROJECT_DIR$/.idea/modules/1711919613/google_maps_flutter.iml" group="android/google_maps_flutter" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-92552216/google_sign_in.iml" filepath="$PROJECT_DIR$/.idea/modules/-92552216/google_sign_in.iml" group="android/google_sign_in" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1190110655/image_cropper.iml" filepath="$PROJECT_DIR$/.idea/modules/-1190110655/image_cropper.iml" group="android/image_cropper" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1266209511/image_picker.iml" filepath="$PROJECT_DIR$/.idea/modules/1266209511/image_picker.iml" group="android/image_picker" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1051388578/location_permissions.iml" filepath="$PROJECT_DIR$/.idea/modules/-1051388578/location_permissions.iml" group="android/location_permissions" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1232945550/path_provider.iml" filepath="$PROJECT_DIR$/.idea/modules/1232945550/path_provider.iml" group="android/path_provider" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1946655871/permission_handler.iml" filepath="$PROJECT_DIR$/.idea/modules/-1946655871/permission_handler.iml" group="android/permission_handler" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/305649635/share.iml" filepath="$PROJECT_DIR$/.idea/modules/305649635/share.iml" group="android/share" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-849103759/shared_preferences.iml" filepath="$PROJECT_DIR$/.idea/modules/-849103759/shared_preferences.iml" group="android/shared_preferences" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/545488180/sqflite.iml" filepath="$PROJECT_DIR$/.idea/modules/545488180/sqflite.iml" group="android/sqflite" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/103199990/wakelock.iml" filepath="$PROJECT_DIR$/.idea/modules/103199990/wakelock.iml" group="android/wakelock" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android.iml" filepath="$PROJECT_DIR$/.idea/modules/android.iml" />
     </modules>
   </component>
 </project>
