@@ -42,7 +42,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
         surface: kWhiteColor,
       ),
       backgroundColor: /*Colors.white*/ kBackgroundLightColor,
-      iconTheme: IconThemeData(color: kBodyTextColorLight),
+      iconTheme: IconThemeData(color: kPrimaryIconLightColor),
       accentIconTheme: IconThemeData(color: kAccentIconLightColor),
       primaryIconTheme: IconThemeData(color: kPrimaryIconLightColor),
       textTheme: TextTheme(
@@ -122,7 +122,7 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
         surface: kSurfaceDarkColor,
       ),
       backgroundColor: kBackgroundDarkColor,
-      iconTheme: IconThemeData(color: kBodyTextColorDark),
+      iconTheme: IconThemeData(color: kPrimaryIconDarkColor),
       accentIconTheme: IconThemeData(color: kAccentIconDarkColor),
       primaryIconTheme: IconThemeData(color: kPrimaryIconDarkColor),
       cardColor: kCardDarkColor,

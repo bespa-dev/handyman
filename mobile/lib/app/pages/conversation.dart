@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
-import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/chat_header.dart';
 import 'package:handyman/app/widget/chat_input_entry.dart';
@@ -14,6 +13,7 @@ import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
+/*FIXME: Unable to fetch provider information from database*/
 class ConversationPage extends StatefulWidget {
   final String sender, recipient;
 
@@ -70,51 +70,32 @@ class _ConversationPageState extends State<ConversationPage> {
 
     return Scaffold(
       extendBody: true,
-      extendBodyBehindAppBar: true,
       body: Consumer<PrefsProvider>(
-        builder: (_, prefsProvider, __) => Consumer<ThemeProvider>(
-          builder: (_, themeProvider, __) => Container(
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                themeProvider.isLightTheme
-                    ? Container(
-                        decoration: BoxDecoration(
-                          // image: DecorationImage(
-                          //   image: AssetImage(kBackgroundAsset),
-                          //   fit: BoxFit.cover,
-                          // ),
-                        ),
+        builder: (_, prefsProvider, __) => Container(
+          child: SafeArea(
+            child: StreamBuilder<Artisan>(
+              stream: /*_apiService.getArtisanById(id: widget.recipient) ??*/
+                  _dummyArtisan,
+              builder: (_, snapshot) {
+                if (snapshot.hasError)
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text("No recipient found"),
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX24)),
+                      ButtonOutlined(
+                        width: getProportionateScreenWidth(kSpacingX200),
+                        themeData: themeData,
+                        onTap: () => context.navigator.pop(),
+                        label: "Go back",
                       )
-                    : SizedBox.shrink(),
-                SafeArea(
-                  child: StreamBuilder<Artisan>(
-                    stream: /*_apiService.getArtisanById(id: widget.recipient) ??*/
-                        _dummyArtisan,
-                    builder: (_, snapshot) {
-                      if (snapshot.hasError)
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text("No recipient found"),
-                            SizedBox(
-                                height:
-                                    getProportionateScreenHeight(kSpacingX24)),
-                            ButtonOutlined(
-                              width: getProportionateScreenWidth(kSpacingX200),
-                              themeData: themeData,
-                              onTap: () => context.navigator.pop(),
-                              label: "Go back",
-                            )
-                          ],
-                        );
-                      else
-                        return _buildChatWidget(snapshot.data);
-                    },
-                  ),
-                ),
-              ],
+                    ],
+                  );
+                else
+                  return _buildChatWidget(snapshot.data);
+              },
             ),
           ),
         ),
@@ -136,12 +117,12 @@ class _ConversationPageState extends State<ConversationPage> {
                       artisan: artisan,
                       customer: /*snapshot.data ??*/
                           Customer(
-                            id: widget.sender,
-                            avatar:
-                                "https://images.unsplash.com/photo-1574981370294-edbbf06bb159?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
-                            email: "quabynah@gmail.com",
-                            name: "Quabynah Bilson Jr.",
-                          ),
+                        id: widget.sender,
+                        avatar:
+                            "https://images.unsplash.com/photo-1574981370294-edbbf06bb159?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
+                        email: "quabynah@gmail.com",
+                        name: "Quabynah Bilson Jr.",
+                      ),
                     ),
                   ),
                   UserInput(

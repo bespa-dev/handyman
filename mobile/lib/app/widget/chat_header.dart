@@ -42,12 +42,16 @@ class ChatHeader extends StatelessWidget {
                   children: [
                     Text(
                       artisan?.name ?? "No name",
-                      style: themeData.textTheme.headline6,
+                      style: themeData.textTheme.headline6.copyWith(
+                        color: themeData.primaryColor,
+                      ),
                     ),
                     SizedBox(height: getProportionateScreenHeight(kSpacingX4)),
                     Text(
                       artisan?.business ?? artisan?.email ?? "#unregistered",
-                      style: themeData.textTheme.caption,
+                      style: themeData.textTheme.caption.copyWith(
+                        color: themeData.primaryColor,
+                      ),
                     ),
                   ],
                 ),

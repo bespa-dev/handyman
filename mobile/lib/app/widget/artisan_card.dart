@@ -177,7 +177,7 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
               children: [
                 UserAvatar(
                   url: widget.artisan.avatar,
-                  ringColor: RandomColor()
+                  ringColor: RandomColor(1)
                       .randomColor(colorBrightness: ColorBrightness.dark),
                 ),
                 SizedBox(width: getProportionateScreenWidth(kSpacingX8)),

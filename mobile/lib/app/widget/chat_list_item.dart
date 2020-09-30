@@ -58,8 +58,9 @@ class _ChatListItemState extends State<ChatListItem> {
                       children: [
                         UserAvatar(
                           url: widget.artisan.avatar,
-                          radius: kSpacingX36,
-                          ringColor: RandomColor(2).randomColor(),
+                          radius: kSpacingX42,
+                          ringColor: RandomColor(1).randomColor(
+                              colorBrightness: ColorBrightness.dark),
                         ),
                         SizedBox(
                           width: getProportionateScreenWidth(kSpacingX8),
@@ -109,8 +110,10 @@ class _ChatListItemState extends State<ChatListItem> {
                         ),
                         UserAvatar(
                           url: widget.customer.avatar,
-                          radius: kSpacingX36,
-                          ringColor: RandomColor(2).randomColor(),
+                          radius: kSpacingX42,
+                          ringColor: RandomColor(14).randomColor(
+                            colorBrightness: ColorBrightness.dark,
+                          ),
                         ),
                       ],
                     )
@@ -150,12 +153,12 @@ class _ChatMessagesState extends State<ChatMessages> {
         return snapshot.hasData
             ? AnimationLimiter(
                 child: ListView.separated(
+                  padding: EdgeInsets.only(
+                      bottom: getProportionateScreenHeight(kSpacingX8)),
                   scrollDirection: Axis.vertical,
                   reverse: true,
                   physics: kScrollPhysics,
                   clipBehavior: Clip.hardEdge,
-                  keyboardDismissBehavior:
-                      ScrollViewKeyboardDismissBehavior.onDrag,
                   separatorBuilder: (_, __) => SizedBox(
                       height: getProportionateScreenHeight(kSpacingX8)),
                   itemBuilder: (_, index) {

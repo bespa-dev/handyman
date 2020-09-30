@@ -8,6 +8,7 @@ const double kSpacingX4 = 4.0;
 const double kSpacingX8 = 8.0;
 const double kSpacingX12 = 12.0;
 const double kSpacingX16 = 16.0;
+const double kSpacingX20 = 20.0;
 const double kSpacingX24 = 24.0;
 const double kSpacingX36 = 36.0;
 const double kSpacingX42 = 42.0;

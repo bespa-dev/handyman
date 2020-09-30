@@ -99,17 +99,25 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 IconButton(
                                   tooltip: "Toggle theme",
-                                  icon: Icon(themeProvider.isLightTheme
-                                      ? Feather.moon
-                                      : Feather.sun),
+                                  icon: Icon(
+                                    themeProvider.isLightTheme
+                                        ? Feather.moon
+                                        : Feather.sun,
+                                    // color: themeData.appBarTheme.iconTheme.color,
+                                  ),
                                   onPressed: () => themeProvider.toggleTheme(),
                                 ),
                                 Expanded(
                                   child: Container(
-                                    margin: EdgeInsets.only(left: getProportionateScreenWidth(kSpacingX8)),
+                                    margin: EdgeInsets.only(
+                                        left: getProportionateScreenWidth(
+                                            kSpacingX8)),
                                     child: Text(
                                       "Search for artisans & more",
-                                      style: themeData.textTheme.headline6,
+                                      style: themeData.textTheme.headline6
+                                          .copyWith(
+                                        color: themeData.iconTheme.color,
+                                      ),
                                     ),
                                   ),
                                 ),

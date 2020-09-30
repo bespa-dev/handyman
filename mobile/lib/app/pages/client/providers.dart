@@ -44,14 +44,12 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Feather.x),
-          color: themeData.iconTheme.color,
           onPressed: () => context.navigator.pop(),
         ),
         actions: [
           IconButton(
             tooltip: "Search",
             icon: Icon(Feather.search),
-            color: themeData.iconTheme.color,
             onPressed: () => showSearch(
               context: context,
               delegate: SearchPage(),

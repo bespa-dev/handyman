@@ -30,7 +30,10 @@ class _UserInputState extends State<UserInput> {
         width: double.infinity,
         child: Column(
           children: [
-            Divider(),
+            Divider(
+              height: kSpacingNone,
+              color: Theme.of(context).disabledColor.withOpacity(kOpacityX70),
+            ),
             _UserInputText(
               textController: textController,
               keyboardShown: !dismissKeyboard,
@@ -113,7 +116,6 @@ class __UserInputTextState extends State<_UserInputText> {
                 EdgeInsets.only(left: getProportionateScreenWidth(kSpacingX16)),
             alignment: Alignment.centerLeft,
             child: TextFormField(
-              // controller: ,
               textAlign: TextAlign.start,
               keyboardType: widget.keyboardType,
               onFieldSubmitted: (value) {},
@@ -235,6 +237,7 @@ class _InputSelectorButton extends StatelessWidget {
       icon: Icon(icon),
       onPressed: onClick,
       tooltip: tooltip,
+      iconSize: kSpacingX20,
       color: selected ? themeData.primaryColor : themeData.disabledColor,
     );
   }
