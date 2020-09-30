@@ -58,7 +58,11 @@ class _UserInputState extends State<UserInput> {
               currentInputSelector: currentInputSelector,
             ),
             _SelectorExpanded(
-              onCloseRequested: dismissKeyboard,
+              onCloseRequested: (requestClose) {
+                if (requestClose) currentInputSelector = InputSelector.NONE;
+                setState(() {});
+                // TODO: Hide keyboard here
+              },
               onTextAdded: (text) {
                 textController.text += text;
                 setState(() {});
@@ -133,7 +137,7 @@ class __UserInputTextState extends State<_UserInputText> {
                     child: Text(
                       "Say something...",
                       style: TextStyle(
-                        color: themeData.primaryColor.withOpacity(kOpacityX50),
+                        color: themeData.disabledColor,
                       ),
                     ),
                   ),
@@ -237,7 +241,7 @@ class _InputSelectorButton extends StatelessWidget {
 }
 
 class _SelectorExpanded extends StatelessWidget {
-  final bool onCloseRequested;
+  final Function(bool) onCloseRequested;
   final Function(String) onTextAdded;
   final InputSelector currentSelector;
 
@@ -250,16 +254,28 @@ class _SelectorExpanded extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: currentSelector == InputSelector.EMOJI
-          ? _buildEmojiSelector(context)
-          : currentSelector == InputSelector.MAP
-              ? _buildMapPanel()
-              : currentSelector == InputSelector.NONE
-                  ? SizedBox.shrink()
-                  : _buildFunctionalityNotAvailablePanel(context),
+    return Column(
+      children: [
+        currentSelector == InputSelector.EMOJI
+            ? _buildEmojiSelector(context)
+            : currentSelector == InputSelector.MAP
+                ? _buildMapPanel()
+                : currentSelector == InputSelector.NONE
+                    ? SizedBox.shrink()
+                    : _buildFunctionalityNotAvailablePanel(context),
+        _buildHideUIPanel(context),
+      ],
     );
   }
+
+  Widget _buildHideUIPanel(BuildContext context) => Container(
+        alignment: Alignment.center,
+        child: currentSelector != InputSelector.NONE
+            ? IconButton(
+                icon: Icon(Feather.chevron_down),
+                onPressed: () => onCloseRequested(true))
+            : SizedBox.shrink(),
+      );
 
   Widget _buildEmojiSelector(context) => Container(
         height: kSpacingX320,

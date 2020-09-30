@@ -6,10 +6,10 @@ class ButtonOutlined extends StatelessWidget {
   const ButtonOutlined({
     Key key,
     @required this.width,
-    @required this.height,
     @required this.themeData,
     @required this.onTap,
     @required this.label,
+    this.height,
     this.icon,
     this.enabled = true,
   }) : super(key: key);

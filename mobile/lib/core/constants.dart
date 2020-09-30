@@ -52,9 +52,12 @@ const kSlideOffset = 50.0;
 /// Colors
 const kGreenColor = Color(0xFF009688);
 const kWhiteColor = Colors.white;
+const kChatBackgroundLight = Color(0xFFF5F5F5);
+const kChatBackgroundDark = Color(0xFF222222);
 const kTransparent = Colors.transparent;
 const kPlaceholderColor = Color(0x70000000);
-const kDisabledColor = Color(0x1f000000);
+const kDisabledColor = Color(0xFF666666);
+// const kDisabledColorDark = Color(0x1f000000);
 
 // const kPrimaryColor = Color(0xFF5d1049);
 // const kSecondaryLightColor = Color(0xFFe30425);
@@ -66,12 +69,13 @@ const kBackgroundLightColor = kWhiteColor;
 const kCardLightColor = kWhiteColor;
 
 const kPrimaryColorDark = Color(0xFFFF7597);
-const kSecondaryDarkColor = Color(0xFFFF0266);
+const kSecondaryDarkColor = Color(0xFFFF7597);
 const kErrorDarkColor = Color(0xffEC407A);
 const kAccentDarkColor = kWhiteColor;
-const kBackgroundDarkColor = Color(0xFF202124);
+const kBackgroundDarkColor = Color(0xFF151515);
+// const kBackgroundDarkColor = Color(0xFF202124);
 // const kBackgroundDarkColor = Color(0xFF24191C);
-const kCardDarkColor = Color(0xFF3C4043);
+const kCardDarkColor = Color(0xFF272727);
 // const kCardDarkColor = Color(0xFF3C4043);
 const kSurfaceDarkColor = Color(0xFF222225);
 
