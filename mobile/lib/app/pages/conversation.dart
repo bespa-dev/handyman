@@ -1,11 +1,15 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/model/theme_provider.dart';
+import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
+import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class ConversationPage extends StatefulWidget {
   final String sender, recipient;
@@ -19,13 +23,24 @@ class ConversationPage extends StatefulWidget {
 
 class _ConversationPageState extends State<ConversationPage> {
   final _apiService = sl.get<ApiProviderService>();
+  final _messageController = TextEditingController();
+
+  void sendMessage() async {
+    final conversation = Conversation(
+      id: Uuid().v4(),
+      author: widget.sender,
+      recipient: widget.recipient,
+      content: _messageController.text.trim(),
+      createdAt: DateTime.now().toIso8601String(),
+    );
+    await _apiService.sendMessage(conversation: conversation);
+  }
 
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(),
       extendBody: true,
       extendBodyBehindAppBar: true,
       body: Consumer<PrefsProvider>(
@@ -49,8 +64,23 @@ class _ConversationPageState extends State<ConversationPage> {
                     stream: _apiService.getArtisanById(id: widget.recipient),
                     builder: (_, snapshot) {
                       if (snapshot.hasError)
-                        return Positioned.fill(
-                            child: Text("No recipient found"));
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text("No recipient found"),
+                            SizedBox(
+                                height: getProportionateScreenHeight(
+                                    kSpacingX24)),
+                            ButtonOutlined(
+                              width:
+                                  getProportionateScreenWidth(kSpacingX200),
+                              themeData: themeData,
+                              onTap: () => context.navigator.pop(),
+                              label: "Go back",
+                            )
+                          ],
+                        );
                       else
                         return _buildChatWidget(snapshot.data);
                     },
@@ -67,9 +97,9 @@ class _ConversationPageState extends State<ConversationPage> {
   Widget _buildChatWidget(Artisan artisan) {
     debugPrint(artisan.toString());
     return Column(
-        children: [
-          Text(artisan?.name ?? "no name"),
-        ],
-      );
+      children: [
+        Text(artisan?.name ?? "no name"),
+      ],
+    );
   }
 }

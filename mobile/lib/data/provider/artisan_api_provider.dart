@@ -36,11 +36,18 @@ class ApiProviderService {
         .map((e) => Artisan.fromJson(e))
         .where((item) => item.category == category)
         .toList();
-    return /*_database.categoryDao.categoryByGroup(categoryGroup.index).get();*/ results;
+    return results;
   }
 
   Stream<Artisan> getArtisanById({@required String id}) =>
       _database.providerDao.artisanById(id).watchSingle();
+
+  Future<void> sendMessage({@required Conversation conversation}) =>
+      _database.messageDao.sendMessage(conversation);
+
+  Stream<List<Conversation>> getConversation(
+          {@required String sender, @required String recipient}) =>
+      _database.messageDao.conversationWithRecipient(sender, recipient).watch();
 
   Stream<Customer> getCustomerById({@required String id}) =>
       _database.customerById(id).watchSingle();
@@ -64,7 +71,7 @@ class ApiProviderService {
         .map((e) => ServiceCategory.fromJson(e))
         .where((item) => item.groupName == categoryGroup.index)
         .toList();
-    return /*_database.categoryDao.categoryByGroup(categoryGroup.index).get();*/ results;
+    return results;
   }
 
   Stream<List<CustomerReview>> getReviews(String id) =>

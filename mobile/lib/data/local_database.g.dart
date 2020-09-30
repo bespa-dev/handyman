@@ -1855,6 +1855,396 @@ class $CategoryItemTable extends CategoryItem
   }
 }
 
+class Conversation extends DataClass implements Insertable<Conversation> {
+  final String id;
+  final String author;
+  final String recipient;
+  final String content;
+  final String createdAt;
+  final String image;
+  Conversation(
+      {@required this.id,
+      @required this.author,
+      @required this.recipient,
+      @required this.content,
+      @required this.createdAt,
+      this.image});
+  factory Conversation.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final stringType = db.typeSystem.forDartType<String>();
+    return Conversation(
+      id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      author:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}author']),
+      recipient: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}recipient']),
+      content:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}content']),
+      createdAt: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
+      image:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}image']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<String>(id);
+    }
+    if (!nullToAbsent || author != null) {
+      map['author'] = Variable<String>(author);
+    }
+    if (!nullToAbsent || recipient != null) {
+      map['recipient'] = Variable<String>(recipient);
+    }
+    if (!nullToAbsent || content != null) {
+      map['content'] = Variable<String>(content);
+    }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<String>(createdAt);
+    }
+    if (!nullToAbsent || image != null) {
+      map['image'] = Variable<String>(image);
+    }
+    return map;
+  }
+
+  MessageCompanion toCompanion(bool nullToAbsent) {
+    return MessageCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      author:
+          author == null && nullToAbsent ? const Value.absent() : Value(author),
+      recipient: recipient == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recipient),
+      content: content == null && nullToAbsent
+          ? const Value.absent()
+          : Value(content),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+      image:
+          image == null && nullToAbsent ? const Value.absent() : Value(image),
+    );
+  }
+
+  factory Conversation.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return Conversation(
+      id: serializer.fromJson<String>(json['id']),
+      author: serializer.fromJson<String>(json['author']),
+      recipient: serializer.fromJson<String>(json['recipient']),
+      content: serializer.fromJson<String>(json['content']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+      image: serializer.fromJson<String>(json['image']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'author': serializer.toJson<String>(author),
+      'recipient': serializer.toJson<String>(recipient),
+      'content': serializer.toJson<String>(content),
+      'createdAt': serializer.toJson<String>(createdAt),
+      'image': serializer.toJson<String>(image),
+    };
+  }
+
+  Conversation copyWith(
+          {String id,
+          String author,
+          String recipient,
+          String content,
+          String createdAt,
+          String image}) =>
+      Conversation(
+        id: id ?? this.id,
+        author: author ?? this.author,
+        recipient: recipient ?? this.recipient,
+        content: content ?? this.content,
+        createdAt: createdAt ?? this.createdAt,
+        image: image ?? this.image,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Conversation(')
+          ..write('id: $id, ')
+          ..write('author: $author, ')
+          ..write('recipient: $recipient, ')
+          ..write('content: $content, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('image: $image')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          author.hashCode,
+          $mrjc(
+              recipient.hashCode,
+              $mrjc(content.hashCode,
+                  $mrjc(createdAt.hashCode, image.hashCode))))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is Conversation &&
+          other.id == this.id &&
+          other.author == this.author &&
+          other.recipient == this.recipient &&
+          other.content == this.content &&
+          other.createdAt == this.createdAt &&
+          other.image == this.image);
+}
+
+class MessageCompanion extends UpdateCompanion<Conversation> {
+  final Value<String> id;
+  final Value<String> author;
+  final Value<String> recipient;
+  final Value<String> content;
+  final Value<String> createdAt;
+  final Value<String> image;
+  const MessageCompanion({
+    this.id = const Value.absent(),
+    this.author = const Value.absent(),
+    this.recipient = const Value.absent(),
+    this.content = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.image = const Value.absent(),
+  });
+  MessageCompanion.insert({
+    @required String id,
+    @required String author,
+    @required String recipient,
+    @required String content,
+    @required String createdAt,
+    this.image = const Value.absent(),
+  })  : id = Value(id),
+        author = Value(author),
+        recipient = Value(recipient),
+        content = Value(content),
+        createdAt = Value(createdAt);
+  static Insertable<Conversation> custom({
+    Expression<String> id,
+    Expression<String> author,
+    Expression<String> recipient,
+    Expression<String> content,
+    Expression<String> createdAt,
+    Expression<String> image,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (author != null) 'author': author,
+      if (recipient != null) 'recipient': recipient,
+      if (content != null) 'content': content,
+      if (createdAt != null) 'created_at': createdAt,
+      if (image != null) 'image': image,
+    });
+  }
+
+  MessageCompanion copyWith(
+      {Value<String> id,
+      Value<String> author,
+      Value<String> recipient,
+      Value<String> content,
+      Value<String> createdAt,
+      Value<String> image}) {
+    return MessageCompanion(
+      id: id ?? this.id,
+      author: author ?? this.author,
+      recipient: recipient ?? this.recipient,
+      content: content ?? this.content,
+      createdAt: createdAt ?? this.createdAt,
+      image: image ?? this.image,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (author.present) {
+      map['author'] = Variable<String>(author.value);
+    }
+    if (recipient.present) {
+      map['recipient'] = Variable<String>(recipient.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
+    }
+    if (image.present) {
+      map['image'] = Variable<String>(image.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MessageCompanion(')
+          ..write('id: $id, ')
+          ..write('author: $author, ')
+          ..write('recipient: $recipient, ')
+          ..write('content: $content, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('image: $image')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MessageTable extends Message
+    with TableInfo<$MessageTable, Conversation> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $MessageTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedTextColumn _id;
+  @override
+  GeneratedTextColumn get id => _id ??= _constructId();
+  GeneratedTextColumn _constructId() {
+    return GeneratedTextColumn(
+      'id',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _authorMeta = const VerificationMeta('author');
+  GeneratedTextColumn _author;
+  @override
+  GeneratedTextColumn get author => _author ??= _constructAuthor();
+  GeneratedTextColumn _constructAuthor() {
+    return GeneratedTextColumn(
+      'author',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _recipientMeta = const VerificationMeta('recipient');
+  GeneratedTextColumn _recipient;
+  @override
+  GeneratedTextColumn get recipient => _recipient ??= _constructRecipient();
+  GeneratedTextColumn _constructRecipient() {
+    return GeneratedTextColumn(
+      'recipient',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _contentMeta = const VerificationMeta('content');
+  GeneratedTextColumn _content;
+  @override
+  GeneratedTextColumn get content => _content ??= _constructContent();
+  GeneratedTextColumn _constructContent() {
+    return GeneratedTextColumn(
+      'content',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  GeneratedTextColumn _createdAt;
+  @override
+  GeneratedTextColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedTextColumn _constructCreatedAt() {
+    return GeneratedTextColumn(
+      'created_at',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _imageMeta = const VerificationMeta('image');
+  GeneratedTextColumn _image;
+  @override
+  GeneratedTextColumn get image => _image ??= _constructImage();
+  GeneratedTextColumn _constructImage() {
+    return GeneratedTextColumn(
+      'image',
+      $tableName,
+      true,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, author, recipient, content, createdAt, image];
+  @override
+  $MessageTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'message';
+  @override
+  final String actualTableName = 'message';
+  @override
+  VerificationContext validateIntegrity(Insertable<Conversation> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('author')) {
+      context.handle(_authorMeta,
+          author.isAcceptableOrUnknown(data['author'], _authorMeta));
+    } else if (isInserting) {
+      context.missing(_authorMeta);
+    }
+    if (data.containsKey('recipient')) {
+      context.handle(_recipientMeta,
+          recipient.isAcceptableOrUnknown(data['recipient'], _recipientMeta));
+    } else if (isInserting) {
+      context.missing(_recipientMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(_contentMeta,
+          content.isAcceptableOrUnknown(data['content'], _contentMeta));
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at'], _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('image')) {
+      context.handle(
+          _imageMeta, image.isAcceptableOrUnknown(data['image'], _imageMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Conversation map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return Conversation.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $MessageTable createAlias(String alias) {
+    return $MessageTable(_db, alias);
+  }
+}
+
 abstract class _$LocalDatabase extends GeneratedDatabase {
   _$LocalDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $ServiceProviderTable _serviceProvider;
@@ -1869,6 +2259,8 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   $CategoryItemTable _categoryItem;
   $CategoryItemTable get categoryItem =>
       _categoryItem ??= $CategoryItemTable(this);
+  $MessageTable _message;
+  $MessageTable get message => _message ??= $MessageTable(this);
   ProviderDao _providerDao;
   ProviderDao get providerDao =>
       _providerDao ??= ProviderDao(this as LocalDatabase);
@@ -1880,6 +2272,9 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
       _bookingDao ??= BookingDao(this as LocalDatabase);
   ReviewDao _reviewDao;
   ReviewDao get reviewDao => _reviewDao ??= ReviewDao(this as LocalDatabase);
+  MessageDao _messageDao;
+  MessageDao get messageDao =>
+      _messageDao ??= MessageDao(this as LocalDatabase);
   Selectable<Customer> customerById(String var1) {
     return customSelect('SELECT * FROM user WHERE id = ?',
         variables: [Variable.withString(var1)],
@@ -1890,7 +2285,7 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [serviceProvider, user, bookings, review, categoryItem];
+      [serviceProvider, user, bookings, review, categoryItem, message];
 }
 
 // **************************************************************************
@@ -1963,5 +2358,14 @@ mixin _$ReviewDaoMixin on DatabaseAccessor<LocalDatabase> {
         'SELECT * FROM review WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC',
         variables: [Variable.withString(var1), Variable.withString(var2)],
         readsFrom: {review}).map(review.mapFromRow);
+  }
+}
+mixin _$MessageDaoMixin on DatabaseAccessor<LocalDatabase> {
+  $MessageTable get message => attachedDatabase.message;
+  Selectable<Conversation> conversationWithRecipient(String var1, String var2) {
+    return customSelect(
+        'SELECT * FROM message WHERE author = ? AND recipient = ? ORDER BY created_at DESC',
+        variables: [Variable.withString(var1), Variable.withString(var2)],
+        readsFrom: {message}).map(message.mapFromRow);
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:handyman/data/entities/conversation.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:path/path.dart' as p;
@@ -20,17 +21,17 @@ LazyDatabase _openConnection() {
     // put the database file, called db.sqlite here, into the documents folder
     // for your app.
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'handyman.sqlite'));
+    final file = File(p.join(dbFolder.path, 'db.sqlite'));
     return VmDatabase(file);
   });
 }
 
 @UseMoor(
-  tables: [ServiceProvider, User, Bookings, Review, CategoryItem],
+  tables: [ServiceProvider, User, Bookings, Review, CategoryItem, Message],
   queries: {
     "customerById": "SELECT * FROM user WHERE id = ?",
   },
-  daos: [ProviderDao, CategoryDao, BookingDao, ReviewDao],
+  daos: [ProviderDao, CategoryDao, BookingDao, ReviewDao, MessageDao],
 )
 class LocalDatabase extends _$LocalDatabase {
   LocalDatabase._() : super(_openConnection());
@@ -38,7 +39,7 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 1;
 
   // @override
   // // ignore: invalid_override_of_non_virtual_member, missing_return
@@ -53,6 +54,8 @@ class LocalDatabase extends _$LocalDatabase {
         onUpgrade: (m, from, to) async {
           if (from == 1) {
             await m.addColumn(serviceProvider, serviceProvider.isCertified);
+          } else if(from == 2) {
+            await m.createTable(message);
           }
         },
       );
@@ -134,4 +137,17 @@ class ReviewDao extends DatabaseAccessor<LocalDatabase> with _$ReviewDaoMixin {
 
   Future<int> addItem(CustomerReview item) =>
       into(review).insert(item, mode: InsertMode.insertOrReplace);
+}
+@UseDao(
+  tables: [Message],
+  queries: {
+    "conversationWithRecipient":
+        "SELECT * FROM message WHERE author = ? AND recipient = ? ORDER BY created_at DESC",
+  },
+)
+class MessageDao extends DatabaseAccessor<LocalDatabase> with _$MessageDaoMixin {
+  MessageDao(LocalDatabase db) : super(db);
+
+  Future<int> sendMessage(Conversation item) =>
+      into(message).insert(item, mode: InsertMode.insertOrReplace);
 }
