@@ -11,6 +11,7 @@ enum InputSelector { NONE, MAP, DM, EMOJI, PHONE, PICTURE }
 
 enum EmojiStickerSelector { EMOJI, STICKER }
 
+/// User message input area with options
 class UserInput extends StatefulWidget {
   final Function(String) onMessageSent;
 
@@ -77,6 +78,7 @@ class _UserInputState extends State<UserInput> {
       );
 }
 
+/// Input box for user messages
 class _UserInputText extends StatefulWidget {
   final TextInputType keyboardType;
   final bool keyboardShown;
@@ -104,53 +106,32 @@ class __UserInputTextState extends State<_UserInputText> {
 
     return Container(
       width: double.infinity,
-      alignment: Alignment.centerRight,
+      alignment: Alignment.center,
+      padding: EdgeInsets.only(left: getProportionateScreenWidth(kSpacingX16)),
       height: getProportionateScreenHeight(kSpacingX48),
-      child: Stack(
-        fit: StackFit.loose,
-        alignment: Alignment.bottomRight,
-        children: [
-          Container(
-            width: double.infinity,
-            padding:
-                EdgeInsets.only(left: getProportionateScreenWidth(kSpacingX16)),
-            alignment: Alignment.centerLeft,
-            child: TextFormField(
-              textAlign: TextAlign.start,
-              keyboardType: widget.keyboardType,
-              onFieldSubmitted: (value) {},
-              onChanged: (_) {
-                widget.onTextFieldFocused(_.isNotEmpty);
-              },
-              controller: widget.textController,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              autocorrect: true,
-              textInputAction: TextInputAction.send,
-              onTap: () => widget.onTextFieldFocused(true),
-            ),
-          ),
-          widget.textController.text.isEmpty && !widget.focusState
-              ? GestureDetector(
-                  onTap: () => widget.onTextFieldFocused(true),
-                  child: Container(
-                    padding: EdgeInsets.only(
-                        left: getProportionateScreenWidth(kSpacingX16)),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Say something...",
-                      style: TextStyle(
-                        color: themeData.disabledColor,
-                      ),
-                    ),
-                  ),
-                )
-              : SizedBox.shrink(),
-        ],
+      child: TextFormField(
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: "Say something...",
+          hintStyle: TextStyle(color: themeData.disabledColor),
+        ),
+        textAlign: TextAlign.start,
+        keyboardType: widget.keyboardType,
+        onFieldSubmitted: (value) {},
+        onChanged: (_) {
+          widget.onTextFieldFocused(_.isNotEmpty);
+        },
+        controller: widget.textController,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        autocorrect: true,
+        textInputAction: TextInputAction.send,
+        onTap: () => widget.onTextFieldFocused(true),
       ),
     );
   }
 }
 
+/// User [InputSelector] (Emoji, Map, Image, Direct Message (email), Phone)
 class _UserInputSelector extends StatelessWidget {
   final Function(InputSelector) onSelectorChange;
   final bool sendMessageEnabled;
@@ -243,6 +224,7 @@ class _InputSelectorButton extends StatelessWidget {
   }
 }
 
+/// Area when [InputSelector] is picked
 class _SelectorExpanded extends StatelessWidget {
   final Function(bool) onCloseRequested;
   final Function(String) onTextAdded;
@@ -356,6 +338,7 @@ class _SelectorExpanded extends StatelessWidget {
       );
 }
 
+/// Inner button for [EmojiStickerSelector]
 class _ExtendedSelectorInnerButton extends StatelessWidget {
   final String text;
   final Function onClick;
