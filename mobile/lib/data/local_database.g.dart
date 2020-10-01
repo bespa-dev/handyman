@@ -2359,11 +2359,19 @@ mixin _$ReviewDaoMixin on DatabaseAccessor<LocalDatabase> {
 }
 mixin _$MessageDaoMixin on DatabaseAccessor<LocalDatabase> {
   $MessageTable get message => attachedDatabase.message;
-  Selectable<Conversation> conversationWithRecipient(String var1, String var2) {
+  Selectable<Conversation> conversationWithRecipient(
+      String var1, String var2, String var3, String var4) {
     return customSelect(
-        'SELECT * FROM message WHERE author = ? AND recipient = ? ORDER BY created_at DESC',
-        variables: [Variable.withString(var1), Variable.withString(var2)],
-        readsFrom: {message}).map(message.mapFromRow);
+        'SELECT * FROM message WHERE author = ? AND recipient = ? OR recipient = ? AND author = ? ORDER BY created_at DESC',
+        variables: [
+          Variable.withString(var1),
+          Variable.withString(var2),
+          Variable.withString(var3),
+          Variable.withString(var4)
+        ],
+        readsFrom: {
+          message
+        }).map(message.mapFromRow);
   }
 }
 mixin _$CustomerDaoMixin on DatabaseAccessor<LocalDatabase> {

@@ -147,7 +147,7 @@ class ReviewDao extends DatabaseAccessor<LocalDatabase> with _$ReviewDaoMixin {
   tables: [Message],
   queries: {
     "conversationWithRecipient":
-        "SELECT * FROM message WHERE author = ? AND recipient = ? ORDER BY created_at DESC",
+        "SELECT * FROM message WHERE author = ? AND recipient = ? OR recipient = ? AND author = ? ORDER BY created_at DESC",
   },
 )
 class MessageDao extends DatabaseAccessor<LocalDatabase>

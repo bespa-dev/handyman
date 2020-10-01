@@ -39,6 +39,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
     _themeData = Theme.of(context);
     final kHeight = MediaQuery.of(context).size.height;
     final kWidth = MediaQuery.of(context).size.width;
+    debugPrint(widget.artisan.id);
 
     return Consumer<PrefsProvider>(
       builder: (_, prefsProvider, __) => Consumer<ThemeProvider>(

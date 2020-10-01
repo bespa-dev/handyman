@@ -17,7 +17,8 @@ dependencies:
 
   google_fonts: ^1.1.0
   auto_route: ^0.6.7
-  moor_flutter: ^3.1.0
+  moor: ^3.1.0
+  sqlite3_flutter_libs: ^0.2.0
   get_it: ^4.0.4
   shared_preferences: ^0.5.10
   md2_tab_indicator: ^1.0.2

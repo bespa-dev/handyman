@@ -27,21 +27,6 @@ class ConversationPage extends StatefulWidget {
 
 class _ConversationPageState extends State<ConversationPage> {
   final _apiService = sl.get<ApiProviderService>();
-  final _dummyArtisan = Stream.value(
-    Artisan(
-        id: Uuid().v4(),
-        name: "Kwasi Babone",
-        business: "LA Galaxy Inc",
-        email: "kwasi@mail.com",
-        isCertified: true,
-        avatar:
-            "https://images.unsplash.com/photo-1598547461182-45d03f6661e4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
-        category: "598d67f5-b84b-4572-9058-57f36463aeac",
-        startWorkingHours: 8,
-        endWorkingHours: 23,
-        price: 23.69,
-        rating: 3.5),
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +38,7 @@ class _ConversationPageState extends State<ConversationPage> {
         builder: (_, prefsProvider, __) => Container(
           child: SafeArea(
             child: StreamBuilder<Artisan>(
-              stream: /*_apiService.getArtisanById(id: widget.recipient) ??*/
-                  _dummyArtisan,
+              stream: _apiService.getArtisanById(id: widget.recipient),
               builder: (_, snapshot) {
                 if (snapshot.hasError)
                   return Column(
