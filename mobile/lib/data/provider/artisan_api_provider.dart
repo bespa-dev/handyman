@@ -52,11 +52,11 @@ class ApiProviderService {
       _messageDao.sendMessage(conversation);
 
   // TODO: Uncomment this
-  Stream<List<Conversation>> getConversation(
-          {@required String sender, @required String recipient}) =>
-      _messageDao.conversationWithRecipient(sender, recipient, recipient, sender).watch();
+  // Stream<List<Conversation>> getConversation(
+  //         {@required String sender, @required String recipient}) =>
+  //     _messageDao.conversationWithRecipient(sender, recipient, recipient, sender).watch();
 
-/*  Stream<List<Conversation>> getConversation(
+  Stream<List<Conversation>> getConversation(
       {@required String sender, @required String recipient}) async* {
     // Decode artisans from json array
     final data = await rootBundle.loadString("assets/sample_conversation.json");
@@ -77,7 +77,7 @@ class ApiProviderService {
         .toList();
 
     yield results;
-  }*/
+  }
 
   Stream<Customer> getCustomerById({@required String id}) =>
       _customerDao.customerById(id).watchSingle();
