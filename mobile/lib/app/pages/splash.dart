@@ -41,8 +41,8 @@ class _SplashPageState extends State<SplashPage> {
                     Spacer(),
                     Expanded(
                       child: Container(
-                        height: getProportionateScreenHeight(kSpacingX250),
-                        width: getProportionateScreenWidth(kSpacingX250),
+                        height: getProportionateScreenHeight(kSpacingX120),
+                        width: getProportionateScreenWidth(kSpacingX120),
                         clipBehavior: Clip.hardEdge,
                         margin: EdgeInsets.symmetric(
                           horizontal: getProportionateScreenWidth(kSpacingX64),
@@ -50,12 +50,10 @@ class _SplashPageState extends State<SplashPage> {
                         decoration: BoxDecoration(
                             color: themeData.scaffoldBackgroundColor),
                         child: Image(
-                          image: Svg(provider.isLightTheme
-                              ? kLogoAsset
-                              : kLogoDarkAsset),
+                          image: Svg(kLogoAsset),
                           fit: BoxFit.contain,
-                          height: getProportionateScreenHeight(kSpacingX250),
-                          width: getProportionateScreenWidth(kSpacingX250),
+                          height: getProportionateScreenHeight(kSpacingX120),
+                          width: getProportionateScreenWidth(kSpacingX120),
                         ),
                       ),
                     ),
