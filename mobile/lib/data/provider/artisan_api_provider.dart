@@ -51,12 +51,11 @@ class ApiProviderService {
   Future<void> sendMessage({@required Conversation conversation}) =>
       _messageDao.sendMessage(conversation);
 
-  // TODO: Uncomment this
-  // Stream<List<Conversation>> getConversation(
-  //         {@required String sender, @required String recipient}) =>
-  //     _messageDao.conversationWithRecipient(sender, recipient, recipient, sender).watch();
-
   Stream<List<Conversation>> getConversation(
+          {@required String sender, @required String recipient}) =>
+      _messageDao.conversationWithRecipient(sender, recipient).watch();
+
+  /*Stream<List<Conversation>> getConversation(
       {@required String sender, @required String recipient}) async* {
     // Decode artisans from json array
     final data = await rootBundle.loadString("assets/sample_conversation.json");
@@ -66,18 +65,19 @@ class ApiProviderService {
     final List<dynamic> messages = decodedData ??= [];
 
     // Add to database
-    _messageDao.addMessages(messages.map((e) => Conversation.fromJson(e)).toList());
+    _messageDao
+        .addMessages(messages.map((e) => Conversation.fromJson(e)).toList());
 
     // Traverse json array
     final results = messages
         .map((e) => Conversation.fromJson(e))
-        .where((item) =>
-            item.author == sender && item.recipient == recipient ||
-            item.author == recipient && item.recipient == sender)
+        // .where((item) =>
+        //     item.author == sender && item.recipient == recipient ||
+        //     item.author == recipient && item.recipient == sender)
         .toList();
 
     yield results;
-  }
+  }*/
 
   Stream<Customer> getCustomerById({@required String id}) =>
       _customerDao.customerById(id).watchSingle();

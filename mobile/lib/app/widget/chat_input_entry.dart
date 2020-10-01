@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
@@ -7,6 +8,7 @@ import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/core/utils.dart';
 import 'package:meta/meta.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 enum InputSelector { NONE, MAP, DM, EMOJI, PHONE, PICTURE }
 
@@ -267,6 +269,31 @@ class _SelectorExpanded extends StatefulWidget {
 
 class __SelectorExpandedState extends State<_SelectorExpanded> {
   EmojiStickerSelector _emojiSelector = EmojiStickerSelector.EMOJI;
+  final geolocator = Geolocator();
+  LatLng _currentPosition;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCurrentLocation();
+  }
+
+  void _fetchCurrentLocation() async {
+    final permission = await geolocator.checkGeolocationPermissionStatus(
+      locationPermission: GeolocationPermission.locationWhenInUse,
+    );
+    if (permission == GeolocationStatus.granted) {
+      var isLocationServiceEnabled =
+          await geolocator.isLocationServiceEnabled();
+      debugPrint("Location service enabled -> $isLocationServiceEnabled");
+      Position position = await geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      debugPrint("Lat -> ${position.latitude} : Lng -> ${position.longitude}");
+      _currentPosition = LatLng(position.latitude, position.longitude);
+    } else {
+      await openAppSettings();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -305,7 +332,7 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
         height: kSpacingX320,
         child: GoogleMap(
           initialCameraPosition: CameraPosition(
-            target: LatLng(5.11, -0.12),
+            target: _currentPosition,
             zoom: 18.0,
           ),
           onTap: (address) {

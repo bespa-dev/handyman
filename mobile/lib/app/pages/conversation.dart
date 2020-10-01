@@ -28,6 +28,12 @@ class _ConversationPageState extends State<ConversationPage> {
   final _apiService = sl.get<ApiProviderService>();
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Provider.of<PrefsProvider>(context).saveUserId("f9095d90-59d2-4a57-b3cf-43e9b9ed2743");
+  }
+
+  @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
 
@@ -40,20 +46,23 @@ class _ConversationPageState extends State<ConversationPage> {
               stream: _apiService.getArtisanById(id: widget.recipient),
               builder: (_, snapshot) {
                 if (snapshot.hasError)
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text("No recipient found"),
-                      SizedBox(
-                          height: getProportionateScreenHeight(kSpacingX24)),
-                      ButtonOutlined(
-                        width: getProportionateScreenWidth(kSpacingX200),
-                        themeData: themeData,
-                        onTap: () => context.navigator.pop(),
-                        label: "Go back",
-                      )
-                    ],
+                  return Container(
+                    width: double.infinity,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("No recipient found"),
+                        SizedBox(
+                            height: getProportionateScreenHeight(kSpacingX24)),
+                        ButtonOutlined(
+                          width: getProportionateScreenWidth(kSpacingX200),
+                          themeData: themeData,
+                          onTap: () => context.navigator.pop(),
+                          label: "Go back",
+                        )
+                      ],
+                    ),
                   );
                 else
                   return _buildChatWidget(snapshot.data);
@@ -66,7 +75,7 @@ class _ConversationPageState extends State<ConversationPage> {
   }
 
   Widget _buildChatWidget(Artisan artisan) => StreamBuilder<Customer>(
-      stream: /*_apiService.getCustomerById(id: widget.sender)*/ Stream.value(
+      stream: _apiService.getCustomerById(id: widget.sender) ?? Stream.value(
         Customer(
           id: widget.sender,
           avatar:
@@ -97,7 +106,6 @@ class _ConversationPageState extends State<ConversationPage> {
                         content: content,
                         createdAt: timestamp,
                       );
-                      debugPrint(timestamp);
                       await _apiService.sendMessage(conversation: conversation);
                     },
                   ),

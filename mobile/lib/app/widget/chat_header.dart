@@ -54,7 +54,7 @@ class ChatHeader extends StatelessWidget {
             ),
           ),
           IconButton(
-            icon: Icon(Entypo.dots_three_horizontal),
+            icon: Icon(Entypo.dots_two_horizontal),
             onPressed: () {
               // TODO: Add action here
             },

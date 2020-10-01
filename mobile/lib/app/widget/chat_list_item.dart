@@ -61,7 +61,7 @@ class _ChatListItemState extends State<ChatListItem> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           UserAvatar(
-                            url: widget.artisan.avatar,
+                            url: /*widget.artisan?.avatar ??*/ "",
                             radius: kSpacingX42,
                             ringColor: RandomColor(1).randomColor(
                                 colorBrightness: ColorBrightness.dark),
@@ -114,7 +114,7 @@ class _ChatListItemState extends State<ChatListItem> {
                             width: getProportionateScreenWidth(kSpacingX8),
                           ),
                           UserAvatar(
-                            url: widget.customer.avatar,
+                            url: /*widget.customer.avatar ??*/ "",
                             radius: kSpacingX42,
                             ringColor: RandomColor(14).randomColor(
                               colorBrightness: ColorBrightness.dark,

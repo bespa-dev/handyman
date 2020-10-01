@@ -112,6 +112,13 @@ class _LoginPageState extends State<LoginPage> {
                                     ? "Enter a valid password"
                                     : null,
                           ),
+                          Text(
+                            "Your password must be 8 or more characters long & must container a mix of upper & lower case letters, numbers & symbols",
+                            style: themeData.textTheme.caption,
+                          ),
+                          SizedBox(
+                              height:
+                                  getProportionateScreenHeight(kSpacingX24)),
                           ButtonOutlined(
                             width: getProportionateScreenWidth(kSpacingX200),
                             themeData: themeData,

@@ -43,26 +43,17 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 2;
 
   @override
-// ignore: invalid_override_of_non_virtual_member, missing_return
-  Future<Function> beforeOpen(
-      QueryExecutor executor, OpeningDetails details) async {
-    await (executor..beginTransaction()).runCustom("PRAGMA foreign_keys = ON");
-  }
-
-  @override
-  MigrationStrategy get migration => MigrationStrategy(
-        onUpgrade: (m, from, to) async {
-          if (from == 1) {
-            await m.addColumn(serviceProvider, serviceProvider.isCertified);
-            await m.createTable(message);
-          } else if (from == 2) {
-           await m.addColumn(serviceProvider, null);
-          }
-        },
-      );
+  MigrationStrategy get migration =>
+      MigrationStrategy(onUpgrade: (m, from, to) async {
+        switch (from) {
+          case 1:
+            await m.addColumn(serviceProvider, serviceProvider.isAvailable);
+            break;
+        }
+      });
 }
 
 @UseDao(
@@ -71,7 +62,7 @@ class LocalDatabase extends _$LocalDatabase {
     "artisanById": "SELECT * FROM service_provider WHERE id = ?",
     "artisans": "SELECT * FROM service_provider ORDER BY id desc",
     "searchFor":
-        "SELECT * FROM service_provider WHERE name LIKE ? OR category LIKE ? ORDER BY id desc",
+    "SELECT * FROM service_provider WHERE name LIKE ? OR category LIKE ? ORDER BY id desc",
   },
 )
 class ProviderDao extends DatabaseAccessor<LocalDatabase>
@@ -108,9 +99,9 @@ class CategoryDao extends DatabaseAccessor<LocalDatabase>
   tables: [Bookings],
   queries: {
     "bookingsForCustomer":
-        "SELECT * FROM bookings WHERE customer_id = ? ORDER BY created_at DESC",
+    "SELECT * FROM bookings WHERE customer_id = ? ORDER BY created_at DESC",
     "bookingsForCustomerAndProvider":
-        "SELECT * FROM bookings WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC"
+    "SELECT * FROM bookings WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC"
   },
 )
 class BookingDao extends DatabaseAccessor<LocalDatabase>
@@ -131,9 +122,9 @@ class BookingDao extends DatabaseAccessor<LocalDatabase>
   tables: [Review],
   queries: {
     "reviewsForProvider":
-        "SELECT * FROM review WHERE customer_id = ? ORDER BY created_at DESC",
+    "SELECT * FROM review WHERE customer_id = ? ORDER BY created_at DESC",
     "reviewsForCustomerAndProvider":
-        "SELECT * FROM review WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC"
+    "SELECT * FROM review WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC"
   },
 )
 class ReviewDao extends DatabaseAccessor<LocalDatabase> with _$ReviewDaoMixin {
@@ -147,7 +138,7 @@ class ReviewDao extends DatabaseAccessor<LocalDatabase> with _$ReviewDaoMixin {
   tables: [Message],
   queries: {
     "conversationWithRecipient":
-        "SELECT * FROM message WHERE author = ? AND recipient = ? OR recipient = ? AND author = ? ORDER BY created_at DESC",
+    "SELECT * FROM message WHERE author = ? OR recipient = ? ORDER BY created_at DESC",
   },
 )
 class MessageDao extends DatabaseAccessor<LocalDatabase>
