@@ -29,8 +29,9 @@ const double kOpacityX70 = 0.7;
 const double kOpacityX90 = 0.9;
 
 /// App
-const kAppName = "Handyman";
-const kAppSlogan = "Simple. Safe. Reliable.";
+const kAppName = "HandyMan";
+const kAppSlogan = "Get some real work done";
+const kAppSloganDesc = "Find your service & book easily with $kAppName";
 const kProviderString = "Artisan";
 const kClientString = "Customer";
 const kLogoAsset = "assets/logo/logo_colored.svg";
