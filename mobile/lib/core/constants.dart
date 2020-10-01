@@ -33,16 +33,11 @@ const kAppName = "Handyman";
 const kAppSlogan = "Simple. Safe. Reliable.";
 const kProviderString = "Artisan";
 const kClientString = "Customer";
-const kLogoAsset = "assets/logo/app_title.webp";
+const kLogoAsset = "assets/logo/logo.svg";
+const kLogoDarkAsset = "assets/logo/logo_dark.svg";
 const kTimeSvgAsset = "assets/svg/time.svg";
 const kPeopleSvgAsset = "assets/svg/people.svg";
 const kBookingSvgAsset = "assets/svg/booking.svg";
-const kTimeAsset =
-    "https://images.unsplash.com/photo-1501139083538-0139583c060f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60";
-const kPeopleAsset =
-    "https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60";
-const kBookingAsset =
-    "https://images.unsplash.com/photo-1564182842519-8a3b2af3e228?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60";
 const kBackgroundAsset = "assets/bg/bg.webp";
 const kLoremText =
     "Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cursus sit amet dictum sit amet. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique";

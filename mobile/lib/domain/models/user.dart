@@ -1,5 +1,9 @@
 /// Base class for all users
 abstract class BaseUser {
-  bool isCustomer;
-  dynamic user;
+  bool get isCustomer;
+
+  dynamic get user;
+
+  @override
+  String toString() => user.toString();
 }

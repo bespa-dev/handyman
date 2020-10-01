@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
-import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/routes/guard.dart';
 import 'package:handyman/app/routes/route.gr.dart' as gr;
 import 'package:handyman/core/theme.dart';
@@ -41,16 +40,15 @@ class _HandyManAppState extends State<HandyManApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<PrefsProvider>(
-            create: (context) => PrefsProvider()),
-        ChangeNotifierProvider<ThemeProvider>(
-            create: (context) => ThemeProvider()),
+          create: (context) => PrefsProvider(),
+        ),
       ],
-      child: Consumer<ThemeProvider>(
-        builder: (ctx, theme, child) => MaterialApp(
+      child: Consumer<PrefsProvider>(
+        builder: (ctx, prefs, child) => MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: themeData(context),
           darkTheme: darkThemeData(context),
-          themeMode: theme.isLightTheme ? ThemeMode.light : ThemeMode.dark,
+          themeMode: prefs.isLightTheme ? ThemeMode.light : ThemeMode.dark,
           navigatorObservers: <NavigatorObserver>[
             FirebaseAnalyticsObserver(analytics: _analytics),
           ],

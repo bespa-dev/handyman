@@ -721,7 +721,13 @@ class Customer extends DataClass implements Insertable<Customer> {
   final String name;
   final String email;
   final String avatar;
-  Customer({@required this.id, this.name, this.email, this.avatar});
+  final String createdAt;
+  Customer(
+      {@required this.id,
+      @required this.name,
+      @required this.email,
+      this.avatar,
+      this.createdAt});
   factory Customer.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -733,6 +739,8 @@ class Customer extends DataClass implements Insertable<Customer> {
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}email']),
       avatar:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}avatar']),
+      createdAt: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
     );
   }
   @override
@@ -750,6 +758,9 @@ class Customer extends DataClass implements Insertable<Customer> {
     if (!nullToAbsent || avatar != null) {
       map['avatar'] = Variable<String>(avatar);
     }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<String>(createdAt);
+    }
     return map;
   }
 
@@ -761,6 +772,9 @@ class Customer extends DataClass implements Insertable<Customer> {
           email == null && nullToAbsent ? const Value.absent() : Value(email),
       avatar:
           avatar == null && nullToAbsent ? const Value.absent() : Value(avatar),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
     );
   }
 
@@ -772,6 +786,7 @@ class Customer extends DataClass implements Insertable<Customer> {
       name: serializer.fromJson<String>(json['name']),
       email: serializer.fromJson<String>(json['email']),
       avatar: serializer.fromJson<String>(json['avatar']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
     );
   }
   @override
@@ -782,15 +797,22 @@ class Customer extends DataClass implements Insertable<Customer> {
       'name': serializer.toJson<String>(name),
       'email': serializer.toJson<String>(email),
       'avatar': serializer.toJson<String>(avatar),
+      'createdAt': serializer.toJson<String>(createdAt),
     };
   }
 
-  Customer copyWith({String id, String name, String email, String avatar}) =>
+  Customer copyWith(
+          {String id,
+          String name,
+          String email,
+          String avatar,
+          String createdAt}) =>
       Customer(
         id: id ?? this.id,
         name: name ?? this.name,
         email: email ?? this.email,
         avatar: avatar ?? this.avatar,
+        createdAt: createdAt ?? this.createdAt,
       );
   @override
   String toString() {
@@ -798,14 +820,17 @@ class Customer extends DataClass implements Insertable<Customer> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('email: $email, ')
-          ..write('avatar: $avatar')
+          ..write('avatar: $avatar, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(id.hashCode,
-      $mrjc(name.hashCode, $mrjc(email.hashCode, avatar.hashCode))));
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(name.hashCode,
+          $mrjc(email.hashCode, $mrjc(avatar.hashCode, createdAt.hashCode)))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -813,7 +838,8 @@ class Customer extends DataClass implements Insertable<Customer> {
           other.id == this.id &&
           other.name == this.name &&
           other.email == this.email &&
-          other.avatar == this.avatar);
+          other.avatar == this.avatar &&
+          other.createdAt == this.createdAt);
 }
 
 class UserCompanion extends UpdateCompanion<Customer> {
@@ -821,29 +847,36 @@ class UserCompanion extends UpdateCompanion<Customer> {
   final Value<String> name;
   final Value<String> email;
   final Value<String> avatar;
+  final Value<String> createdAt;
   const UserCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.email = const Value.absent(),
     this.avatar = const Value.absent(),
+    this.createdAt = const Value.absent(),
   });
   UserCompanion.insert({
     @required String id,
-    this.name = const Value.absent(),
-    this.email = const Value.absent(),
+    @required String name,
+    @required String email,
     this.avatar = const Value.absent(),
-  }) : id = Value(id);
+    this.createdAt = const Value.absent(),
+  })  : id = Value(id),
+        name = Value(name),
+        email = Value(email);
   static Insertable<Customer> custom({
     Expression<String> id,
     Expression<String> name,
     Expression<String> email,
     Expression<String> avatar,
+    Expression<String> createdAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (email != null) 'email': email,
       if (avatar != null) 'avatar': avatar,
+      if (createdAt != null) 'created_at': createdAt,
     });
   }
 
@@ -851,12 +884,14 @@ class UserCompanion extends UpdateCompanion<Customer> {
       {Value<String> id,
       Value<String> name,
       Value<String> email,
-      Value<String> avatar}) {
+      Value<String> avatar,
+      Value<String> createdAt}) {
     return UserCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
       avatar: avatar ?? this.avatar,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -875,6 +910,9 @@ class UserCompanion extends UpdateCompanion<Customer> {
     if (avatar.present) {
       map['avatar'] = Variable<String>(avatar.value);
     }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
+    }
     return map;
   }
 
@@ -884,7 +922,8 @@ class UserCompanion extends UpdateCompanion<Customer> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('email: $email, ')
-          ..write('avatar: $avatar')
+          ..write('avatar: $avatar, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
@@ -914,7 +953,7 @@ class $UserTable extends User with TableInfo<$UserTable, Customer> {
     return GeneratedTextColumn(
       'name',
       $tableName,
-      true,
+      false,
     );
   }
 
@@ -926,7 +965,7 @@ class $UserTable extends User with TableInfo<$UserTable, Customer> {
     return GeneratedTextColumn(
       'email',
       $tableName,
-      true,
+      false,
     );
   }
 
@@ -942,8 +981,20 @@ class $UserTable extends User with TableInfo<$UserTable, Customer> {
     );
   }
 
+  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  GeneratedTextColumn _createdAt;
   @override
-  List<GeneratedColumn> get $columns => [id, name, email, avatar];
+  GeneratedTextColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedTextColumn _constructCreatedAt() {
+    return GeneratedTextColumn(
+      'created_at',
+      $tableName,
+      true,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [id, name, email, avatar, createdAt];
   @override
   $UserTable get asDslTable => this;
   @override
@@ -963,14 +1014,22 @@ class $UserTable extends User with TableInfo<$UserTable, Customer> {
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name'], _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
     }
     if (data.containsKey('email')) {
       context.handle(
           _emailMeta, email.isAcceptableOrUnknown(data['email'], _emailMeta));
+    } else if (isInserting) {
+      context.missing(_emailMeta);
     }
     if (data.containsKey('avatar')) {
       context.handle(_avatarMeta,
           avatar.isAcceptableOrUnknown(data['avatar'], _avatarMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at'], _createdAtMeta));
     }
     return context;
   }

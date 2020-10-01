@@ -1,4 +1,22 @@
 import 'package:algolia/algolia.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+/// Utilities for [SharedPreferences]
+class PrefsUtils {
+  static const USER_ID = "user_id";
+  static const USER_TYPE = "user_type";
+  static const THEME_MODE = "theme_mode";
+}
+
+/// Utilities for [FirebaseFirestore]
+class FirestoreUtils {
+  static final String kArtisanRef = "artisans";
+  static final String kCustomerRef = "customers";
+  static final String kBookingsRef = "bookings";
+  static final String kReviewsRef = "reviews";
+  static final String kMessagesRef = "messages";
+}
 
 /// Utilities for [Algolia] params
 class AlgoliaUtils {

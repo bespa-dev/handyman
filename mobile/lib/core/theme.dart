@@ -8,7 +8,6 @@ import 'constants.dart';
 final _kTitleFontFamily = GoogleFonts.playfairDisplay().fontFamily;
 final _kBodyFontFamily = GoogleFonts.rubik().fontFamily;
 
-// latoTextTheme
 /// Light theme
 ThemeData themeData(BuildContext context) => ThemeData(
       appBarTheme: appBarTheme,
@@ -21,6 +20,9 @@ ThemeData themeData(BuildContext context) => ThemeData(
         ),
         backgroundColor: kPrimaryColor,
         foregroundColor: kWhiteColor,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        border: UnderlineInputBorder(),
       ),
       tabBarTheme: TabBarTheme(
         labelColor: kPrimaryColor,
@@ -111,6 +113,12 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
           indicatorHeight: 3,
           indicatorColor: kPrimaryColorDark,
           indicatorSize: MD2IndicatorSize.normal,
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(kSpacingX24),
+          gapPadding: kSpacingX2,
         ),
       ),
       visualDensity: VisualDensity.adaptivePlatformDensity,

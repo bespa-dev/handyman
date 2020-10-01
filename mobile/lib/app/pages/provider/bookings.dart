@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:handyman/app/model/theme_provider.dart';
+import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:provider/provider.dart';
 
-class BookingsPage extends StatefulWidget {
+class BookingsDetailsPage extends StatefulWidget {
   @override
-  _BookingsPageState createState() => _BookingsPageState();
+  _BookingsDetailsPageState createState() => _BookingsDetailsPageState();
 }
 
-class _BookingsPageState extends State<BookingsPage> {
+class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -20,7 +20,7 @@ class _BookingsPageState extends State<BookingsPage> {
       appBar: AppBar(),
       extendBodyBehindAppBar: true,
       extendBody: true,
-      body: Consumer<ThemeProvider>(
+      body: Consumer<PrefsProvider>(
         builder: (_, provider, __) => Stack(
           fit: StackFit.expand,
           children: [

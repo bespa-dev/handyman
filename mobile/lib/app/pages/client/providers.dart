@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:handyman/app/model/theme_provider.dart';
+import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/pages/client/search.dart';
 import 'package:handyman/app/widget/artisan_card.dart';
 import 'package:handyman/core/constants.dart';
@@ -58,7 +58,7 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
         ],
       ),
       extendBodyBehindAppBar: true,
-      body: Consumer<ThemeProvider>(
+      body: Consumer<PrefsProvider>(
         builder: (_, provider, __) => Stack(
           fit: StackFit.expand,
           children: [

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:handyman/app/model/theme_provider.dart';
+import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +20,7 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(),
       extendBodyBehindAppBar: true,
       extendBody: true,
-      body: Consumer<ThemeProvider>(
+      body: Consumer<PrefsProvider>(
         builder: (_, provider, __) => Stack(
           fit: StackFit.expand,
           children: [

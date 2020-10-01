@@ -1,15 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:handyman/core/service_locator.dart';
+import 'package:handyman/core/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// [SharedPreferences] helper class
 class PrefsProvider extends ChangeNotifier {
-  static const USER_ID = "user_id";
-  static const USER_TYPE = "user_type";
-  static const THEME_MODE = "theme_mode";
-
-  bool _isLoggedIn = false, _isDarkTheme = false;
+  bool _isLoggedIn = false, _isLightTheme = true;
   String _userId, _userType;
+  final StreamController<bool> _themeController = StreamController.broadcast();
 
   String get userId => _userId;
 
@@ -17,7 +17,9 @@ class PrefsProvider extends ChangeNotifier {
 
   bool get isLoggedIn => _isLoggedIn;
 
-  bool get isDarkTheme => _isDarkTheme;
+  bool get isLightTheme => _isLightTheme;
+
+  Stream<bool> get onThemeChanged => _themeController.stream;
 
   SharedPreferences _prefs;
 
@@ -28,28 +30,36 @@ class PrefsProvider extends ChangeNotifier {
 
   void _init() async {
     _prefs = await sl.getAsync<SharedPreferences>();
-    _isDarkTheme = _prefs.getBool(THEME_MODE) ?? false;
-    _userId = _prefs.getString(USER_ID) ?? null;
-    _userType = _prefs.getString(USER_TYPE) ?? null;
+    _isLightTheme = _prefs.getBool(PrefsUtils.THEME_MODE) ?? true;
+    _userId = _prefs.getString(PrefsUtils.USER_ID) ?? null;
+    _userType = _prefs.getString(PrefsUtils.USER_TYPE) ?? null;
     _isLoggedIn = _userId != null && _userId.isNotEmpty;
+    toggleTheme(value: _isLightTheme);
   }
 
   void saveUserId(String value) async {
-    await _prefs.setString(USER_ID, value);
+    await _prefs.setString(PrefsUtils.USER_ID, value);
     _userId = value;
     _isLoggedIn = value != null && value.isNotEmpty;
     notifyListeners();
   }
 
   void saveUserType(String value) async {
-    await _prefs.setString(USER_TYPE, value);
+    await _prefs.setString(PrefsUtils.USER_TYPE, value);
     _userType = value;
     notifyListeners();
   }
 
-  void updateTheme(bool value) async {
-    await _prefs.setBool(THEME_MODE, value);
-    _isDarkTheme = value;
+  void toggleTheme({bool value}) async {
+    await _prefs.setBool(PrefsUtils.THEME_MODE, value);
+    _isLightTheme = value ??= !_isLightTheme;
+    _themeController.sink.add(value);
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _themeController.close();
+    super.dispose();
   }
 }

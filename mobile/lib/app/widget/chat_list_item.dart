@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
-import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
@@ -39,95 +38,92 @@ class _ChatListItemState extends State<ChatListItem> {
     // _kHeight = size.height;
 
     return Consumer<PrefsProvider>(
-      builder: (_, provider, __) => Consumer<ThemeProvider>(
-        builder: (_, theme, __) {
-          final isMe = widget.conversation.author == provider.userId;
-          final conversation = widget.conversation;
-          final color =
-              theme.isLightTheme ? kChatBackgroundLight : kChatBackgroundDark;
-          final textAlignment = isMe ? TextAlign.end : TextAlign.start;
-          final themeData = Theme.of(context);
+      builder: (_, provider, __) {
+        final isMe = widget.conversation.author == provider.userId;
+        final conversation = widget.conversation;
+        final color =
+            provider.isLightTheme ? kChatBackgroundLight : kChatBackgroundDark;
+        final textAlignment = isMe ? TextAlign.end : TextAlign.start;
+        final themeData = Theme.of(context);
 
-          return InkWell(
-            onTap: () {},
-            child: Row(
-              mainAxisAlignment:
-                  isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                isMe
-                    ? SizedBox.shrink()
-                    : Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          UserAvatar(
-                            url: /*widget.artisan?.avatar ??*/ "",
-                            radius: kSpacingX42,
-                            ringColor: RandomColor(1).randomColor(
-                                colorBrightness: ColorBrightness.dark),
-                          ),
-                          SizedBox(
-                            width: getProportionateScreenWidth(kSpacingX8),
-                          ),
-                        ],
-                      ),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: getProportionateScreenWidth(kSpacingX24),
-                    vertical: getProportionateScreenHeight(kSpacingX16),
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(kSpacingX24),
-                      topRight: Radius.circular(kSpacingX24),
-                      bottomLeft:
-                          isMe ? Radius.circular(kSpacingX24) : Radius.zero,
-                      bottomRight:
-                          isMe ? Radius.zero : Radius.circular(kSpacingX24),
+        return InkWell(
+          onTap: () {},
+          child: Row(
+            mainAxisAlignment:
+                isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              isMe
+                  ? SizedBox.shrink()
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        UserAvatar(
+                          url: /*widget.artisan?.avatar ??*/ "",
+                          radius: kSpacingX42,
+                          ringColor: RandomColor(1).randomColor(
+                              colorBrightness: ColorBrightness.dark),
+                        ),
+                        SizedBox(
+                          width: getProportionateScreenWidth(kSpacingX8),
+                        ),
+                      ],
                     ),
-                    color: color,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: isMe
-                        ? CrossAxisAlignment.end
-                        : CrossAxisAlignment.start,
-                    children: [
-                      // TODO: Add support for images
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: _kWidth * 0.5,
-                        ),
-                        child: Text(
-                          conversation.content,
-                          textAlign: textAlignment,
-                        ),
-                      ),
-                    ],
-                  ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: getProportionateScreenWidth(kSpacingX24),
+                  vertical: getProportionateScreenHeight(kSpacingX16),
                 ),
-                isMe
-                    ? Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(
-                            width: getProportionateScreenWidth(kSpacingX8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(kSpacingX24),
+                    topRight: Radius.circular(kSpacingX24),
+                    bottomLeft:
+                        isMe ? Radius.circular(kSpacingX24) : Radius.zero,
+                    bottomRight:
+                        isMe ? Radius.zero : Radius.circular(kSpacingX24),
+                  ),
+                  color: color,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment:
+                      isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                  children: [
+                    // TODO: Add support for images
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: _kWidth * 0.5,
+                      ),
+                      child: Text(
+                        conversation.content,
+                        textAlign: textAlignment,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              isMe
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: getProportionateScreenWidth(kSpacingX8),
+                        ),
+                        UserAvatar(
+                          url: /*widget.customer.avatar ??*/ "",
+                          radius: kSpacingX42,
+                          ringColor: RandomColor(14).randomColor(
+                            colorBrightness: ColorBrightness.dark,
                           ),
-                          UserAvatar(
-                            url: /*widget.customer.avatar ??*/ "",
-                            radius: kSpacingX42,
-                            ringColor: RandomColor(14).randomColor(
-                              colorBrightness: ColorBrightness.dark,
-                            ),
-                          ),
-                        ],
-                      )
-                    : SizedBox.shrink(),
-              ],
-            ),
-          );
-        },
-      ),
+                        ),
+                      ],
+                    )
+                  : SizedBox.shrink(),
+            ],
+          ),
+        );
+      },
     );
   }
 }

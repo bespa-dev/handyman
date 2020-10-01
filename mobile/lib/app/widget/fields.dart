@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/core/constants.dart';
 
 class TextFormInput extends TextFormField {
@@ -31,7 +32,6 @@ class TextFormInput extends TextFormField {
             hintText: hintText,
             helperText: helperText,
             suffixIcon: suffixIcon,
-            // border: InputBorder.none,
           ),
           focusNode: focusNode,
           onFieldSubmitted: onFieldSubmitted ?? (_) {},
@@ -89,7 +89,7 @@ class _PasswordInputState extends State<PasswordInput> {
       maxLines: 1,
       suffixIcon: IconButton(
         icon: Icon(
-          _obscure ? Icons.visibility : Icons.visibility_off,
+          _obscure ? Feather.eye : Feather.eye_off,
           size: kSpacingX24,
           color: themeData.iconTheme.color,
         ),

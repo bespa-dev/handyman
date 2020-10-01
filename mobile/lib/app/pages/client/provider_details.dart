@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
-import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/pages/client/search.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
@@ -41,129 +40,113 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
     final kWidth = MediaQuery.of(context).size.width;
 
     return Consumer<PrefsProvider>(
-      builder: (_, prefsProvider, __) => Consumer<ThemeProvider>(
-        builder: (_, themeProvider, __) => Scaffold(
-          key: _scaffoldKey,
-          extendBodyBehindAppBar: true,
-          extendBody: true,
-          appBar: AppBar(
-            leading: IconButton(
-              icon: Icon(Feather.x),
-              onPressed: () => context.navigator.pop(),
-            ),
-            actions: [
-              IconButton(
-                tooltip: "Search",
-                icon: Icon(Feather.search),
-                onPressed: () => showSearch(
-                  context: context,
-                  delegate: SearchPage(),
-                ),
-              ),
-              IconButton(
-                tooltip: "Toggle theme",
-                icon: Icon(
-                    themeProvider.isLightTheme ? Feather.moon : Feather.sun),
-                onPressed: () => themeProvider.toggleTheme(),
-              ),
-            ],
+      builder: (_, provider, __) => Scaffold(
+        key: _scaffoldKey,
+        extendBodyBehindAppBar: true,
+        extendBody: true,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Feather.x),
+            onPressed: () => context.navigator.pop(),
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => context.navigator.push(
-              Routes.conversationPage,
-              arguments: ConversationPageArguments(
-                sender: prefsProvider.userId,
-                recipient: widget.artisan.id,
+          actions: [
+            IconButton(
+              tooltip: "Search",
+              icon: Icon(Feather.search),
+              onPressed: () => showSearch(
+                context: context,
+                delegate: SearchPage(),
               ),
             ),
-            child: Icon(Icons.chat_bubble_outline_outlined),
-          ),
-          body: Consumer<ThemeProvider>(
-            builder: (_, provider, __) => Stack(
-              fit: StackFit.expand,
-              children: [
-                provider.isLightTheme
-                    ? Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(kBackgroundAsset),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      )
-                    : SizedBox.shrink(),
-                SafeArea(
-                  child: Container(
-                    height: kHeight,
-                    width: kWidth,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        SizedBox(
-                            height: getProportionateScreenHeight(kSpacingX8)),
-                        UserAvatar(
-                          url: widget.artisan.avatar,
-                          onTap: () {},
-                          radius: getProportionateScreenHeight(kSpacingX120),
-                          ringColor: _ringColor,
-                        ),
-                        SizedBox(
-                            height: getProportionateScreenHeight(kSpacingX16)),
-                        Text(
-                          widget.artisan.name,
-                          style: _themeData.textTheme.headline4,
-                        ),
-                        SizedBox(
-                            height: getProportionateScreenHeight(kSpacingX4)),
-                        Text(
-                          widget.artisan.business,
-                          style: _themeData.textTheme.caption,
-                        ),
-                        SizedBox(
-                            height: getProportionateScreenHeight(kSpacingX16)),
-                        Expanded(
-                          child: _currentIndex == 0
-                              ? _buildPhotoTab()
-                              : _currentIndex == 1
-                                  ? _buildReviewTab()
-                                  : _buildBookingsTab(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+            IconButton(
+              tooltip: "Toggle theme",
+              icon: Icon(provider.isLightTheme ? Feather.moon : Feather.sun),
+              onPressed: () => provider.toggleTheme(),
             ),
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-              onTap: (newIndex) {
-                setState(() {
-                  _currentIndex = newIndex;
-                });
-              },
-              currentIndex: _currentIndex,
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Feather.image),
-                  label: "Photos",
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Feather.users),
-                  label: "Reviews",
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Feather.bookmark),
-                  label: "Bookings",
-                ),
-              ]),
-          // floatingActionButton: FloatingActionButton(
-          //   onPressed: () {
-          //     _isBooked = !_isBooked;
-          //     setState(() {});
-          //   },
-          //   child: Icon(_isBooked ? Feather.user_check : Feather.user_plus),
-          // ),
+          ],
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => context.navigator.push(
+            Routes.conversationPage,
+            arguments: ConversationPageArguments(
+              sender: provider.userId,
+              recipient: widget.artisan.id,
+            ),
+          ),
+          child: Icon(Icons.chat_bubble_outline_outlined),
+        ),
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            provider.isLightTheme
+                ? Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(kBackgroundAsset),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )
+                : SizedBox.shrink(),
+            SafeArea(
+              child: Container(
+                height: kHeight,
+                width: kWidth,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
+                    UserAvatar(
+                      url: widget.artisan.avatar,
+                      onTap: () {},
+                      radius: getProportionateScreenHeight(kSpacingX120),
+                      ringColor: _ringColor,
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
+                    Text(
+                      widget.artisan.name,
+                      style: _themeData.textTheme.headline4,
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX4)),
+                    Text(
+                      widget.artisan.business,
+                      style: _themeData.textTheme.caption,
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
+                    Expanded(
+                      child: _currentIndex == 0
+                          ? _buildPhotoTab()
+                          : _currentIndex == 1
+                              ? _buildReviewTab()
+                              : _buildBookingsTab(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+            onTap: (newIndex) {
+              setState(() {
+                _currentIndex = newIndex;
+              });
+            },
+            currentIndex: _currentIndex,
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Feather.image),
+                label: "Photos",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Feather.users),
+                label: "Reviews",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Feather.bookmark),
+                label: "Bookings",
+              ),
+            ]),
       ),
     );
   }

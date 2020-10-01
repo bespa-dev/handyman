@@ -72,14 +72,17 @@ dev_dependencies:
   flutter_launcher_icons: ^0.7.4
   json_serializable: ^3.2.0
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo/logo_colored.svg"
+
 flutter:
   uses-material-design: true
   # https://flutter.dev/docs/development/ui/assets-and-images
   assets:
     - assets/
-    - assets/logo/app_title.webp
-    - assets/logo/2x/app_title.webp
-    - assets/logo/3x/app_title.webp
+    - assets/logo/
     - assets/bg/bg.webp
     - assets/bg/2x/bg.webp
     - assets/bg/3x/bg.webp
