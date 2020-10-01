@@ -118,8 +118,8 @@ class Router extends RouterBase {
       return buildAdaptivePageRoute<dynamic>(
         builder: (context) => ConversationPage(
           key: args.key,
-          sender: args.sender,
           recipient: args.recipient,
+          isCustomer: args.isCustomer,
         ),
         settings: data,
       );
@@ -182,9 +182,9 @@ class Router extends RouterBase {
 /// ConversationPage arguments holder class
 class ConversationPageArguments {
   final Key key;
-  final String sender;
   final String recipient;
-  ConversationPageArguments({this.key, this.sender, this.recipient});
+  final bool isCustomer;
+  ConversationPageArguments({this.key, this.recipient, this.isCustomer});
 }
 
 /// CategoryProvidersPage arguments holder class

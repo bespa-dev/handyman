@@ -23,8 +23,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        backgroundColor: kPrimaryColor,
-        foregroundColor: kWhiteColor,
+        backgroundColor: kSecondaryLightColor,
       ),
       inputDecorationTheme: InputDecorationTheme(
         border: UnderlineInputBorder(),
@@ -80,16 +79,19 @@ ThemeData themeData(BuildContext context) => ThemeData(
             fontWeight: FontWeight.w500),
         bodyText1:
             TextStyle(color: kBodyTextColorLight, fontFamily: _kBodyFontFamily),
-        bodyText2:
-            TextStyle(color: kBodyTextColorLight, fontFamily: _kBodyFontFamily),
+        bodyText2: TextStyle(
+            color: kBodyTextColorLight.withOpacity(kEmphasisMedium),
+            fontFamily: _kBodyFontFamily),
         subtitle1:
             TextStyle(color: kBodyTextColorLight, fontFamily: _kBodyFontFamily),
-        subtitle2:
-            TextStyle(color: kBodyTextColorLight, fontFamily: _kBodyFontFamily),
+        subtitle2: TextStyle(
+            color: kBodyTextColorLight.withOpacity(kEmphasisMedium),
+            fontFamily: _kBodyFontFamily),
         overline:
             TextStyle(color: kBodyTextColorLight, fontFamily: _kBodyFontFamily),
-        caption:
-            TextStyle(color: kBodyTextColorLight, fontFamily: _kBodyFontFamily),
+        caption: TextStyle(
+            color: kBodyTextColorLight.withOpacity(kEmphasisMedium),
+            fontFamily: _kBodyFontFamily),
         button: TextStyle(
             color: kBodyTextColorDark,
             fontFamily: _kBodyFontFamily,
@@ -114,7 +116,6 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
           borderRadius: BorderRadius.circular(16),
         ),
         backgroundColor: kPrimaryColorDark,
-        foregroundColor: kWhiteColor,
       ),
       tabBarTheme: TabBarTheme(
         labelColor: kPrimaryColorDark,
@@ -136,7 +137,7 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
       primaryColor: kPrimaryColorDark,
       accentColor: kAccentDarkColor,
       scaffoldBackgroundColor: kBackgroundDarkColor,
-      colorScheme: ColorScheme.light(
+      colorScheme: ColorScheme.dark(
         secondary: kSecondaryDarkColor,
         surface: kSurfaceDarkColor,
       ),
@@ -173,25 +174,30 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
             fontWeight: FontWeight.w500),
         bodyText1:
             TextStyle(color: kBodyTextColorDark, fontFamily: _kBodyFontFamily),
-        bodyText2:
-            TextStyle(color: kBodyTextColorDark, fontFamily: _kBodyFontFamily),
+        bodyText2: TextStyle(
+            color: kBodyTextColorDark.withOpacity(kEmphasisMedium),
+            fontFamily: _kBodyFontFamily),
         subtitle1:
             TextStyle(color: kBodyTextColorDark, fontFamily: _kBodyFontFamily),
-        subtitle2:
-            TextStyle(color: kBodyTextColorDark, fontFamily: _kBodyFontFamily),
+        subtitle2: TextStyle(
+            color: kBodyTextColorDark.withOpacity(kEmphasisMedium),
+            fontFamily: _kBodyFontFamily),
         overline:
             TextStyle(color: kBodyTextColorDark, fontFamily: _kBodyFontFamily),
-        caption:
-            TextStyle(color: kBodyTextColorDark, fontFamily: _kBodyFontFamily),
+        caption: TextStyle(
+            color: kBodyTextColorDark.withOpacity(kEmphasisMedium),
+            fontFamily: _kBodyFontFamily),
         button: TextStyle(
-            color: kBodyTextColorLight,
-            fontFamily: _kBodyFontFamily,
-            fontWeight: FontWeight.w600),
+          color: kBodyTextColorLight,
+          fontFamily: _kBodyFontFamily,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
 
 AppBarTheme appBarTheme = AppBarTheme(
   color: kTransparent,
+  centerTitle: true,
   elevation: 0,
   textTheme: TextTheme(
     headline6: TextStyle(

@@ -1,13 +1,17 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:handyman/data/entities/conversation.dart';
+import 'package:handyman/data/entities/gallery.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import 'entities/artisan_model.dart';
 import 'entities/booking.dart';
 import 'entities/category.dart';
 import 'entities/provider.dart';
@@ -28,14 +32,23 @@ LazyDatabase _openConnection() {
 }
 
 @UseMoor(
-  tables: [ServiceProvider, User, Bookings, Review, CategoryItem, Message],
+  tables: [
+    ServiceProvider,
+    User,
+    PhotoGallery,
+    Bookings,
+    Review,
+    CategoryItem,
+    Message,
+  ],
   daos: [
     ProviderDao,
     CategoryDao,
     BookingDao,
     ReviewDao,
     MessageDao,
-    CustomerDao
+    CustomerDao,
+    GalleryDao,
   ],
 )
 class LocalDatabase extends _$LocalDatabase {
@@ -44,30 +57,68 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 6;
 
   @override
-  MigrationStrategy get migration =>
-      MigrationStrategy(onUpgrade: (m, from, to) async {
-        switch (from) {
-          case 1:
-            await m.addColumn(serviceProvider, serviceProvider.isAvailable);
-            break;
-          case 2:
-            await m.addColumn(user, user.createdAt);
-            break;
-          case 3:
-            await m.addColumn(categoryItem, categoryItem.artisans);
-            break;
-        }
-      });
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (m, from, to) async {
+          switch (from) {
+            case 1:
+              await m.addColumn(serviceProvider, serviceProvider.isAvailable);
+              break;
+            case 2:
+              await m.addColumn(user, user.createdAt);
+              break;
+            case 3:
+              await m.addColumn(categoryItem, categoryItem.artisans);
+              break;
+            case 4:
+              await m.createTable(photoGallery);
+              break;
+            case 5:
+              await m.addColumn(
+                  serviceProvider, serviceProvider.completedBookingsCount);
+              await m.addColumn(
+                  serviceProvider, serviceProvider.cancelledBookingsCount);
+              await m.addColumn(
+                  serviceProvider, serviceProvider.ongoingBookingsCount);
+              break;
+          }
+        },
+        onCreate: (m) async {
+          // Create all tables
+          await m.createAll();
+
+          // Prepopulate the database with some sample data
+          // Decode artisans from json array
+          final data =
+              await rootBundle.loadString("assets/sample_artisan.json");
+          var decodedData = json.decode(data) ?? [];
+
+          // Save to database
+          providerDao.addProviders(decodedData
+              .map((e) => ArtisanModel(artisan: Artisan.fromJson(e)))
+              .toList());
+
+          // Decode categories from json array
+          final categoryData =
+              await rootBundle.loadString("assets/sample_categories.json");
+          var decodedCategoryData = json.decode(categoryData) ?? [];
+
+          // Convert each object to `ServiceCategory` object
+          categoryDao.addItems(decodedCategoryData
+              .map((e) => ServiceCategory.fromJson(e))
+              .toList());
+        },
+      );
 }
 
 @UseDao(
   tables: [ServiceProvider],
   queries: {
     "artisanById": "SELECT * FROM service_provider WHERE id = ?",
-    "artisans": "SELECT * FROM service_provider ORDER BY id desc",
+    "artisans":
+        "SELECT * FROM service_provider WHERE category = ? ORDER BY id desc",
     "searchFor":
         "SELECT * FROM service_provider WHERE name LIKE ? OR category LIKE ? ORDER BY id desc",
   },
@@ -183,4 +234,19 @@ class CustomerDao extends DatabaseAccessor<LocalDatabase>
 
   Future<int> addCustomer(Customer item) =>
       into(user).insert(item, mode: InsertMode.insertOrReplace);
+}
+
+@UseDao(
+  tables: [PhotoGallery],
+  queries: {
+    "photosForUser":
+        "SELECT * FROM photo_gallery WHERE user_id = ? ORDER BY created_at DESC",
+  },
+)
+class GalleryDao extends DatabaseAccessor<LocalDatabase>
+    with _$GalleryDaoMixin {
+  GalleryDao(LocalDatabase db) : super(db);
+
+  Future<int> addPhoto(Gallery item) =>
+      into(photoGallery).insert(item, mode: InsertMode.insertOrReplace);
 }

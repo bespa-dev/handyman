@@ -75,7 +75,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/logo/logo_colored.svg"
+  image_path: "assets/logo/logo_colored.png"
 
 flutter:
   uses-material-design: true

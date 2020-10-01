@@ -23,6 +23,9 @@ class ServiceProvider extends Table {
 
   IntColumn get startWorkingHours =>
       integer().withDefault(Constant(DateTime.now().hour))();
+  IntColumn get completedBookingsCount => integer().withDefault(Constant(0))();
+  IntColumn get ongoingBookingsCount => integer().withDefault(Constant(0))();
+  IntColumn get cancelledBookingsCount => integer().withDefault(Constant(0))();
 
   IntColumn get endWorkingHours =>
       integer().withDefault(Constant(DateTime.now().hour + 12))();

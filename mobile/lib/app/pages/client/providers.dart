@@ -6,8 +6,10 @@ import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/pages/client/search.dart';
 import 'package:handyman/app/widget/artisan_card.dart';
 import 'package:handyman/core/constants.dart';
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
+import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:provider/provider.dart';
 
@@ -98,12 +100,10 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                       ],
                     ),
                     SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
-                    FutureBuilder<List<BaseUser>>(
-                        future: Future.value(),
-                        // FIXME
-                        /*sl
+                    StreamBuilder<List<BaseUser>>(
+                        stream: sl
                             .get<ApiProviderService>()
-                            .getArtisans(category: widget.category.id)*/
+                            .getArtisans(category: widget.category.id),
                         builder: (context, snapshot) {
                           final artisans = snapshot.data ?? [];
                           if (snapshot.connectionState ==

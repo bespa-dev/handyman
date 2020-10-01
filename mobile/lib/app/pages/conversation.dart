@@ -16,9 +16,10 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class ConversationPage extends StatefulWidget {
-  final String sender, recipient;
+  final bool isCustomer;
+  final String recipient;
 
-  const ConversationPage({Key key, this.sender, this.recipient})
+  const ConversationPage({Key key, this.recipient, this.isCustomer})
       : super(key: key);
 
   @override
@@ -35,12 +36,10 @@ class _ConversationPageState extends State<ConversationPage> {
     return Scaffold(
       extendBody: true,
       body: Consumer<PrefsProvider>(
-        builder: (_, prefsProvider, __) => Container(
+        builder: (_, provider, __) => Container(
           child: SafeArea(
             child: StreamBuilder<BaseUser>(
-              stream: Stream.empty(),
-              // FIXME
-              /*_apiService.getArtisanById(id: widget.recipient)*/
+              stream: _apiService.getArtisanById(id: widget.recipient),
               builder: (_, snapshot) {
                 if (snapshot.hasError)
                   return Container(
@@ -62,7 +61,8 @@ class _ConversationPageState extends State<ConversationPage> {
                     ),
                   );
                 else
-                  return _buildChatWidget(snapshot.data);
+                  return _buildChatWidget(
+                      snapshot.data, provider.userId, provider.userType);
               },
             ),
           ),
@@ -71,43 +71,51 @@ class _ConversationPageState extends State<ConversationPage> {
     );
   }
 
-  // FIXME
-  Widget _buildChatWidget(BaseUser recipient) => StreamBuilder<BaseUser>(
-      stream: Stream.empty() /*_apiService.getCustomerById(id: widget.sender)*/,
-      builder: (context, snapshot) => Stack(
-            children: [
-              Column(
-                children: [
-                  Expanded(
-                    child: ChatMessages(
-                      messages: _apiService.getConversation(
-                          sender: widget.sender, recipient: widget.recipient),
-                      recipient: recipient,
-                      sender: snapshot.data,
+  Widget _buildChatWidget(BaseUser recipient, userId, userType) {
+    debugPrint("$userId => ${widget.recipient}");
+    return StreamBuilder<BaseUser>(
+        stream: userType == kCustomerString
+            ? _apiService.getCustomerById(id: userId)
+            : _apiService.getArtisanById(id: userId),
+        builder: (context, snapshot) => Stack(
+              children: [
+                Column(
+                  children: [
+                    Expanded(
+                      child: ChatMessages(
+                        messages: _apiService.getConversation(
+                          sender: userId,
+                          recipient: widget.recipient,
+                        ),
+                        recipient: recipient,
+                        sender: snapshot.data,
+                      ),
                     ),
-                  ),
-                  UserInput(
-                    onMessageSent: (content) async {
-                      final timestamp = DateFormat.jms().format(DateTime.now());
-                      final conversation = Conversation(
-                        id: Uuid().v4(),
-                        author: widget.sender,
-                        recipient: widget.recipient,
-                        content: content,
-                        createdAt: timestamp,
-                      );
-                      debugPrint(conversation.toString());
-                      await _apiService.sendMessage(conversation: conversation);
-                    },
-                  ),
-                ],
-              ),
-              Positioned(
-                top: kSpacingNone,
-                left: kSpacingNone,
-                right: kSpacingNone,
-                child: ChatHeader(user: recipient),
-              ),
-            ],
-          ));
+                    UserInput(
+                      onMessageSent: (content) async {
+                        final timestamp =
+                            DateFormat.jms().format(DateTime.now());
+                        final conversation = Conversation(
+                          id: Uuid().v4(),
+                          author: userId,
+                          recipient: widget.recipient,
+                          content: content,
+                          createdAt: timestamp,
+                        );
+                        debugPrint(conversation.toString());
+                        await _apiService.sendMessage(
+                            conversation: conversation);
+                      },
+                    ),
+                  ],
+                ),
+                Positioned(
+                  top: kSpacingNone,
+                  left: kSpacingNone,
+                  right: kSpacingNone,
+                  child: ChatHeader(user: recipient),
+                ),
+              ],
+            ));
+  }
 }

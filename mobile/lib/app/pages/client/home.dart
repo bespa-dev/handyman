@@ -12,6 +12,7 @@ import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/entities/category.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/provider/artisan_api_provider.dart';
+import 'package:handyman/domain/models/user.dart';
 import 'package:provider/provider.dart';
 import 'package:random_color/random_color.dart';
 
@@ -24,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _preferGridFormat = true;
   final _apiService = sl.get<ApiProviderService>();
-  Future<List<ServiceCategory>> _categoriesFuture;
+  Stream<List<ServiceCategory>> _categoriesStream;
 
   final _categoryFilterMenu = Map.from({
     CategoryGroup.FEATURED: "Featured",
@@ -38,7 +39,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    if (mounted) _categoriesFuture = _apiService.getCategories();
+    if (mounted) _categoriesStream = _apiService.getCategories();
   }
 
   @override
@@ -124,16 +125,16 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                               ),
-                              StreamBuilder<Customer>(
+                              StreamBuilder<BaseUser>(
                                   stream: _apiService.getCustomerById(
                                       id: provider.userId),
                                   builder: (context, snapshot) {
                                     return UserAvatar(
                                       tag: snapshot.hasData
-                                          ? snapshot.data.avatar
+                                          ? snapshot.data?.user?.avatar
                                           : "",
                                       url: snapshot.hasData
-                                          ? snapshot.data.avatar
+                                          ? snapshot.data?.user?.avatar
                                           : "",
                                       radius: kSpacingX36,
                                       onTap: () => context.navigator
@@ -151,8 +152,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                   SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
                   Expanded(
-                    child: FutureBuilder<List<ServiceCategory>>(
-                        future: _categoriesFuture,
+                    child: StreamBuilder<List<ServiceCategory>>(
+                        stream: _categoriesStream,
                         builder: (context, snapshot) {
                           return Container(
                             padding: EdgeInsets.symmetric(
@@ -224,7 +225,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _getCategoriesWithFilter() {
-    _categoriesFuture = _apiService.getCategories(
+    _categoriesStream = _apiService.getCategories(
       categoryGroup: _categoryFilterMenu.keys
           .where((element) =>
               _categoryFilter ==

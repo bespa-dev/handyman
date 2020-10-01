@@ -10,7 +10,7 @@ import 'package:handyman/core/utils.dart';
 import 'package:meta/meta.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-enum InputSelector { NONE, MAP, DM, EMOJI, PHONE, PICTURE }
+enum InputSelector { NONE, KEYBOARD, MAP, DM, EMOJI, PHONE, PICTURE }
 
 enum EmojiStickerSelector { EMOJI, STICKER }
 
@@ -26,7 +26,6 @@ class UserInput extends StatefulWidget {
 
 class _UserInputState extends State<UserInput> {
   var currentInputSelector = InputSelector.NONE;
-  bool dismissKeyboard = false;
   final textController = TextEditingController();
   final _focusNode = FocusNode();
 
@@ -44,30 +43,28 @@ class _UserInputState extends State<UserInput> {
             Divider(),
             _UserInputText(
               textController: textController,
-              keyboardShown: !dismissKeyboard,
+              keyboardShown: currentInputSelector == InputSelector.KEYBOARD,
               focusNode: _focusNode,
               onTextFieldFocused: (focused) {
-                dismissKeyboard = !focused;
-                currentInputSelector = InputSelector.NONE;
+                currentInputSelector = InputSelector.KEYBOARD;
                 if (focused)
                   FocusScope.of(context).requestFocus(_focusNode);
                 else
                   FocusScope.of(context).unfocus();
                 setState(() {});
               },
-              focusState: !dismissKeyboard,
+              focusState: currentInputSelector == InputSelector.KEYBOARD,
             ),
             _UserInputSelector(
               onSelectorChange: (selector) {
-                if (selector == InputSelector.NONE)
+                currentInputSelector = selector;
+                if (selector == InputSelector.KEYBOARD)
                   FocusScope.of(context).requestFocus(_focusNode);
                 else if (selector == InputSelector.PHONE)
                   launchUrl(url: "tel://233554635701");
                 else if (selector == InputSelector.DM)
                   launchUrl(url: "mailto:quabynahdennis@gmail.com");
                 else {
-                  currentInputSelector = selector;
-                  dismissKeyboard = true;
                   FocusScope.of(context).unfocus();
                   setState(() {});
                 }
@@ -141,9 +138,6 @@ class __UserInputTextState extends State<_UserInputText> {
         textAlign: TextAlign.start,
         keyboardType: widget.keyboardType,
         onFieldSubmitted: (value) {},
-        onChanged: (_) {
-          widget.onTextFieldFocused(_.isNotEmpty);
-        },
         controller: widget.textController,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         autocorrect: true,
@@ -308,7 +302,8 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
               )
             : widget.currentSelector == InputSelector.MAP
                 ? _buildMapPanel()
-                : widget.currentSelector == InputSelector.NONE
+                : widget.currentSelector == InputSelector.NONE ||
+                        widget.currentSelector == InputSelector.KEYBOARD
                     ? SizedBox.shrink()
                     : _buildFunctionalityNotAvailablePanel(context),
         _buildHideUIPanel(context),

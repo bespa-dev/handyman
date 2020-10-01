@@ -17,6 +17,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
   final bool isAvailable;
   final String category;
   final int startWorkingHours;
+  final int completedBookingsCount;
+  final int ongoingBookingsCount;
+  final int cancelledBookingsCount;
   final int endWorkingHours;
   final String avatar;
   final double price;
@@ -31,6 +34,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       @required this.isAvailable,
       @required this.category,
       @required this.startWorkingHours,
+      @required this.completedBookingsCount,
+      @required this.ongoingBookingsCount,
+      @required this.cancelledBookingsCount,
       @required this.endWorkingHours,
       this.avatar,
       @required this.price,
@@ -59,6 +65,12 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           .mapFromDatabaseResponse(data['${effectivePrefix}category']),
       startWorkingHours: intType.mapFromDatabaseResponse(
           data['${effectivePrefix}start_working_hours']),
+      completedBookingsCount: intType.mapFromDatabaseResponse(
+          data['${effectivePrefix}completed_bookings_count']),
+      ongoingBookingsCount: intType.mapFromDatabaseResponse(
+          data['${effectivePrefix}ongoing_bookings_count']),
+      cancelledBookingsCount: intType.mapFromDatabaseResponse(
+          data['${effectivePrefix}cancelled_bookings_count']),
       endWorkingHours: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}end_working_hours']),
       avatar:
@@ -99,6 +111,15 @@ class Artisan extends DataClass implements Insertable<Artisan> {
     if (!nullToAbsent || startWorkingHours != null) {
       map['start_working_hours'] = Variable<int>(startWorkingHours);
     }
+    if (!nullToAbsent || completedBookingsCount != null) {
+      map['completed_bookings_count'] = Variable<int>(completedBookingsCount);
+    }
+    if (!nullToAbsent || ongoingBookingsCount != null) {
+      map['ongoing_bookings_count'] = Variable<int>(ongoingBookingsCount);
+    }
+    if (!nullToAbsent || cancelledBookingsCount != null) {
+      map['cancelled_bookings_count'] = Variable<int>(cancelledBookingsCount);
+    }
     if (!nullToAbsent || endWorkingHours != null) {
       map['end_working_hours'] = Variable<int>(endWorkingHours);
     }
@@ -137,6 +158,15 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       startWorkingHours: startWorkingHours == null && nullToAbsent
           ? const Value.absent()
           : Value(startWorkingHours),
+      completedBookingsCount: completedBookingsCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(completedBookingsCount),
+      ongoingBookingsCount: ongoingBookingsCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ongoingBookingsCount),
+      cancelledBookingsCount: cancelledBookingsCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cancelledBookingsCount),
       endWorkingHours: endWorkingHours == null && nullToAbsent
           ? const Value.absent()
           : Value(endWorkingHours),
@@ -162,6 +192,12 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       isAvailable: serializer.fromJson<bool>(json['isAvailable']),
       category: serializer.fromJson<String>(json['category']),
       startWorkingHours: serializer.fromJson<int>(json['startWorkingHours']),
+      completedBookingsCount:
+          serializer.fromJson<int>(json['completedBookingsCount']),
+      ongoingBookingsCount:
+          serializer.fromJson<int>(json['ongoingBookingsCount']),
+      cancelledBookingsCount:
+          serializer.fromJson<int>(json['cancelledBookingsCount']),
       endWorkingHours: serializer.fromJson<int>(json['endWorkingHours']),
       avatar: serializer.fromJson<String>(json['avatar']),
       price: serializer.fromJson<double>(json['price']),
@@ -181,6 +217,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       'isAvailable': serializer.toJson<bool>(isAvailable),
       'category': serializer.toJson<String>(category),
       'startWorkingHours': serializer.toJson<int>(startWorkingHours),
+      'completedBookingsCount': serializer.toJson<int>(completedBookingsCount),
+      'ongoingBookingsCount': serializer.toJson<int>(ongoingBookingsCount),
+      'cancelledBookingsCount': serializer.toJson<int>(cancelledBookingsCount),
       'endWorkingHours': serializer.toJson<int>(endWorkingHours),
       'avatar': serializer.toJson<String>(avatar),
       'price': serializer.toJson<double>(price),
@@ -198,6 +237,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           bool isAvailable,
           String category,
           int startWorkingHours,
+          int completedBookingsCount,
+          int ongoingBookingsCount,
+          int cancelledBookingsCount,
           int endWorkingHours,
           String avatar,
           double price,
@@ -212,6 +254,11 @@ class Artisan extends DataClass implements Insertable<Artisan> {
         isAvailable: isAvailable ?? this.isAvailable,
         category: category ?? this.category,
         startWorkingHours: startWorkingHours ?? this.startWorkingHours,
+        completedBookingsCount:
+            completedBookingsCount ?? this.completedBookingsCount,
+        ongoingBookingsCount: ongoingBookingsCount ?? this.ongoingBookingsCount,
+        cancelledBookingsCount:
+            cancelledBookingsCount ?? this.cancelledBookingsCount,
         endWorkingHours: endWorkingHours ?? this.endWorkingHours,
         avatar: avatar ?? this.avatar,
         price: price ?? this.price,
@@ -229,6 +276,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           ..write('isAvailable: $isAvailable, ')
           ..write('category: $category, ')
           ..write('startWorkingHours: $startWorkingHours, ')
+          ..write('completedBookingsCount: $completedBookingsCount, ')
+          ..write('ongoingBookingsCount: $ongoingBookingsCount, ')
+          ..write('cancelledBookingsCount: $cancelledBookingsCount, ')
           ..write('endWorkingHours: $endWorkingHours, ')
           ..write('avatar: $avatar, ')
           ..write('price: $price, ')
@@ -257,11 +307,20 @@ class Artisan extends DataClass implements Insertable<Artisan> {
                                   $mrjc(
                                       startWorkingHours.hashCode,
                                       $mrjc(
-                                          endWorkingHours.hashCode,
+                                          completedBookingsCount.hashCode,
                                           $mrjc(
-                                              avatar.hashCode,
-                                              $mrjc(price.hashCode,
-                                                  rating.hashCode)))))))))))));
+                                              ongoingBookingsCount.hashCode,
+                                              $mrjc(
+                                                  cancelledBookingsCount
+                                                      .hashCode,
+                                                  $mrjc(
+                                                      endWorkingHours.hashCode,
+                                                      $mrjc(
+                                                          avatar.hashCode,
+                                                          $mrjc(
+                                                              price.hashCode,
+                                                              rating
+                                                                  .hashCode))))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -275,6 +334,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           other.isAvailable == this.isAvailable &&
           other.category == this.category &&
           other.startWorkingHours == this.startWorkingHours &&
+          other.completedBookingsCount == this.completedBookingsCount &&
+          other.ongoingBookingsCount == this.ongoingBookingsCount &&
+          other.cancelledBookingsCount == this.cancelledBookingsCount &&
           other.endWorkingHours == this.endWorkingHours &&
           other.avatar == this.avatar &&
           other.price == this.price &&
@@ -291,6 +353,9 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
   final Value<bool> isAvailable;
   final Value<String> category;
   final Value<int> startWorkingHours;
+  final Value<int> completedBookingsCount;
+  final Value<int> ongoingBookingsCount;
+  final Value<int> cancelledBookingsCount;
   final Value<int> endWorkingHours;
   final Value<String> avatar;
   final Value<double> price;
@@ -305,6 +370,9 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     this.isAvailable = const Value.absent(),
     this.category = const Value.absent(),
     this.startWorkingHours = const Value.absent(),
+    this.completedBookingsCount = const Value.absent(),
+    this.ongoingBookingsCount = const Value.absent(),
+    this.cancelledBookingsCount = const Value.absent(),
     this.endWorkingHours = const Value.absent(),
     this.avatar = const Value.absent(),
     this.price = const Value.absent(),
@@ -320,6 +388,9 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     this.isAvailable = const Value.absent(),
     this.category = const Value.absent(),
     this.startWorkingHours = const Value.absent(),
+    this.completedBookingsCount = const Value.absent(),
+    this.ongoingBookingsCount = const Value.absent(),
+    this.cancelledBookingsCount = const Value.absent(),
     this.endWorkingHours = const Value.absent(),
     this.avatar = const Value.absent(),
     this.price = const Value.absent(),
@@ -338,6 +409,9 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     Expression<bool> isAvailable,
     Expression<String> category,
     Expression<int> startWorkingHours,
+    Expression<int> completedBookingsCount,
+    Expression<int> ongoingBookingsCount,
+    Expression<int> cancelledBookingsCount,
     Expression<int> endWorkingHours,
     Expression<String> avatar,
     Expression<double> price,
@@ -353,6 +427,12 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       if (isAvailable != null) 'available': isAvailable,
       if (category != null) 'category': category,
       if (startWorkingHours != null) 'start_working_hours': startWorkingHours,
+      if (completedBookingsCount != null)
+        'completed_bookings_count': completedBookingsCount,
+      if (ongoingBookingsCount != null)
+        'ongoing_bookings_count': ongoingBookingsCount,
+      if (cancelledBookingsCount != null)
+        'cancelled_bookings_count': cancelledBookingsCount,
       if (endWorkingHours != null) 'end_working_hours': endWorkingHours,
       if (avatar != null) 'avatar': avatar,
       if (price != null) 'price': price,
@@ -370,6 +450,9 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       Value<bool> isAvailable,
       Value<String> category,
       Value<int> startWorkingHours,
+      Value<int> completedBookingsCount,
+      Value<int> ongoingBookingsCount,
+      Value<int> cancelledBookingsCount,
       Value<int> endWorkingHours,
       Value<String> avatar,
       Value<double> price,
@@ -384,6 +467,11 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       isAvailable: isAvailable ?? this.isAvailable,
       category: category ?? this.category,
       startWorkingHours: startWorkingHours ?? this.startWorkingHours,
+      completedBookingsCount:
+          completedBookingsCount ?? this.completedBookingsCount,
+      ongoingBookingsCount: ongoingBookingsCount ?? this.ongoingBookingsCount,
+      cancelledBookingsCount:
+          cancelledBookingsCount ?? this.cancelledBookingsCount,
       endWorkingHours: endWorkingHours ?? this.endWorkingHours,
       avatar: avatar ?? this.avatar,
       price: price ?? this.price,
@@ -421,6 +509,17 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     if (startWorkingHours.present) {
       map['start_working_hours'] = Variable<int>(startWorkingHours.value);
     }
+    if (completedBookingsCount.present) {
+      map['completed_bookings_count'] =
+          Variable<int>(completedBookingsCount.value);
+    }
+    if (ongoingBookingsCount.present) {
+      map['ongoing_bookings_count'] = Variable<int>(ongoingBookingsCount.value);
+    }
+    if (cancelledBookingsCount.present) {
+      map['cancelled_bookings_count'] =
+          Variable<int>(cancelledBookingsCount.value);
+    }
     if (endWorkingHours.present) {
       map['end_working_hours'] = Variable<int>(endWorkingHours.value);
     }
@@ -448,6 +547,9 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
           ..write('isAvailable: $isAvailable, ')
           ..write('category: $category, ')
           ..write('startWorkingHours: $startWorkingHours, ')
+          ..write('completedBookingsCount: $completedBookingsCount, ')
+          ..write('ongoingBookingsCount: $ongoingBookingsCount, ')
+          ..write('cancelledBookingsCount: $cancelledBookingsCount, ')
           ..write('endWorkingHours: $endWorkingHours, ')
           ..write('avatar: $avatar, ')
           ..write('price: $price, ')
@@ -564,6 +666,39 @@ class $ServiceProviderTable extends ServiceProvider
         defaultValue: Constant(DateTime.now().hour));
   }
 
+  final VerificationMeta _completedBookingsCountMeta =
+      const VerificationMeta('completedBookingsCount');
+  GeneratedIntColumn _completedBookingsCount;
+  @override
+  GeneratedIntColumn get completedBookingsCount =>
+      _completedBookingsCount ??= _constructCompletedBookingsCount();
+  GeneratedIntColumn _constructCompletedBookingsCount() {
+    return GeneratedIntColumn('completed_bookings_count', $tableName, false,
+        defaultValue: Constant(0));
+  }
+
+  final VerificationMeta _ongoingBookingsCountMeta =
+      const VerificationMeta('ongoingBookingsCount');
+  GeneratedIntColumn _ongoingBookingsCount;
+  @override
+  GeneratedIntColumn get ongoingBookingsCount =>
+      _ongoingBookingsCount ??= _constructOngoingBookingsCount();
+  GeneratedIntColumn _constructOngoingBookingsCount() {
+    return GeneratedIntColumn('ongoing_bookings_count', $tableName, false,
+        defaultValue: Constant(0));
+  }
+
+  final VerificationMeta _cancelledBookingsCountMeta =
+      const VerificationMeta('cancelledBookingsCount');
+  GeneratedIntColumn _cancelledBookingsCount;
+  @override
+  GeneratedIntColumn get cancelledBookingsCount =>
+      _cancelledBookingsCount ??= _constructCancelledBookingsCount();
+  GeneratedIntColumn _constructCancelledBookingsCount() {
+    return GeneratedIntColumn('cancelled_bookings_count', $tableName, false,
+        defaultValue: Constant(0));
+  }
+
   final VerificationMeta _endWorkingHoursMeta =
       const VerificationMeta('endWorkingHours');
   GeneratedIntColumn _endWorkingHours;
@@ -616,6 +751,9 @@ class $ServiceProviderTable extends ServiceProvider
         isAvailable,
         category,
         startWorkingHours,
+        completedBookingsCount,
+        ongoingBookingsCount,
+        cancelledBookingsCount,
         endWorkingHours,
         avatar,
         price,
@@ -680,6 +818,24 @@ class $ServiceProviderTable extends ServiceProvider
           _startWorkingHoursMeta,
           startWorkingHours.isAcceptableOrUnknown(
               data['start_working_hours'], _startWorkingHoursMeta));
+    }
+    if (data.containsKey('completed_bookings_count')) {
+      context.handle(
+          _completedBookingsCountMeta,
+          completedBookingsCount.isAcceptableOrUnknown(
+              data['completed_bookings_count'], _completedBookingsCountMeta));
+    }
+    if (data.containsKey('ongoing_bookings_count')) {
+      context.handle(
+          _ongoingBookingsCountMeta,
+          ongoingBookingsCount.isAcceptableOrUnknown(
+              data['ongoing_bookings_count'], _ongoingBookingsCountMeta));
+    }
+    if (data.containsKey('cancelled_bookings_count')) {
+      context.handle(
+          _cancelledBookingsCountMeta,
+          cancelledBookingsCount.isAcceptableOrUnknown(
+              data['cancelled_bookings_count'], _cancelledBookingsCountMeta));
     }
     if (data.containsKey('end_working_hours')) {
       context.handle(
@@ -1045,6 +1201,293 @@ class $UserTable extends User with TableInfo<$UserTable, Customer> {
   @override
   $UserTable createAlias(String alias) {
     return $UserTable(_db, alias);
+  }
+}
+
+class Gallery extends DataClass implements Insertable<Gallery> {
+  final String id;
+  final String userId;
+  final String imageUrl;
+  final DateTime createdAt;
+  Gallery(
+      {@required this.id,
+      @required this.userId,
+      @required this.imageUrl,
+      @required this.createdAt});
+  factory Gallery.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final stringType = db.typeSystem.forDartType<String>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
+    return Gallery(
+      id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      userId:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}user_id']),
+      imageUrl: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}image_url']),
+      createdAt: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<String>(id);
+    }
+    if (!nullToAbsent || userId != null) {
+      map['user_id'] = Variable<String>(userId);
+    }
+    if (!nullToAbsent || imageUrl != null) {
+      map['image_url'] = Variable<String>(imageUrl);
+    }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    return map;
+  }
+
+  PhotoGalleryCompanion toCompanion(bool nullToAbsent) {
+    return PhotoGalleryCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      userId:
+          userId == null && nullToAbsent ? const Value.absent() : Value(userId),
+      imageUrl: imageUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(imageUrl),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+    );
+  }
+
+  factory Gallery.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return Gallery(
+      id: serializer.fromJson<String>(json['id']),
+      userId: serializer.fromJson<String>(json['userId']),
+      imageUrl: serializer.fromJson<String>(json['imageUrl']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'userId': serializer.toJson<String>(userId),
+      'imageUrl': serializer.toJson<String>(imageUrl),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  Gallery copyWith(
+          {String id, String userId, String imageUrl, DateTime createdAt}) =>
+      Gallery(
+        id: id ?? this.id,
+        userId: userId ?? this.userId,
+        imageUrl: imageUrl ?? this.imageUrl,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Gallery(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('imageUrl: $imageUrl, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(id.hashCode,
+      $mrjc(userId.hashCode, $mrjc(imageUrl.hashCode, createdAt.hashCode))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is Gallery &&
+          other.id == this.id &&
+          other.userId == this.userId &&
+          other.imageUrl == this.imageUrl &&
+          other.createdAt == this.createdAt);
+}
+
+class PhotoGalleryCompanion extends UpdateCompanion<Gallery> {
+  final Value<String> id;
+  final Value<String> userId;
+  final Value<String> imageUrl;
+  final Value<DateTime> createdAt;
+  const PhotoGalleryCompanion({
+    this.id = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.imageUrl = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  PhotoGalleryCompanion.insert({
+    @required String id,
+    @required String userId,
+    @required String imageUrl,
+    this.createdAt = const Value.absent(),
+  })  : id = Value(id),
+        userId = Value(userId),
+        imageUrl = Value(imageUrl);
+  static Insertable<Gallery> custom({
+    Expression<String> id,
+    Expression<String> userId,
+    Expression<String> imageUrl,
+    Expression<DateTime> createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (userId != null) 'user_id': userId,
+      if (imageUrl != null) 'image_url': imageUrl,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  PhotoGalleryCompanion copyWith(
+      {Value<String> id,
+      Value<String> userId,
+      Value<String> imageUrl,
+      Value<DateTime> createdAt}) {
+    return PhotoGalleryCompanion(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      imageUrl: imageUrl ?? this.imageUrl,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (imageUrl.present) {
+      map['image_url'] = Variable<String>(imageUrl.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PhotoGalleryCompanion(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('imageUrl: $imageUrl, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PhotoGalleryTable extends PhotoGallery
+    with TableInfo<$PhotoGalleryTable, Gallery> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $PhotoGalleryTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedTextColumn _id;
+  @override
+  GeneratedTextColumn get id => _id ??= _constructId();
+  GeneratedTextColumn _constructId() {
+    return GeneratedTextColumn(
+      'id',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  GeneratedTextColumn _userId;
+  @override
+  GeneratedTextColumn get userId => _userId ??= _constructUserId();
+  GeneratedTextColumn _constructUserId() {
+    return GeneratedTextColumn(
+      'user_id',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _imageUrlMeta = const VerificationMeta('imageUrl');
+  GeneratedTextColumn _imageUrl;
+  @override
+  GeneratedTextColumn get imageUrl => _imageUrl ??= _constructImageUrl();
+  GeneratedTextColumn _constructImageUrl() {
+    return GeneratedTextColumn(
+      'image_url',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  GeneratedDateTimeColumn _createdAt;
+  @override
+  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedDateTimeColumn _constructCreatedAt() {
+    return GeneratedDateTimeColumn('created_at', $tableName, false,
+        defaultValue: Constant(DateTime.now()));
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [id, userId, imageUrl, createdAt];
+  @override
+  $PhotoGalleryTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'photo_gallery';
+  @override
+  final String actualTableName = 'photo_gallery';
+  @override
+  VerificationContext validateIntegrity(Insertable<Gallery> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(_userIdMeta,
+          userId.isAcceptableOrUnknown(data['user_id'], _userIdMeta));
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('image_url')) {
+      context.handle(_imageUrlMeta,
+          imageUrl.isAcceptableOrUnknown(data['image_url'], _imageUrlMeta));
+    } else if (isInserting) {
+      context.missing(_imageUrlMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at'], _createdAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id, userId};
+  @override
+  Gallery map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return Gallery.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $PhotoGalleryTable createAlias(String alias) {
+    return $PhotoGalleryTable(_db, alias);
   }
 }
 
@@ -2405,6 +2848,9 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
       _serviceProvider ??= $ServiceProviderTable(this);
   $UserTable _user;
   $UserTable get user => _user ??= $UserTable(this);
+  $PhotoGalleryTable _photoGallery;
+  $PhotoGalleryTable get photoGallery =>
+      _photoGallery ??= $PhotoGalleryTable(this);
   $BookingsTable _bookings;
   $BookingsTable get bookings => _bookings ??= $BookingsTable(this);
   $ReviewTable _review;
@@ -2431,11 +2877,21 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   CustomerDao _customerDao;
   CustomerDao get customerDao =>
       _customerDao ??= CustomerDao(this as LocalDatabase);
+  GalleryDao _galleryDao;
+  GalleryDao get galleryDao =>
+      _galleryDao ??= GalleryDao(this as LocalDatabase);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [serviceProvider, user, bookings, review, categoryItem, message];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        serviceProvider,
+        user,
+        photoGallery,
+        bookings,
+        review,
+        categoryItem,
+        message
+      ];
 }
 
 // **************************************************************************
@@ -2450,9 +2906,10 @@ mixin _$ProviderDaoMixin on DatabaseAccessor<LocalDatabase> {
         readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
   }
 
-  Selectable<Artisan> artisans() {
-    return customSelect('SELECT * FROM service_provider ORDER BY id desc',
-        variables: [],
+  Selectable<Artisan> artisans(String var1) {
+    return customSelect(
+        'SELECT * FROM service_provider WHERE category = ? ORDER BY id desc',
+        variables: [Variable.withString(var1)],
         readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
   }
 
@@ -2519,5 +2976,14 @@ mixin _$CustomerDaoMixin on DatabaseAccessor<LocalDatabase> {
     return customSelect('SELECT * FROM user WHERE id = ?',
         variables: [Variable.withString(var1)],
         readsFrom: {user}).map(user.mapFromRow);
+  }
+}
+mixin _$GalleryDaoMixin on DatabaseAccessor<LocalDatabase> {
+  $PhotoGalleryTable get photoGallery => attachedDatabase.photoGallery;
+  Selectable<Gallery> photosForUser(String var1) {
+    return customSelect(
+        'SELECT * FROM photo_gallery WHERE user_id = ? ORDER BY created_at DESC',
+        variables: [Variable.withString(var1)],
+        readsFrom: {photoGallery}).map(photoGallery.mapFromRow);
   }
 }

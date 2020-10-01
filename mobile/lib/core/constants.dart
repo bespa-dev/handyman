@@ -27,12 +27,16 @@ const double kOpacityX35 = 0.35;
 const double kOpacityX50 = 0.5;
 const double kOpacityX70 = 0.7;
 const double kOpacityX90 = 0.9;
+const double kEmphasisLow = 0.38;
+const double kEmphasisMedium = 0.67;
+const double kEmphasisHigh = 0.9;
 
 /// App
 const kAppName = "HandyMan";
 const kAppSlogan = "Get some real work done";
 const kAppSloganDesc = "Find your service & book easily with $kAppName";
-const kPasswordHint = "Your password must be 8 or more characters long & must container a mix of upper & lower case letters, numbers & symbols";
+const kPasswordHint =
+    "Your password must be 8 or more characters long & must container a mix of upper & lower case letters, numbers & symbols";
 const kArtisanString = "Artisan";
 const kCustomerString = "Customer";
 const kLogoAsset = "assets/logo/logo_colored.svg";
@@ -58,6 +62,7 @@ const kSlideOffset = 50.0;
 /// Colors
 const kGreenColor = Color(0xFF009688);
 const kWhiteColor = Colors.white;
+const kAmberColor = Colors.amber;
 const kChatBackgroundLight = Color(0xFFF5F5F5);
 const kChatBackgroundDark = Color(0xFF222222);
 const kTransparent = Colors.transparent;

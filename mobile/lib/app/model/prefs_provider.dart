@@ -32,7 +32,7 @@ class PrefsProvider extends ChangeNotifier {
 
   void _init() async {
     _prefs = await sl.getAsync<SharedPreferences>();
-    _isLightTheme = _prefs.getBool(PrefsUtils.THEME_MODE) ?? true;
+    _isLightTheme = _prefs.getBool(PrefsUtils.THEME_MODE) ?? false;
     _shouldShowSplash = _prefs.getBool(PrefsUtils.SHOW_SPLASH_SCREEN) ?? true;
     _userId = _prefs.getString(PrefsUtils.USER_ID) ?? null;
     _userType = _prefs.getString(PrefsUtils.USER_TYPE) ?? null;
@@ -55,7 +55,7 @@ class PrefsProvider extends ChangeNotifier {
 
   void toggleTheme({bool value}) async {
     await _prefs.setBool(PrefsUtils.THEME_MODE, value);
-    _isLightTheme = value ??= !_isLightTheme;
+    _isLightTheme = value ?? !_isLightTheme;
     _themeController.sink.add(value);
     notifyListeners();
   }

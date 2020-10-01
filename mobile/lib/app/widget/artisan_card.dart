@@ -168,7 +168,7 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
           onTap: () => context.navigator.push(
             Routes.serviceProviderDetails,
             arguments: ServiceProviderDetailsArguments(
-              artisan: widget.artisan,
+              artisan: widget.artisan?.user,
             ),
           ),
           child: Padding(
