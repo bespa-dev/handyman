@@ -31,6 +31,7 @@ class TextFormInput extends TextFormField {
             hintText: hintText,
             helperText: helperText,
             suffixIcon: suffixIcon,
+            // border: InputBorder.none,
           ),
           focusNode: focusNode,
           onFieldSubmitted: onFieldSubmitted ?? (_) {},
@@ -74,6 +75,7 @@ class _PasswordInputState extends State<PasswordInput> {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
     return TextFormInput(
       labelText: widget.labelText,
       hintText: widget.hintText ?? '',
@@ -83,11 +85,13 @@ class _PasswordInputState extends State<PasswordInput> {
       enabled: widget.enabled,
       validator: widget.validator,
       obscureText: _obscure,
+      color: themeData.textTheme.bodyText1.color,
       maxLines: 1,
       suffixIcon: IconButton(
         icon: Icon(
           _obscure ? Icons.visibility : Icons.visibility_off,
           size: kSpacingX24,
+          color: themeData.iconTheme.color,
         ),
         onPressed: () => setState(() => _obscure = !_obscure),
       ),

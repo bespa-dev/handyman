@@ -84,11 +84,7 @@ class _AccountSelectionPageState extends State<AccountSelectionPage> {
                     ButtonPrimary(
                       width: getProportionateScreenWidth(kSpacingX200),
                       themeData: themeData,
-                      onTap: () => context.navigator.popAndPush(
-                        _currentProfile == _profiles[0]
-                            ? Routes.homePage
-                            : Routes.dashboardPage,
-                      ),
+                      onTap: () => context.navigator.popAndPush(Routes.accountCompletionPage),
                       icon: _hasSelection ? Icons.arrow_right_alt : null,
                       label: _hasSelection ? "Continue" : "Waiting...",
                       enabled: _hasSelection,

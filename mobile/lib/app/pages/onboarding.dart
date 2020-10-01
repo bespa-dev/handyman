@@ -72,45 +72,65 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   itemBuilder: (_, index) => Container(
                     width: kWidth,
                     height: kHeight,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: getProportionateScreenWidth(kSpacingX16),
-                      vertical: getProportionateScreenHeight(kSpacingX64),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    child: Stack(
+                      fit: StackFit.expand,
                       children: [
-                        Spacer(),
-                        Expanded(
-                          flex: 3,
+                        Positioned(
+                          top: getProportionateScreenHeight(kSpacingX120),
+                          width: kWidth,
                           child: Container(
                             child: Image(
-                                height: kHeight * 0.45,
-                                width: kWidth,
-                                image: Svg(index == 0
-                                    ? kTimeAsset
+                              height: kHeight * 0.45,
+                              width: kWidth,
+                              image: Svg(
+                                index == 0
+                                    ? kTimeSvgAsset
                                     : index == 1
-                                        ? kPeopleAsset
-                                        : kBookingAsset)),
+                                        ? kPeopleSvgAsset
+                                        : kBookingSvgAsset,
+                              ),
+                            ),
                           ),
                         ),
-                        SizedBox(
-                            height: getProportionateScreenHeight(kSpacingX36)),
-                        Text(
-                          _titles[index],
-                          textAlign: TextAlign.center,
-                          style: themeData.textTheme.headline4.copyWith(
-                            fontFamily:
-                                themeData.textTheme.bodyText1.fontFamily,
+                        Positioned(
+                          bottom: kSpacingNone,
+                          top: kHeight * 0.6,
+                          width: kWidth,
+                          child: Container(
+                            width: kWidth,
+                            padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  getProportionateScreenWidth(kSpacingX16),
+                              vertical:
+                                  getProportionateScreenHeight(kSpacingX64),
+                            ),
+                            decoration: BoxDecoration(
+                              color: themeData.scaffoldBackgroundColor,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  _titles[index],
+                                  textAlign: TextAlign.center,
+                                  style: themeData.textTheme.headline4.copyWith(
+                                    fontFamily: themeData
+                                        .textTheme.bodyText1.fontFamily,
+                                  ),
+                                ),
+                                SizedBox(
+                                    height: getProportionateScreenHeight(
+                                        kSpacingX16)),
+                                Text(
+                                  kLoremText,
+                                  style: themeData.textTheme.bodyText1,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        SizedBox(
-                            height: getProportionateScreenHeight(kSpacingX16)),
-                        Text(
-                          kLoremText,
-                          style: themeData.textTheme.bodyText1,
-                          textAlign: TextAlign.center,
-                        ),
-                        Spacer(),
                       ],
                     ),
                   ),
@@ -127,11 +147,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         getProportionateScreenWidth(kSpacingX24)),
                   ),
                   onTap: () => context.navigator.popAndPush(
-                    prefs.isLoggedIn
+                    /*prefs.isLoggedIn
                         ? prefs.userType == kClientString
                             ? Routes.homePage
                             : Routes.dashboardPage
-                        : Routes.loginPage,
+                        : */
+                    Routes.registerPage,
                   ),
                   child: Container(
                     height: kToolbarHeight,

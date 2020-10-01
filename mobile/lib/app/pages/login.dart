@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/buttons.dart';
@@ -10,7 +9,6 @@ import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -34,13 +32,6 @@ class _LoginPageState extends State<LoginPage> {
     final password = _passwordController.text.trim();
 
     // TODO: SEND TO SERVER FOR AUTHENTICATION
-
-    await Future.delayed(const Duration(seconds: 2));
-    // Save user account
-    Provider.of<PrefsProvider>(context, listen: false).saveUserId(Uuid().v4());
-    setState(() {
-      _isLoading = !_isLoading;
-    });
 
     // Complete user's account
     context.navigator.popAndPush(Routes.accountSelectionPage);
@@ -67,29 +58,40 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     )
                   : SizedBox.shrink(),
-              Positioned(
-                top: getProportionateScreenHeight(kSpacingX36),
-                left: getProportionateScreenWidth(kSpacingX64),
-                right: getProportionateScreenWidth(kSpacingX64),
-                child: Container(
-                  child: Image.asset(
-                    kLogoAsset,
-                    fit: BoxFit.contain,
-                    height: kToolbarHeight,
-                    width: double.infinity,
-                  ),
-                ),
-              ),
+              // Positioned(
+              //   top: getProportionateScreenHeight(kSpacingX36),
+              //   left: getProportionateScreenWidth(kSpacingX64),
+              //   right: getProportionateScreenWidth(kSpacingX64),
+              //   child: Container(
+              //     child: Image.asset(
+              //       kLogoAsset,
+              //       fit: BoxFit.contain,
+              //       height: kToolbarHeight,
+              //       width: double.infinity,
+              //     ),
+              //   ),
+              // ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
+                    width: double.infinity,
                     margin: EdgeInsets.symmetric(
-                        horizontal: getProportionateScreenWidth(kSpacingX24)),
-                    child: Text(
-                      "Sign in to get started",
-                      style: themeData.textTheme.headline4,
-                      textAlign: TextAlign.center,
+                        horizontal: getProportionateScreenWidth(kSpacingX48)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Welcome back!",
+                          style: themeData.textTheme.headline4,
+                        ),
+                        SizedBox(
+                            height: getProportionateScreenHeight(kSpacingX8)),
+                        Text(
+                          "Sign in to your account",
+                          style: themeData.textTheme.bodyText1,
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(height: getProportionateScreenHeight(kSpacingX48)),
@@ -105,6 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                           TextFormInput(
                             controller: _emailController,
                             labelText: "Email address",
+                            color: themeData.textTheme.bodyText1.color,
                             textInputAction: TextInputAction.next,
                             enabled: !_isLoading,
                             validator: (input) =>

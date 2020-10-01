@@ -1,6 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
@@ -19,6 +19,11 @@ class UserProfileCard extends StatefulWidget {
 }
 
 class _UserProfileCardState extends State<UserProfileCard> {
+  final _avatars = <String>[
+    "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
+    "https://images.unsplash.com/photo-1511306162219-1c5a469ab86c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60"
+  ];
+
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
@@ -51,13 +56,12 @@ class _UserProfileCardState extends State<UserProfileCard> {
                 fit: StackFit.expand,
                 children: [
                   Container(
-                    alignment: Alignment.topCenter,
-                    padding: EdgeInsets.only(
-                        top: getProportionateScreenHeight(kSpacingX36)),
-                    color: themeData.accentColor.withOpacity(kOpacityX35),
-                    child: Icon(
-                      index == 0 ? Feather.user : Icons.handyman_outlined,
-                      size: kHeight * 0.1,
+                    color: themeData.disabledColor,
+                    child: CachedNetworkImage(
+                      imageUrl: _avatars[index],
+                      fit: BoxFit.cover,
+                      height: kHeight * 0.3,
+                      width: kWidth,
                     ),
                   ),
                   Positioned(
@@ -67,7 +71,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
                     bottom: kSpacingNone,
                     child: Container(
                       color: themeData.scaffoldBackgroundColor
-                          .withOpacity(kOpacityX70),
+                          .withOpacity(kOpacityX90),
                       padding: EdgeInsets.symmetric(
                           horizontal: getProportionateScreenWidth(kSpacingX24)),
                       child: Column(

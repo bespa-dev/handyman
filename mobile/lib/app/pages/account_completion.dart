@@ -11,6 +11,14 @@ class AccountCompletionPage extends StatefulWidget {
 class _AccountCompletionPageState extends State<AccountCompletionPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  /*
+  * context.navigator.popAndPush(
+           _currentProfile == _profiles[0]
+          ? Routes.homePage
+         : Routes.dashboardPage,
+      )
+  * */
+
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
@@ -26,13 +34,13 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
           children: [
             provider.isLightTheme
                 ? Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(kBackgroundAsset),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            )
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(kBackgroundAsset),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )
                 : SizedBox.shrink(),
           ],
         ),

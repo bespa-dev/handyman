@@ -34,12 +34,18 @@ const kAppSlogan = "Simple. Safe. Reliable.";
 const kProviderString = "Artisan";
 const kClientString = "Customer";
 const kLogoAsset = "assets/logo/app_title.webp";
-const kTimeAsset = "assets/svg/time.svg";
-const kPeopleAsset = "assets/svg/people.svg";
-const kBookingAsset = "assets/svg/booking.svg";
+const kTimeSvgAsset = "assets/svg/time.svg";
+const kPeopleSvgAsset = "assets/svg/people.svg";
+const kBookingSvgAsset = "assets/svg/booking.svg";
+const kTimeAsset =
+    "https://images.unsplash.com/photo-1501139083538-0139583c060f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60";
+const kPeopleAsset =
+    "https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60";
+const kBookingAsset =
+    "https://images.unsplash.com/photo-1564182842519-8a3b2af3e228?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60";
 const kBackgroundAsset = "assets/bg/bg.webp";
 const kLoremText =
-    "You can set your own location and search preferences to filter out whom you'd like to talk to. It has never been easier to find dates, love and romance. Seeking companionship with our app is easy so start. Flirt with hot chicks and guys now! Forget about searching for dates out in bars and night clubs when you can meet new people and chat right from your phone. With this dating app you can find cool girls and guys in your area to hang out with.";
+    "Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cursus sit amet dictum sit amet. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique";
 
 /// [Algolia]
 const kAlgoliaAppId = "AIBRVBFA4W";
