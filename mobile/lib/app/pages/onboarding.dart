@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/model/theme_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
@@ -74,10 +74,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         Expanded(
                           flex: 3,
                           child: Container(
-                            child:
-                                // FIXME: Replace with appropriate images
-                                Image.asset(
-                                    "assets/artisans/${index + 1}.webp"),
+                            child: Image(
+                              height: kHeight * 0.45,
+                                width: kWidth,
+                                image: Svg(index == 0
+                                    ? kTimeAsset
+                                    : index == 1
+                                        ? kPeopleAsset
+                                        : kBookingAsset)),
                           ),
                         ),
                         SizedBox(

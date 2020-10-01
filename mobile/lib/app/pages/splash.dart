@@ -52,7 +52,7 @@ class _SplashPageState extends State<SplashPage> {
                           decoration: BoxDecoration(
                               color: themeData.scaffoldBackgroundColor),
                           child: Image.asset(
-                            kBannerAsset,
+                            kLogoAsset,
                             fit: BoxFit.contain,
                             height: getProportionateScreenHeight(kSpacingX250),
                             width: getProportionateScreenWidth(kSpacingX250),
