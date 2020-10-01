@@ -19,9 +19,9 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _emailController = TextEditingController(text: "dummyuser@gmail.com"),
-      _passwordController = TextEditingController(text: "dummy@1234"),
-      _nameController = TextEditingController(text: "Michael Pinto");
+  final _emailController = TextEditingController(),
+      _passwordController = TextEditingController(),
+      _nameController = TextEditingController();
 
   // Perform login
   void _performRegister() async {

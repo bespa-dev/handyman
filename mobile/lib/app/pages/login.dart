@@ -19,8 +19,8 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _emailController = TextEditingController(text: "dummyuser@gmail.com"),
-      _passwordController = TextEditingController(text: "dummy@1234");
+  final _emailController = TextEditingController(),
+      _passwordController = TextEditingController();
 
   // Perform login
   void _performLogin() async {
@@ -58,19 +58,6 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     )
                   : SizedBox.shrink(),
-              // Positioned(
-              //   top: getProportionateScreenHeight(kSpacingX36),
-              //   left: getProportionateScreenWidth(kSpacingX64),
-              //   right: getProportionateScreenWidth(kSpacingX64),
-              //   child: Container(
-              //     child: Image.asset(
-              //       kLogoAsset,
-              //       fit: BoxFit.contain,
-              //       height: kToolbarHeight,
-              //       width: double.infinity,
-              //     ),
-              //   ),
-              // ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

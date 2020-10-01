@@ -9,7 +9,12 @@ class AccountCompletionPage extends StatefulWidget {
 }
 
 class _AccountCompletionPageState extends State<AccountCompletionPage> {
+  bool _isLoading = false;
+  final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _emailController = TextEditingController(),
+      _passwordController = TextEditingController(),
+      _nameController = TextEditingController();
 
   /*
   * context.navigator.popAndPush(
