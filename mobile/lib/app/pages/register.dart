@@ -9,8 +9,8 @@ import 'package:handyman/app/widget/account_selector.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/core/constants.dart';
-import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
+import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +28,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController(),
       _passwordController = TextEditingController(),
       _nameController = TextEditingController();
-  final _authService = sl.get<AuthService>();
+  final _authService = FirebaseAuthService.instance;
   PrefsProvider _prefsProvider;
 
   // Perform registration
@@ -135,8 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         Row(
                           children: [
                             Container(
-                              height:
-                                  getProportionateScreenHeight(kSpacingX64),
+                              height: getProportionateScreenHeight(kSpacingX64),
                               width: getProportionateScreenWidth(kSpacingX64),
                               margin: EdgeInsets.symmetric(
                                 horizontal:
@@ -147,8 +146,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 fit: BoxFit.contain,
                                 height:
                                     getProportionateScreenHeight(kSpacingX64),
-                                width:
-                                    getProportionateScreenWidth(kSpacingX64),
+                                width: getProportionateScreenWidth(kSpacingX64),
                               ),
                             ),
                             Column(

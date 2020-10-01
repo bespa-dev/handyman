@@ -6,11 +6,11 @@ import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
-import 'package:handyman/data/local_database.dart';
+import 'package:handyman/domain/models/user.dart';
 import 'package:random_color/random_color.dart';
 
 class GridArtisanCardItem extends StatefulWidget {
-  final Artisan artisan;
+  final BaseUser artisan;
 
   const GridArtisanCardItem({Key key, this.artisan}) : super(key: key);
 
@@ -24,7 +24,7 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
     final themeData = Theme.of(context);
 
     return Card(
-      key: ValueKey<String>(widget.artisan.id),
+      key: ValueKey<String>(widget.artisan?.user?.id),
       clipBehavior: Clip.hardEdge,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(
@@ -35,7 +35,7 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
         onTap: () => context.navigator.push(
           Routes.serviceProviderDetails,
           arguments: ServiceProviderDetailsArguments(
-            artisan: widget.artisan,
+            artisan: widget.artisan?.user,
           ),
         ),
         child: Container(
@@ -44,9 +44,9 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
           child: Stack(
             children: [
               Hero(
-                tag: widget.artisan.avatar,
+                tag: widget.artisan?.user?.avatar,
                 child: CachedNetworkImage(
-                    imageUrl: widget.artisan.avatar,
+                    imageUrl: widget.artisan?.user?.avatar,
                     height: getProportionateScreenHeight(kSpacingX300),
                     width: double.infinity,
                     progressIndicatorBuilder:
@@ -62,7 +62,7 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                         ),
                     fit: BoxFit.cover),
               ),
-              widget.artisan.isCertified ?? false
+              widget.artisan?.user?.isCertified ?? false
                   ? Positioned(
                       top: kSpacingNone,
                       right: kSpacingNone,
@@ -103,7 +103,7 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        widget.artisan.name,
+                        widget.artisan?.user?.name,
                         style: themeData.textTheme.headline6,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
@@ -112,7 +112,7 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                       SizedBox(
                           height: getProportionateScreenHeight(kSpacingX4)),
                       Text(
-                        widget.artisan.business,
+                        widget.artisan?.user?.business,
                         style: themeData.textTheme.caption,
                         overflow: TextOverflow.fade,
                         maxLines: 2,
@@ -121,7 +121,7 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                       SizedBox(
                           height: getProportionateScreenHeight(kSpacingX8)),
                       Text(
-                        "\$${widget.artisan.price}",
+                        "\$${widget.artisan?.user?.price}",
                         style: themeData.textTheme.headline6.copyWith(
                           color: themeData.primaryColor,
                         ),
@@ -139,7 +139,7 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
 }
 
 class ListArtisanCardItem extends StatefulWidget {
-  final Artisan artisan;
+  final BaseUser artisan;
 
   const ListArtisanCardItem({Key key, this.artisan}) : super(key: key);
 
@@ -176,8 +176,8 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
             child: Row(
               children: [
                 UserAvatar(
-                  tag: widget.artisan.avatar,
-                  url: widget.artisan.avatar,
+                  tag: widget.artisan?.user?.avatar,
+                  url: widget.artisan?.user?.avatar,
                   ringColor: RandomColor(1)
                       .randomColor(colorBrightness: ColorBrightness.dark),
                 ),
@@ -187,13 +187,13 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.artisan.name,
+                      widget.artisan.user?.name,
                       maxLines: 1,
                       style: themeData.textTheme.headline6,
                     ),
                     SizedBox(height: getProportionateScreenHeight(kSpacingX4)),
                     Text(
-                      widget.artisan.business,
+                      widget.artisan.user?.business,
                       maxLines: 2,
                       overflow: TextOverflow.fade,
                       style: themeData.textTheme.caption,
@@ -202,7 +202,7 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
                 ),
                 Spacer(),
                 Text(
-                  "\$${widget.artisan.price}",
+                  "\$${widget.artisan.user?.price}",
                   style: themeData.textTheme.headline6.copyWith(
                     color: themeData.primaryColor,
                   ),

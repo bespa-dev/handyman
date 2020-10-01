@@ -16,7 +16,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
       errorColor: kErrorLightColor,
       toggleableActiveColor: kSecondaryLightColor,
       dividerTheme: DividerThemeData(
-        thickness: kSpacingX2,
+        thickness: kSpacingNone,
         color: kDisabledColor.withOpacity(kOpacityX70),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -105,7 +105,7 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
       disabledColor: kDisabledColor,
       toggleableActiveColor: kSecondaryDarkColor,
       dividerTheme: DividerThemeData(
-        thickness: kSpacingX2,
+        thickness: 1,
         color: kDisabledColor.withOpacity(kOpacityX70),
       ),
       // disabledColor: kDisabledColor,

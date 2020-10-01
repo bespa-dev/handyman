@@ -207,9 +207,8 @@ class FirebaseAuthService implements AuthService {
 
   @override
   void dispose() {
-    // FIXME: Causes memory leak when turn off
-    // _onProcessingStateChanged.close();
-    // _onAuthStateChanged.close();
+    _onProcessingStateChanged.close();
+    _onAuthStateChanged.close();
   }
 
   @override

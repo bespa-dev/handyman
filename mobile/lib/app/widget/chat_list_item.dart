@@ -6,6 +6,7 @@ import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
+import 'package:handyman/domain/models/user.dart';
 import 'package:meta/meta.dart';
 import 'package:provider/provider.dart';
 import 'package:random_color/random_color.dart';
@@ -13,14 +14,16 @@ import 'package:random_color/random_color.dart';
 /// Each item in the [Conversation] list
 class ChatListItem extends StatefulWidget {
   final Conversation conversation;
-  final Artisan artisan;
-  final Customer customer;
+  final BaseUser sender;
+  final BaseUser recipient;
+  final Function(Conversation) onTap;
 
   const ChatListItem(
       {Key key,
       @required this.conversation,
-      @required this.artisan,
-      @required this.customer})
+      @required this.sender,
+      @required this.recipient,
+      @required this.onTap})
       : super(key: key);
 
   @override
@@ -28,14 +31,12 @@ class ChatListItem extends StatefulWidget {
 }
 
 class _ChatListItemState extends State<ChatListItem> {
-  double /*_kHeight,*/ _kWidth;
+  double _kWidth;
 
   @override
   Widget build(BuildContext context) {
-    // final themeData = Theme.of(context);
     final size = MediaQuery.of(context).size;
     _kWidth = size.width;
-    // _kHeight = size.height;
 
     return Consumer<PrefsProvider>(
       builder: (_, provider, __) {
@@ -47,7 +48,7 @@ class _ChatListItemState extends State<ChatListItem> {
         final themeData = Theme.of(context);
 
         return InkWell(
-          onTap: () {},
+          onTap: () => widget.onTap(conversation),
           child: Row(
             mainAxisAlignment:
                 isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -59,7 +60,7 @@ class _ChatListItemState extends State<ChatListItem> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         UserAvatar(
-                          url: /*widget.artisan?.avatar ??*/ "",
+                          url: widget.recipient?.user?.avatar ?? "",
                           radius: kSpacingX42,
                           ringColor: RandomColor(1).randomColor(
                               colorBrightness: ColorBrightness.dark),
@@ -70,23 +71,29 @@ class _ChatListItemState extends State<ChatListItem> {
                       ],
                     ),
               Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: getProportionateScreenWidth(kSpacingX24),
-                  vertical: getProportionateScreenHeight(kSpacingX16),
+                padding: EdgeInsets.only(
+                  left: isMe
+                      ? getProportionateScreenWidth(kSpacingX4)
+                      : getProportionateScreenWidth(kSpacingX16),
+                  right: isMe
+                      ? getProportionateScreenWidth(kSpacingX16)
+                      : getProportionateScreenWidth(kSpacingX4),
+                  top: getProportionateScreenWidth(kSpacingX8),
+                  bottom: getProportionateScreenWidth(kSpacingX16),
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(kSpacingX24),
-                    topRight: Radius.circular(kSpacingX24),
+                    topLeft: Radius.circular(kSpacingX16),
+                    topRight: Radius.circular(kSpacingX16),
                     bottomLeft:
-                        isMe ? Radius.circular(kSpacingX24) : Radius.zero,
+                        isMe ? Radius.circular(kSpacingX16) : Radius.zero,
                     bottomRight:
-                        isMe ? Radius.zero : Radius.circular(kSpacingX24),
+                        isMe ? Radius.zero : Radius.circular(kSpacingX16),
                   ),
                   color: color,
                 ),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment:
                       isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                   children: [
@@ -111,7 +118,7 @@ class _ChatListItemState extends State<ChatListItem> {
                           width: getProportionateScreenWidth(kSpacingX8),
                         ),
                         UserAvatar(
-                          url: /*widget.customer.avatar ??*/ "",
+                          url: widget.sender?.user?.avatar,
                           radius: kSpacingX42,
                           ringColor: RandomColor(14).randomColor(
                             colorBrightness: ColorBrightness.dark,
@@ -131,14 +138,14 @@ class _ChatListItemState extends State<ChatListItem> {
 /// List of [Conversation]s
 class ChatMessages extends StatefulWidget {
   final Stream<List<Conversation>> messages;
-  final Artisan artisan;
-  final Customer customer;
+  final BaseUser recipient;
+  final BaseUser sender;
 
   const ChatMessages(
       {Key key,
       @required this.messages,
-      @required this.artisan,
-      @required this.customer})
+      @required this.recipient,
+      @required this.sender})
       : super(key: key);
 
   @override
@@ -171,9 +178,10 @@ class _ChatMessagesState extends State<ChatMessages> {
                         verticalOffset: kSlideOffset,
                         child: FadeInAnimation(
                           child: ChatListItem(
+                            onTap: (_) {},
                             conversation: conversation,
-                            customer: widget.customer,
-                            artisan: widget.artisan,
+                            recipient: widget.recipient,
+                            sender: widget.sender,
                           ),
                         ),
                       ),

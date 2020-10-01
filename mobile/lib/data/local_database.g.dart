@@ -1681,11 +1681,13 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
   final String name;
   final String avatar;
   final int groupName;
+  final int artisans;
   ServiceCategory(
       {@required this.id,
       @required this.name,
       @required this.avatar,
-      @required this.groupName});
+      @required this.groupName,
+      @required this.artisans});
   factory ServiceCategory.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
@@ -1699,6 +1701,8 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}avatar']),
       groupName:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}groupName']),
+      artisans:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}artisans']),
     );
   }
   @override
@@ -1716,6 +1720,9 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
     if (!nullToAbsent || groupName != null) {
       map['groupName'] = Variable<int>(groupName);
     }
+    if (!nullToAbsent || artisans != null) {
+      map['artisans'] = Variable<int>(artisans);
+    }
     return map;
   }
 
@@ -1728,6 +1735,9 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
       groupName: groupName == null && nullToAbsent
           ? const Value.absent()
           : Value(groupName),
+      artisans: artisans == null && nullToAbsent
+          ? const Value.absent()
+          : Value(artisans),
     );
   }
 
@@ -1739,6 +1749,7 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
       name: serializer.fromJson<String>(json['name']),
       avatar: serializer.fromJson<String>(json['avatar']),
       groupName: serializer.fromJson<int>(json['groupName']),
+      artisans: serializer.fromJson<int>(json['artisans']),
     );
   }
   @override
@@ -1749,16 +1760,22 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
       'name': serializer.toJson<String>(name),
       'avatar': serializer.toJson<String>(avatar),
       'groupName': serializer.toJson<int>(groupName),
+      'artisans': serializer.toJson<int>(artisans),
     };
   }
 
   ServiceCategory copyWith(
-          {String id, String name, String avatar, int groupName}) =>
+          {String id,
+          String name,
+          String avatar,
+          int groupName,
+          int artisans}) =>
       ServiceCategory(
         id: id ?? this.id,
         name: name ?? this.name,
         avatar: avatar ?? this.avatar,
         groupName: groupName ?? this.groupName,
+        artisans: artisans ?? this.artisans,
       );
   @override
   String toString() {
@@ -1766,14 +1783,19 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('avatar: $avatar, ')
-          ..write('groupName: $groupName')
+          ..write('groupName: $groupName, ')
+          ..write('artisans: $artisans')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(id.hashCode,
-      $mrjc(name.hashCode, $mrjc(avatar.hashCode, groupName.hashCode))));
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          name.hashCode,
+          $mrjc(
+              avatar.hashCode, $mrjc(groupName.hashCode, artisans.hashCode)))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -1781,7 +1803,8 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
           other.id == this.id &&
           other.name == this.name &&
           other.avatar == this.avatar &&
-          other.groupName == this.groupName);
+          other.groupName == this.groupName &&
+          other.artisans == this.artisans);
 }
 
 class CategoryItemCompanion extends UpdateCompanion<ServiceCategory> {
@@ -1789,17 +1812,20 @@ class CategoryItemCompanion extends UpdateCompanion<ServiceCategory> {
   final Value<String> name;
   final Value<String> avatar;
   final Value<int> groupName;
+  final Value<int> artisans;
   const CategoryItemCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.avatar = const Value.absent(),
     this.groupName = const Value.absent(),
+    this.artisans = const Value.absent(),
   });
   CategoryItemCompanion.insert({
     @required String id,
     @required String name,
     @required String avatar,
     this.groupName = const Value.absent(),
+    this.artisans = const Value.absent(),
   })  : id = Value(id),
         name = Value(name),
         avatar = Value(avatar);
@@ -1808,12 +1834,14 @@ class CategoryItemCompanion extends UpdateCompanion<ServiceCategory> {
     Expression<String> name,
     Expression<String> avatar,
     Expression<int> groupName,
+    Expression<int> artisans,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (avatar != null) 'avatar': avatar,
       if (groupName != null) 'groupName': groupName,
+      if (artisans != null) 'artisans': artisans,
     });
   }
 
@@ -1821,12 +1849,14 @@ class CategoryItemCompanion extends UpdateCompanion<ServiceCategory> {
       {Value<String> id,
       Value<String> name,
       Value<String> avatar,
-      Value<int> groupName}) {
+      Value<int> groupName,
+      Value<int> artisans}) {
     return CategoryItemCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       avatar: avatar ?? this.avatar,
       groupName: groupName ?? this.groupName,
+      artisans: artisans ?? this.artisans,
     );
   }
 
@@ -1845,6 +1875,9 @@ class CategoryItemCompanion extends UpdateCompanion<ServiceCategory> {
     if (groupName.present) {
       map['groupName'] = Variable<int>(groupName.value);
     }
+    if (artisans.present) {
+      map['artisans'] = Variable<int>(artisans.value);
+    }
     return map;
   }
 
@@ -1854,7 +1887,8 @@ class CategoryItemCompanion extends UpdateCompanion<ServiceCategory> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('avatar: $avatar, ')
-          ..write('groupName: $groupName')
+          ..write('groupName: $groupName, ')
+          ..write('artisans: $artisans')
           ..write(')'))
         .toString();
   }
@@ -1910,8 +1944,17 @@ class $CategoryItemTable extends CategoryItem
         defaultValue: Constant(0));
   }
 
+  final VerificationMeta _artisansMeta = const VerificationMeta('artisans');
+  GeneratedIntColumn _artisans;
   @override
-  List<GeneratedColumn> get $columns => [id, name, avatar, groupName];
+  GeneratedIntColumn get artisans => _artisans ??= _constructArtisans();
+  GeneratedIntColumn _constructArtisans() {
+    return GeneratedIntColumn('artisans', $tableName, false,
+        defaultValue: Constant(0));
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [id, name, avatar, groupName, artisans];
   @override
   $CategoryItemTable get asDslTable => this;
   @override
@@ -1943,6 +1986,10 @@ class $CategoryItemTable extends CategoryItem
     if (data.containsKey('groupName')) {
       context.handle(_groupNameMeta,
           groupName.isAcceptableOrUnknown(data['groupName'], _groupNameMeta));
+    }
+    if (data.containsKey('artisans')) {
+      context.handle(_artisansMeta,
+          artisans.isAcceptableOrUnknown(data['artisans'], _artisansMeta));
     }
     return context;
   }
@@ -2465,12 +2512,6 @@ mixin _$ReviewDaoMixin on DatabaseAccessor<LocalDatabase> {
 }
 mixin _$MessageDaoMixin on DatabaseAccessor<LocalDatabase> {
   $MessageTable get message => attachedDatabase.message;
-  Selectable<Conversation> conversationWithRecipient(String var1, String var2) {
-    return customSelect(
-        'SELECT * FROM message WHERE author = ? OR recipient = ? ORDER BY created_at DESC',
-        variables: [Variable.withString(var1), Variable.withString(var2)],
-        readsFrom: {message}).map(message.mapFromRow);
-  }
 }
 mixin _$CustomerDaoMixin on DatabaseAccessor<LocalDatabase> {
   $UserTable get user => attachedDatabase.user;

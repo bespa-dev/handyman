@@ -21,19 +21,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _preferGridFormat = true;
-  Future<List<ServiceCategory>> _categoriesFuture =
-      sl.get<ApiProviderService>().getCategories();
+  final _apiService = sl.get<ApiProviderService>();
+  Future<List<ServiceCategory>> _categoriesFuture;
 
-  final _dropdownItems = Map.from({
+  final _categoryFilterMenu = Map.from({
     CategoryGroup.FEATURED: "Featured",
     CategoryGroup.MOST_RATED: "Most Rated",
     CategoryGroup.RECENT: "Recent",
     CategoryGroup.POPULAR: "Popular",
     CategoryGroup.RECOMMENDED: "Recommended",
   });
-  String _currentFilter = "Featured";
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  String _categoryFilter = "Featured";
+
+  @override
+  void initState() {
+    super.initState();
+    if (mounted) _categoriesFuture = _apiService.getCategories();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,17 +124,25 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                               ),
-                              UserAvatar(
-                                tag:
-                                    "https://images.unsplash.com/photo-1598547461182-45d03f6661e4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
-                                url:
-                                    "https://images.unsplash.com/photo-1598547461182-45d03f6661e4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
-                                radius: kSpacingX36,
-                                onTap: () =>
-                                    context.navigator.push(Routes.profilePage),
-                                ringColor: RandomColor(1).randomColor(
-                                    colorBrightness: ColorBrightness.dark),
-                              ),
+                              StreamBuilder<Customer>(
+                                  stream: _apiService.getCustomerById(
+                                      id: provider.userId),
+                                  builder: (context, snapshot) {
+                                    return UserAvatar(
+                                      tag: snapshot.hasData
+                                          ? snapshot.data.avatar
+                                          : "",
+                                      url: snapshot.hasData
+                                          ? snapshot.data.avatar
+                                          : "",
+                                      radius: kSpacingX36,
+                                      onTap: () => context.navigator
+                                          .push(Routes.profilePage),
+                                      ringColor: RandomColor(1).randomColor(
+                                          colorBrightness:
+                                              ColorBrightness.dark),
+                                    );
+                                  }),
                             ],
                           ),
                         ),
@@ -147,11 +161,13 @@ class _HomePageState extends State<HomePage> {
                             child: Column(
                               children: [
                                 Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     DropdownButton(
-                                      value: _currentFilter,
-                                      items: _dropdownItems.values
+                                      value: _categoryFilter,
+                                      items: _categoryFilterMenu.values
                                           .map<DropdownMenuItem<String>>(
                                             (value) => DropdownMenuItem<String>(
                                               value: value,
@@ -160,10 +176,9 @@ class _HomePageState extends State<HomePage> {
                                           )
                                           .toList(),
                                       onChanged: (String newItem) {
-                                        setState(() {
-                                          _currentFilter = newItem;
-                                          _getCategoriesWithFilter();
-                                        });
+                                        _categoryFilter = newItem;
+                                        setState(() {});
+                                        _getCategoriesWithFilter();
                                       },
                                       icon: Icon(Feather.chevron_down),
                                       underline: Container(
@@ -171,7 +186,6 @@ class _HomePageState extends State<HomePage> {
                                         height: 2,
                                       ),
                                     ),
-                                    Spacer(),
                                     IconButton(
                                       tooltip: "Toggle view",
                                       icon: Icon(_preferGridFormat
@@ -210,13 +224,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _getCategoriesWithFilter() {
-    _categoriesFuture = sl.get<ApiProviderService>().getCategories(
-          categoryGroup: _dropdownItems.keys
-              .where((element) =>
-                  _currentFilter ==
-                  _dropdownItems.values.elementAt(element.index))
-              .first,
-        );
-    setState(() {});
+    _categoriesFuture = _apiService.getCategories(
+      categoryGroup: _categoryFilterMenu.keys
+          .where((element) =>
+              _categoryFilter ==
+              _categoryFilterMenu.values.elementAt(element.index))
+          .first,
+    );
   }
 }

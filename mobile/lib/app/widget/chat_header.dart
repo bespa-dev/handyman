@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
-import 'package:handyman/data/local_database.dart';
+import 'package:handyman/domain/models/user.dart';
 import 'package:meta/meta.dart';
 
 class ChatHeader extends StatelessWidget {
-  final Artisan artisan;
+  final BaseUser user;
 
-  const ChatHeader({Key key, @required this.artisan}) : super(key: key);
+  const ChatHeader({Key key, @required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +37,16 @@ class ChatHeader extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    artisan?.name ?? "No name",
+                    user?.user?.name ?? "No name",
                     style: themeData.textTheme.headline6.copyWith(
                       color: themeData.primaryColor,
                     ),
                   ),
                   SizedBox(height: getProportionateScreenHeight(kSpacingX4)),
                   Text(
-                    artisan?.business ?? artisan?.email ?? "#unregistered",
+                    user?.user?.business ??
+                        user?.user?.email ??
+                        "#unregistered",
                     style: themeData.textTheme.caption.copyWith(
                       color: themeData.primaryColor,
                     ),

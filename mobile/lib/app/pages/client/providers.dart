@@ -6,10 +6,9 @@ import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/pages/client/search.dart';
 import 'package:handyman/app/widget/artisan_card.dart';
 import 'package:handyman/core/constants.dart';
-import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
-import 'package:handyman/data/provider/artisan_api_provider.dart';
+import 'package:handyman/domain/models/user.dart';
 import 'package:provider/provider.dart';
 
 class CategoryProvidersPage extends StatefulWidget {
@@ -24,14 +23,6 @@ class CategoryProvidersPage extends StatefulWidget {
 class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _preferGridFormat = false;
-  String _currentFilter = "Availability";
-  final _dropdownItems = <String>["Availability", "Price", "Rating"];
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchProviderForCategory();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,31 +84,9 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                     ),
                     SizedBox(height: getProportionateScreenHeight(kSpacingX4)),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        DropdownButton(
-                          value: _currentFilter,
-                          items: _dropdownItems
-                              .map<DropdownMenuItem<String>>(
-                                (value) => DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (String newItem) {
-                            setState(() {
-                              _currentFilter = newItem;
-                              _fetchProviderForCategory();
-                            });
-                          },
-                          icon: Icon(Feather.chevron_down),
-                          underline: Container(
-                            color: kTransparent,
-                            height: 2,
-                          ),
-                        ),
-                        Spacer(),
                         IconButton(
                           tooltip: "Toggle view",
                           icon: Icon(
@@ -129,12 +98,14 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                       ],
                     ),
                     SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
-                    FutureBuilder<List<Artisan>>(
-                        future: sl
+                    FutureBuilder<List<BaseUser>>(
+                        future: Future.value(),
+                        // FIXME
+                        /*sl
                             .get<ApiProviderService>()
-                            .getArtisans(category: widget.category.id),
+                            .getArtisans(category: widget.category.id)*/
                         builder: (context, snapshot) {
-                          final artisans = snapshot.data;
+                          final artisans = snapshot.data ?? [];
                           if (snapshot.connectionState ==
                               ConnectionState.waiting)
                             return Container(
@@ -217,10 +188,5 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
         ),
       ),
     );
-  }
-
-  // TODO: Get providers for this category
-  void _fetchProviderForCategory() async {
-    // await sl.get<ArtisanProvider>().getArtisans();
   }
 }

@@ -11,6 +11,8 @@ class CategoryItem extends Table {
   IntColumn get groupName =>
       integer().named("groupName").withDefault(Constant(0))();
 
+  IntColumn get artisans => integer().withDefault(Constant(0))();
+
   @override
   Set<Column> get primaryKey => {id};
 }

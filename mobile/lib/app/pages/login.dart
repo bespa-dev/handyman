@@ -9,8 +9,8 @@ import 'package:handyman/app/widget/account_selector.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/core/constants.dart';
-import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
+import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _emailController = TextEditingController(),
       _passwordController = TextEditingController();
-  final _authService = sl.get<AuthService>();
+  final _authService = FirebaseAuthService.instance;
   PrefsProvider _prefsProvider;
 
   // Perform login
@@ -131,20 +131,18 @@ class _LoginPageState extends State<LoginPage> {
                         Row(
                           children: [
                             Container(
-                              height:
-                              getProportionateScreenHeight(kSpacingX64),
+                              height: getProportionateScreenHeight(kSpacingX64),
                               width: getProportionateScreenWidth(kSpacingX64),
                               margin: EdgeInsets.symmetric(
                                 horizontal:
-                                getProportionateScreenWidth(kSpacingX16),
+                                    getProportionateScreenWidth(kSpacingX16),
                               ),
                               child: Image(
                                 image: Svg(kLogoAsset),
                                 fit: BoxFit.contain,
                                 height:
-                                getProportionateScreenHeight(kSpacingX64),
-                                width:
-                                getProportionateScreenWidth(kSpacingX64),
+                                    getProportionateScreenHeight(kSpacingX64),
+                                width: getProportionateScreenWidth(kSpacingX64),
                               ),
                             ),
                             Column(
@@ -155,8 +153,8 @@ class _LoginPageState extends State<LoginPage> {
                                   style: themeData.textTheme.headline4,
                                 ),
                                 SizedBox(
-                                    height:
-                                        getProportionateScreenHeight(kSpacingX8)),
+                                    height: getProportionateScreenHeight(
+                                        kSpacingX8)),
                                 Text(
                                   "Sign in to your account",
                                   style: themeData.textTheme.bodyText1,

@@ -6,8 +6,8 @@ import 'package:handyman/app/widget/artisan_card.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
-import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/provider/artisan_api_provider.dart';
+import 'package:handyman/domain/models/user.dart';
 import 'package:provider/provider.dart';
 
 class SearchPage extends SearchDelegate {
@@ -32,9 +32,9 @@ class SearchPage extends SearchDelegate {
   Widget buildResults(BuildContext context) {
     final themeData = Theme.of(context);
 
-    return FutureBuilder<List<Artisan>>(
+    return FutureBuilder<List<BaseUser>>(
         future: sl.get<ApiProviderService>().searchFor(value: query.trim()),
-        initialData: <Artisan>[],
+        initialData: <BaseUser>[],
         builder: (context, snapshot) {
           final artisans = snapshot.data;
           if (snapshot.hasError || artisans.isEmpty)

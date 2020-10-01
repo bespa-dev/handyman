@@ -17,7 +17,8 @@ class UserAvatar extends StatelessWidget {
     @required this.url,
     @required this.ringColor,
     this.onTap,
-    this.radius = kSpacingX48, this.tag,
+    this.radius = kSpacingX48,
+    this.tag,
   }) : super(key: key);
 
   @override
@@ -42,28 +43,39 @@ class UserAvatar extends StatelessWidget {
           ),
           child: ClipOval(
             clipBehavior: Clip.hardEdge,
-            child: CachedNetworkImage(
-              imageUrl: url ?? "",
-              progressIndicatorBuilder: (context, url, downloadProgress) =>
-                  Center(
-                      child: CircularProgressIndicator(
-                          value: downloadProgress.progress)),
-              fit: BoxFit.cover,
-              width: radius,
-              height: radius,
-              alignment: Alignment.center,
-              errorWidget: (_, __, chunk) => Container(
-                alignment: Alignment.center,
-                height: radius,
-                width: radius,
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  color: themeData.primaryColor.withOpacity(kOpacityX14),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(Feather.user, size: radius / 2.5, color: ringColor),
-              ),
-            ),
+            child: url != null && url.isNotEmpty
+                ? CachedNetworkImage(
+                    imageUrl: url ?? "",
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) => Center(
+                            child: CircularProgressIndicator(
+                                value: downloadProgress.progress)),
+                    fit: BoxFit.cover,
+                    width: radius,
+                    height: radius,
+                    alignment: Alignment.center,
+                    errorWidget: (_, __, chunk) => Container(
+                      alignment: Alignment.center,
+                      height: radius,
+                      width: radius,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(
+                        color: themeData.colorScheme.onBackground
+                            .withOpacity(kOpacityX14),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Feather.user,
+                          size: radius / 2.5, color: ringColor),
+                    ),
+                  )
+                : Container(
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      color: themeData.colorScheme.onBackground
+                          .withOpacity(kOpacityX14),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
           ),
         ),
       ),

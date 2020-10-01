@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:handyman/data/entities/conversation.dart';
+import 'package:handyman/domain/models/user.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:path/path.dart' as p;
@@ -43,7 +44,7 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration =>
@@ -54,6 +55,9 @@ class LocalDatabase extends _$LocalDatabase {
             break;
           case 2:
             await m.addColumn(user, user.createdAt);
+            break;
+          case 3:
+            await m.addColumn(categoryItem, categoryItem.artisans);
             break;
         }
       });
@@ -72,12 +76,8 @@ class ProviderDao extends DatabaseAccessor<LocalDatabase>
     with _$ProviderDaoMixin {
   ProviderDao(LocalDatabase db) : super(db);
 
-  void addProviders(List<Artisan> providers) {
-    providers.forEach((person) async {
-      await into(serviceProvider)
-          .insert(person, mode: InsertMode.insertOrReplace);
-    });
-  }
+  void addProviders(List<BaseUser> providers) =>
+      providers.forEach((person) async => await saveProvider(person.user));
 
   Future<int> saveProvider(Artisan artisan) =>
       into(serviceProvider).insert(artisan, mode: InsertMode.insertOrReplace);
@@ -99,6 +99,9 @@ class CategoryDao extends DatabaseAccessor<LocalDatabase>
       await into(categoryItem).insert(item, mode: InsertMode.insertOrReplace);
     });
   }
+
+  Future<void> addSingleItem(ServiceCategory item) =>
+      into(categoryItem).insert(item, mode: InsertMode.insertOrReplace);
 }
 
 @UseDao(
@@ -140,13 +143,7 @@ class ReviewDao extends DatabaseAccessor<LocalDatabase> with _$ReviewDaoMixin {
       into(review).insert(item, mode: InsertMode.insertOrReplace);
 }
 
-@UseDao(
-  tables: [Message],
-  queries: {
-    "conversationWithRecipient":
-        "SELECT * FROM message WHERE author = ? OR recipient = ? ORDER BY created_at DESC",
-  },
-)
+@UseDao(tables: [Message])
 class MessageDao extends DatabaseAccessor<LocalDatabase>
     with _$MessageDaoMixin {
   MessageDao(LocalDatabase db) : super(db);
@@ -159,6 +156,19 @@ class MessageDao extends DatabaseAccessor<LocalDatabase>
       await sendMessage(item);
     });
   }
+
+  Stream<List<Conversation>> conversationWithRecipient(
+          {@required String sender, String recipient}) =>
+      (select(message)
+            ..where((item) => item.author.equals(sender))
+            ..where((item) => item.recipient.equals(recipient))
+            ..orderBy(
+              [
+                (u) => OrderingTerm(
+                    expression: u.createdAt, mode: OrderingMode.desc),
+              ],
+            ))
+          .watch();
 }
 
 @UseDao(

@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/utils.dart';
+import 'package:handyman/data/entities/artisan_model.dart';
 import 'package:handyman/data/entities/category.dart';
 import 'package:handyman/data/local_database.dart';
+import 'package:handyman/domain/models/user.dart';
 import 'package:meta/meta.dart';
 
 /// API service for application
@@ -53,38 +55,16 @@ class ApiProviderService {
 
   Stream<List<Conversation>> getConversation(
           {@required String sender, @required String recipient}) =>
-      _messageDao.conversationWithRecipient(sender, recipient).watch();
-
-  /*Stream<List<Conversation>> getConversation(
-      {@required String sender, @required String recipient}) async* {
-    // Decode artisans from json array
-    final data = await rootBundle.loadString("assets/sample_conversation.json");
-    var decodedData = json.decode(data);
-
-    // Convert each object to `Artisan` object
-    final List<dynamic> messages = decodedData ??= [];
-
-    // Add to database
-    _messageDao
-        .addMessages(messages.map((e) => Conversation.fromJson(e)).toList());
-
-    // Traverse json array
-    final results = messages
-        .map((e) => Conversation.fromJson(e))
-        // .where((item) =>
-        //     item.author == sender && item.recipient == recipient ||
-        //     item.author == recipient && item.recipient == sender)
-        .toList();
-
-    yield results;
-  }*/
+      _messageDao.conversationWithRecipient(
+          sender: sender, recipient: recipient);
 
   Stream<Customer> getCustomerById({@required String id}) =>
       _customerDao.customerById(id).watchSingle();
 
   /// Get all [ServiceCategory] from data source
-  Future<List<ServiceCategory>> getCategories(
-      {CategoryGroup categoryGroup = CategoryGroup.FEATURED}) async {
+  Future<List<ServiceCategory>> getCategories({
+    CategoryGroup categoryGroup = CategoryGroup.FEATURED,
+  }) async {
     // Decode categories from json array
     final data = await rootBundle.loadString("assets/sample_categories.json");
     var decodedData = json.decode(data);
@@ -117,7 +97,7 @@ class ApiProviderService {
           .watch();
 
   /// Performs a search for [Artisan]s in [Algolia]
-  Future<List<Artisan>> searchFor(
+  Future<List<BaseUser>> searchFor(
       {@required String value, String categoryId}) async {
     try {
       // Perform search with index
@@ -133,9 +113,13 @@ class ApiProviderService {
       // Return transformed data from API
       return snapshot.empty
           ? _providerDao.searchFor(value, categoryId ?? "").get()
-          : snapshot.hits.map((e) => Artisan.fromJson(e.data)).toList();
+          : snapshot.hits
+              .map((e) => ArtisanModel(
+                    artisan: Artisan.fromJson(e.data),
+                  ))
+              .toList();
     } on Exception {
-      return Future.value(<Artisan>[]);
+      return Future.value(<BaseUser>[]);
     }
   }
 }

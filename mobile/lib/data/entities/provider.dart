@@ -36,3 +36,9 @@ class ServiceProvider extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
+
+enum ProviderOrder {
+  AVAILABILITY,
+  PRICE,
+  RATING,
+}

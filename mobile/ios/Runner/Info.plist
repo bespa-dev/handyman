@@ -9,6 +9,8 @@
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
+	<string>io.flutter.embedded_views_preview</string>
+	<key>YES</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>HandyMan Mobile</string>
