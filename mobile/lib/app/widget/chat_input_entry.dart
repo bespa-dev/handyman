@@ -41,10 +41,7 @@ class _UserInputState extends State<UserInput> {
         width: double.infinity,
         child: Column(
           children: [
-            Divider(
-              height: kSpacingNone,
-              color: Theme.of(context).disabledColor.withOpacity(kOpacityX70),
-            ),
+            Divider(),
             _UserInputText(
               textController: textController,
               keyboardShown: !dismissKeyboard,

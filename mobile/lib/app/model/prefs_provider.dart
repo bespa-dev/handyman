@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 /// [SharedPreferences] helper class
 class PrefsProvider extends ChangeNotifier {
-  bool _isLoggedIn = false, _isLightTheme = true;
+  bool _isLoggedIn = false, _isLightTheme = true, _shouldShowSplash = true;
   String _userId, _userType;
   final StreamController<bool> _themeController = StreamController.broadcast();
 
@@ -16,6 +16,8 @@ class PrefsProvider extends ChangeNotifier {
   String get userType => _userType;
 
   bool get isLoggedIn => _isLoggedIn;
+
+  bool get shouldShowSplash => _shouldShowSplash;
 
   bool get isLightTheme => _isLightTheme;
 
@@ -31,6 +33,7 @@ class PrefsProvider extends ChangeNotifier {
   void _init() async {
     _prefs = await sl.getAsync<SharedPreferences>();
     _isLightTheme = _prefs.getBool(PrefsUtils.THEME_MODE) ?? true;
+    _shouldShowSplash = _prefs.getBool(PrefsUtils.SHOW_SPLASH_SCREEN) ?? true;
     _userId = _prefs.getString(PrefsUtils.USER_ID) ?? null;
     _userType = _prefs.getString(PrefsUtils.USER_TYPE) ?? null;
     _isLoggedIn = _userId != null && _userId.isNotEmpty;
@@ -54,6 +57,12 @@ class PrefsProvider extends ChangeNotifier {
     await _prefs.setBool(PrefsUtils.THEME_MODE, value);
     _isLightTheme = value ??= !_isLightTheme;
     _themeController.sink.add(value);
+    notifyListeners();
+  }
+
+  void toggleShowSplash({bool value}) async {
+    await _prefs.setBool(PrefsUtils.SHOW_SPLASH_SCREEN, value);
+    _shouldShowSplash = value ??= !_shouldShowSplash;
     notifyListeners();
   }
 

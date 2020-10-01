@@ -14,6 +14,11 @@ ThemeData themeData(BuildContext context) => ThemeData(
       shadowColor: kShadowColor,
       disabledColor: kDisabledColor,
       errorColor: kErrorLightColor,
+      toggleableActiveColor: kSecondaryLightColor,
+      dividerTheme: DividerThemeData(
+        thickness: kSpacingX2,
+        color: kDisabledColor.withOpacity(kOpacityX70),
+      ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -97,6 +102,12 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
       shadowColor: kShadowDarkColor,
       errorColor: kErrorDarkColor,
       appBarTheme: appBarTheme,
+      disabledColor: kDisabledColor,
+      toggleableActiveColor: kSecondaryDarkColor,
+      dividerTheme: DividerThemeData(
+        thickness: kSpacingX2,
+        color: kDisabledColor.withOpacity(kOpacityX70),
+      ),
       // disabledColor: kDisabledColor,
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         shape: RoundedRectangleBorder(

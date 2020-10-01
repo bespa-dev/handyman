@@ -3,6 +3,8 @@ import 'dart:async' show Future, Stream;
 import 'package:handyman/domain/models/user.dart';
 import 'package:meta/meta.dart';
 
+enum AuthState { NONE, AUTHENTICATING, ERROR, SUCCESS }
+
 /// Base authentication service
 abstract class AuthService {
   Stream<BaseUser> currentUser();
@@ -48,7 +50,7 @@ abstract class AuthService {
 
   Stream<BaseUser> get onAuthStateChanged;
 
-  Stream<bool> get onProcessingStateChanged;
+  Stream<AuthState> get onProcessingStateChanged;
 
   void dispose();
 }

@@ -2,7 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 
+enum ButtonIconGravity { NONE, END, START }
+
 class ButtonOutlined extends StatelessWidget {
+  final String label;
+  final double width;
+  final double height;
+  final IconData icon;
+  final ThemeData themeData;
+  final Function onTap;
+  final bool enabled;
+  final ButtonIconGravity gravity;
+
   const ButtonOutlined({
     Key key,
     @required this.width,
@@ -12,15 +23,8 @@ class ButtonOutlined extends StatelessWidget {
     this.height,
     this.icon,
     this.enabled = true,
+    this.gravity = ButtonIconGravity.NONE,
   }) : super(key: key);
-
-  final String label;
-  final double width;
-  final double height;
-  final IconData icon;
-  final ThemeData themeData;
-  final Function onTap;
-  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +46,13 @@ class ButtonOutlined extends StatelessWidget {
               BorderRadius.circular(getProportionateScreenWidth(kSpacingX36)),
         ),
         child: Row(
-          mainAxisAlignment: icon == null
+          mainAxisAlignment: icon == null || gravity != ButtonIconGravity.NONE
               ? MainAxisAlignment.center
               : MainAxisAlignment.spaceAround,
           children: [
+            icon != null && gravity == ButtonIconGravity.START
+                ? _buildIcon(icon)
+                : SizedBox.shrink(),
             Text(
               label.toUpperCase(),
               style: themeData.textTheme.button.copyWith(
@@ -53,19 +60,23 @@ class ButtonOutlined extends StatelessWidget {
                       ? themeData.primaryColor
                       : themeData.disabledColor),
             ),
-            icon == null
-                ? SizedBox.shrink()
-                : Icon(
-                    icon,
-                    color: enabled
-                        ? themeData.primaryColor
-                        : themeData.disabledColor,
-                  ),
+            icon != null && gravity == ButtonIconGravity.END
+                ? _buildIcon(icon)
+                : SizedBox.shrink(),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildIcon(icon) => Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: getProportionateScreenWidth(kSpacingX16)),
+        child: Icon(
+          icon,
+          color: enabled ? themeData.primaryColor : themeData.disabledColor,
+        ),
+      );
 }
 
 class ButtonIconOnly extends StatelessWidget {
@@ -106,18 +117,6 @@ class ButtonIconOnly extends StatelessWidget {
 }
 
 class ButtonPrimary extends StatelessWidget {
-  const ButtonPrimary({
-    Key key,
-    @required this.width,
-    @required this.themeData,
-    @required this.onTap,
-    @required this.label,
-    this.color,
-    this.icon,
-    this.textColor,
-    this.enabled = true,
-  }) : super(key: key);
-
   final String label;
   final Color color;
   final Color textColor;
@@ -126,6 +125,20 @@ class ButtonPrimary extends StatelessWidget {
   final ThemeData themeData;
   final Function onTap;
   final bool enabled;
+  final ButtonIconGravity gravity;
+
+  const ButtonPrimary({
+    Key key,
+    @required this.width,
+    @required this.themeData,
+    @required this.onTap,
+    @required this.label,
+    this.gravity = ButtonIconGravity.NONE,
+    this.color,
+    this.icon,
+    this.textColor,
+    this.enabled = true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -146,32 +159,35 @@ class ButtonPrimary extends StatelessWidget {
               BorderRadius.circular(getProportionateScreenWidth(kSpacingX36)),
         ),
         child: Row(
-          mainAxisAlignment: icon == null
+          mainAxisAlignment: icon == null || gravity != ButtonIconGravity.NONE
               ? MainAxisAlignment.center
               : MainAxisAlignment.spaceAround,
           children: [
+            icon != null && gravity == ButtonIconGravity.START
+                ? _buildIcon(icon)
+                : SizedBox.shrink(),
             Text(
               label.toUpperCase(),
               style: themeData.textTheme.button.copyWith(
-                color: textColor ?? Colors.white,
-              ),
+                  color: textColor ?? kWhiteColor),
             ),
-            icon == null
-                ? SizedBox.shrink()
-                : Padding(
-                    padding: const EdgeInsets.only(
-                      left: 24,
-                    ),
-                    child: Icon(
-                      icon,
-                      color: textColor ?? Colors.white,
-                    ),
-                  ),
+            icon != null && gravity == ButtonIconGravity.END
+                ? _buildIcon(icon)
+                : SizedBox.shrink(),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildIcon(icon) => Padding(
+    padding: EdgeInsets.symmetric(
+        horizontal: getProportionateScreenWidth(kSpacingX16)),
+    child: Icon(
+      icon,
+      color: enabled ? themeData.primaryColor : themeData.disabledColor,
+    ),
+  );
 }
 
 class ButtonClear extends FlatButton {

@@ -17,11 +17,11 @@ class AccountSelectionPage extends StatefulWidget {
 
 class _AccountSelectionPageState extends State<AccountSelectionPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  String _currentProfile = kClientString;
+  String _currentProfile = kCustomerString;
   bool _hasSelection = false;
   final _profiles = const <String>[
-    kClientString,
-    kProviderString,
+    kCustomerString,
+    kArtisanString,
   ];
   final _desc = const <String>[
     "Allows you to book services at anytime",
@@ -72,8 +72,8 @@ class _AccountSelectionPageState extends State<AccountSelectionPage> {
                       _currentProfile = _profiles[activeIndex];
                       provider.saveUserType(
                           _currentProfile == _profiles[activeIndex]
-                              ? kClientString
-                              : kProviderString);
+                              ? kCustomerString
+                              : kArtisanString);
                       debugPrint(_currentProfile);
                       setState(() {});
                     },

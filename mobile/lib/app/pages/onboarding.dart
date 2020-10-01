@@ -18,6 +18,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   int _currentPage = 0;
 
   final _titles = const <String>[
+    "$kAppName is here for you",
     "Save time",
     "Simple booking",
     "1000+ services",
@@ -51,7 +52,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 : SizedBox.shrink(),
             Positioned.fill(
               child: PageView.builder(
-                itemCount: 3,
+                itemCount: _titles.length,
                 physics: BouncingScrollPhysics(),
                 onPageChanged: (newIndex) {
                   setState(() {
@@ -65,18 +66,22 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     fit: StackFit.expand,
                     children: [
                       Positioned(
-                        top: getProportionateScreenHeight(kSpacingX120),
+                        top: kHeight * 0.2,
+                        bottom: kHeight * 0.5,
                         width: kWidth,
                         child: Container(
                           child: Image(
-                            height: kHeight * 0.45,
-                            width: kWidth,
+                            fit: BoxFit.contain,
+                            height: getProportionateScreenHeight(kSpacingX120),
+                            width: getProportionateScreenWidth(kSpacingX120),
                             image: Svg(
                               index == 0
-                                  ? kTimeSvgAsset
+                                  ? kLogoAsset
                                   : index == 1
-                                      ? kPeopleSvgAsset
-                                      : kBookingSvgAsset,
+                                      ? kTimeSvgAsset
+                                      : index == 2
+                                          ? kPeopleSvgAsset
+                                          : kBookingSvgAsset,
                             ),
                           ),
                         ),
@@ -135,13 +140,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       Radius.circular(getProportionateScreenWidth(kSpacingX24)),
                 ),
                 onTap: () => context.navigator.popAndPush(
-                  // FIXME: uncomment
-                  /*prefs.isLoggedIn
-                        ? prefs.userType == kClientString
-                            ? Routes.homePage
-                            : Routes.dashboardPage
-                        : */
-                  Routes.splashPage,
+                  provider.shouldShowSplash || !provider.isLoggedIn
+                      ? Routes.splashPage
+                      : provider.userType == kCustomerString
+                          ? Routes.homePage
+                          : Routes.dashboardPage,
                 ),
                 child: Container(
                   height: kToolbarHeight,
@@ -170,7 +173,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               left: kSpacingNone,
               right: kSpacingNone,
               child: PageIndicator(
-                pages: 3,
+                pages: _titles.length,
                 currentPage: _currentPage,
               ),
             )

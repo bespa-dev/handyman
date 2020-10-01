@@ -21,7 +21,7 @@ class ProviderGuard extends RouteGuard {
     final prefsProvider = Provider.of<PrefsProvider>(ctx);
     return prefsProvider.isLoggedIn &&
         prefsProvider.userType != null &&
-        prefsProvider.userType == kProviderString;
+        prefsProvider.userType == kArtisanString;
   }
 }
 
@@ -33,6 +33,6 @@ class ClientGuard extends RouteGuard {
     final prefsProvider = Provider.of<PrefsProvider>(ctx);
     return prefsProvider.isLoggedIn &&
         prefsProvider.userType != null &&
-        prefsProvider.userType == kClientString;
+        prefsProvider.userType == kCustomerString;
   }
 }

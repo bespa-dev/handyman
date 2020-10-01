@@ -28,16 +28,56 @@ class _UserAccountSelectorState extends State<UserAccountSelector> {
     final size = MediaQuery.of(context).size;
     final kWidth = size.width;
 
-    return Container(
-      height: getProportionateScreenHeight(kSpacingX36),
-      width: kWidth * 0.6,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: widget.enabled
-            ? themeData.cardColor
-            : themeData.scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(kSpacingX16),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "Account:",
+          style: themeData.textTheme.headline6,
+        ),
+        SizedBox(width: getProportionateScreenWidth(kSpacingX8)),
+        Container(
+          width: kWidth * 0.6,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: widget.enabled
+                ? themeData.cardColor
+                : themeData.scaffoldBackgroundColor,
+            borderRadius: BorderRadius.circular(kSpacingX16),
+          ),
+          padding: EdgeInsets.symmetric(
+              vertical: getProportionateScreenHeight(kSpacingX8)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(kCustomerString),
+                  SizedBox(width: getProportionateScreenWidth(kSpacingX4)),
+                  Checkbox(
+                    value: widget.accountPicker == UserAccountPicker.CUSTOMER,
+                    onChanged: (_) =>
+                        widget.onAccountSelected(UserAccountPicker.CUSTOMER),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(kArtisanString),
+                  SizedBox(width: getProportionateScreenWidth(kSpacingX4)),
+                  Checkbox(
+                    value: widget.accountPicker == UserAccountPicker.ARTISAN,
+                    onChanged: (_) =>
+                        widget.onAccountSelected(UserAccountPicker.ARTISAN),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

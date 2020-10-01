@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/account_selector.dart';
@@ -10,7 +11,7 @@ import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
-import 'package:handyman/data/services/auth.dart';
+import 'package:handyman/domain/services/auth.dart';
 import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -27,7 +28,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController(),
       _passwordController = TextEditingController(),
       _nameController = TextEditingController();
-  final _authService = sl.get<FirebaseAuthService>();
+  final _authService = sl.get<AuthService>();
   PrefsProvider _prefsProvider;
 
   // Perform registration
@@ -58,7 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
           // Save to prefs
           _prefsProvider.saveUserId(user.user.id);
           _prefsProvider
-              .saveUserType(user.isCustomer ? kClientString : kProviderString);
+              .saveUserType(user.isCustomer ? kCustomerString : kArtisanString);
 
           // Complete user's account
           context.navigator.popAndPush(
@@ -68,8 +69,27 @@ class _RegisterPageState extends State<RegisterPage> {
 
       // Monitor authentication process
       _authService.onProcessingStateChanged.listen((state) {
-        _isLoading = state;
+        _isLoading = state == AuthState.AUTHENTICATING;
         if (mounted) setState(() {});
+        if (state == AuthState.ERROR)
+          _scaffoldKey.currentState
+            ..removeCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text("An error occurred. Try again later"),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+        else if (state == AuthState.AUTHENTICATING)
+          _scaffoldKey.currentState
+            ..removeCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text("Authenticating..."),
+                behavior: SnackBarBehavior.floating,
+                duration: const Duration(minutes: 1),
+              ),
+            );
       });
     }
   }
@@ -83,6 +103,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
+    final kWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       key: _scaffoldKey,
@@ -106,32 +127,50 @@ class _RegisterPageState extends State<RegisterPage> {
                 Positioned(
                   bottom: kSpacingNone,
                   top: kSpacingX64,
-                  width: MediaQuery.of(context).size.width,
+                  width: kWidth,
                   child: SingleChildScrollView(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          width: double.infinity,
-                          margin: EdgeInsets.symmetric(
-                              horizontal:
-                                  getProportionateScreenWidth(kSpacingX48)),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Sign up.",
-                                style: themeData.textTheme.headline4,
+                        Row(
+                          children: [
+                            Container(
+                              height:
+                                  getProportionateScreenHeight(kSpacingX64),
+                              width: getProportionateScreenWidth(kSpacingX64),
+                              margin: EdgeInsets.symmetric(
+                                horizontal:
+                                    getProportionateScreenWidth(kSpacingX16),
                               ),
-                              SizedBox(
-                                  height:
-                                      getProportionateScreenHeight(kSpacingX8)),
-                              Text(
-                                "Create an account so you can book your favorite service even faster",
-                                style: themeData.textTheme.bodyText1,
+                              child: Image(
+                                image: Svg(kLogoAsset),
+                                fit: BoxFit.contain,
+                                height:
+                                    getProportionateScreenHeight(kSpacingX64),
+                                width:
+                                    getProportionateScreenWidth(kSpacingX64),
                               ),
-                            ],
-                          ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Sign up.",
+                                  style: themeData.textTheme.headline4,
+                                  textAlign: TextAlign.start,
+                                ),
+                                SizedBox(
+                                    height: getProportionateScreenHeight(
+                                        kSpacingX8)),
+                                Text(
+                                  "Create an account so you can book\nyour favorite service even faster",
+                                  style: themeData.textTheme.bodyText1,
+                                  textAlign: TextAlign.start,
+                                ),
+                              ],
+                            ),
+                            Spacer(),
+                          ],
                         ),
                         SizedBox(
                             height: getProportionateScreenHeight(kSpacingX48)),
@@ -139,7 +178,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           duration: kScaleDuration,
                           margin: EdgeInsets.symmetric(
                               horizontal:
-                                  getProportionateScreenWidth(kSpacingX48)),
+                                  getProportionateScreenWidth(kSpacingX24)),
                           child: Form(
                             key: _formKey,
                             child: Column(
@@ -153,7 +192,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   textInputAction: TextInputAction.next,
                                   enabled: !_isLoading,
                                   validator: (input) =>
-                                      !EmailValidator.validate(input)
+                                      input == null || input.length < 6
                                           ? "Enter your full name"
                                           : null,
                                   keyboardType: TextInputType.name,
@@ -184,7 +223,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                     height: getProportionateScreenHeight(
                                         kSpacingX4)),
                                 Text(
-                                  "Your password must be 8 or more characters long & must container a mix of upper & lower case letters, numbers & symbols",
+                                  kPasswordHint,
+                                  textAlign: TextAlign.center,
                                   style: themeData.textTheme.caption,
                                 ),
                                 SizedBox(

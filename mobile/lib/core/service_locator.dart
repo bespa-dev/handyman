@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:handyman/data/services/auth.dart';
+import 'package:handyman/domain/services/auth.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -50,6 +51,5 @@ Future<void> registerServiceLocator() async {
       .child(kAppName.toLowerCase().replaceAll(" ", "_")));
 
   // Services
-  sl.registerLazySingleton<FirebaseAuthService>(
-      () => FirebaseAuthService.instance);
+  sl.registerLazySingleton<AuthService>(() => FirebaseAuthService.instance);
 }

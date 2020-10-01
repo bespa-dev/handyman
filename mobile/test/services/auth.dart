@@ -146,5 +146,6 @@ class MockAuthService implements AuthService {
   }
 
   @override
-  Stream<bool> get onProcessingStateChanged => Stream.value(false);
+  Stream<AuthState> get onProcessingStateChanged =>
+      Stream.value(AuthState.NONE);
 }

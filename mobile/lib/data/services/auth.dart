@@ -20,6 +20,10 @@ class FirebaseAuthService implements AuthService {
   final FirebaseAuth _auth = sl.get<FirebaseAuth>();
   final FirebaseFirestore _firestore = sl.get<FirebaseFirestore>();
   final LocalDatabase _database = sl.get<LocalDatabase>();
+  final successState = AuthState.SUCCESS;
+  final errorState = AuthState.ERROR;
+  final loadingState = AuthState.AUTHENTICATING;
+  final initialState = AuthState.NONE;
 
   // Private constructor
   FirebaseAuthService._();
@@ -29,12 +33,12 @@ class FirebaseAuthService implements AuthService {
 
   final StreamController<BaseUser> _onAuthStateChanged =
       StreamController.broadcast();
-  final StreamController<bool> _onProcessingStateChanged =
+  final StreamController<AuthState> _onProcessingStateChanged =
       StreamController.broadcast();
 
   Future<BaseUser> _userFromFirebase(User user,
       {bool isCustomer = true}) async {
-    _onProcessingStateChanged.sink.add(true);
+    _onProcessingStateChanged.sink.add(loadingState);
     if (isCustomer) {
       final snapshot = await _firestore
           .collection(FirestoreUtils.kCustomerRef)
@@ -43,10 +47,10 @@ class FirebaseAuthService implements AuthService {
       if (snapshot.exists) {
         final customer = Customer.fromJson(snapshot.data());
         await _database.customerDao.addCustomer(customer);
-        _onProcessingStateChanged.sink.add(false);
+        _onProcessingStateChanged.sink.add(successState);
         return CustomerModel(customer: customer);
       } else {
-        _onProcessingStateChanged.sink.add(false);
+        _onProcessingStateChanged.sink.add(errorState);
         return null;
       }
     } else {
@@ -57,10 +61,10 @@ class FirebaseAuthService implements AuthService {
       if (snapshot.exists) {
         final artisan = Artisan.fromJson(snapshot.data());
         await _database.providerDao.saveProvider(artisan);
-        _onProcessingStateChanged.sink.add(false);
+        _onProcessingStateChanged.sink.add(successState);
         return ArtisanModel(artisan: artisan);
       } else {
-        _onProcessingStateChanged.sink.add(false);
+        _onProcessingStateChanged.sink.add(errorState);
         return null;
       }
     }
@@ -73,6 +77,7 @@ class FirebaseAuthService implements AuthService {
     String password,
     bool isCustomer,
   }) async {
+    _onProcessingStateChanged.sink.add(loadingState);
     try {
       // Create user account
       final credential = await _auth.createUserWithEmailAndPassword(
@@ -83,8 +88,9 @@ class FirebaseAuthService implements AuthService {
 
       // return user instance
       return _userFromFirebase(credential.user, isCustomer: isCustomer);
-    } on PlatformException catch (e) {
-      debugPrint(e.message);
+    } on Exception catch (e) {
+      _onProcessingStateChanged.sink.add(errorState);
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -95,7 +101,7 @@ class FirebaseAuthService implements AuthService {
     final userId = preferences.getString(PrefsUtils.USER_ID) ?? null;
     final userType = preferences.getString(PrefsUtils.USER_TYPE) ?? null;
     if (userId != null && userType != null) {
-      if (userType == kClientString) {
+      if (userType == kCustomerString) {
         var localCustomer =
             await _database.customerDao.customerById(userId).getSingle();
         yield CustomerModel(customer: localCustomer);
@@ -109,7 +115,7 @@ class FirebaseAuthService implements AuthService {
           await _database.customerDao.addCustomer(customer);
           yield CustomerModel(customer: customer);
         }
-      } else if (userType == kProviderString) {
+      } else if (userType == kArtisanString) {
         final snapshot = await _firestore
             .collection(FirestoreUtils.kArtisanRef)
             .doc(userId)
@@ -128,7 +134,8 @@ class FirebaseAuthService implements AuthService {
   Stream<BaseUser> get onAuthStateChanged => _onAuthStateChanged.stream;
 
   @override
-  Stream<bool> get onProcessingStateChanged => _onProcessingStateChanged.stream;
+  Stream<AuthState> get onProcessingStateChanged =>
+      _onProcessingStateChanged.stream;
 
   @override
   Future<void> sendPasswordReset({String email}) =>
@@ -137,6 +144,7 @@ class FirebaseAuthService implements AuthService {
   @override
   Future<BaseUser> signInWithEmailAndPassword(
       {String email, String password, bool isCustomer}) async {
+    _onProcessingStateChanged.sink.add(loadingState);
     try {
       // Sign in
       final credential = await _auth.signInWithEmailAndPassword(
@@ -144,14 +152,16 @@ class FirebaseAuthService implements AuthService {
 
       // Return user instance
       return _userFromFirebase(credential.user, isCustomer: isCustomer);
-    } on PlatformException catch (e) {
-      debugPrint(e.message);
+    } on Exception catch (e) {
+      _onProcessingStateChanged.sink.add(errorState);
+      debugPrint(e.toString());
       return null;
     }
   }
 
   @override
   Future<BaseUser> signInWithGoogle() async {
+    _onProcessingStateChanged.sink.add(loadingState);
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
       final GoogleSignInAccount googleUser = await googleSignIn.signIn();
@@ -175,29 +185,31 @@ class FirebaseAuthService implements AuthService {
       }
     } on PlatformException catch (e) {
       debugPrint(e.message);
+      _onProcessingStateChanged.sink.add(errorState);
       return null;
     }
   }
 
   @override
   Future<bool> signOut() async {
-    _onProcessingStateChanged.sink.add(true);
+    _onProcessingStateChanged.sink.add(loadingState);
     try {
       await GoogleSignIn().signOut();
       await _auth.signOut();
-      _onProcessingStateChanged.sink.add(false);
+      _onProcessingStateChanged.sink.add(successState);
       return true;
     } on PlatformException catch (e) {
       debugPrint(e.message);
-      _onProcessingStateChanged.sink.add(false);
+      _onProcessingStateChanged.sink.add(errorState);
       return false;
     }
   }
 
   @override
   void dispose() {
-    _onProcessingStateChanged.close();
-    _onAuthStateChanged.close();
+    // FIXME: Causes memory leak when turn off
+    // _onProcessingStateChanged.close();
+    // _onAuthStateChanged.close();
   }
 
   @override
@@ -207,9 +219,9 @@ class FirebaseAuthService implements AuthService {
     String createdAt,
     String phone,
   }) async {
-    _onProcessingStateChanged.sink.add(true);
+    _onProcessingStateChanged.sink.add(loadingState);
     // TODO
-    _onProcessingStateChanged.sink.add(false);
+    _onProcessingStateChanged.sink.add(initialState);
   }
 
   @override
@@ -225,7 +237,7 @@ class FirebaseAuthService implements AuthService {
     int endWorkingHours,
     double price,
   }) async {
-    _onProcessingStateChanged.sink.add(true);
+    _onProcessingStateChanged.sink.add(loadingState);
     // TODO
     // var artisan = artisanModel.artisan.copyWith(
     //   name: username ??= artisanModel.artisan.name,
@@ -240,6 +252,6 @@ class FirebaseAuthService implements AuthService {
     //   isAvailable: availability ??= artisanModel.artisan.isAvailable,
     // );
     // _onAuthStateChanged.sink.add(ArtisanModel(artisan: artisan));
-    _onProcessingStateChanged.sink.add(false);
+    _onProcessingStateChanged.sink.add(initialState);
   }
 }

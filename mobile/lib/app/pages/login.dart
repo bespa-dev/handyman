@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/account_selector.dart';
@@ -10,7 +11,7 @@ import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
-import 'package:handyman/data/services/auth.dart';
+import 'package:handyman/domain/services/auth.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _emailController = TextEditingController(),
       _passwordController = TextEditingController();
-  final _authService = sl.get<FirebaseAuthService>();
+  final _authService = sl.get<AuthService>();
   PrefsProvider _prefsProvider;
 
   // Perform login
@@ -55,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
           // Save to prefs
           _prefsProvider.saveUserId(user.user.id);
           _prefsProvider
-              .saveUserType(user.isCustomer ? kClientString : kProviderString);
+              .saveUserType(user.isCustomer ? kCustomerString : kArtisanString);
 
           // Complete user's account
           context.navigator.popAndPush(
@@ -65,8 +66,27 @@ class _LoginPageState extends State<LoginPage> {
 
       // Monitor authentication process
       _authService.onProcessingStateChanged.listen((state) {
-        _isLoading = state;
+        _isLoading = state == AuthState.AUTHENTICATING;
         if (mounted) setState(() {});
+        if (state == AuthState.ERROR)
+          _scaffoldKey.currentState
+            ..removeCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text("An error occurred. Try again later"),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+        else if (state == AuthState.AUTHENTICATING)
+          _scaffoldKey.currentState
+            ..removeCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text("Authenticating..."),
+                behavior: SnackBarBehavior.floating,
+                duration: const Duration(minutes: 1),
+              ),
+            );
       });
     }
   }
@@ -108,27 +128,42 @@ class _LoginPageState extends State<LoginPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          width: double.infinity,
-                          margin: EdgeInsets.symmetric(
-                              horizontal:
-                                  getProportionateScreenWidth(kSpacingX48)),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Welcome back.",
-                                style: themeData.textTheme.headline4,
+                        Row(
+                          children: [
+                            Container(
+                              height:
+                              getProportionateScreenHeight(kSpacingX64),
+                              width: getProportionateScreenWidth(kSpacingX64),
+                              margin: EdgeInsets.symmetric(
+                                horizontal:
+                                getProportionateScreenWidth(kSpacingX16),
                               ),
-                              SizedBox(
-                                  height:
-                                      getProportionateScreenHeight(kSpacingX8)),
-                              Text(
-                                "Sign in to your account",
-                                style: themeData.textTheme.bodyText1,
+                              child: Image(
+                                image: Svg(kLogoAsset),
+                                fit: BoxFit.contain,
+                                height:
+                                getProportionateScreenHeight(kSpacingX64),
+                                width:
+                                getProportionateScreenWidth(kSpacingX64),
                               ),
-                            ],
-                          ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Welcome back.",
+                                  style: themeData.textTheme.headline4,
+                                ),
+                                SizedBox(
+                                    height:
+                                        getProportionateScreenHeight(kSpacingX8)),
+                                Text(
+                                  "Sign in to your account",
+                                  style: themeData.textTheme.bodyText1,
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                         SizedBox(
                             height: getProportionateScreenHeight(kSpacingX48)),
@@ -136,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                           duration: kScaleDuration,
                           margin: EdgeInsets.symmetric(
                               horizontal:
-                                  getProportionateScreenWidth(kSpacingX48)),
+                                  getProportionateScreenWidth(kSpacingX24)),
                           child: Form(
                             key: _formKey,
                             child: Column(
@@ -168,7 +203,8 @@ class _LoginPageState extends State<LoginPage> {
                                     height: getProportionateScreenHeight(
                                         kSpacingX4)),
                                 Text(
-                                  "Your password must be 8 or more characters long & must container a mix of upper & lower case letters, numbers & symbols",
+                                  kPasswordHint,
+                                  textAlign: TextAlign.center,
                                   style: themeData.textTheme.caption,
                                 ),
                                 SizedBox(

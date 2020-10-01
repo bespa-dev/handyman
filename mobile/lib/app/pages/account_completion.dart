@@ -149,7 +149,7 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
                   ),
                 ),
               ),
-              prefs.userType == kProviderString
+              prefs.userType == kArtisanString
                   ? SizedBox.shrink()
                   : Positioned(
                 top: getProportionateScreenHeight(kSpacingX64),
@@ -162,7 +162,7 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
                         getProportionateScreenWidth(kSpacingX24)),
                   ),
                   onTap: () => context.navigator.popAndPush(
-                    prefs.userType == kClientString
+                    prefs.userType == kCustomerString
                         ? Routes.homePage
                         : Routes.dashboardPage,
                   ),
