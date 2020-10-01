@@ -40,9 +40,8 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
-        <!-- TODO: Add google maps key here: restrict to places & map -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="your_api_key" />
+            android:value="AIzaSyByvL9jc4UvlhILkhAZs7ZrQP68LwWDgFg" />
     </application>
 </manifest>
