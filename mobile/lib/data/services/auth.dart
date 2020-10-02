@@ -13,6 +13,7 @@ import 'package:handyman/data/entities/customer_model.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// [AuthService] implementation for production use
@@ -40,8 +41,12 @@ class FirebaseAuthService implements AuthService {
       User user, String username, bool isCustomer) async {
     _onProcessingStateChanged.sink.add(loadingState);
     if (isCustomer) {
-      final customer =
-          Customer(id: user.uid, name: username, email: user.email);
+      final customer = Customer(
+        id: user.uid,
+        name: username,
+        email: user.email,
+        createdAt: DateFormat.jm().format(DateTime.now()),
+      );
       await _firestore
           .collection(FirestoreUtils.kCustomerRef)
           .doc(user.uid)
@@ -59,11 +64,11 @@ class FirebaseAuthService implements AuthService {
         isCertified: false,
         isAvailable: false,
         category: kGeneralCategory,
-        startWorkingHours: 8,
+        startWorkingHours: DateTime.now().millisecondsSinceEpoch,
         completedBookingsCount: 491,
         ongoingBookingsCount: 48,
         cancelledBookingsCount: 23,
-        endWorkingHours: 12,
+        endWorkingHours: DateTime.now().millisecondsSinceEpoch + 43200000,
         price: 10.99,
         rating: 3.5,
       );
@@ -89,8 +94,11 @@ class FirebaseAuthService implements AuthService {
       if (snapshot.exists) {
         final customer = Customer.fromJson(snapshot.data());
         await _database.customerDao.addCustomer(customer);
+
         _onProcessingStateChanged.sink.add(successState);
-        return CustomerModel(customer: customer);
+        final model = CustomerModel(customer: customer);
+        _onAuthStateChanged.sink.add(model);
+        return model;
       } else {
         _onProcessingStateChanged.sink.add(errorState);
         return null;
@@ -104,8 +112,11 @@ class FirebaseAuthService implements AuthService {
         final artisan = Artisan.fromJson(snapshot.data());
         await _database.providerDao.saveProvider(artisan);
         _onProcessingStateChanged.sink.add(successState);
-        return ArtisanModel(artisan: artisan);
+        final model = ArtisanModel(artisan: artisan);
+        _onAuthStateChanged.sink.add(model);
+        return model;
       } else {
+        _onAuthStateChanged.sink.add(null);
         _onProcessingStateChanged.sink.add(errorState);
         return null;
       }

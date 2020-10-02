@@ -67,22 +67,26 @@ class LocalDatabase extends _$LocalDatabase {
             // Decode artisans from json array
             final data =
                 await rootBundle.loadString("assets/sample_artisan.json");
-            var decodedData = json.decode(data) ?? [];
+            var decodedData = json.decode(data);
+
+            List<dynamic> artisans = decodedData ??= [];
 
             // Save to database
-            providerDao.addProviders(decodedData
-                .map((e) => ArtisanModel(artisan: Artisan.fromJson(e)))
-                .toList());
+            providerDao.addProviders(
+                artisans.map((e) => Artisan.fromJson(e)).toList());
 
             // Decode categories from json array
             final categoryData =
                 await rootBundle.loadString("assets/sample_categories.json");
-            var decodedCategoryData = json.decode(categoryData) ?? [];
+            var decodedCategoryData = json.decode(categoryData);
+
+            List<dynamic> categories = decodedCategoryData ??= [];
 
             // Convert each object to `ServiceCategory` object
-            categoryDao.addItems(decodedCategoryData
-                .map((e) => ServiceCategory.fromJson(e))
-                .toList());
+            categoryDao.addItems(
+                categories.map((e) => ServiceCategory.fromJson(e)).toList());
+
+            await customStatement('PRAGMA foreign_keys = ON');
           }
         },
         onUpgrade: (m, from, to) async {},
@@ -107,8 +111,8 @@ class ProviderDao extends DatabaseAccessor<LocalDatabase>
     with _$ProviderDaoMixin {
   ProviderDao(LocalDatabase db) : super(db);
 
-  void addProviders(List<BaseUser> providers) =>
-      providers.forEach((person) async => await saveProvider(person.user));
+  void addProviders(List<Artisan> providers) =>
+      providers.forEach((person) async => await saveProvider(person));
 
   Future<int> saveProvider(Artisan artisan) =>
       into(serviceProvider).insert(artisan, mode: InsertMode.insertOrReplace);

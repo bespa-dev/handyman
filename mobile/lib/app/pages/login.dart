@@ -87,6 +87,9 @@ class _LoginPageState extends State<LoginPage> {
                 duration: const Duration(minutes: 1),
               ),
             );
+        else if (state == AuthState.SUCCESS) {
+          _scaffoldKey.currentState.removeCurrentSnackBar();
+        }
       });
     }
   }
