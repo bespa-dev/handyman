@@ -61,31 +61,34 @@ class LocalDatabase extends _$LocalDatabase {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+        beforeOpen: (details) async {
+          if (details.wasCreated) {
+            // Prepopulate the database with some sample data
+            // Decode artisans from json array
+            final data =
+                await rootBundle.loadString("assets/sample_artisan.json");
+            var decodedData = json.decode(data) ?? [];
+
+            // Save to database
+            providerDao.addProviders(decodedData
+                .map((e) => ArtisanModel(artisan: Artisan.fromJson(e)))
+                .toList());
+
+            // Decode categories from json array
+            final categoryData =
+                await rootBundle.loadString("assets/sample_categories.json");
+            var decodedCategoryData = json.decode(categoryData) ?? [];
+
+            // Convert each object to `ServiceCategory` object
+            categoryDao.addItems(decodedCategoryData
+                .map((e) => ServiceCategory.fromJson(e))
+                .toList());
+          }
+        },
         onUpgrade: (m, from, to) async {},
         onCreate: (m) async {
           // Create all tables
-          await m.createAll();
-
-          // Prepopulate the database with some sample data
-          // Decode artisans from json array
-          final data =
-              await rootBundle.loadString("assets/sample_artisan.json");
-          var decodedData = json.decode(data) ?? [];
-
-          // Save to database
-          providerDao.addProviders(decodedData
-              .map((e) => ArtisanModel(artisan: Artisan.fromJson(e)))
-              .toList());
-
-          // Decode categories from json array
-          final categoryData =
-              await rootBundle.loadString("assets/sample_categories.json");
-          var decodedCategoryData = json.decode(categoryData) ?? [];
-
-          // Convert each object to `ServiceCategory` object
-          categoryDao.addItems(decodedCategoryData
-              .map((e) => ServiceCategory.fromJson(e))
-              .toList());
+          return m.createAll();
         },
       );
 }

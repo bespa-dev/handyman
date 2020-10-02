@@ -36,6 +36,48 @@ class FirebaseAuthService implements AuthService {
   final StreamController<AuthState> _onProcessingStateChanged =
       StreamController.broadcast();
 
+  Future<BaseUser> _createUserInstance(
+      User user, String username, bool isCustomer) async {
+    _onProcessingStateChanged.sink.add(loadingState);
+    if (isCustomer) {
+      final customer =
+          Customer(id: user.uid, name: username, email: user.email);
+      await _firestore
+          .collection(FirestoreUtils.kCustomerRef)
+          .doc(user.uid)
+          .set(customer.toJson());
+      final model = CustomerModel(customer: customer);
+      _onProcessingStateChanged.sink.add(successState);
+      _onAuthStateChanged.sink.add(model);
+      return model;
+    } else {
+      final artisan = Artisan(
+        id: user.uid,
+        name: username,
+        business: null,
+        email: user.email,
+        isCertified: false,
+        isAvailable: false,
+        category: kGeneralCategory,
+        startWorkingHours: 8,
+        completedBookingsCount: 491,
+        ongoingBookingsCount: 48,
+        cancelledBookingsCount: 23,
+        endWorkingHours: 12,
+        price: 10.99,
+        rating: 3.5,
+      );
+      await _firestore
+          .collection(FirestoreUtils.kArtisanRef)
+          .doc(user.uid)
+          .set(artisan.toJson());
+      final model = ArtisanModel(artisan: artisan);
+      _onProcessingStateChanged.sink.add(successState);
+      _onAuthStateChanged.sink.add(model);
+      return model;
+    }
+  }
+
   Future<BaseUser> _userFromFirebase(User user,
       {bool isCustomer = true}) async {
     _onProcessingStateChanged.sink.add(loadingState);
@@ -86,8 +128,9 @@ class FirebaseAuthService implements AuthService {
       // Update user information online
       await _auth.currentUser.updateProfile(displayName: username);
 
+      return _createUserInstance(credential.user, username, isCustomer);
       // return user instance
-      return _userFromFirebase(credential.user, isCustomer: isCustomer);
+      // return _userFromFirebase(credential.user, isCustomer: isCustomer);
     } on Exception catch (e) {
       _onProcessingStateChanged.sink.add(errorState);
       debugPrint(e.toString());

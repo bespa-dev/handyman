@@ -90,6 +90,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 duration: const Duration(minutes: 1),
               ),
             );
+        else if (state == AuthState.SUCCESS) {
+          _scaffoldKey.currentState.removeCurrentSnackBar();
+        }
       });
     }
   }

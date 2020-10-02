@@ -1,6 +1,9 @@
 import 'package:algolia/algolia.dart';
 import 'package:flutter/material.dart';
 
+///
+const kGeneralCategory = "bbe8a179-7797-4d87-b388-cf93125f490e";
+
 /// Dimensions
 const double kSpacingNone = 0.0;
 const double kSpacingX2 = 2.0;

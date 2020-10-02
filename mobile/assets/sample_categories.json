@@ -1,5 +1,11 @@
 [
   {
+    "id": "bbe8a179-7797-4d87-b388-cf93125f490e",
+    "name": "General",
+    "avatar": "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
+    "groupName": 13
+  },
+  {
     "id": "4dcd2140-7ab5-43d3-8e17-68abce8c6dc6",
     "name": "Beauty & Spa",
     "avatar": "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
