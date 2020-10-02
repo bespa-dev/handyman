@@ -41,7 +41,7 @@ class _UserInputState extends State<UserInput> {
         child: Column(
           children: [
             Divider(),
-            _UserInputText(
+            UserInputText(
               textController: textController,
               keyboardShown: currentInputSelector == InputSelector.KEYBOARD,
               focusNode: _focusNode,
@@ -95,29 +95,31 @@ class _UserInputState extends State<UserInput> {
 }
 
 /// Input box for user messages
-class _UserInputText extends StatefulWidget {
+class UserInputText extends StatefulWidget {
   final TextInputType keyboardType;
   final FocusNode focusNode;
   final bool keyboardShown;
   final Function(bool) onTextFieldFocused;
   final bool focusState;
   final TextEditingController textController;
+  final Function(String) onSubmit;
 
-  const _UserInputText(
-      {Key key,
-      @required this.keyboardShown,
-      @required this.onTextFieldFocused,
-      @required this.focusState,
-      @required this.focusNode,
-      this.keyboardType = TextInputType.text,
-      this.textController})
-      : super(key: key);
+  const UserInputText({
+    Key key,
+    @required this.keyboardShown,
+    @required this.onTextFieldFocused,
+    @required this.focusState,
+    @required this.focusNode,
+    this.keyboardType = TextInputType.text,
+    this.textController,
+    this.onSubmit,
+  }) : super(key: key);
 
   @override
-  __UserInputTextState createState() => __UserInputTextState();
+  _UserInputTextState createState() => _UserInputTextState();
 }
 
-class __UserInputTextState extends State<_UserInputText> {
+class _UserInputTextState extends State<UserInputText> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
@@ -126,10 +128,13 @@ class __UserInputTextState extends State<_UserInputText> {
       width: double.infinity,
       alignment: Alignment.center,
       padding: EdgeInsets.only(left: getProportionateScreenWidth(kSpacingX16)),
-      height: getProportionateScreenHeight(kSpacingX48),
+      // height: getProportionateScreenHeight(kSpacingX48),
       child: TextFormField(
         focusNode: widget.focusNode,
         autofocus: widget.focusState,
+        minLines: 2,
+        maxLines: 5,
+        enableSuggestions: true,
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: "Say something...",
@@ -137,7 +142,7 @@ class __UserInputTextState extends State<_UserInputText> {
         ),
         textAlign: TextAlign.start,
         keyboardType: widget.keyboardType,
-        onFieldSubmitted: (value) {},
+        onFieldSubmitted: widget.onSubmit ?? (_) {},
         controller: widget.textController,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         autocorrect: true,

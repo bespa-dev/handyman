@@ -1780,7 +1780,7 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
 }
 
 class CustomerReview extends DataClass implements Insertable<CustomerReview> {
-  final int id;
+  final String id;
   final String review;
   final String customerId;
   final String providerId;
@@ -1795,11 +1795,10 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
       Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
     final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return CustomerReview(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       review:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}review']),
       customerId: stringType
@@ -1814,7 +1813,7 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (!nullToAbsent || id != null) {
-      map['id'] = Variable<int>(id);
+      map['id'] = Variable<String>(id);
     }
     if (!nullToAbsent || review != null) {
       map['review'] = Variable<String>(review);
@@ -1852,7 +1851,7 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
       {ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return CustomerReview(
-      id: serializer.fromJson<int>(json['id']),
+      id: serializer.fromJson<String>(json['id']),
       review: serializer.fromJson<String>(json['review']),
       customerId: serializer.fromJson<String>(json['customerId']),
       providerId: serializer.fromJson<String>(json['providerId']),
@@ -1863,7 +1862,7 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
   Map<String, dynamic> toJson({ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
+      'id': serializer.toJson<String>(id),
       'review': serializer.toJson<String>(review),
       'customerId': serializer.toJson<String>(customerId),
       'providerId': serializer.toJson<String>(providerId),
@@ -1872,7 +1871,7 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
   }
 
   CustomerReview copyWith(
-          {int id,
+          {String id,
           String review,
           String customerId,
           String providerId,
@@ -1915,7 +1914,7 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
 }
 
 class ReviewCompanion extends UpdateCompanion<CustomerReview> {
-  final Value<int> id;
+  final Value<String> id;
   final Value<String> review;
   final Value<String> customerId;
   final Value<String> providerId;
@@ -1928,16 +1927,17 @@ class ReviewCompanion extends UpdateCompanion<CustomerReview> {
     this.createdAt = const Value.absent(),
   });
   ReviewCompanion.insert({
-    this.id = const Value.absent(),
+    @required String id,
     @required String review,
     @required String customerId,
     @required String providerId,
     this.createdAt = const Value.absent(),
-  })  : review = Value(review),
+  })  : id = Value(id),
+        review = Value(review),
         customerId = Value(customerId),
         providerId = Value(providerId);
   static Insertable<CustomerReview> custom({
-    Expression<int> id,
+    Expression<String> id,
     Expression<String> review,
     Expression<String> customerId,
     Expression<String> providerId,
@@ -1953,7 +1953,7 @@ class ReviewCompanion extends UpdateCompanion<CustomerReview> {
   }
 
   ReviewCompanion copyWith(
-      {Value<int> id,
+      {Value<String> id,
       Value<String> review,
       Value<String> customerId,
       Value<String> providerId,
@@ -1971,7 +1971,7 @@ class ReviewCompanion extends UpdateCompanion<CustomerReview> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (id.present) {
-      map['id'] = Variable<int>(id.value);
+      map['id'] = Variable<String>(id.value);
     }
     if (review.present) {
       map['review'] = Variable<String>(review.value);
@@ -2006,12 +2006,15 @@ class $ReviewTable extends Review with TableInfo<$ReviewTable, CustomerReview> {
   final String _alias;
   $ReviewTable(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
-  GeneratedIntColumn _id;
+  GeneratedTextColumn _id;
   @override
-  GeneratedIntColumn get id => _id ??= _constructId();
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  GeneratedTextColumn get id => _id ??= _constructId();
+  GeneratedTextColumn _constructId() {
+    return GeneratedTextColumn(
+      'id',
+      $tableName,
+      false,
+    );
   }
 
   final VerificationMeta _reviewMeta = const VerificationMeta('review');
@@ -2075,6 +2078,8 @@ class $ReviewTable extends Review with TableInfo<$ReviewTable, CustomerReview> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
     }
     if (data.containsKey('review')) {
       context.handle(_reviewMeta,
@@ -2106,7 +2111,7 @@ class $ReviewTable extends Review with TableInfo<$ReviewTable, CustomerReview> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => {id, customerId, providerId};
   @override
   CustomerReview map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;

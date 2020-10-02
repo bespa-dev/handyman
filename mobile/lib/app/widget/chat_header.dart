@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/domain/models/user.dart';
@@ -38,28 +39,36 @@ class ChatHeader extends StatelessWidget {
                 children: [
                   Text(
                     user?.user?.name ?? "No name",
-                    style: themeData.textTheme.headline6.copyWith(
-                      color: themeData.primaryColor,
-                    ),
+                    style: themeData.textTheme.headline6,
                   ),
                   SizedBox(height: getProportionateScreenHeight(kSpacingX4)),
                   Text(
                     user?.user?.business ??
                         user?.user?.email ??
                         "#unregistered",
-                    style: themeData.textTheme.caption.copyWith(
-                      color: themeData.primaryColor,
-                    ),
+                    style: themeData.textTheme.caption,
                   ),
                 ],
               ),
             ),
           ),
           IconButton(
-            icon: Icon(Entypo.dots_two_horizontal),
-            onPressed: () {
-              // TODO: Add action here
-            },
+            icon: Icon(Entypo.dots_three_horizontal),
+            onPressed: () => showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: Text("Oops..."),
+                content: Text(
+                    "Functionality currently not available. Grab a beverage and check back later!"),
+                actions: [
+                  ButtonClear(
+                    text: "Dismiss",
+                    onPressed: () => ctx.navigator.pop(),
+                    themeData: themeData,
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

@@ -2,12 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/pages/client/search.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/artisan_profile_info.dart';
+import 'package:handyman/app/widget/chat_input_entry.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
@@ -17,7 +17,6 @@ import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:provider/provider.dart';
 import 'package:random_color/random_color.dart';
-import 'package:intl/intl.dart';
 
 class ServiceProviderDetails extends StatefulWidget {
   final Artisan artisan;
@@ -33,6 +32,8 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
   bool _isBooked = false;
   ThemeData _themeData;
   final _apiService = sl.get<ApiProviderService>();
+  final _textController = TextEditingController();
+  final _focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -49,16 +50,6 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
 
             return Scaffold(
               key: _scaffoldKey,
-              // floatingActionButton: FloatingActionButton(
-              //   onPressed: () => context.navigator.push(
-              //     Routes.conversationPage,
-              //     arguments: ConversationPageArguments(
-              //       isCustomer: false,
-              //       recipient: artisan.id,
-              //     ),
-              //   ),
-              //   child: Icon(Icons.message_outlined),
-              // ),
               body: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -78,6 +69,9 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                       height: kHeight,
                       width: kWidth,
                       child: ListView(
+                        padding: EdgeInsets.only(
+                            bottom:
+                                getProportionateScreenHeight(kToolbarHeight)),
                         children: [
                           Stack(
                             children: [
@@ -205,6 +199,40 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                       ),
                     ),
                   ),
+                  Positioned(
+                    width: kWidth,
+                    bottom: kSpacingNone,
+                    child: Container(
+                      color: _themeData.scaffoldBackgroundColor,
+                      child: Column(
+                        children: [
+                          Divider(height: kSpacingNone),
+                          UserInputText(
+                            textController: _textController,
+                            keyboardShown: false,
+                            focusNode: _focusNode,
+                            onSubmit: (text) {
+                              debugPrint(text);
+                              _textController.clear();
+                              _apiService.sendReview(
+                                message: text,
+                                reviewer: provider.userId,
+                                artisan: artisan.id,
+                              );
+                            },
+                            onTextFieldFocused: (focused) {
+                              if (focused)
+                                FocusScope.of(context).requestFocus(_focusNode);
+                              else
+                                FocusScope.of(context).unfocus();
+                              setState(() {});
+                            },
+                            focusState: false,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             );
@@ -302,19 +330,34 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                         itemCount: snapshot.data.length,
                         separatorBuilder: (_, __) => SizedBox(
                             height: getProportionateScreenHeight(kSpacingX8)),
-                        itemBuilder: (_, index) => Material(
-                          type: MaterialType.card,
-                          elevation: 2,
-                          clipBehavior: Clip.hardEdge,
-                          child: Container(
-                            width: double.infinity,
-                            height: getProportionateScreenHeight(kSpacingX320),
-                            clipBehavior: Clip.hardEdge,
-                            decoration: BoxDecoration(
-                              color: _themeData.errorColor,
+                        itemBuilder: (_, index) {
+                          final data = snapshot.data[index];
+
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: kScaleDuration,
+                            child: SlideAnimation(
+                              verticalOffset: kSlideOffset,
+                              child: FadeInAnimation(
+                                child: Material(
+                                  type: MaterialType.card,
+                                  elevation: 2,
+                                  clipBehavior: Clip.hardEdge,
+                                  child: Container(
+                                    width: double.infinity,
+                                    height: getProportionateScreenHeight(
+                                        kSpacingX320),
+                                    clipBehavior: Clip.hardEdge,
+                                    decoration: BoxDecoration(
+                                      color: _themeData.errorColor,
+                                    ),
+                                    child: Text(data.review),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
                     );
             }),

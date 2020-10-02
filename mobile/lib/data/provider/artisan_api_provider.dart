@@ -10,6 +10,7 @@ import 'package:handyman/data/entities/customer_model.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:meta/meta.dart';
+import 'package:uuid/uuid.dart';
 
 /// API service for application
 class ApiProviderService {
@@ -98,4 +99,16 @@ class ApiProviderService {
       return Future.value(<BaseUser>[]);
     }
   }
+
+  /// Save [CustomerReview] in database
+  Future<void> sendReview({String message, String reviewer, artisan}) =>
+      _reviewDao.addItem(
+        CustomerReview(
+          id: Uuid().v4(),
+          review: message,
+          customerId: reviewer,
+          providerId: artisan,
+          createdAt: DateTime.now(),
+        ),
+      );
 }
