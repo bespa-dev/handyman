@@ -202,35 +202,60 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                   Positioned(
                     width: kWidth,
                     bottom: kSpacingNone,
-                    child: Container(
-                      color: _themeData.scaffoldBackgroundColor,
-                      child: Column(
-                        children: [
-                          Divider(height: kSpacingNone),
-                          UserInputText(
-                            textController: _textController,
-                            keyboardShown: false,
-                            focusNode: _focusNode,
-                            onSubmit: (text) {
-                              debugPrint(text);
-                              _textController.clear();
-                              _apiService.sendReview(
-                                message: text,
-                                reviewer: provider.userId,
-                                artisan: artisan.id,
-                              );
-                            },
-                            onTextFieldFocused: (focused) {
-                              if (focused)
-                                FocusScope.of(context).requestFocus(_focusNode);
-                              else
-                                FocusScope.of(context).unfocus();
-                              setState(() {});
-                            },
-                            focusState: false,
+                    child: Column(
+                      children: [
+                        _focusNode.hasFocus
+                            ? SizedBox.shrink()
+                            : InkWell(
+                                onTap: () => context.navigator.push(
+                                  Routes.requestBookingPage,
+                                  arguments: RequestBookingPageArguments(
+                                    artisan: artisan,
+                                  ),
+                                ),
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  height: kToolbarHeight,
+                                  color: _themeData.primaryColor,
+                                  width: kWidth,
+                                  child: Text(
+                                    "Book now".toUpperCase(),
+                                    style: _themeData.textTheme.button,
+                                  ),
+                                ),
+                              ),
+                        Container(
+                          color: _themeData.scaffoldBackgroundColor,
+                          child: Column(
+                            children: [
+                              Divider(height: kSpacingNone),
+                              UserInputText(
+                                textController: _textController,
+                                keyboardShown: false,
+                                focusNode: _focusNode,
+                                onSubmit: (text) {
+                                  debugPrint(text);
+                                  _textController.clear();
+                                  _apiService.sendReview(
+                                    message: text,
+                                    reviewer: provider.userId,
+                                    artisan: artisan.id,
+                                  );
+                                },
+                                onTextFieldFocused: (focused) {
+                                  if (focused)
+                                    FocusScope.of(context)
+                                        .requestFocus(_focusNode);
+                                  else
+                                    FocusScope.of(context).unfocus();
+                                  setState(() {});
+                                },
+                                focusState: false,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

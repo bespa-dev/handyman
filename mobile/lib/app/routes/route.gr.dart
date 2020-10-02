@@ -15,6 +15,7 @@ import '../pages/client/home.dart';
 import '../pages/client/profile.dart';
 import '../pages/client/provider_details.dart';
 import '../pages/client/providers.dart';
+import '../pages/client/request_booking.dart';
 import '../pages/conversation.dart';
 import '../pages/login.dart';
 import '../pages/onboarding.dart';
@@ -33,6 +34,7 @@ class Routes {
   static const String conversationPage = '/conversation-page';
   static const String homePage = '/home-page';
   static const String profilePage = '/profile-page';
+  static const String requestBookingPage = '/request-booking-page';
   static const String categoryProvidersPage = '/category-providers-page';
   static const String serviceProviderDetails = '/service-provider-details';
   static const String providerSettingsPage = '/provider-settings-page';
@@ -47,6 +49,7 @@ class Routes {
     conversationPage,
     homePage,
     profilePage,
+    requestBookingPage,
     categoryProvidersPage,
     serviceProviderDetails,
     providerSettingsPage,
@@ -67,6 +70,7 @@ class Router extends RouterBase {
     RouteDef(Routes.conversationPage, page: ConversationPage),
     RouteDef(Routes.homePage, page: HomePage),
     RouteDef(Routes.profilePage, page: ProfilePage),
+    RouteDef(Routes.requestBookingPage, page: RequestBookingPage),
     RouteDef(Routes.categoryProvidersPage, page: CategoryProvidersPage),
     RouteDef(Routes.serviceProviderDetails, page: ServiceProviderDetails),
     RouteDef(Routes.providerSettingsPage, page: ProviderSettingsPage),
@@ -136,6 +140,18 @@ class Router extends RouterBase {
         settings: data,
       );
     },
+    RequestBookingPage: (data) {
+      final args = data.getArgs<RequestBookingPageArguments>(
+        orElse: () => RequestBookingPageArguments(),
+      );
+      return buildAdaptivePageRoute<dynamic>(
+        builder: (context) => RequestBookingPage(
+          key: args.key,
+          artisan: args.artisan,
+        ),
+        settings: data,
+      );
+    },
     CategoryProvidersPage: (data) {
       final args = data.getArgs<CategoryProvidersPageArguments>(
         orElse: () => CategoryProvidersPageArguments(),
@@ -185,6 +201,13 @@ class ConversationPageArguments {
   final String recipient;
   final bool isCustomer;
   ConversationPageArguments({this.key, this.recipient, this.isCustomer});
+}
+
+/// RequestBookingPage arguments holder class
+class RequestBookingPageArguments {
+  final Key key;
+  final dynamic artisan;
+  RequestBookingPageArguments({this.key, this.artisan});
 }
 
 /// CategoryProvidersPage arguments holder class

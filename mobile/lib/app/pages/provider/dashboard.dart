@@ -60,7 +60,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   return Container(
                     child: Center(
                       child: Text(
-                        artisan?.name ?? "Quabynah Bilson",
+                        artisan?.name ?? "No name found",
                         style: themeData.textTheme.headline4,
                       ),
                     ),
