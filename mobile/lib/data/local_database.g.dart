@@ -2022,11 +2022,8 @@ class $ReviewTable extends Review with TableInfo<$ReviewTable, CustomerReview> {
   @override
   GeneratedTextColumn get review => _review ??= _constructReview();
   GeneratedTextColumn _constructReview() {
-    return GeneratedTextColumn(
-      'review',
-      $tableName,
-      false,
-    );
+    return GeneratedTextColumn('review', $tableName, false,
+        maxTextLength: 5000);
   }
 
   final VerificationMeta _customerIdMeta = const VerificationMeta('customerId');

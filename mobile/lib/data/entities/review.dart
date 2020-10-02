@@ -4,7 +4,7 @@ import 'package:moor/moor.dart';
 class Review extends Table {
   TextColumn get id => text()();
 
-  TextColumn get review => text()();
+  TextColumn get review => text().withLength(max: 5000)();
 
   TextColumn get customerId => text()();
 
