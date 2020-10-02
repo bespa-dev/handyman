@@ -57,40 +57,11 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onUpgrade: (m, from, to) async {
-          switch (from) {
-            case 1:
-              await m.addColumn(serviceProvider, serviceProvider.isAvailable);
-              break;
-            case 2:
-              await m.addColumn(user, user.createdAt);
-              break;
-            case 3:
-              await m.addColumn(categoryItem, categoryItem.artisans);
-              break;
-            case 4:
-              await m.createTable(photoGallery);
-              break;
-            case 5:
-              await m.addColumn(
-                  serviceProvider, serviceProvider.completedBookingsCount);
-              await m.addColumn(
-                  serviceProvider, serviceProvider.cancelledBookingsCount);
-              await m.addColumn(
-                  serviceProvider, serviceProvider.ongoingBookingsCount);
-              break;
-            case 6:
-              await m.addColumn(review, review.id);
-              break;
-            case 7:
-              await m.addColumn(review, review.review);
-              break;
-          }
-        },
+        onUpgrade: (m, from, to) async {},
         onCreate: (m) async {
           // Create all tables
           await m.createAll();
