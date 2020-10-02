@@ -150,16 +150,18 @@ class _ListCategoryCardItemState extends State<ListCategoryCardItem> {
                           CategoryProvidersPageArguments(category: category),
                     ),
                     leading: UserAvatar(
-                      tag: category.avatar,
                       url: category.avatar,
                       ringColor: themeData.scaffoldBackgroundColor,
                     ),
                     trailing: IconButton(
-                      icon: Icon(Icons.arrow_right_alt, color: themeData.iconTheme.color,),
+                      icon: Icon(
+                        Icons.arrow_right_alt,
+                        color: themeData.iconTheme.color,
+                      ),
                       onPressed: () => context.navigator.push(
                         Routes.categoryProvidersPage,
-                        arguments: CategoryProvidersPageArguments(
-                            category: category),
+                        arguments:
+                            CategoryProvidersPageArguments(category: category),
                       ),
                     ),
                     subtitle: Text(

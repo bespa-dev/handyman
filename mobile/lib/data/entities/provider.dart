@@ -32,6 +32,8 @@ class ServiceProvider extends Table {
 
   TextColumn get avatar => text().nullable()();
 
+  TextColumn get aboutMe => text().nullable().withLength(max: 5000)();
+
   RealColumn get price => real().withDefault(Constant(20.99))();
 
   RealColumn get rating => real().withDefault(Constant(3.5))();

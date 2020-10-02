@@ -10,6 +10,8 @@ class Review extends Table {
 
   TextColumn get providerId => text()();
 
+  RealColumn get rating => real().withDefault(Constant(1.5)).nullable()();
+
   DateTimeColumn get createdAt =>
       dateTime().withDefault(Constant(DateTime.now()))();
 

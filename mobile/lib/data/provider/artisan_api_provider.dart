@@ -111,4 +111,7 @@ class ApiProviderService {
           createdAt: DateTime.now(),
         ),
       );
+
+  Stream<ServiceCategory> getCategoryById({String id}) =>
+      _categoryDao.categoryById(id).watchSingle();
 }

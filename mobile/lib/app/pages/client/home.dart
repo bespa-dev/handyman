@@ -130,9 +130,6 @@ class _HomePageState extends State<HomePage> {
                                       id: provider.userId),
                                   builder: (context, snapshot) {
                                     return UserAvatar(
-                                      tag: snapshot.hasData
-                                          ? snapshot.data?.user?.avatar
-                                          : "",
                                       url: snapshot.hasData
                                           ? snapshot.data?.user?.avatar
                                           : "",

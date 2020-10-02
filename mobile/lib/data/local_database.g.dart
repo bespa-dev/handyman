@@ -22,6 +22,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
   final int cancelledBookingsCount;
   final int endWorkingHours;
   final String avatar;
+  final String aboutMe;
   final double price;
   final double rating;
   Artisan(
@@ -39,6 +40,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       @required this.cancelledBookingsCount,
       @required this.endWorkingHours,
       this.avatar,
+      this.aboutMe,
       @required this.price,
       @required this.rating});
   factory Artisan.fromData(Map<String, dynamic> data, GeneratedDatabase db,
@@ -75,6 +77,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           .mapFromDatabaseResponse(data['${effectivePrefix}end_working_hours']),
       avatar:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}avatar']),
+      aboutMe: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}about_me']),
       price:
           doubleType.mapFromDatabaseResponse(data['${effectivePrefix}price']),
       rating:
@@ -126,6 +130,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
     if (!nullToAbsent || avatar != null) {
       map['avatar'] = Variable<String>(avatar);
     }
+    if (!nullToAbsent || aboutMe != null) {
+      map['about_me'] = Variable<String>(aboutMe);
+    }
     if (!nullToAbsent || price != null) {
       map['price'] = Variable<double>(price);
     }
@@ -172,6 +179,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           : Value(endWorkingHours),
       avatar:
           avatar == null && nullToAbsent ? const Value.absent() : Value(avatar),
+      aboutMe: aboutMe == null && nullToAbsent
+          ? const Value.absent()
+          : Value(aboutMe),
       price:
           price == null && nullToAbsent ? const Value.absent() : Value(price),
       rating:
@@ -200,6 +210,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           serializer.fromJson<int>(json['cancelledBookingsCount']),
       endWorkingHours: serializer.fromJson<int>(json['endWorkingHours']),
       avatar: serializer.fromJson<String>(json['avatar']),
+      aboutMe: serializer.fromJson<String>(json['aboutMe']),
       price: serializer.fromJson<double>(json['price']),
       rating: serializer.fromJson<double>(json['rating']),
     );
@@ -222,6 +233,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       'cancelledBookingsCount': serializer.toJson<int>(cancelledBookingsCount),
       'endWorkingHours': serializer.toJson<int>(endWorkingHours),
       'avatar': serializer.toJson<String>(avatar),
+      'aboutMe': serializer.toJson<String>(aboutMe),
       'price': serializer.toJson<double>(price),
       'rating': serializer.toJson<double>(rating),
     };
@@ -242,6 +254,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           int cancelledBookingsCount,
           int endWorkingHours,
           String avatar,
+          String aboutMe,
           double price,
           double rating}) =>
       Artisan(
@@ -261,6 +274,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
             cancelledBookingsCount ?? this.cancelledBookingsCount,
         endWorkingHours: endWorkingHours ?? this.endWorkingHours,
         avatar: avatar ?? this.avatar,
+        aboutMe: aboutMe ?? this.aboutMe,
         price: price ?? this.price,
         rating: rating ?? this.rating,
       );
@@ -281,6 +295,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           ..write('cancelledBookingsCount: $cancelledBookingsCount, ')
           ..write('endWorkingHours: $endWorkingHours, ')
           ..write('avatar: $avatar, ')
+          ..write('aboutMe: $aboutMe, ')
           ..write('price: $price, ')
           ..write('rating: $rating')
           ..write(')'))
@@ -318,9 +333,12 @@ class Artisan extends DataClass implements Insertable<Artisan> {
                                                       $mrjc(
                                                           avatar.hashCode,
                                                           $mrjc(
-                                                              price.hashCode,
-                                                              rating
-                                                                  .hashCode))))))))))))))));
+                                                              aboutMe.hashCode,
+                                                              $mrjc(
+                                                                  price
+                                                                      .hashCode,
+                                                                  rating
+                                                                      .hashCode)))))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -339,6 +357,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           other.cancelledBookingsCount == this.cancelledBookingsCount &&
           other.endWorkingHours == this.endWorkingHours &&
           other.avatar == this.avatar &&
+          other.aboutMe == this.aboutMe &&
           other.price == this.price &&
           other.rating == this.rating);
 }
@@ -358,6 +377,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
   final Value<int> cancelledBookingsCount;
   final Value<int> endWorkingHours;
   final Value<String> avatar;
+  final Value<String> aboutMe;
   final Value<double> price;
   final Value<double> rating;
   const ServiceProviderCompanion({
@@ -375,6 +395,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     this.cancelledBookingsCount = const Value.absent(),
     this.endWorkingHours = const Value.absent(),
     this.avatar = const Value.absent(),
+    this.aboutMe = const Value.absent(),
     this.price = const Value.absent(),
     this.rating = const Value.absent(),
   });
@@ -393,6 +414,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     this.cancelledBookingsCount = const Value.absent(),
     this.endWorkingHours = const Value.absent(),
     this.avatar = const Value.absent(),
+    this.aboutMe = const Value.absent(),
     this.price = const Value.absent(),
     this.rating = const Value.absent(),
   })  : id = Value(id),
@@ -413,6 +435,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     Expression<int> cancelledBookingsCount,
     Expression<int> endWorkingHours,
     Expression<String> avatar,
+    Expression<String> aboutMe,
     Expression<double> price,
     Expression<double> rating,
   }) {
@@ -434,6 +457,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
         'cancelled_bookings_count': cancelledBookingsCount,
       if (endWorkingHours != null) 'end_working_hours': endWorkingHours,
       if (avatar != null) 'avatar': avatar,
+      if (aboutMe != null) 'about_me': aboutMe,
       if (price != null) 'price': price,
       if (rating != null) 'rating': rating,
     });
@@ -454,6 +478,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       Value<int> cancelledBookingsCount,
       Value<int> endWorkingHours,
       Value<String> avatar,
+      Value<String> aboutMe,
       Value<double> price,
       Value<double> rating}) {
     return ServiceProviderCompanion(
@@ -473,6 +498,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
           cancelledBookingsCount ?? this.cancelledBookingsCount,
       endWorkingHours: endWorkingHours ?? this.endWorkingHours,
       avatar: avatar ?? this.avatar,
+      aboutMe: aboutMe ?? this.aboutMe,
       price: price ?? this.price,
       rating: rating ?? this.rating,
     );
@@ -525,6 +551,9 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     if (avatar.present) {
       map['avatar'] = Variable<String>(avatar.value);
     }
+    if (aboutMe.present) {
+      map['about_me'] = Variable<String>(aboutMe.value);
+    }
     if (price.present) {
       map['price'] = Variable<double>(price.value);
     }
@@ -551,6 +580,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
           ..write('cancelledBookingsCount: $cancelledBookingsCount, ')
           ..write('endWorkingHours: $endWorkingHours, ')
           ..write('avatar: $avatar, ')
+          ..write('aboutMe: $aboutMe, ')
           ..write('price: $price, ')
           ..write('rating: $rating')
           ..write(')'))
@@ -721,6 +751,15 @@ class $ServiceProviderTable extends ServiceProvider
     );
   }
 
+  final VerificationMeta _aboutMeMeta = const VerificationMeta('aboutMe');
+  GeneratedTextColumn _aboutMe;
+  @override
+  GeneratedTextColumn get aboutMe => _aboutMe ??= _constructAboutMe();
+  GeneratedTextColumn _constructAboutMe() {
+    return GeneratedTextColumn('about_me', $tableName, true,
+        maxTextLength: 5000);
+  }
+
   final VerificationMeta _priceMeta = const VerificationMeta('price');
   GeneratedRealColumn _price;
   @override
@@ -755,6 +794,7 @@ class $ServiceProviderTable extends ServiceProvider
         cancelledBookingsCount,
         endWorkingHours,
         avatar,
+        aboutMe,
         price,
         rating
       ];
@@ -843,6 +883,10 @@ class $ServiceProviderTable extends ServiceProvider
     if (data.containsKey('avatar')) {
       context.handle(_avatarMeta,
           avatar.isAcceptableOrUnknown(data['avatar'], _avatarMeta));
+    }
+    if (data.containsKey('about_me')) {
+      context.handle(_aboutMeMeta,
+          aboutMe.isAcceptableOrUnknown(data['about_me'], _aboutMeMeta));
     }
     if (data.containsKey('price')) {
       context.handle(
@@ -1781,18 +1825,21 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
   final String review;
   final String customerId;
   final String providerId;
+  final double rating;
   final DateTime createdAt;
   CustomerReview(
       {@required this.id,
       @required this.review,
       @required this.customerId,
       @required this.providerId,
+      this.rating,
       @required this.createdAt});
   factory CustomerReview.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
+    final doubleType = db.typeSystem.forDartType<double>();
     final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return CustomerReview(
       id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
@@ -1802,6 +1849,8 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
           .mapFromDatabaseResponse(data['${effectivePrefix}customer_id']),
       providerId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}provider_id']),
+      rating:
+          doubleType.mapFromDatabaseResponse(data['${effectivePrefix}rating']),
       createdAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
     );
@@ -1821,6 +1870,9 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
     if (!nullToAbsent || providerId != null) {
       map['provider_id'] = Variable<String>(providerId);
     }
+    if (!nullToAbsent || rating != null) {
+      map['rating'] = Variable<double>(rating);
+    }
     if (!nullToAbsent || createdAt != null) {
       map['created_at'] = Variable<DateTime>(createdAt);
     }
@@ -1838,6 +1890,8 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
       providerId: providerId == null && nullToAbsent
           ? const Value.absent()
           : Value(providerId),
+      rating:
+          rating == null && nullToAbsent ? const Value.absent() : Value(rating),
       createdAt: createdAt == null && nullToAbsent
           ? const Value.absent()
           : Value(createdAt),
@@ -1852,6 +1906,7 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
       review: serializer.fromJson<String>(json['review']),
       customerId: serializer.fromJson<String>(json['customerId']),
       providerId: serializer.fromJson<String>(json['providerId']),
+      rating: serializer.fromJson<double>(json['rating']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -1863,6 +1918,7 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
       'review': serializer.toJson<String>(review),
       'customerId': serializer.toJson<String>(customerId),
       'providerId': serializer.toJson<String>(providerId),
+      'rating': serializer.toJson<double>(rating),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -1872,12 +1928,14 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
           String review,
           String customerId,
           String providerId,
+          double rating,
           DateTime createdAt}) =>
       CustomerReview(
         id: id ?? this.id,
         review: review ?? this.review,
         customerId: customerId ?? this.customerId,
         providerId: providerId ?? this.providerId,
+        rating: rating ?? this.rating,
         createdAt: createdAt ?? this.createdAt,
       );
   @override
@@ -1887,6 +1945,7 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
           ..write('review: $review, ')
           ..write('customerId: $customerId, ')
           ..write('providerId: $providerId, ')
+          ..write('rating: $rating, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -1897,8 +1956,10 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
       id.hashCode,
       $mrjc(
           review.hashCode,
-          $mrjc(customerId.hashCode,
-              $mrjc(providerId.hashCode, createdAt.hashCode)))));
+          $mrjc(
+              customerId.hashCode,
+              $mrjc(providerId.hashCode,
+                  $mrjc(rating.hashCode, createdAt.hashCode))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -1907,6 +1968,7 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
           other.review == this.review &&
           other.customerId == this.customerId &&
           other.providerId == this.providerId &&
+          other.rating == this.rating &&
           other.createdAt == this.createdAt);
 }
 
@@ -1915,12 +1977,14 @@ class ReviewCompanion extends UpdateCompanion<CustomerReview> {
   final Value<String> review;
   final Value<String> customerId;
   final Value<String> providerId;
+  final Value<double> rating;
   final Value<DateTime> createdAt;
   const ReviewCompanion({
     this.id = const Value.absent(),
     this.review = const Value.absent(),
     this.customerId = const Value.absent(),
     this.providerId = const Value.absent(),
+    this.rating = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
   ReviewCompanion.insert({
@@ -1928,6 +1992,7 @@ class ReviewCompanion extends UpdateCompanion<CustomerReview> {
     @required String review,
     @required String customerId,
     @required String providerId,
+    this.rating = const Value.absent(),
     this.createdAt = const Value.absent(),
   })  : id = Value(id),
         review = Value(review),
@@ -1938,6 +2003,7 @@ class ReviewCompanion extends UpdateCompanion<CustomerReview> {
     Expression<String> review,
     Expression<String> customerId,
     Expression<String> providerId,
+    Expression<double> rating,
     Expression<DateTime> createdAt,
   }) {
     return RawValuesInsertable({
@@ -1945,6 +2011,7 @@ class ReviewCompanion extends UpdateCompanion<CustomerReview> {
       if (review != null) 'review': review,
       if (customerId != null) 'customer_id': customerId,
       if (providerId != null) 'provider_id': providerId,
+      if (rating != null) 'rating': rating,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
@@ -1954,12 +2021,14 @@ class ReviewCompanion extends UpdateCompanion<CustomerReview> {
       Value<String> review,
       Value<String> customerId,
       Value<String> providerId,
+      Value<double> rating,
       Value<DateTime> createdAt}) {
     return ReviewCompanion(
       id: id ?? this.id,
       review: review ?? this.review,
       customerId: customerId ?? this.customerId,
       providerId: providerId ?? this.providerId,
+      rating: rating ?? this.rating,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -1979,6 +2048,9 @@ class ReviewCompanion extends UpdateCompanion<CustomerReview> {
     if (providerId.present) {
       map['provider_id'] = Variable<String>(providerId.value);
     }
+    if (rating.present) {
+      map['rating'] = Variable<double>(rating.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1992,6 +2064,7 @@ class ReviewCompanion extends UpdateCompanion<CustomerReview> {
           ..write('review: $review, ')
           ..write('customerId: $customerId, ')
           ..write('providerId: $providerId, ')
+          ..write('rating: $rating, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -2047,6 +2120,15 @@ class $ReviewTable extends Review with TableInfo<$ReviewTable, CustomerReview> {
     );
   }
 
+  final VerificationMeta _ratingMeta = const VerificationMeta('rating');
+  GeneratedRealColumn _rating;
+  @override
+  GeneratedRealColumn get rating => _rating ??= _constructRating();
+  GeneratedRealColumn _constructRating() {
+    return GeneratedRealColumn('rating', $tableName, true,
+        defaultValue: Constant(1.5));
+  }
+
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
   GeneratedDateTimeColumn _createdAt;
   @override
@@ -2058,7 +2140,7 @@ class $ReviewTable extends Review with TableInfo<$ReviewTable, CustomerReview> {
 
   @override
   List<GeneratedColumn> get $columns =>
-      [id, review, customerId, providerId, createdAt];
+      [id, review, customerId, providerId, rating, createdAt];
   @override
   $ReviewTable get asDslTable => this;
   @override
@@ -2096,6 +2178,10 @@ class $ReviewTable extends Review with TableInfo<$ReviewTable, CustomerReview> {
               data['provider_id'], _providerIdMeta));
     } else if (isInserting) {
       context.missing(_providerIdMeta);
+    }
+    if (data.containsKey('rating')) {
+      context.handle(_ratingMeta,
+          rating.isAcceptableOrUnknown(data['rating'], _ratingMeta));
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -2953,7 +3039,7 @@ mixin _$ReviewDaoMixin on DatabaseAccessor<LocalDatabase> {
   $ReviewTable get review => attachedDatabase.review;
   Selectable<CustomerReview> reviewsForProvider(String var1) {
     return customSelect(
-        'SELECT * FROM review WHERE customer_id = ? ORDER BY created_at DESC',
+        'SELECT * FROM review WHERE provider_id = ? ORDER BY created_at DESC',
         variables: [Variable.withString(var1)],
         readsFrom: {review}).map(review.mapFromRow);
   }

@@ -8,6 +8,7 @@ import 'package:handyman/app/pages/client/search.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/artisan_profile_info.dart';
 import 'package:handyman/app/widget/chat_input_entry.dart';
+import 'package:handyman/app/widget/review_card.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
@@ -86,73 +87,75 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                               Positioned(
                                 right:
                                     getProportionateScreenWidth(kSpacingNone),
-                                bottom:
-                                    getProportionateScreenHeight(kSpacingX84),
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  height:
-                                      getProportionateScreenHeight(kSpacingX48),
-                                  width:
-                                      getProportionateScreenWidth(kSpacingX72),
-                                  decoration: BoxDecoration(
-                                    color: _themeData.scaffoldBackgroundColor
-                                        .withOpacity(kOpacityX70),
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(kSpacingX16),
-                                      bottomLeft: Radius.circular(kSpacingX16),
-                                    ),
-                                  ),
-                                  child: IconButton(
-                                    icon: Icon(_isBooked
-                                        ? Entypo.heart
-                                        : Entypo.heart_outlined),
-                                    color: _isBooked
-                                        ? _themeData.errorColor
-                                        : _themeData.iconTheme.color,
-                                    onPressed: () {
-                                      _isBooked = !_isBooked;
-                                      setState(() {});
-                                    },
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                right:
-                                    getProportionateScreenWidth(kSpacingNone),
-                                bottom:
-                                    getProportionateScreenHeight(kSpacingX24),
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  height:
-                                      getProportionateScreenHeight(kSpacingX48),
-                                  width:
-                                      getProportionateScreenWidth(kSpacingX72),
-                                  decoration: BoxDecoration(
-                                    color: _themeData.scaffoldBackgroundColor
-                                        .withOpacity(kOpacityX70),
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(kSpacingX16),
-                                      bottomLeft: Radius.circular(kSpacingX16),
-                                    ),
-                                  ),
-                                  child: IconButton(
-                                    icon: Icon(Icons.message_outlined),
-                                    color: _themeData.iconTheme.color,
-                                    onPressed: () => context.navigator.push(
-                                      Routes.conversationPage,
-                                      arguments: ConversationPageArguments(
-                                        isCustomer: false,
-                                        recipient: artisan.id,
+                                top: kHeight * 0.1,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    InkWell(
+                                      onTap: () => context.navigator.push(
+                                        Routes.requestBookingPage,
+                                        arguments: RequestBookingPageArguments(
+                                          artisan: artisan,
+                                        ),
+                                      ),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        height: kToolbarHeight,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft:
+                                                Radius.circular(kSpacingX16),
+                                            bottomLeft:
+                                                Radius.circular(kSpacingX16),
+                                          ),
+                                          color: _themeData.primaryColor,
+                                        ),
+                                        width: kWidth * 0.25,
+                                        child: Text(
+                                          "Book now".toUpperCase(),
+                                          style: _themeData.textTheme.button,
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                    SizedBox(
+                                        height: getProportionateScreenHeight(
+                                            kSpacingX12)),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      height: getProportionateScreenHeight(
+                                          kSpacingX48),
+                                      width: getProportionateScreenWidth(
+                                          kSpacingX72),
+                                      decoration: BoxDecoration(
+                                        color: _themeData
+                                            .scaffoldBackgroundColor
+                                            .withOpacity(kOpacityX70),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(kSpacingX16),
+                                          bottomLeft:
+                                              Radius.circular(kSpacingX16),
+                                        ),
+                                      ),
+                                      child: IconButton(
+                                        icon: Icon(Icons.message_outlined),
+                                        color: _themeData.iconTheme.color,
+                                        onPressed: () => context.navigator.push(
+                                          Routes.conversationPage,
+                                          arguments: ConversationPageArguments(
+                                            isCustomer: false,
+                                            recipient: artisan.id,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                           _buildProfileTab(artisan),
                           _buildPhotoTab(provider.userId),
-                          _buildReviewTab(artisan),
+                          _buildReviewTab(artisan, provider.userId),
                         ],
                       ),
                     ),
@@ -202,60 +205,35 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                   Positioned(
                     width: kWidth,
                     bottom: kSpacingNone,
-                    child: Column(
-                      children: [
-                        _focusNode.hasFocus
-                            ? SizedBox.shrink()
-                            : InkWell(
-                                onTap: () => context.navigator.push(
-                                  Routes.requestBookingPage,
-                                  arguments: RequestBookingPageArguments(
-                                    artisan: artisan,
-                                  ),
-                                ),
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  height: kToolbarHeight,
-                                  color: _themeData.primaryColor,
-                                  width: kWidth,
-                                  child: Text(
-                                    "Book now".toUpperCase(),
-                                    style: _themeData.textTheme.button,
-                                  ),
-                                ),
-                              ),
-                        Container(
-                          color: _themeData.scaffoldBackgroundColor,
-                          child: Column(
-                            children: [
-                              Divider(height: kSpacingNone),
-                              UserInputText(
-                                textController: _textController,
-                                keyboardShown: false,
-                                focusNode: _focusNode,
-                                onSubmit: (text) {
-                                  debugPrint(text);
-                                  _textController.clear();
-                                  _apiService.sendReview(
-                                    message: text,
-                                    reviewer: provider.userId,
-                                    artisan: artisan.id,
-                                  );
-                                },
-                                onTextFieldFocused: (focused) {
-                                  if (focused)
-                                    FocusScope.of(context)
-                                        .requestFocus(_focusNode);
-                                  else
-                                    FocusScope.of(context).unfocus();
-                                  setState(() {});
-                                },
-                                focusState: false,
-                              ),
-                            ],
+                    child: Container(
+                      color: _themeData.scaffoldBackgroundColor,
+                      child: Column(
+                        children: [
+                          Divider(height: kSpacingNone),
+                          UserInputText(
+                            textController: _textController,
+                            keyboardShown: false,
+                            focusNode: _focusNode,
+                            onSubmit: (text) {
+                              debugPrint(text);
+                              _textController.clear();
+                              _apiService.sendReview(
+                                message: text,
+                                reviewer: provider.userId,
+                                artisan: artisan.id,
+                              );
+                            },
+                            onTextFieldFocused: (focused) {
+                              if (focused)
+                                FocusScope.of(context).requestFocus(_focusNode);
+                              else
+                                FocusScope.of(context).unfocus();
+                              setState(() {});
+                            },
+                            focusState: false,
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -342,7 +320,8 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
             }),
       );
 
-  Widget _buildReviewTab(Artisan artisan) => Consumer<PrefsProvider>(
+  Widget _buildReviewTab(Artisan artisan, String userId) =>
+      Consumer<PrefsProvider>(
         builder: (_, prefs, __) => StreamBuilder<List<CustomerReview>>(
             stream: _apiService.getReviews(artisan.id),
             initialData: [],
@@ -350,39 +329,40 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
               return snapshot.hasError || snapshot.data.isEmpty
                   ? SizedBox.shrink()
                   : AnimationLimiter(
-                      child: ListView.separated(
-                        physics: kScrollPhysics,
-                        itemCount: snapshot.data.length,
-                        separatorBuilder: (_, __) => SizedBox(
-                            height: getProportionateScreenHeight(kSpacingX8)),
-                        itemBuilder: (_, index) {
-                          final data = snapshot.data[index];
-
-                          return AnimationConfiguration.staggeredList(
-                            position: index,
-                            duration: kScaleDuration,
-                            child: SlideAnimation(
-                              verticalOffset: kSlideOffset,
-                              child: FadeInAnimation(
-                                child: Material(
-                                  type: MaterialType.card,
-                                  elevation: 2,
-                                  clipBehavior: Clip.hardEdge,
-                                  child: Container(
-                                    width: double.infinity,
-                                    height: getProportionateScreenHeight(
-                                        kSpacingX320),
-                                    clipBehavior: Clip.hardEdge,
-                                    decoration: BoxDecoration(
-                                      color: _themeData.errorColor,
-                                    ),
-                                    child: Text(data.review),
+                      child: AnimationConfiguration.synchronized(
+                        duration: kScaleDuration,
+                        child: Column(
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              color: _themeData.scaffoldBackgroundColor
+                                  .withOpacity(kOpacityX35),
+                              padding: EdgeInsets.symmetric(
+                                vertical:
+                                    getProportionateScreenHeight(kSpacingX16),
+                                horizontal:
+                                    getProportionateScreenWidth(kSpacingX24),
+                              ),
+                              child: Text(
+                                "Reviews",
+                                style: _themeData.textTheme.headline5,
+                                textAlign: TextAlign.start,
+                              ),
+                            ),
+                            ...snapshot.data.map(
+                              (data) => SlideAnimation(
+                                verticalOffset: kSlideOffset,
+                                child: FadeInAnimation(
+                                  child: CustomerReviewCard(
+                                    review: data,
+                                    apiService: _apiService,
+                                    userId: userId,
                                   ),
                                 ),
                               ),
                             ),
-                          );
-                        },
+                          ],
+                        ),
                       ),
                     );
             }),

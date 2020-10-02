@@ -21,6 +21,7 @@ const double kSpacingX64 = 64.0;
 const double kSpacingX72 = 72.0;
 const double kSpacingX84 = 84.0;
 const double kSpacingX96 = 96.0;
+const double kSpacingX100 = 100.0;
 const double kSpacingX120 = 120.0;
 const double kSpacingX200 = 200.0;
 const double kSpacingX230 = 230.0;

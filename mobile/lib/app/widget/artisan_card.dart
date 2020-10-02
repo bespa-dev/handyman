@@ -176,7 +176,6 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
             child: Row(
               children: [
                 UserAvatar(
-                  tag: widget.artisan?.user?.avatar,
                   url: widget.artisan?.user?.avatar,
                   ringColor: RandomColor(1)
                       .randomColor(colorBrightness: ColorBrightness.dark),

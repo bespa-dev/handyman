@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:geolocator/geolocator.dart';
@@ -328,9 +329,11 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
   Widget _buildMapPanel() => Container(
         height: kSpacingX320,
         child: GoogleMap(
+          myLocationEnabled: true,
+          liteModeEnabled: defaultTargetPlatform == TargetPlatform.android,
           initialCameraPosition: CameraPosition(
             target: _currentPosition ??= LatLng(5.1, -0.112),
-            zoom: 18.0,
+            zoom: 14.0,
           ),
           onTap: (address) {
             debugPrint("tapped on -> ${address.toString()}");

@@ -53,7 +53,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             Positioned.fill(
               child: PageView.builder(
                 itemCount: _titles.length,
-                physics: BouncingScrollPhysics(),
+                physics: kScrollPhysics,
                 onPageChanged: (newIndex) {
                   setState(() {
                     _currentPage = newIndex;

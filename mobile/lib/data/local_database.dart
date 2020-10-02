@@ -55,7 +55,7 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -91,6 +91,12 @@ class LocalDatabase extends _$LocalDatabase {
           switch (from) {
             case 1:
               await m.addColumn(serviceProvider, serviceProvider.business);
+              break;
+            case 2:
+              await m.addColumn(serviceProvider, serviceProvider.aboutMe);
+              break;
+            case 3:
+              await m.addColumn(review, review.rating);
               break;
           }
         },
@@ -170,7 +176,7 @@ class BookingDao extends DatabaseAccessor<LocalDatabase>
   tables: [Review],
   queries: {
     "reviewsForProvider":
-        "SELECT * FROM review WHERE customer_id = ? ORDER BY created_at DESC",
+        "SELECT * FROM review WHERE provider_id = ? ORDER BY created_at DESC",
     "reviewsForCustomerAndProvider":
         "SELECT * FROM review WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC"
   },

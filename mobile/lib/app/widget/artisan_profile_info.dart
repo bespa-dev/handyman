@@ -244,7 +244,7 @@ class ArtisanProfileInfo extends StatelessWidget {
                         ),
                         Expanded(
                           child: Text(
-                            kLoremText,
+                            artisan.aboutMe ?? kLoremText,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: _themeData.colorScheme.onPrimary,

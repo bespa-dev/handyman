@@ -7,7 +7,6 @@ import 'package:uuid/uuid.dart';
 
 class UserAvatar extends StatelessWidget {
   final String url;
-  final String tag;
   final Function onTap;
   final double radius;
   final Color ringColor;
@@ -18,7 +17,6 @@ class UserAvatar extends StatelessWidget {
     @required this.ringColor,
     this.onTap,
     this.radius = kSpacingX48,
-    this.tag,
   }) : super(key: key);
 
   @override
@@ -28,7 +26,7 @@ class UserAvatar extends StatelessWidget {
     return GestureDetector(
       onTap: onTap ?? null,
       child: Hero(
-        tag: tag ?? Uuid().v4(),
+        tag: Uuid().v4(),
         child: Container(
           height: radius,
           width: radius,
