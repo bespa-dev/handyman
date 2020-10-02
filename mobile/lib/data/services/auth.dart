@@ -51,6 +51,7 @@ class FirebaseAuthService implements AuthService {
           .collection(FirestoreUtils.kCustomerRef)
           .doc(user.uid)
           .set(customer.toJson());
+      await _database.customerDao.addCustomer(customer);
       final model = CustomerModel(customer: customer);
       _onProcessingStateChanged.sink.add(successState);
       _onAuthStateChanged.sink.add(model);
@@ -59,7 +60,7 @@ class FirebaseAuthService implements AuthService {
       final artisan = Artisan(
         id: user.uid,
         name: username,
-        business: null,
+        business: "",
         email: user.email,
         isCertified: false,
         isAvailable: false,
@@ -76,6 +77,7 @@ class FirebaseAuthService implements AuthService {
           .collection(FirestoreUtils.kArtisanRef)
           .doc(user.uid)
           .set(artisan.toJson());
+      await _database.providerDao.saveProvider(artisan);
       final model = ArtisanModel(artisan: artisan);
       _onProcessingStateChanged.sink.add(successState);
       _onAuthStateChanged.sink.add(model);
@@ -112,7 +114,8 @@ class FirebaseAuthService implements AuthService {
         final artisan = Artisan.fromJson(snapshot.data());
         await _database.providerDao.saveProvider(artisan);
         _onProcessingStateChanged.sink.add(successState);
-        final model = ArtisanModel(artisan: artisan);
+        final model = ArtisanModel(
+            artisan: artisan.copyWith(business: artisan.business ?? ""));
         _onAuthStateChanged.sink.add(model);
         return model;
       } else {

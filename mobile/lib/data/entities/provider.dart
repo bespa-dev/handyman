@@ -6,7 +6,7 @@ class ServiceProvider extends Table {
 
   TextColumn get name => text()();
 
-  TextColumn get business => text()();
+  TextColumn get business => text().nullable()();
 
   TextColumn get phone => text().nullable()();
 

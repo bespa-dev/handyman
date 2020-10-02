@@ -329,7 +329,7 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
         height: kSpacingX320,
         child: GoogleMap(
           initialCameraPosition: CameraPosition(
-            target: _currentPosition,
+            target: _currentPosition ??= LatLng(5.1, -0.112),
             zoom: 18.0,
           ),
           onTap: (address) {

@@ -5,7 +5,7 @@ import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 import 'constants.dart';
 
 /// Fonts
-final _kTitleFontFamily = GoogleFonts.playfairDisplay().fontFamily;
+final _kTitleFontFamily = GoogleFonts.raleway().fontFamily;
 final _kBodyFontFamily = GoogleFonts.rubik().fontFamily;
 
 /// Light theme

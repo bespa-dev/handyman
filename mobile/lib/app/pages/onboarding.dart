@@ -107,10 +107,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                               Text(
                                 _titles[index],
                                 textAlign: TextAlign.center,
-                                style: themeData.textTheme.headline4.copyWith(
-                                  fontFamily:
-                                      themeData.textTheme.bodyText1.fontFamily,
-                                ),
+                                style: themeData.textTheme.headline4,
                               ),
                               SizedBox(
                                   height: getProportionateScreenHeight(

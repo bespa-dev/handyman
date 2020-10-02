@@ -4,14 +4,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:handyman/data/entities/conversation.dart';
 import 'package:handyman/data/entities/gallery.dart';
-import 'package:handyman/domain/models/user.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-import 'entities/artisan_model.dart';
 import 'entities/booking.dart';
 import 'entities/category.dart';
 import 'entities/provider.dart';
@@ -57,7 +55,7 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -89,7 +87,13 @@ class LocalDatabase extends _$LocalDatabase {
             await customStatement('PRAGMA foreign_keys = ON');
           }
         },
-        onUpgrade: (m, from, to) async {},
+        onUpgrade: (m, from, to) async {
+          switch (from) {
+            case 1:
+              await m.addColumn(serviceProvider, serviceProvider.business);
+              break;
+          }
+        },
         onCreate: (m) async {
           // Create all tables
           return m.createAll();

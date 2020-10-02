@@ -27,7 +27,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
   Artisan(
       {@required this.id,
       @required this.name,
-      @required this.business,
+      this.business,
       this.phone,
       @required this.email,
       @required this.isCertified,
@@ -381,7 +381,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
   ServiceProviderCompanion.insert({
     @required String id,
     @required String name,
-    @required String business,
+    this.business = const Value.absent(),
     this.phone = const Value.absent(),
     @required String email,
     this.isCertified = const Value.absent(),
@@ -397,7 +397,6 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     this.rating = const Value.absent(),
   })  : id = Value(id),
         name = Value(name),
-        business = Value(business),
         email = Value(email);
   static Insertable<Artisan> custom({
     Expression<String> id,
@@ -596,7 +595,7 @@ class $ServiceProviderTable extends ServiceProvider
     return GeneratedTextColumn(
       'business',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -784,8 +783,6 @@ class $ServiceProviderTable extends ServiceProvider
     if (data.containsKey('business')) {
       context.handle(_businessMeta,
           business.isAcceptableOrUnknown(data['business'], _businessMeta));
-    } else if (isInserting) {
-      context.missing(_businessMeta);
     }
     if (data.containsKey('phone')) {
       context.handle(
