@@ -7,10 +7,11 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/pages/client/search.dart';
 import 'package:handyman/app/routes/route.gr.dart';
-import 'package:handyman/app/widget/user_avatar.dart';
+import 'package:handyman/app/widget/artisan_profile_info.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
+import 'package:handyman/data/entities/artisan_model.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:handyman/domain/models/user.dart';
@@ -33,9 +34,6 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
   ThemeData _themeData;
   final _apiService = sl.get<ApiProviderService>();
 
-  final _ringColor =
-      RandomColor().randomColor(colorBrightness: ColorBrightness.dark);
-
   @override
   Widget build(BuildContext context) {
     _themeData = Theme.of(context);
@@ -43,140 +41,174 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
     final kWidth = MediaQuery.of(context).size.width;
 
     return Consumer<PrefsProvider>(
-      builder: (_, provider, __) => Scaffold(
-        key: _scaffoldKey,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => context.navigator.push(
-            Routes.conversationPage,
-            arguments: ConversationPageArguments(
-              isCustomer: false,
-              recipient: widget.artisan.id,
-            ),
-          ),
-          child: Icon(Icons.message_outlined),
-        ),
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            provider.isLightTheme
-                ? Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(kBackgroundAsset),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  )
-                : SizedBox.shrink(),
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Container(
-                  height: kHeight,
-                  width: kWidth,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Stack(
-                        children: [
-                          Container(
-                            height: kHeight * 0.4,
-                            width: kWidth,
-                            child: CachedNetworkImage(
-                              imageUrl: widget.artisan.avatar,
+      builder: (_, provider, __) => StreamBuilder<BaseUser>(
+          stream: _apiService.getArtisanById(id: widget.artisan.id),
+          initialData: ArtisanModel(artisan: widget.artisan),
+          builder: (context, snapshot) {
+            final artisan = snapshot.data.user;
+
+            return Scaffold(
+              key: _scaffoldKey,
+              // floatingActionButton: FloatingActionButton(
+              //   onPressed: () => context.navigator.push(
+              //     Routes.conversationPage,
+              //     arguments: ConversationPageArguments(
+              //       isCustomer: false,
+              //       recipient: artisan.id,
+              //     ),
+              //   ),
+              //   child: Icon(Icons.message_outlined),
+              // ),
+              body: Stack(
+                fit: StackFit.expand,
+                children: [
+                  provider.isLightTheme
+                      ? Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(kBackgroundAsset),
                               fit: BoxFit.cover,
                             ),
                           ),
-                          Positioned(
-                            right: getProportionateScreenWidth(kSpacingNone),
-                            bottom: getProportionateScreenHeight(kSpacingX24),
-                            child: Container(
-                              alignment: Alignment.center,
-                              height: getProportionateScreenHeight(kSpacingX48),
-                              width: getProportionateScreenWidth(kSpacingX72),
-                              decoration: BoxDecoration(
-                                color: _themeData.scaffoldBackgroundColor
-                                    .withOpacity(kOpacityX70),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(kSpacingX16),
-                                  bottomLeft: Radius.circular(kSpacingX16),
+                        )
+                      : SizedBox.shrink(),
+                  SafeArea(
+                    child: AnimatedContainer(
+                      duration: kScaleDuration,
+                      height: kHeight,
+                      width: kWidth,
+                      child: ListView(
+                        children: [
+                          Stack(
+                            children: [
+                              Container(
+                                height: kHeight * 0.4,
+                                width: kWidth,
+                                child: CachedNetworkImage(
+                                  imageUrl: artisan.avatar,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                              child: IconButton(
-                                icon: Icon(_isBooked
-                                    ? Entypo.heart
-                                    : Entypo.heart_outlined),
-                                iconSize: kSpacingX36,
-                                color: _isBooked
-                                    ? _themeData.errorColor
-                                    : _themeData.iconTheme.color,
-                                onPressed: () {
-                                  _isBooked = !_isBooked;
-                                  setState(() {});
-                                },
+                              Positioned(
+                                right:
+                                    getProportionateScreenWidth(kSpacingNone),
+                                bottom:
+                                    getProportionateScreenHeight(kSpacingX84),
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  height:
+                                      getProportionateScreenHeight(kSpacingX48),
+                                  width:
+                                      getProportionateScreenWidth(kSpacingX72),
+                                  decoration: BoxDecoration(
+                                    color: _themeData.scaffoldBackgroundColor
+                                        .withOpacity(kOpacityX70),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(kSpacingX16),
+                                      bottomLeft: Radius.circular(kSpacingX16),
+                                    ),
+                                  ),
+                                  child: IconButton(
+                                    icon: Icon(_isBooked
+                                        ? Entypo.heart
+                                        : Entypo.heart_outlined),
+                                    color: _isBooked
+                                        ? _themeData.errorColor
+                                        : _themeData.iconTheme.color,
+                                    onPressed: () {
+                                      _isBooked = !_isBooked;
+                                      setState(() {});
+                                    },
+                                  ),
+                                ),
                               ),
-                            ),
+                              Positioned(
+                                right:
+                                    getProportionateScreenWidth(kSpacingNone),
+                                bottom:
+                                    getProportionateScreenHeight(kSpacingX24),
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  height:
+                                      getProportionateScreenHeight(kSpacingX48),
+                                  width:
+                                      getProportionateScreenWidth(kSpacingX72),
+                                  decoration: BoxDecoration(
+                                    color: _themeData.scaffoldBackgroundColor
+                                        .withOpacity(kOpacityX70),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(kSpacingX16),
+                                      bottomLeft: Radius.circular(kSpacingX16),
+                                    ),
+                                  ),
+                                  child: IconButton(
+                                    icon: Icon(Icons.message_outlined),
+                                    color: _themeData.iconTheme.color,
+                                    onPressed: () => context.navigator.push(
+                                      Routes.conversationPage,
+                                      arguments: ConversationPageArguments(
+                                        isCustomer: false,
+                                        recipient: artisan.id,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+                          _buildProfileTab(artisan),
+                          _buildPhotoTab(provider.userId),
+                          _buildReviewTab(artisan),
                         ],
                       ),
-                      Expanded(
-                        child: _buildProfileTab(),
-                      ),
-                      // Expanded(
-                      //   child: _buildPhotoTab(provider.userId),
-                      // ),
-                      // Expanded(
-                      //   child: _buildReviewTab(),
-                      // ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: kSpacingNone,
-              width: kWidth,
-              child: SafeArea(
-                child: Container(
-                  width: kWidth,
-                  height: kToolbarHeight,
-                  color: _themeData.scaffoldBackgroundColor
-                      .withOpacity(kOpacityX70),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: Icon(Feather.x),
-                        onPressed: () => context.navigator.pop(),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            tooltip: "Search",
-                            icon: Icon(Feather.search),
-                            onPressed: () => showSearch(
-                              context: context,
-                              delegate: SearchPage(),
+                  Positioned(
+                    top: kSpacingNone,
+                    width: kWidth,
+                    child: SafeArea(
+                      child: Container(
+                        width: kWidth,
+                        height: kToolbarHeight,
+                        color: _themeData.scaffoldBackgroundColor
+                            .withOpacity(kOpacityX90),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              icon: Icon(Feather.x),
+                              onPressed: () => context.navigator.pop(),
                             ),
-                          ),
-                          IconButton(
-                            tooltip: "Toggle theme",
-                            icon: Icon(provider.isLightTheme
-                                ? Feather.moon
-                                : Feather.sun),
-                            onPressed: () => provider.toggleTheme(),
-                          ),
-                        ],
-                      )
-                    ],
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  tooltip: "Search",
+                                  icon: Icon(Feather.search),
+                                  onPressed: () => showSearch(
+                                    context: context,
+                                    delegate: SearchPage(),
+                                  ),
+                                ),
+                                IconButton(
+                                  tooltip: "Toggle theme",
+                                  icon: Icon(provider.isLightTheme
+                                      ? Feather.moon
+                                      : Feather.sun),
+                                  onPressed: () => provider.toggleTheme(),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ),
-          ],
-        ),
-      ),
+            );
+          }),
     );
   }
 
@@ -191,16 +223,18 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
         ),
         child: StreamBuilder<List<Gallery>>(
             stream: _apiService.getPhotosForUser(userId),
+            initialData: [],
             builder: (context, snapshot) {
               if (snapshot.hasError || snapshot.data.isEmpty)
                 return Container(
                   width: double.infinity,
+                  height: getProportionateScreenHeight(kSpacingX230),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         Entypo.images,
-                        size: getProportionateScreenHeight(kSpacingX64),
+                        size: getProportionateScreenHeight(kSpacingX72),
                       ),
                       SizedBox(
                           height: getProportionateScreenHeight(kSpacingX16)),
@@ -255,271 +289,37 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
             }),
       );
 
-  Widget _buildReviewTab() => Consumer<PrefsProvider>(
+  Widget _buildReviewTab(Artisan artisan) => Consumer<PrefsProvider>(
         builder: (_, prefs, __) => StreamBuilder<List<CustomerReview>>(
-            stream: _apiService.getReviews(widget.artisan.id),
+            stream: _apiService.getReviews(artisan.id),
+            initialData: [],
             builder: (context, snapshot) {
-              return Material(
-                type: MaterialType.card,
-                elevation: 2,
-                clipBehavior: Clip.hardEdge,
-                child: Container(
-                  clipBehavior: Clip.hardEdge,
-                  decoration: BoxDecoration(
-                    color: _themeData.cardColor,
-                  ),
-                ),
-              );
+              return snapshot.hasError || snapshot.data.isEmpty
+                  ? SizedBox.shrink()
+                  : AnimationLimiter(
+                      child: ListView.separated(
+                        physics: kScrollPhysics,
+                        itemCount: snapshot.data.length,
+                        separatorBuilder: (_, __) => SizedBox(
+                            height: getProportionateScreenHeight(kSpacingX8)),
+                        itemBuilder: (_, index) => Material(
+                          type: MaterialType.card,
+                          elevation: 2,
+                          clipBehavior: Clip.hardEdge,
+                          child: Container(
+                            width: double.infinity,
+                            height: getProportionateScreenHeight(kSpacingX320),
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(
+                              color: _themeData.errorColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
             }),
       );
 
-  Widget _buildProfileTab() => Consumer<PrefsProvider>(
-        builder: (_, prefs, __) => StreamBuilder<BaseUser>(
-            stream: _apiService.getArtisanById(id: widget.artisan.id),
-            builder: (context, snapshot) {
-              return Material(
-                type: MaterialType.card,
-                elevation: 2,
-                clipBehavior: Clip.hardEdge,
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: getProportionateScreenWidth(kSpacingX16),
-                          vertical: getProportionateScreenHeight(kSpacingX12)),
-                      decoration: BoxDecoration(color: _themeData.cardColor),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    widget.artisan.name,
-                                    style: _themeData.textTheme.headline4,
-                                  ),
-                                  SizedBox(
-                                    height: getProportionateScreenHeight(
-                                        kSpacingX4),
-                                  ),
-                                  Text(
-                                    widget.artisan.business,
-                                    style: _themeData.textTheme.bodyText2,
-                                  ),
-                                  SizedBox(
-                                    height: getProportionateScreenHeight(
-                                        kSpacingX8),
-                                  ),
-                                  RichText(
-                                    textAlign: TextAlign.start,
-                                    text: TextSpan(
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text: "Available: ",
-                                          style: _themeData.textTheme.bodyText1
-                                              .copyWith(
-                                            color: _themeData.primaryColor,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text:
-                                              "${DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(widget.artisan.startWorkingHours))} - ",
-                                          style: _themeData.textTheme.bodyText2,
-                                        ),
-                                        TextSpan(
-                                          text: DateFormat.jm().format(DateTime
-                                              .fromMillisecondsSinceEpoch(widget
-                                                  .artisan.endWorkingHours)),
-                                          style: _themeData.textTheme.bodyText2,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.all(kSpacingX8),
-                                    decoration: BoxDecoration(
-                                      color: _themeData.primaryColor
-                                          .withOpacity(kOpacityX90),
-                                      borderRadius:
-                                          BorderRadius.circular(kSpacingX8),
-                                    ),
-                                    child: Text(
-                                      widget.artisan.rating.toString(),
-                                      style: _themeData.textTheme.bodyText1
-                                          .copyWith(
-                                        color: _themeData.colorScheme.onPrimary,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: getProportionateScreenHeight(
-                                        kSpacingX4),
-                                  ),
-                                  RatingBarIndicator(
-                                    rating: widget.artisan.rating,
-                                    itemBuilder: (_, index) => Icon(
-                                      Icons.star,
-                                      color: kAmberColor,
-                                    ),
-                                    itemCount: 5,
-                                    itemSize: kSpacingX16,
-                                    direction: Axis.horizontal,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                              height: getProportionateScreenHeight(kSpacingX8)),
-                          Divider(height: kSpacingX12, endIndent: kSpacingX24),
-                          SizedBox(
-                              height: getProportionateScreenHeight(kSpacingX8)),
-                          // SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    widget.artisan.completedBookingsCount
-                                        .toString(),
-                                    style:
-                                        _themeData.textTheme.headline5.copyWith(
-                                      color: _themeData.primaryColor,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: getProportionateScreenHeight(
-                                        kSpacingX4),
-                                  ),
-                                  Text(
-                                    "Ongoing",
-                                    style: _themeData.textTheme.bodyText2,
-                                  ),
-                                ],
-                              ),
-                              Container(
-                                height:
-                                    getProportionateScreenHeight(kSpacingX8),
-                                width: getProportionateScreenWidth(kSpacingX8),
-                                decoration: BoxDecoration(
-                                  color: _themeData.primaryColor,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    widget.artisan.ongoingBookingsCount
-                                        .toString(),
-                                    style: _themeData.textTheme.headline5
-                                        .copyWith(color: kGreenColor),
-                                  ),
-                                  SizedBox(
-                                    height: getProportionateScreenHeight(
-                                        kSpacingX4),
-                                  ),
-                                  Text(
-                                    "Completed",
-                                    style: _themeData.textTheme.bodyText2,
-                                  ),
-                                ],
-                              ),
-                              Container(
-                                height:
-                                    getProportionateScreenHeight(kSpacingX8),
-                                width: getProportionateScreenWidth(kSpacingX8),
-                                decoration: BoxDecoration(
-                                  color: _themeData.primaryColor,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    widget.artisan.cancelledBookingsCount
-                                        .toString(),
-                                    style:
-                                        _themeData.textTheme.headline5.copyWith(
-                                      color: _themeData.errorColor
-                                          .withOpacity(kOpacityX70),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: getProportionateScreenHeight(
-                                        kSpacingX4),
-                                  ),
-                                  Text(
-                                    "Cancelled",
-                                    style: _themeData.textTheme.bodyText2,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: getProportionateScreenHeight(kSpacingX16),
-                        horizontal: getProportionateScreenWidth(kSpacingX24),
-                      ),
-                      decoration: BoxDecoration(
-                        color: _themeData.primaryColor.withOpacity(kOpacityX90),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          RotatedBox(
-                            quarterTurns: 2,
-                            child: Container(
-                              alignment: Alignment.topCenter,
-                              child: Icon(
-                                Icons.format_quote_outlined,
-                                size: _themeData.textTheme.headline4.fontSize,
-                                color: _themeData.colorScheme.onPrimary,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              kLoremText,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: _themeData.colorScheme.onPrimary,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.topCenter,
-                            child: Icon(
-                              Icons.format_quote_outlined,
-                              size: _themeData.textTheme.headline4.fontSize,
-                              color: _themeData.colorScheme.onPrimary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }),
-      );
+  Widget _buildProfileTab(Artisan artisan) =>
+      ArtisanProfileInfo(artisan: artisan, apiService: _apiService);
 }

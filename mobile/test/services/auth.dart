@@ -39,6 +39,10 @@ class MockAuthService implements AuthService {
       endWorkingHours: 20,
       price: 45.99,
       rating: 3.5,
+      cancelledBookingsCount: 12,
+      completedBookingsCount: 23,
+      ongoingBookingsCount: 33,
+      phone: "+233123456789",
     ),
   );
 

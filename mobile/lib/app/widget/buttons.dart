@@ -169,7 +169,8 @@ class ButtonPrimary extends StatelessWidget {
             Text(
               label.toUpperCase(),
               style: themeData.textTheme.button.copyWith(
-                  color: textColor ?? kWhiteColor),
+                color: textColor ?? themeData.colorScheme.onSecondary,
+              ),
             ),
             icon != null && gravity == ButtonIconGravity.END
                 ? _buildIcon(icon)
@@ -181,13 +182,13 @@ class ButtonPrimary extends StatelessWidget {
   }
 
   Widget _buildIcon(icon) => Padding(
-    padding: EdgeInsets.symmetric(
-        horizontal: getProportionateScreenWidth(kSpacingX16)),
-    child: Icon(
-      icon,
-      color: enabled ? themeData.primaryColor : themeData.disabledColor,
-    ),
-  );
+        padding: EdgeInsets.symmetric(
+            horizontal: getProportionateScreenWidth(kSpacingX16)),
+        child: Icon(
+          icon,
+          color: enabled ? themeData.primaryColor : themeData.disabledColor,
+        ),
+      );
 }
 
 class ButtonClear extends FlatButton {
