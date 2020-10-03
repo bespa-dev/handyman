@@ -3,8 +3,10 @@ import 'package:moor/moor.dart';
 class Bookings extends Table {
   IntColumn get id => integer().autoIncrement()();
 
+  @JsonKey("customer_id")
   TextColumn get customerId => text()();
 
+  @JsonKey("provider_id")
   TextColumn get providerId => text()();
   TextColumn get description => text()
       .nullable()
@@ -24,6 +26,8 @@ class Bookings extends Table {
   @JsonKey("created_at")
   IntColumn get createdAt =>
       integer().withDefault(Constant(DateTime.now().millisecondsSinceEpoch))();
+
+  @JsonKey("due_date")
   IntColumn get dueDate => integer().withDefault(
       Constant(DateTime.now().millisecondsSinceEpoch + 430000000))();
 }

@@ -8,6 +8,7 @@ class CategoryItem extends Table {
 
   TextColumn get avatar => text()();
 
+  @JsonKey("group_name")
   IntColumn get groupName =>
       integer().named("groupName").withDefault(Constant(0))();
 

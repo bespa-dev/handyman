@@ -48,8 +48,10 @@ class ApiProviderService {
     // Listen for changes in the snapshot
     snapshots.listen((event) {
       event.docs.forEach((element) async {
-        final artisan = Artisan.fromJson(element.data());
-        await _userDao.saveProvider(ArtisanModel(artisan: artisan));
+        if (element.exists) {
+          final artisan = Artisan.fromJson(element.data());
+          await _userDao.saveProvider(ArtisanModel(artisan: artisan));
+        }
       });
     });
     // await _providerDao.addProviders(results);
@@ -67,9 +69,11 @@ class ApiProviderService {
         .doc(id)
         .snapshots(includeMetadataChanges: true);
     snapshots.listen((event) async {
-      final artisanModel =
-          ArtisanModel(artisan: Artisan.fromJson(event.data()));
-      await _userDao.saveProvider(artisanModel);
+      if (event.exists) {
+        final artisanModel =
+            ArtisanModel(artisan: Artisan.fromJson(event.data()));
+        await _userDao.saveProvider(artisanModel);
+      }
     });
   }
 
@@ -81,6 +85,7 @@ class ApiProviderService {
         .set(conversation.toJson());
   }
 
+  // FIXME: Messages only return sender's chat'
   Stream<List<Conversation>> getConversation(
       {@required String sender, @required String recipient}) async* {
     final localSource = _messageDao.conversationWithRecipient(
@@ -95,43 +100,145 @@ class ApiProviderService {
 
     snapshots.listen((event) {
       event.docs.forEach((element) async {
-        await _messageDao.sendMessage(Conversation.fromJson(element.data()));
+        if (element.exists)
+          await _messageDao.sendMessage(Conversation.fromJson(element.data()));
       });
     });
   }
 
   /// Get [Customer] by [id]
-  Stream<BaseUser> getCustomerById({@required String id}) => _userDao
-      .customerById(id)
-      .watchSingle()
-      .map((customer) => CustomerModel(customer: customer));
+  Stream<BaseUser> getCustomerById({@required String id}) async* {
+    var localSource = _userDao
+        .customerById(id)
+        .watchSingle()
+        .map((customer) => CustomerModel(customer: customer));
+
+    yield* localSource;
+
+    var snapshots = _firestore
+        .collection(FirestoreUtils.kCustomerRef)
+        .doc(id)
+        .snapshots(includeMetadataChanges: true);
+    snapshots.listen((event) async {
+      if (event.exists)
+        await _userDao.addCustomer(
+          CustomerModel(
+            customer: Customer.fromJson(event.data()),
+          ),
+        );
+    });
+  }
 
   /// Get all [ServiceCategory] from data source
   Stream<List<ServiceCategory>> getCategories({
     CategoryGroup categoryGroup = CategoryGroup.FEATURED,
-  }) =>
-      _categoryDao.categoryByGroup(categoryGroup.index).watch();
+  }) async* {
+    final localSource =
+        _categoryDao.categoryByGroup(categoryGroup.index).watch();
+    yield* localSource;
 
-  Stream<List<CustomerReview>> getReviews(String id) =>
-      _reviewDao.reviewsForProvider(id).watch();
+    var snapshots = _firestore
+        .collection(FirestoreUtils.kCategoriesRef)
+        .where("group_name", isEqualTo: categoryGroup.index)
+        .snapshots(includeMetadataChanges: true);
 
-  Stream<List<Booking>> getMyBookings(String id) =>
-      _bookingDao.bookingsForCustomer(id).watch();
+    snapshots.listen((event) {
+      event.docs.forEach((element) async {
+        if (element.exists)
+          await _categoryDao
+              .addSingleItem(ServiceCategory.fromJson(element.data()));
+      });
+    });
+  }
 
-  Stream<List<Booking>> getBookingsForProvider(String id) =>
-      _bookingDao.bookingsForProvider(id).watch();
+  Stream<List<CustomerReview>> getReviewsForProvider(String id) async* {
+    final localSource = _reviewDao.reviewsForProvider(id).watch();
+    yield* localSource;
 
-  Stream<List<Booking>> getBookingsForCustomer(String id) =>
-      _bookingDao.bookingsForCustomer(id).watch();
+    var snapshots = _firestore
+        .collection(FirestoreUtils.kReviewsRef)
+        .where("provider_id", isEqualTo: id)
+        .snapshots(includeMetadataChanges: true);
+
+    snapshots.listen((event) {
+      event.docs.forEach((element) async {
+        if (element.exists)
+          await _reviewDao.addItem(CustomerReview.fromJson(element.data()));
+      });
+    });
+  }
+
+  Stream<List<Booking>> getBookingsForProvider(String id) async* {
+    final localSource = _bookingDao.bookingsForProvider(id).watch();
+    yield* localSource;
+
+    var snapshots = _firestore
+        .collection(FirestoreUtils.kBookingsRef)
+        .where("provider_id", isEqualTo: id)
+        .snapshots(includeMetadataChanges: true);
+
+    snapshots.listen((event) {
+      event.docs.forEach((element) async {
+        if (element.exists)
+          await _bookingDao.addItem(Booking.fromJson(element.data()));
+      });
+    });
+  }
+
+  Stream<List<Booking>> getBookingsForCustomer(String id) async* {
+    final localSource = _bookingDao.bookingsForCustomer(id).watch();
+    yield* localSource;
+
+    var snapshots = _firestore
+        .collection(FirestoreUtils.kBookingsRef)
+        .where("customer_id", isEqualTo: id)
+        .snapshots(includeMetadataChanges: true);
+
+    snapshots.listen((event) {
+      event.docs.forEach((element) async {
+        if (element.exists)
+          await _bookingDao.addItem(Booking.fromJson(element.data()));
+      });
+    });
+  }
 
   Stream<List<Booking>> bookingsForCustomerAndProvider(
-          String customerId, String providerId) =>
-      _bookingDao
-          .bookingsForCustomerAndProvider(customerId, providerId)
-          .watch();
+      String customerId, String providerId) async* {
+    final localSource = _bookingDao
+        .bookingsForCustomerAndProvider(customerId, providerId)
+        .watch();
+    yield* localSource;
 
-  Stream<List<Gallery>> getPhotosForUser(String userId) =>
-      _galleryDao.photosForUser(userId).watch();
+    var snapshots = _firestore
+        .collection(FirestoreUtils.kBookingsRef)
+        .where("customer_id", isEqualTo: customerId)
+        .where("provider_id", isEqualTo: providerId)
+        .snapshots(includeMetadataChanges: true);
+
+    snapshots.listen((event) {
+      event.docs.forEach((element) async {
+        if (element.exists)
+          await _bookingDao.addItem(Booking.fromJson(element.data()));
+      });
+    });
+  }
+
+  Stream<List<Gallery>> getPhotosForUser(String userId) async* {
+    final localSource = _galleryDao.photosForUser(userId).watch();
+    yield* localSource;
+
+    var snapshots = _firestore
+        .collection(FirestoreUtils.kGalleryRef)
+        .where("user_id", isEqualTo: userId)
+        .snapshots(includeMetadataChanges: true);
+
+    snapshots.listen((event) {
+      event.docs.forEach((element) async {
+        if (element.exists)
+          await _galleryDao.addPhoto(Gallery.fromJson(element.data()));
+      });
+    });
+  }
 
   /// Performs a search for [Artisan]s in [Algolia]
   Future<List<BaseUser>> searchFor(
@@ -161,18 +268,34 @@ class ApiProviderService {
   }
 
   /// Save [CustomerReview] in database
-  Future<void> sendReview({String message, String reviewer, artisan}) =>
-      _reviewDao.addItem(
-        CustomerReview(
-          id: Uuid().v4(),
-          review: message,
-          customerId: reviewer,
-          providerId: artisan,
-          createdAt: DateTime.now(),
-        ),
-      );
+  Future<void> sendReview({String message, String reviewer, artisan}) async {
+    final review = CustomerReview(
+      id: Uuid().v4(),
+      review: message,
+      customerId: reviewer,
+      providerId: artisan,
+      createdAt: DateTime.now(),
+    );
+    await _reviewDao.addItem(review);
+    await _firestore
+        .collection(FirestoreUtils.kReviewsRef)
+        .doc(review.id)
+        .set(review.toJson());
+  }
 
   /// Fetch [ServiceCategory] by [id]
-  Stream<ServiceCategory> getCategoryById({String id}) =>
-      _categoryDao.categoryById(id).watchSingle();
+  Stream<ServiceCategory> getCategoryById({String id}) async* {
+    final localSource = _categoryDao.categoryById(id).watchSingle();
+    yield* localSource;
+
+    var snapshots = _firestore
+        .collection(FirestoreUtils.kCategoriesRef)
+        .doc(id)
+        .snapshots(includeMetadataChanges: true);
+
+    snapshots.listen((event) async {
+      if (event.exists)
+        await _galleryDao.addPhoto(Gallery.fromJson(event.data()));
+    });
+  }
 }

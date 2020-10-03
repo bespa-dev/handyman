@@ -108,9 +108,17 @@ class _DashboardPageState extends State<DashboardPage> {
                                   ),
                                 ),
                                 _buildSearchBar(),
-                                _currentTabIndex == 0
-                                    ? _buildOngoingTasksWidget(artisan)
-                                    : _buildRequestsWidget(artisan),
+                                StreamBuilder<List<Booking>>(
+                                  stream: _apiService
+                                      .getBookingsForProvider(artisan?.id),
+                                  initialData: [],
+                                  builder: (_, snapshot) {
+                                    return _currentTabIndex == 0
+                                        ? _buildOngoingTasksWidget(
+                                            snapshot.data)
+                                        : _buildRequestsWidget(snapshot.data);
+                                  },
+                                ),
                               ],
                             );
                           }),
@@ -355,54 +363,37 @@ class _DashboardPageState extends State<DashboardPage> {
       );
 
   /// Get ongoing [Booking]s
-  Widget _buildOngoingTasksWidget(Artisan artisan) =>
-      StreamBuilder<List<Booking>>(
-        stream: _apiService.getMyBookings(artisan?.id),
-        initialData: [],
-        builder: (context, snapshot) {
-          final bookings = snapshot.data;
-
-          return AnimationLimiter(
-            child: AnimationConfiguration.synchronized(
-              duration: kScaleDuration,
-              child: Column(
-                children: [
-                  ...bookings.map(
-                    (item) => BookingCardItem(
-                      booking: item,
-                      bookingType: BookingType.ONGOING,
-                      onTap: () {},
-                    ),
-                  ),
-                ],
+  Widget _buildOngoingTasksWidget(bookings) => AnimationLimiter(
+        child: AnimationConfiguration.synchronized(
+          duration: kScaleDuration,
+          child: Column(
+            children: [
+              ...bookings.map(
+                (item) => BookingCardItem(
+                  booking: item,
+                  bookingType: BookingType.ONGOING,
+                  onTap: () {},
+                ),
               ),
-            ),
-          );
-        },
+            ],
+          ),
+        ),
       );
 
   /// Get newly requested [Booking]s
-  Widget _buildRequestsWidget(Artisan artisan) => StreamBuilder<List<Booking>>(
-        stream: _apiService.getMyBookings(artisan?.id),
-        initialData: [],
-        builder: (context, snapshot) {
-          final bookings = snapshot.data;
-
-          return AnimationLimiter(
-            child: AnimationConfiguration.synchronized(
-              duration: kScaleDuration,
-              child: Column(
-                children: [
-                  ...bookings.map(
-                    (item) => BookingCardItem(
-                      booking: item,
-                      onTap: () {},
-                    ),
-                  ),
-                ],
+  Widget _buildRequestsWidget(bookings) => AnimationLimiter(
+        child: AnimationConfiguration.synchronized(
+          duration: kScaleDuration,
+          child: Column(
+            children: [
+              ...bookings.map(
+                (item) => BookingCardItem(
+                  booking: item,
+                  onTap: () {},
+                ),
               ),
-            ),
-          );
-        },
+            ],
+          ),
+        ),
       );
 }

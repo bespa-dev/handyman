@@ -13,9 +13,11 @@ class PrefsUtils {
 /// Utilities for [FirebaseFirestore]
 class FirestoreUtils {
   static final String kArtisanRef = "artisans";
+  static final String kCategoriesRef = "categories";
   static final String kCustomerRef = "customers";
   static final String kBookingsRef = "bookings";
   static final String kReviewsRef = "reviews";
+  static final String kGalleryRef = "gallery";
   static final String kMessagesRef = "messages";
 }
 

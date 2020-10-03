@@ -1358,9 +1358,9 @@ class Gallery extends DataClass implements Insertable<Gallery> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return Gallery(
       id: serializer.fromJson<String>(json['id']),
-      userId: serializer.fromJson<String>(json['userId']),
-      imageUrl: serializer.fromJson<String>(json['imageUrl']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      userId: serializer.fromJson<String>(json['user_id']),
+      imageUrl: serializer.fromJson<String>(json['image_url']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
     );
   }
   @override
@@ -1368,9 +1368,9 @@ class Gallery extends DataClass implements Insertable<Gallery> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'userId': serializer.toJson<String>(userId),
-      'imageUrl': serializer.toJson<String>(imageUrl),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'user_id': serializer.toJson<String>(userId),
+      'image_url': serializer.toJson<String>(imageUrl),
+      'created_at': serializer.toJson<DateTime>(createdAt),
     };
   }
 
@@ -1715,8 +1715,8 @@ class Booking extends DataClass implements Insertable<Booking> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return Booking(
       id: serializer.fromJson<int>(json['id']),
-      customerId: serializer.fromJson<String>(json['customerId']),
-      providerId: serializer.fromJson<String>(json['providerId']),
+      customerId: serializer.fromJson<String>(json['customer_id']),
+      providerId: serializer.fromJson<String>(json['provider_id']),
       description: serializer.fromJson<String>(json['description']),
       reason: serializer.fromJson<String>(json['reason']),
       locationLat: serializer.fromJson<double>(json['lat']),
@@ -1724,7 +1724,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       value: serializer.fromJson<double>(json['value']),
       progress: serializer.fromJson<double>(json['progress']),
       createdAt: serializer.fromJson<int>(json['created_at']),
-      dueDate: serializer.fromJson<int>(json['dueDate']),
+      dueDate: serializer.fromJson<int>(json['due_date']),
     );
   }
   @override
@@ -1732,8 +1732,8 @@ class Booking extends DataClass implements Insertable<Booking> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'customerId': serializer.toJson<String>(customerId),
-      'providerId': serializer.toJson<String>(providerId),
+      'customer_id': serializer.toJson<String>(customerId),
+      'provider_id': serializer.toJson<String>(providerId),
       'description': serializer.toJson<String>(description),
       'reason': serializer.toJson<String>(reason),
       'lat': serializer.toJson<double>(locationLat),
@@ -1741,7 +1741,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       'value': serializer.toJson<double>(value),
       'progress': serializer.toJson<double>(progress),
       'created_at': serializer.toJson<int>(createdAt),
-      'dueDate': serializer.toJson<int>(dueDate),
+      'due_date': serializer.toJson<int>(dueDate),
     };
   }
 
@@ -2281,10 +2281,10 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
     return CustomerReview(
       id: serializer.fromJson<String>(json['id']),
       review: serializer.fromJson<String>(json['review']),
-      customerId: serializer.fromJson<String>(json['customerId']),
-      providerId: serializer.fromJson<String>(json['providerId']),
+      customerId: serializer.fromJson<String>(json['customer_id']),
+      providerId: serializer.fromJson<String>(json['provider_id']),
       rating: serializer.fromJson<double>(json['rating']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
     );
   }
   @override
@@ -2293,10 +2293,10 @@ class CustomerReview extends DataClass implements Insertable<CustomerReview> {
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'review': serializer.toJson<String>(review),
-      'customerId': serializer.toJson<String>(customerId),
-      'providerId': serializer.toJson<String>(providerId),
+      'customer_id': serializer.toJson<String>(customerId),
+      'provider_id': serializer.toJson<String>(providerId),
       'rating': serializer.toJson<double>(rating),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'created_at': serializer.toJson<DateTime>(createdAt),
     };
   }
 
@@ -2653,7 +2653,7 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       avatar: serializer.fromJson<String>(json['avatar']),
-      groupName: serializer.fromJson<int>(json['groupName']),
+      groupName: serializer.fromJson<int>(json['group_name']),
       artisans: serializer.fromJson<int>(json['artisans']),
     );
   }
@@ -2664,7 +2664,7 @@ class ServiceCategory extends DataClass implements Insertable<ServiceCategory> {
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
       'avatar': serializer.toJson<String>(avatar),
-      'groupName': serializer.toJson<int>(groupName),
+      'group_name': serializer.toJson<int>(groupName),
       'artisans': serializer.toJson<int>(artisans),
     };
   }
@@ -3435,13 +3435,91 @@ mixin _$UserDaoMixin on DatabaseAccessor<LocalDatabase> {
         readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
   }
 
-  Selectable<Artisan> searchFor(String var1, String var2) {
+  Selectable<SearchForResult> searchFor(String var1, String var2) {
     return customSelect(
-        'SELECT * FROM service_provider\n        INNER JOIN customers\n         WHERE name LIKE ? OR category LIKE ? ORDER BY id desc',
+        'SELECT * FROM service_provider\n        INNER JOIN user\n        ON service_provider.name LIKE ? OR service_provider.category LIKE ? ORDER BY user.id, service_provider.id DESC',
         variables: [Variable.withString(var1), Variable.withString(var2)],
-        readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
+        readsFrom: {serviceProvider, user}).map((QueryRow row) {
+      return SearchForResult(
+        id: row.readString('id'),
+        name: row.readString('name'),
+        business: row.readString('business'),
+        phone: row.readString('phone'),
+        email: row.readString('email'),
+        certified: row.readBool('certified'),
+        available: row.readBool('available'),
+        category: row.readString('category'),
+        startWorkingHours: row.readInt('start_working_hours'),
+        completedBookingsCount: row.readInt('completed_bookings_count'),
+        ongoingBookingsCount: row.readInt('ongoing_bookings_count'),
+        cancelledBookingsCount: row.readInt('cancelled_bookings_count'),
+        requestsCount: row.readInt('requests_count'),
+        endWorkingHours: row.readInt('end_working_hours'),
+        avatar: row.readString('avatar'),
+        aboutMe: row.readString('about_me'),
+        price: row.readDouble('price'),
+        rating: row.readDouble('rating'),
+        id1: row.readString('id'),
+        name1: row.readString('name'),
+        email1: row.readString('email'),
+        avatar1: row.readString('avatar'),
+        createdAt: row.readString('created_at'),
+      );
+    });
   }
 }
+
+class SearchForResult {
+  final String id;
+  final String name;
+  final String business;
+  final String phone;
+  final String email;
+  final bool certified;
+  final bool available;
+  final String category;
+  final int startWorkingHours;
+  final int completedBookingsCount;
+  final int ongoingBookingsCount;
+  final int cancelledBookingsCount;
+  final int requestsCount;
+  final int endWorkingHours;
+  final String avatar;
+  final String aboutMe;
+  final double price;
+  final double rating;
+  final String id1;
+  final String name1;
+  final String email1;
+  final String avatar1;
+  final String createdAt;
+  SearchForResult({
+    this.id,
+    this.name,
+    this.business,
+    this.phone,
+    this.email,
+    this.certified,
+    this.available,
+    this.category,
+    this.startWorkingHours,
+    this.completedBookingsCount,
+    this.ongoingBookingsCount,
+    this.cancelledBookingsCount,
+    this.requestsCount,
+    this.endWorkingHours,
+    this.avatar,
+    this.aboutMe,
+    this.price,
+    this.rating,
+    this.id1,
+    this.name1,
+    this.email1,
+    this.avatar1,
+    this.createdAt,
+  });
+}
+
 mixin _$GalleryDaoMixin on DatabaseAccessor<LocalDatabase> {
   $PhotoGalleryTable get photoGallery => attachedDatabase.photoGallery;
   Selectable<Gallery> photosForUser(String var1) {

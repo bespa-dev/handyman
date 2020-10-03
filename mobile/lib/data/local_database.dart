@@ -56,7 +56,7 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -98,48 +98,9 @@ class LocalDatabase extends _$LocalDatabase {
                 .addItems(_bookings.map((e) => Booking.fromJson(e)).toList());
 
             await customStatement('PRAGMA foreign_keys = ON');
-          } else if (details.hadUpgrade && details.versionNow == 6) {
-            // Decode bookings from json array
-            final bookingsData =
-                await rootBundle.loadString("assets/sample_bookings.json");
-            var decodedBookingsData = json.decode(bookingsData);
-
-            List<dynamic> _bookings = decodedBookingsData ??= [];
-
-            // Save to database
-            await bookingDao
-                .addItems(_bookings.map((e) => Booking.fromJson(e)).toList());
           }
         },
-        onUpgrade: (m, from, to) async {
-          switch (from) {
-            case 1:
-              await m.addColumn(serviceProvider, serviceProvider.business);
-              break;
-            case 2:
-              await m.addColumn(serviceProvider, serviceProvider.aboutMe);
-              break;
-            case 3:
-              await m.addColumn(review, review.rating);
-              break;
-            case 4:
-              await m.addColumn(serviceProvider, serviceProvider.requestsCount);
-              break;
-            case 5:
-              await m.addColumn(bookings, bookings.locationLat);
-              await m.addColumn(bookings, bookings.locationLng);
-              await m.addColumn(bookings, bookings.description);
-              await m.addColumn(bookings, bookings.reason);
-              await m.addColumn(bookings, bookings.value);
-              await m.addColumn(bookings, bookings.dueDate);
-              await m.addColumn(bookings, bookings.progress);
-              break;
-            case 6:
-              await m.addColumn(bookings, bookings.locationLat);
-              await m.addColumn(bookings, bookings.locationLng);
-              break;
-          }
-        },
+        onUpgrade: (m, from, to) async {},
         onCreate: (m) async {
           // Create all tables
           return m.createAll();
@@ -245,15 +206,15 @@ class MessageDao extends DatabaseAccessor<LocalDatabase>
     "artisans":
         "SELECT * FROM service_provider WHERE category = ? ORDER BY id desc",
     "searchFor": """SELECT * FROM service_provider
-        INNER JOIN customers
-         WHERE name LIKE ? OR category LIKE ? ORDER BY id desc""",
+        INNER JOIN user
+        ON service_provider.name LIKE ? OR service_provider.category LIKE ? ORDER BY user.id, service_provider.id DESC""",
   },
 )
 class UserDao extends DatabaseAccessor<LocalDatabase> with _$UserDaoMixin {
   UserDao(LocalDatabase db) : super(db);
 
-  Future<int> addCustomer(Customer item) =>
-      into(user).insert(item, mode: InsertMode.insertOrReplace);
+  Future<int> addCustomer(BaseUser item) =>
+      into(user).insert(item.user, mode: InsertMode.insertOrReplace);
 
   Future addProviders(List<BaseUser> providers) async =>
       providers.forEach((person) async => await saveProvider(person.user));

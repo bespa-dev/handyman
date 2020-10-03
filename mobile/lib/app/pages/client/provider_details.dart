@@ -322,7 +322,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
   Widget _buildReviewTab(Artisan artisan, String userId) =>
       Consumer<PrefsProvider>(
         builder: (_, prefs, __) => StreamBuilder<List<CustomerReview>>(
-            stream: _apiService.getReviews(artisan.id),
+            stream: _apiService.getReviewsForProvider(artisan.id),
             initialData: [],
             builder: (context, snapshot) {
               return snapshot.hasError || snapshot.data.isEmpty
