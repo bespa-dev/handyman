@@ -4,8 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:handyman/data/local_database.dart';
-import 'package:handyman/data/services/data.dart';
-import 'package:handyman/domain/services/data.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -31,12 +29,9 @@ void launchUrl({@required String url}) async {
 }
 
 Future<void> registerServiceLocator() async {
-// Shared Preferences
+  // Shared Preferences
   sl.registerLazySingletonAsync<SharedPreferences>(
       () => SharedPreferences.getInstance());
-
-  // Register Provider
-  sl.registerLazySingleton<DataService>(() => DataServiceImpl.instance);
 
   // Local database
   sl.registerSingleton<LocalDatabase>(LocalDatabase.instance);

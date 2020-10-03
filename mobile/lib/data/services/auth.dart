@@ -17,6 +17,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// [AuthService] implementation for production use
+@immutable
 class FirebaseAuthService implements AuthService {
   final FirebaseAuth _auth = sl.get<FirebaseAuth>();
   final FirebaseFirestore _firestore = sl.get<FirebaseFirestore>();
@@ -67,12 +68,12 @@ class FirebaseAuthService implements AuthService {
         isAvailable: false,
         category: kGeneralCategory,
         startWorkingHours: DateTime.now().millisecondsSinceEpoch,
-        completedBookingsCount: 491,
-        ongoingBookingsCount: 48,
-        cancelledBookingsCount: 23,
+        completedBookingsCount: 0,
+        ongoingBookingsCount: 0,
+        cancelledBookingsCount: 0,
         endWorkingHours: DateTime.now().millisecondsSinceEpoch + 43200000,
-        price: 10.99,
-        rating: 3.5,
+        price: 0.00,
+        rating: 2.5,
         requestsCount: 0,
       );
       await _firestore
@@ -274,48 +275,5 @@ class FirebaseAuthService implements AuthService {
   void dispose() {
     _onProcessingStateChanged.close();
     _onAuthStateChanged.close();
-  }
-
-  @override
-  Future<void> updateCustomer({
-    String username,
-    String avatar,
-    String createdAt,
-    String phone,
-  }) async {
-    _onProcessingStateChanged.sink.add(loadingState);
-    // TODO
-    _onProcessingStateChanged.sink.add(initialState);
-  }
-
-  @override
-  Future<void> updateProvider({
-    String username,
-    String avatar,
-    String createdAt,
-    String business,
-    bool availability,
-    String phone,
-    String category,
-    int startWorkingHours,
-    int endWorkingHours,
-    double price,
-  }) async {
-    _onProcessingStateChanged.sink.add(loadingState);
-    // TODO
-    // var artisan = artisanModel.artisan.copyWith(
-    //   name: username ??= artisanModel.artisan.name,
-    //   avatar: avatar ??= artisanModel.artisan.avatar,
-    //   business: username ??= artisanModel.artisan.business,
-    //   phone: phone ??= artisanModel.artisan.phone,
-    //   category: category ??= artisanModel.artisan.category,
-    //   startWorkingHours: startWorkingHours ??=
-    //       artisanModel.artisan.startWorkingHours,
-    //   endWorkingHours: endWorkingHours ??= artisanModel.artisan.endWorkingHours,
-    //   price: price ??= artisanModel.artisan.price,
-    //   isAvailable: availability ??= artisanModel.artisan.isAvailable,
-    // );
-    // _onAuthStateChanged.sink.add(ArtisanModel(artisan: artisan));
-    _onProcessingStateChanged.sink.add(initialState);
   }
 }

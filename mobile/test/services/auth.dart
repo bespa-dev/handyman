@@ -114,44 +114,6 @@ class MockAuthService implements AuthService {
   }
 
   @override
-  Future<void> updateCustomer({
-    String username,
-    String avatar,
-    String createdAt,
-    String phone,
-  }) async {}
-
-  @override
-  Future<void> updateProvider({
-    String username,
-    String avatar,
-    String createdAt,
-    String business,
-    bool availability,
-    String phone,
-    String category,
-    int startWorkingHours,
-    int endWorkingHours,
-    double price,
-  }) async {
-    await Future.delayed(startupTime);
-    var artisan = artisanModel.artisan.copyWith(
-      name: username ??= artisanModel.artisan.name,
-      avatar: avatar ??= artisanModel.artisan.avatar,
-      business: username ??= artisanModel.artisan.business,
-      phone: phone ??= artisanModel.artisan.phone,
-      category: category ??= artisanModel.artisan.category,
-      startWorkingHours: startWorkingHours ??=
-          artisanModel.artisan.startWorkingHours,
-      endWorkingHours: endWorkingHours ??= artisanModel.artisan.endWorkingHours,
-      price: price ??= artisanModel.artisan.price,
-      isAvailable: availability ??= artisanModel.artisan.isAvailable,
-    );
-    _onAuthStateChanged.sink.add(ArtisanModel(artisan: artisan));
-    return Future.delayed(responseTime);
-  }
-
-  @override
   Stream<AuthState> get onProcessingStateChanged =>
       Stream.value(AuthState.NONE);
 }

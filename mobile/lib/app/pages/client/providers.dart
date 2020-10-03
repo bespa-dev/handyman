@@ -100,86 +100,89 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                       ],
                     ),
                     SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
-                    StreamBuilder<List<BaseUser>>(
-                        stream: sl
-                            .get<DataService>()
-                            .getArtisans(category: widget.category.id),
-                        builder: (context, snapshot) {
-                          final artisans = snapshot.data ?? [];
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting)
-                            return Container(
-                              height: kHeight -
-                                  getProportionateScreenHeight(kHeight * 0.3),
-                              width: kWidth,
-                              child: Center(
-                                child: Text("Fetching handymen..."),
-                              ),
-                            );
-                          else if (snapshot.hasError || artisans.isEmpty)
-                            return Container(
-                              height: kHeight -
-                                  getProportionateScreenHeight(kHeight * 0.3),
-                              width: kWidth,
-                              child: Center(
-                                child: Text(
-                                    "No registered service providers found"),
-                              ),
-                            );
-                          return Expanded(
-                            child: _preferGridFormat
-                                ? AnimationLimiter(
-                                    child: GridView.builder(
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        crossAxisSpacing:
-                                            getProportionateScreenWidth(
-                                                kSpacingX8),
-                                        mainAxisSpacing:
-                                            getProportionateScreenHeight(
-                                                kSpacingX4),
+                    Consumer<DataService>(
+                      builder: (_, service, __) => StreamBuilder<
+                              List<BaseUser>>(
+                          stream:
+                              service.getArtisans(category: widget.category.id),
+                          builder: (context, snapshot) {
+                            final artisans = snapshot.data ?? [];
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting)
+                              return Container(
+                                height: kHeight -
+                                    getProportionateScreenHeight(kHeight * 0.3),
+                                width: kWidth,
+                                child: Center(
+                                  child: Text("Fetching handymen..."),
+                                ),
+                              );
+                            else if (snapshot.hasError || artisans.isEmpty)
+                              return Container(
+                                height: kHeight -
+                                    getProportionateScreenHeight(kHeight * 0.3),
+                                width: kWidth,
+                                child: Center(
+                                  child: Text(
+                                      "No registered service providers found"),
+                                ),
+                              );
+                            return Expanded(
+                              child: _preferGridFormat
+                                  ? AnimationLimiter(
+                                      child: GridView.builder(
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          crossAxisSpacing:
+                                              getProportionateScreenWidth(
+                                                  kSpacingX8),
+                                          mainAxisSpacing:
+                                              getProportionateScreenHeight(
+                                                  kSpacingX4),
+                                        ),
+                                        physics: kScrollPhysics,
+                                        itemBuilder: (_, index) =>
+                                            AnimationConfiguration
+                                                .staggeredGrid(
+                                          position: index,
+                                          duration: kScaleDuration,
+                                          columnCount: 2,
+                                          child: ScaleAnimation(
+                                            child: FadeInAnimation(
+                                              child: GridArtisanCardItem(
+                                                artisan: artisans[index],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        itemCount: artisans.length,
                                       ),
+                                    )
+                                  : ListView.separated(
+                                      clipBehavior: Clip.hardEdge,
                                       physics: kScrollPhysics,
                                       itemBuilder: (_, index) =>
-                                          AnimationConfiguration.staggeredGrid(
+                                          AnimationConfiguration.staggeredList(
                                         position: index,
                                         duration: kScaleDuration,
-                                        columnCount: 2,
-                                        child: ScaleAnimation(
+                                        child: SlideAnimation(
+                                          verticalOffset: kSlideOffset,
                                           child: FadeInAnimation(
-                                            child: GridArtisanCardItem(
+                                            child: ListArtisanCardItem(
                                               artisan: artisans[index],
                                             ),
                                           ),
                                         ),
                                       ),
+                                      separatorBuilder: (_, __) => SizedBox(
+                                          height: getProportionateScreenHeight(
+                                              kSpacingX2)),
                                       itemCount: artisans.length,
                                     ),
-                                  )
-                                : ListView.separated(
-                                    clipBehavior: Clip.hardEdge,
-                                    physics: kScrollPhysics,
-                                    itemBuilder: (_, index) =>
-                                        AnimationConfiguration.staggeredList(
-                                      position: index,
-                                      duration: kScaleDuration,
-                                      child: SlideAnimation(
-                                        verticalOffset: kSlideOffset,
-                                        child: FadeInAnimation(
-                                          child: ListArtisanCardItem(
-                                            artisan: artisans[index],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    separatorBuilder: (_, __) => SizedBox(
-                                        height: getProportionateScreenHeight(
-                                            kSpacingX2)),
-                                    itemCount: artisans.length,
-                                  ),
-                          );
-                        }),
+                            );
+                          }),
+                    ),
                   ],
                 ),
               ),

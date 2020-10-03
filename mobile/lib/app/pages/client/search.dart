@@ -3,10 +3,10 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/widget/artisan_card.dart';
 import 'package:handyman/core/constants.dart';
-import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/data.dart';
+import 'package:provider/provider.dart';
 
 class SearchPage extends SearchDelegate {
   @override
@@ -30,53 +30,56 @@ class SearchPage extends SearchDelegate {
   Widget buildResults(BuildContext context) {
     final themeData = Theme.of(context);
 
-    return FutureBuilder<List<BaseUser>>(
-        future: sl.get<DataService>().searchFor(value: query.trim()),
-        initialData: <BaseUser>[],
-        builder: (context, snapshot) {
-          final artisans = snapshot.data;
-          if (snapshot.hasError || artisans.isEmpty)
-            return Center(
-              child: RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: "No results found for\n",
-                        style: themeData.textTheme.bodyText1,
-                      ),
-                      TextSpan(
-                        text: "\"$query\"",
-                        style: themeData.textTheme.headline6.copyWith(
-                          color: themeData.primaryColor,
-                          fontFamily: themeData.textTheme.bodyText1.fontFamily,
+    return Consumer<DataService>(
+      builder: (_, service, __) => FutureBuilder<List<BaseUser>>(
+          future: service.searchFor(value: query.trim()),
+          initialData: <BaseUser>[],
+          builder: (context, snapshot) {
+            final artisans = snapshot.data;
+            if (snapshot.hasError || artisans.isEmpty)
+              return Center(
+                child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: "No results found for\n",
+                          style: themeData.textTheme.bodyText1,
                         ),
+                        TextSpan(
+                          text: "\"$query\"",
+                          style: themeData.textTheme.headline6.copyWith(
+                            color: themeData.primaryColor,
+                            fontFamily:
+                                themeData.textTheme.bodyText1.fontFamily,
+                          ),
+                        ),
+                      ],
+                    )),
+              );
+            else {
+              return ListView.separated(
+                clipBehavior: Clip.hardEdge,
+                physics: kScrollPhysics,
+                itemBuilder: (_, index) => AnimationConfiguration.staggeredList(
+                  position: index,
+                  duration: kScaleDuration,
+                  child: SlideAnimation(
+                    verticalOffset: kSlideOffset,
+                    child: FadeInAnimation(
+                      child: ListArtisanCardItem(
+                        artisan: artisans[index],
                       ),
-                    ],
-                  )),
-            );
-          else {
-            return ListView.separated(
-              clipBehavior: Clip.hardEdge,
-              physics: kScrollPhysics,
-              itemBuilder: (_, index) => AnimationConfiguration.staggeredList(
-                position: index,
-                duration: kScaleDuration,
-                child: SlideAnimation(
-                  verticalOffset: kSlideOffset,
-                  child: FadeInAnimation(
-                    child: ListArtisanCardItem(
-                      artisan: artisans[index],
                     ),
                   ),
                 ),
-              ),
-              separatorBuilder: (_, __) =>
-                  SizedBox(height: getProportionateScreenHeight(kSpacingX2)),
-              itemCount: artisans.length ?? 0,
-            );
-          }
-        });
+                separatorBuilder: (_, __) =>
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX2)),
+                itemCount: artisans.length ?? 0,
+              );
+            }
+          }),
+    );
   }
 
   @override

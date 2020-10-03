@@ -8,11 +8,11 @@ import 'package:handyman/app/widget/booking_card_item.dart';
 import 'package:handyman/app/widget/menu_icon.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
-import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/entities/booking.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/models/user.dart';
+import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:provider/provider.dart';
 import 'package:auto_route/auto_route.dart';
@@ -24,7 +24,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _apiService = sl.get<DataService>();
+  DataService _apiService;
   double _kWidth, _kHeight;
   ThemeData _themeData;
   int _currentTabIndex = 0;
@@ -40,120 +40,130 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Consumer<PrefsProvider>(
-        builder: (_, provider, __) => StreamBuilder<BaseUser>(
-          stream: _apiService.getArtisanById(id: provider.userId),
-          builder: (_, snapshot) {
-            final artisan = snapshot.data?.user;
-            debugPrint("User -> ${artisan?.id}");
+  Widget build(BuildContext context) => Consumer<AuthService>(
+        builder: (_, authService, __) => Consumer<DataService>(
+          builder: (_, dataService, __) {
+            _apiService = dataService;
+            return Consumer<PrefsProvider>(
+              builder: (_, provider, __) => StreamBuilder<BaseUser>(
+                stream: authService.currentUser(),
+                builder: (_, snapshot) {
+                  final artisan = snapshot.data?.user;
 
-            return Scaffold(
-              key: _scaffoldKey,
-              extendBody: true,
-              body: Stack(
-                fit: StackFit.expand,
-                children: [
-                  provider.isLightTheme
-                      ? Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(kBackgroundAsset),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        )
-                      : SizedBox.shrink(),
-                  SafeArea(
-                    child: Container(
-                      height: _kHeight,
-                      width: _kWidth,
-                      child: StreamBuilder<BaseUser>(
-                          stream:
-                              _apiService.getArtisanById(id: provider.userId),
-                          builder: (context, snapshot) {
-                            debugPrint(snapshot.error.toString());
-                            if (snapshot.hasError) return Container();
-
-                            final artisan = snapshot.data?.user;
-
-                            return ListView(
-                              children: [
-                                _buildAppBar(provider, artisan),
-                                SizedBox(
-                                  height:
-                                      getProportionateScreenHeight(kSpacingX16),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: getProportionateScreenWidth(
-                                          kSpacingX24)),
-                                  child: BadgeableTabBar(
-                                    tabs: [
-                                      BadgeableTabBarItem(
-                                        title: "Ongoing",
-                                        badgeCount:
-                                            artisan?.ongoingBookingsCount ?? 0,
-                                      ),
-                                      BadgeableTabBarItem(
-                                        title: "Requests",
-                                        badgeCount: artisan?.requestsCount ?? 0,
-                                      ),
-                                    ],
-                                    onTabSelected: (index) {
-                                      _currentTabIndex = index;
-                                      setState(() {});
-                                    },
-                                    color: _themeData.primaryColor,
-                                    activeIndex: _currentTabIndex,
+                  return Scaffold(
+                    key: _scaffoldKey,
+                    extendBody: true,
+                    body: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        provider.isLightTheme
+                            ? Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(kBackgroundAsset),
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
-                                _buildSearchBar(),
-                                StreamBuilder<List<Booking>>(
-                                  stream: _apiService
-                                      .getBookingsForProvider(artisan?.id),
-                                  initialData: [],
-                                  builder: (_, snapshot) {
-                                    return _currentTabIndex == 0
-                                        ? _buildOngoingTasksWidget(
-                                            snapshot.data)
-                                        : _buildRequestsWidget(snapshot.data);
-                                  },
-                                ),
-                              ],
-                            );
-                          }),
-                    ),
-                  ),
-                ],
-              ),
-              drawer: Drawer(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    UserAccountsDrawerHeader(
-                      onDetailsPressed: () {},
-                      currentAccountPicture: UserAvatar(
-                        url: artisan?.avatar,
-                        onTap: () {
-                          _scaffoldKey.currentState.openEndDrawer();
-                          context.navigator.push(
-                            Routes.providerSettingsPage,
-                          );
-                        },
-                        radius: kSpacingX72,
-                        ringColor: _themeData.iconTheme.color,
-                      ),
-                      accountName: Text(artisan?.name ?? ""),
-                      accountEmail: Text(
-                        artisan?.email ?? "",
-                        style: TextStyle(
-                          color: _themeData.textTheme.bodyText1.color
-                              .withOpacity(kEmphasisMedium),
+                              )
+                            : SizedBox.shrink(),
+                        SafeArea(
+                          child: Container(
+                            height: _kHeight,
+                            width: _kWidth,
+                            child: StreamBuilder<BaseUser>(
+                                stream: _apiService.getArtisanById(
+                                    id: provider.userId),
+                                builder: (context, snapshot) {
+                                  debugPrint(snapshot.error.toString());
+                                  if (snapshot.hasError) return Container();
+                                  final artisan = snapshot.data?.user;
+
+                                  return ListView(
+                                    children: [
+                                      _buildAppBar(provider, artisan),
+                                      SizedBox(
+                                        height: getProportionateScreenHeight(
+                                            kSpacingX16),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal:
+                                                getProportionateScreenWidth(
+                                                    kSpacingX24)),
+                                        child: BadgeableTabBar(
+                                          tabs: [
+                                            BadgeableTabBarItem(
+                                              title: "Ongoing",
+                                              badgeCount: artisan
+                                                      ?.ongoingBookingsCount ??
+                                                  0,
+                                            ),
+                                            BadgeableTabBarItem(
+                                              title: "Requests",
+                                              badgeCount:
+                                                  artisan?.requestsCount ?? 0,
+                                            ),
+                                          ],
+                                          onTabSelected: (index) {
+                                            _currentTabIndex = index;
+                                            setState(() {});
+                                          },
+                                          color: _themeData.primaryColor,
+                                          activeIndex: _currentTabIndex,
+                                        ),
+                                      ),
+                                      _buildSearchBar(),
+                                      StreamBuilder<List<Booking>>(
+                                        stream:
+                                            _apiService.getBookingsForProvider(
+                                                artisan?.id),
+                                        initialData: [],
+                                        builder: (_, snapshot) {
+                                          return _currentTabIndex == 0
+                                              ? _buildOngoingTasksWidget(
+                                                  snapshot.data)
+                                              : _buildRequestsWidget(
+                                                  snapshot.data);
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                }),
+                          ),
                         ),
+                      ],
+                    ),
+                    drawer: Drawer(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          UserAccountsDrawerHeader(
+                            onDetailsPressed: () {},
+                            currentAccountPicture: UserAvatar(
+                              url: artisan?.avatar,
+                              onTap: () {
+                                _scaffoldKey.currentState.openEndDrawer();
+                                context.navigator.push(
+                                  Routes.providerSettingsPage,
+                                );
+                              },
+                              radius: kSpacingX72,
+                              ringColor: _themeData.iconTheme.color,
+                            ),
+                            accountName: Text(artisan?.name ?? ""),
+                            accountEmail: Text(
+                              artisan?.email ?? "",
+                              style: TextStyle(
+                                color: _themeData.textTheme.bodyText1.color
+                                    .withOpacity(kEmphasisMedium),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  );
+                },
               ),
             );
           },

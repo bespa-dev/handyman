@@ -6,10 +6,10 @@ import 'package:handyman/app/widget/chat_header.dart';
 import 'package:handyman/app/widget/chat_input_entry.dart';
 import 'package:handyman/app/widget/chat_list_item.dart';
 import 'package:handyman/core/constants.dart';
-import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/models/user.dart';
+import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +27,7 @@ class ConversationPage extends StatefulWidget {
 }
 
 class _ConversationPageState extends State<ConversationPage> {
-  final _apiService = sl.get<DataService>();
+  DataService _apiService;
 
   @override
   Widget build(BuildContext context) {
@@ -35,87 +35,90 @@ class _ConversationPageState extends State<ConversationPage> {
 
     return Scaffold(
       extendBody: true,
-      body: Consumer<PrefsProvider>(
-        builder: (_, provider, __) => Container(
-          child: SafeArea(
-            child: StreamBuilder<BaseUser>(
-              stream: _apiService.getArtisanById(id: widget.recipient),
-              builder: (_, snapshot) {
-                if (snapshot.hasError)
-                  return Container(
-                    width: double.infinity,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("No recipient found"),
-                        SizedBox(
-                            height: getProportionateScreenHeight(kSpacingX24)),
-                        ButtonOutlined(
-                          width: getProportionateScreenWidth(kSpacingX200),
-                          themeData: themeData,
-                          onTap: () => context.navigator.pop(),
-                          label: "Go back",
-                        )
-                      ],
-                    ),
-                  );
-                else
-                  return _buildChatWidget(
-                      snapshot.data, provider.userId, provider.userType);
-              },
+      body: Consumer<DataService>(
+        builder: (_, service, __) {
+          _apiService = service;
+          return Consumer<PrefsProvider>(
+            builder: (_, provider, __) => Container(
+              child: SafeArea(
+                child: StreamBuilder<BaseUser>(
+                  stream: widget.isCustomer
+                      ? _apiService.getCustomerById(id: widget.recipient)
+                      : _apiService.getArtisanById(id: widget.recipient),
+                  builder: (_, snapshot) {
+                    return snapshot.hasError
+                        ? Container(
+                            width: double.infinity,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text("No recipient found"),
+                                SizedBox(
+                                    height: getProportionateScreenHeight(
+                                        kSpacingX24)),
+                                ButtonOutlined(
+                                  width:
+                                      getProportionateScreenWidth(kSpacingX200),
+                                  themeData: themeData,
+                                  onTap: () => context.navigator.pop(),
+                                  label: "Go back",
+                                )
+                              ],
+                            ),
+                          )
+                        : _buildChatWidget(snapshot.data);
+                  },
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildChatWidget(BaseUser recipient, userId, userType) {
-    debugPrint("$userId => ${widget.recipient}");
-    return StreamBuilder<BaseUser>(
-        stream: userType == kCustomerString
-            ? _apiService.getCustomerById(id: userId)
-            : _apiService.getArtisanById(id: userId),
-        builder: (context, snapshot) => Stack(
-              children: [
-                Column(
+  Widget _buildChatWidget(BaseUser recipient) => Consumer<AuthService>(
+        builder: (_, authService, __) => StreamBuilder<BaseUser>(
+            stream: authService.currentUser(),
+            builder: (context, snapshot) => Stack(
                   children: [
-                    Expanded(
-                      child: ChatMessages(
-                        messages: _apiService.getConversation(
-                          sender: userId,
-                          recipient: widget.recipient,
+                    Column(
+                      children: [
+                        Expanded(
+                          child: ChatMessages(
+                            messages: _apiService.getConversation(
+                              sender: snapshot.data?.user?.id,
+                              recipient: widget.recipient,
+                            ),
+                            recipient: recipient,
+                            sender: snapshot.data,
+                          ),
                         ),
-                        recipient: recipient,
-                        sender: snapshot.data,
-                      ),
+                        UserInput(
+                          onMessageSent: (content) async {
+                            final timestamp =
+                                DateFormat.jms().format(DateTime.now());
+                            final conversation = Conversation(
+                              id: Uuid().v4(),
+                              author: snapshot.data?.user?.id,
+                              recipient: widget.recipient,
+                              content: content,
+                              createdAt: timestamp,
+                            );
+                            await _apiService.sendMessage(
+                                conversation: conversation);
+                          },
+                        ),
+                      ],
                     ),
-                    UserInput(
-                      onMessageSent: (content) async {
-                        final timestamp =
-                            DateFormat.jms().format(DateTime.now());
-                        final conversation = Conversation(
-                          id: Uuid().v4(),
-                          author: userId,
-                          recipient: widget.recipient,
-                          content: content,
-                          createdAt: timestamp,
-                        );
-                        debugPrint(conversation.toString());
-                        await _apiService.sendMessage(
-                            conversation: conversation);
-                      },
+                    Positioned(
+                      top: kSpacingNone,
+                      left: kSpacingNone,
+                      right: kSpacingNone,
+                      child: ChatHeader(user: recipient),
                     ),
                   ],
-                ),
-                Positioned(
-                  top: kSpacingNone,
-                  left: kSpacingNone,
-                  right: kSpacingNone,
-                  child: ChatHeader(user: recipient),
-                ),
-              ],
-            ));
-  }
+                )),
+      );
 }

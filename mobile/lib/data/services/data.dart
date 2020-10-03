@@ -18,6 +18,7 @@ import 'package:uuid/uuid.dart';
 /// [LocalDatabase] is the source of data.
 /// Data is fetched using streams so that upon update it will
 /// automatically notify all listeners.
+@immutable
 class DataServiceImpl implements DataService {
   final _userDao = sl.get<LocalDatabase>().userDao;
   final _categoryDao = sl.get<LocalDatabase>().categoryDao;
@@ -312,5 +313,11 @@ class DataServiceImpl implements DataService {
     } on Exception {
       return Future.value(<BaseUser>[]);
     }
+  }
+
+  @override
+  Future<void> updateUser(BaseUser user) {
+    // TODO: implement updateUser
+    throw UnimplementedError();
   }
 }

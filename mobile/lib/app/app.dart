@@ -10,8 +10,10 @@ import 'package:handyman/app/routes/route.gr.dart' as gr;
 import 'package:handyman/core/theme.dart';
 import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/data/services/data.dart';
+import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
+import 'package:handyman/domain/services/storage.dart';
 import 'package:provider/provider.dart';
 
 class HandyManApp extends StatefulWidget {
@@ -51,6 +53,9 @@ class _HandyManAppState extends State<HandyManApp> {
         ),
         Provider<DataService>.value(
           value: DataServiceImpl.instance,
+        ),
+        Provider<StorageService>.value(
+          value: StorageServiceImpl.instance,
         ),
       ],
       child: Consumer<PrefsProvider>(

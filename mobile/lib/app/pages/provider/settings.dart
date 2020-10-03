@@ -22,7 +22,7 @@ class ProviderSettingsPage extends StatefulWidget {
 
 class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _apiService = sl.get<DataService>();
+  DataService _apiService;
   double _kWidth, _kHeight;
   ThemeData _themeData;
 
@@ -38,35 +38,40 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      extendBody: true,
-      body: Consumer<PrefsProvider>(
-        builder: (_, provider, __) => Stack(
-          fit: StackFit.expand,
-          children: [
-            provider.isLightTheme
-                ? Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(kBackgroundAsset),
-                        fit: BoxFit.cover,
+    return Consumer<DataService>(
+      builder: (_, service, __) {
+        _apiService = service;
+        return Scaffold(
+          key: _scaffoldKey,
+          extendBody: true,
+          body: Consumer<PrefsProvider>(
+            builder: (_, provider, __) => Stack(
+              fit: StackFit.expand,
+              children: [
+                provider.isLightTheme
+                    ? Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(kBackgroundAsset),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
+                    : SizedBox.shrink(),
+                SafeArea(
+                  child: Positioned.fill(
+                    child: Center(
+                      child: Text(
+                        widget.activeTabIndex.toString(),
                       ),
                     ),
-                  )
-                : SizedBox.shrink(),
-            SafeArea(
-              child: Positioned.fill(
-                child: Center(
-                  child: Text(
-                    widget.activeTabIndex.toString(),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

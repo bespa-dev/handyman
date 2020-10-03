@@ -9,6 +9,8 @@ enum AuthState { NONE, AUTHENTICATING, ERROR, SUCCESS }
 abstract class AuthService {
   Stream<BaseUser> currentUser();
 
+  Future<BaseUser> signInWithGoogle();
+
   Future<BaseUser> signInWithEmailAndPassword({
     @required String email,
     @required String password,
@@ -22,29 +24,7 @@ abstract class AuthService {
     bool isCustomer,
   });
 
-  Future<void> updateCustomer({
-    String username,
-    String avatar,
-    String createdAt,
-    String phone,
-  });
-
-  Future<void> updateProvider({
-    String username,
-    String avatar,
-    String createdAt,
-    String business,
-    bool availability,
-    String phone,
-    String category,
-    int startWorkingHours,
-    int endWorkingHours,
-    double price,
-  });
-
   Future<void> sendPasswordReset({@required String email});
-
-  Future<BaseUser> signInWithGoogle();
 
   Future<bool> signOut();
 

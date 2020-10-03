@@ -10,7 +10,6 @@ import 'package:handyman/app/widget/artisan_profile_info.dart';
 import 'package:handyman/app/widget/chat_input_entry.dart';
 import 'package:handyman/app/widget/review_card.dart';
 import 'package:handyman/core/constants.dart';
-import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/entities/artisan_model.dart';
 import 'package:handyman/data/local_database.dart';
@@ -31,7 +30,7 @@ class ServiceProviderDetails extends StatefulWidget {
 class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   ThemeData _themeData;
-  final _apiService = sl.get<DataService>();
+  DataService _apiService;
   final _textController = TextEditingController();
   final _focusNode = FocusNode();
 
@@ -41,204 +40,217 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
     final kHeight = MediaQuery.of(context).size.height;
     final kWidth = MediaQuery.of(context).size.width;
 
-    return Consumer<PrefsProvider>(
-      builder: (_, provider, __) => StreamBuilder<BaseUser>(
-          stream: _apiService.getArtisanById(id: widget.artisan.id),
-          initialData: ArtisanModel(artisan: widget.artisan),
-          builder: (context, snapshot) {
-            final artisan = snapshot.data.user;
+    return Consumer<DataService>(
+      builder: (_, service, __) {
+        _apiService = service;
+        return Consumer<PrefsProvider>(
+          builder: (_, provider, __) => StreamBuilder<BaseUser>(
+              stream: _apiService.getArtisanById(id: widget.artisan.id),
+              initialData: ArtisanModel(artisan: widget.artisan),
+              builder: (context, snapshot) {
+                final artisan = snapshot.data.user;
 
-            return Scaffold(
-              key: _scaffoldKey,
-              body: Stack(
-                fit: StackFit.expand,
-                children: [
-                  provider.isLightTheme
-                      ? Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(kBackgroundAsset),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        )
-                      : SizedBox.shrink(),
-                  SafeArea(
-                    child: AnimatedContainer(
-                      duration: kScaleDuration,
-                      height: kHeight,
-                      width: kWidth,
-                      child: ListView(
-                        padding: EdgeInsets.only(
-                            bottom:
-                                getProportionateScreenHeight(kToolbarHeight)),
-                        children: [
-                          Stack(
-                            children: [
-                              Container(
-                                height: kHeight * 0.4,
-                                width: kWidth,
-                                child: CachedNetworkImage(
-                                  imageUrl: artisan.avatar,
+                return Scaffold(
+                  key: _scaffoldKey,
+                  body: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      provider.isLightTheme
+                          ? Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(kBackgroundAsset),
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                              Positioned(
-                                right:
-                                    getProportionateScreenWidth(kSpacingNone),
-                                top: kHeight * 0.1,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    InkWell(
-                                      onTap: () => context.navigator.push(
-                                        Routes.requestBookingPage,
-                                        arguments: RequestBookingPageArguments(
-                                          artisan: artisan,
-                                        ),
-                                      ),
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        height: kToolbarHeight,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                            topLeft:
-                                                Radius.circular(kSpacingX16),
-                                            bottomLeft:
-                                                Radius.circular(kSpacingX16),
+                            )
+                          : SizedBox.shrink(),
+                      SafeArea(
+                        child: AnimatedContainer(
+                          duration: kScaleDuration,
+                          height: kHeight,
+                          width: kWidth,
+                          child: ListView(
+                            padding: EdgeInsets.only(
+                                bottom: getProportionateScreenHeight(
+                                    kToolbarHeight)),
+                            children: [
+                              Stack(
+                                children: [
+                                  Container(
+                                    height: kHeight * 0.4,
+                                    width: kWidth,
+                                    child: CachedNetworkImage(
+                                      imageUrl: artisan.avatar,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    right: getProportionateScreenWidth(
+                                        kSpacingNone),
+                                    top: kHeight * 0.1,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        InkWell(
+                                          onTap: () => context.navigator.push(
+                                            Routes.requestBookingPage,
+                                            arguments:
+                                                RequestBookingPageArguments(
+                                              artisan: artisan,
+                                            ),
                                           ),
-                                          color: _themeData.primaryColor,
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            height: kToolbarHeight,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(
+                                                    kSpacingX16),
+                                                bottomLeft: Radius.circular(
+                                                    kSpacingX16),
+                                              ),
+                                              color: _themeData.primaryColor,
+                                            ),
+                                            width: kWidth * 0.25,
+                                            child: Text(
+                                              "Book now".toUpperCase(),
+                                              style:
+                                                  _themeData.textTheme.button,
+                                            ),
+                                          ),
                                         ),
-                                        width: kWidth * 0.25,
-                                        child: Text(
-                                          "Book now".toUpperCase(),
-                                          style: _themeData.textTheme.button,
+                                        SizedBox(
+                                            height:
+                                                getProportionateScreenHeight(
+                                                    kSpacingX12)),
+                                        Container(
+                                          alignment: Alignment.center,
+                                          height: getProportionateScreenHeight(
+                                              kSpacingX48),
+                                          width: getProportionateScreenWidth(
+                                              kSpacingX72),
+                                          decoration: BoxDecoration(
+                                            color: _themeData
+                                                .scaffoldBackgroundColor
+                                                .withOpacity(kOpacityX70),
+                                            borderRadius: BorderRadius.only(
+                                              topLeft:
+                                                  Radius.circular(kSpacingX16),
+                                              bottomLeft:
+                                                  Radius.circular(kSpacingX16),
+                                            ),
+                                          ),
+                                          child: IconButton(
+                                            icon: Icon(Icons.message_outlined),
+                                            color: _themeData.iconTheme.color,
+                                            onPressed: () =>
+                                                context.navigator.push(
+                                              Routes.conversationPage,
+                                              arguments:
+                                                  ConversationPageArguments(
+                                                isCustomer: false,
+                                                recipient: artisan.id,
+                                              ),
+                                            ),
+                                          ),
                                         ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              _buildProfileTab(artisan),
+                              _buildPhotoTab(provider.userId),
+                              _buildReviewTab(artisan, provider.userId),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: kSpacingNone,
+                        width: kWidth,
+                        child: SafeArea(
+                          child: Container(
+                            width: kWidth,
+                            height: kToolbarHeight,
+                            color: _themeData.scaffoldBackgroundColor
+                                .withOpacity(kOpacityX90),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Feather.x),
+                                  onPressed: () => context.navigator.pop(),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      tooltip: "Search",
+                                      icon: Icon(Feather.search),
+                                      onPressed: () => showSearch(
+                                        context: context,
+                                        delegate: SearchPage(),
                                       ),
                                     ),
-                                    SizedBox(
-                                        height: getProportionateScreenHeight(
-                                            kSpacingX12)),
-                                    Container(
-                                      alignment: Alignment.center,
-                                      height: getProportionateScreenHeight(
-                                          kSpacingX48),
-                                      width: getProportionateScreenWidth(
-                                          kSpacingX72),
-                                      decoration: BoxDecoration(
-                                        color: _themeData
-                                            .scaffoldBackgroundColor
-                                            .withOpacity(kOpacityX70),
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(kSpacingX16),
-                                          bottomLeft:
-                                              Radius.circular(kSpacingX16),
-                                        ),
-                                      ),
-                                      child: IconButton(
-                                        icon: Icon(Icons.message_outlined),
-                                        color: _themeData.iconTheme.color,
-                                        onPressed: () => context.navigator.push(
-                                          Routes.conversationPage,
-                                          arguments: ConversationPageArguments(
-                                            isCustomer: false,
-                                            recipient: artisan.id,
-                                          ),
-                                        ),
-                                      ),
+                                    IconButton(
+                                      tooltip: "Toggle theme",
+                                      icon: Icon(provider.isLightTheme
+                                          ? Feather.moon
+                                          : Feather.sun),
+                                      onPressed: () => provider.toggleTheme(),
                                     ),
                                   ],
-                                ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        width: kWidth,
+                        bottom: kSpacingNone,
+                        child: Container(
+                          color: _themeData.scaffoldBackgroundColor,
+                          child: Column(
+                            children: [
+                              Divider(height: kSpacingNone),
+                              UserInputText(
+                                textController: _textController,
+                                keyboardShown: false,
+                                focusNode: _focusNode,
+                                onSubmit: (text) {
+                                  debugPrint(text);
+                                  _textController.clear();
+                                  _apiService.sendReview(
+                                    message: text,
+                                    reviewer: provider.userId,
+                                    artisan: artisan.id,
+                                  );
+                                },
+                                onTextFieldFocused: (focused) {
+                                  if (focused)
+                                    FocusScope.of(context)
+                                        .requestFocus(_focusNode);
+                                  else
+                                    FocusScope.of(context).unfocus();
+                                  setState(() {});
+                                },
+                                focusState: false,
                               ),
                             ],
                           ),
-                          _buildProfileTab(artisan),
-                          _buildPhotoTab(provider.userId),
-                          _buildReviewTab(artisan, provider.userId),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: kSpacingNone,
-                    width: kWidth,
-                    child: SafeArea(
-                      child: Container(
-                        width: kWidth,
-                        height: kToolbarHeight,
-                        color: _themeData.scaffoldBackgroundColor
-                            .withOpacity(kOpacityX90),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButton(
-                              icon: Icon(Feather.x),
-                              onPressed: () => context.navigator.pop(),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  tooltip: "Search",
-                                  icon: Icon(Feather.search),
-                                  onPressed: () => showSearch(
-                                    context: context,
-                                    delegate: SearchPage(),
-                                  ),
-                                ),
-                                IconButton(
-                                  tooltip: "Toggle theme",
-                                  icon: Icon(provider.isLightTheme
-                                      ? Feather.moon
-                                      : Feather.sun),
-                                  onPressed: () => provider.toggleTheme(),
-                                ),
-                              ],
-                            )
-                          ],
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                  Positioned(
-                    width: kWidth,
-                    bottom: kSpacingNone,
-                    child: Container(
-                      color: _themeData.scaffoldBackgroundColor,
-                      child: Column(
-                        children: [
-                          Divider(height: kSpacingNone),
-                          UserInputText(
-                            textController: _textController,
-                            keyboardShown: false,
-                            focusNode: _focusNode,
-                            onSubmit: (text) {
-                              debugPrint(text);
-                              _textController.clear();
-                              _apiService.sendReview(
-                                message: text,
-                                reviewer: provider.userId,
-                                artisan: artisan.id,
-                              );
-                            },
-                            onTextFieldFocused: (focused) {
-                              if (focused)
-                                FocusScope.of(context).requestFocus(_focusNode);
-                              else
-                                FocusScope.of(context).unfocus();
-                              setState(() {});
-                            },
-                            focusState: false,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
+                );
+              }),
+        );
+      },
     );
   }
 

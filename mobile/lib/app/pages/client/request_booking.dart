@@ -19,7 +19,7 @@ class RequestBookingPage extends StatefulWidget {
 }
 
 class _RequestBookingPageState extends State<RequestBookingPage> {
-  final _apiService = sl.get<DataService>();
+  DataService _apiService;
   double _kWidth, _kHeight;
   ThemeData _themeData;
 
@@ -34,75 +34,80 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Consumer<PrefsProvider>(
-        builder: (_, provider, __) => Scaffold(
-          body: SafeArea(
-            child: Container(
-              height: _kHeight,
-              width: _kWidth,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Positioned(
-                    width: _kWidth,
-                    bottom: kSpacingNone,
-                    top: getProportionateScreenHeight(kToolbarHeight),
-                    child: ListView(
-                      children: [
-                        _buildArtisanInfoSection(),
-                        _buildRequestSection(),
-                        _buildDatePickerSection(),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    width: _kWidth,
-                    child: Container(
-                      width: _kWidth,
-                      height: getProportionateScreenHeight(kToolbarHeight),
-                      color: _themeData.scaffoldBackgroundColor
-                          .withOpacity(kOpacityX90),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                            icon: Icon(Feather.x),
-                            onPressed: () => context.navigator.pop(),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            mainAxisSize: MainAxisSize.min,
+  Widget build(BuildContext context) => Consumer<DataService>(
+        builder: (_, service, __) {
+          _apiService = service;
+          return Consumer<PrefsProvider>(
+            builder: (_, provider, __) => Scaffold(
+              body: SafeArea(
+                child: Container(
+                  height: _kHeight,
+                  width: _kWidth,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Positioned(
+                        width: _kWidth,
+                        bottom: kSpacingNone,
+                        top: getProportionateScreenHeight(kToolbarHeight),
+                        child: ListView(
+                          children: [
+                            _buildArtisanInfoSection(),
+                            _buildRequestSection(),
+                            _buildDatePickerSection(),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        top: 0,
+                        width: _kWidth,
+                        child: Container(
+                          width: _kWidth,
+                          height: getProportionateScreenHeight(kToolbarHeight),
+                          color: _themeData.scaffoldBackgroundColor
+                              .withOpacity(kOpacityX90),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               IconButton(
-                                tooltip: "Chat",
-                                icon: Icon(Icons.message_outlined),
-                                onPressed: () => context.navigator.push(
-                                    Routes.conversationPage,
-                                    arguments: ConversationPageArguments(
-                                      isCustomer:
-                                          provider.userType == kArtisanString,
-                                      recipient: widget.artisan.id,
-                                    )),
+                                icon: Icon(Feather.x),
+                                onPressed: () => context.navigator.pop(),
                               ),
-                              IconButton(
-                                tooltip: "Toggle theme",
-                                icon: Icon(provider.isLightTheme
-                                    ? Feather.moon
-                                    : Feather.sun),
-                                onPressed: () => provider.toggleTheme(),
-                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    tooltip: "Chat",
+                                    icon: Icon(Icons.message_outlined),
+                                    onPressed: () => context.navigator.push(
+                                        Routes.conversationPage,
+                                        arguments: ConversationPageArguments(
+                                          isCustomer: provider.userType ==
+                                              kArtisanString,
+                                          recipient: widget.artisan.id,
+                                        )),
+                                  ),
+                                  IconButton(
+                                    tooltip: "Toggle theme",
+                                    icon: Icon(provider.isLightTheme
+                                        ? Feather.moon
+                                        : Feather.sun),
+                                    onPressed: () => provider.toggleTheme(),
+                                  ),
+                                ],
+                              )
                             ],
-                          )
-                        ],
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       );
 
   Widget _buildDatePickerSection() => Column();
