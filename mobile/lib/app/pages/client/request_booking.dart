@@ -6,7 +6,7 @@ import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
-import 'package:handyman/data/provider/artisan_api_provider.dart';
+import 'package:handyman/domain/services/data.dart';
 import 'package:provider/provider.dart';
 import 'package:auto_route/auto_route.dart';
 
@@ -19,7 +19,7 @@ class RequestBookingPage extends StatefulWidget {
 }
 
 class _RequestBookingPageState extends State<RequestBookingPage> {
-  final _apiService = sl.get<ApiProviderService>();
+  final _apiService = sl.get<DataService>();
   double _kWidth, _kHeight;
   ThemeData _themeData;
 

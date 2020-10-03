@@ -8,6 +8,10 @@ import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/guard.dart';
 import 'package:handyman/app/routes/route.gr.dart' as gr;
 import 'package:handyman/core/theme.dart';
+import 'package:handyman/data/services/auth.dart';
+import 'package:handyman/data/services/data.dart';
+import 'package:handyman/domain/services/auth.dart';
+import 'package:handyman/domain/services/data.dart';
 import 'package:provider/provider.dart';
 
 class HandyManApp extends StatefulWidget {
@@ -41,6 +45,12 @@ class _HandyManAppState extends State<HandyManApp> {
       providers: [
         ChangeNotifierProvider<PrefsProvider>(
           create: (context) => PrefsProvider(),
+        ),
+        Provider<AuthService>.value(
+          value: FirebaseAuthService.instance,
+        ),
+        Provider<DataService>.value(
+          value: DataServiceImpl.instance,
         ),
       ],
       child: Consumer<PrefsProvider>(

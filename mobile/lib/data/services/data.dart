@@ -10,6 +10,7 @@ import 'package:handyman/data/entities/category.dart';
 import 'package:handyman/data/entities/customer_model.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/models/user.dart';
+import 'package:handyman/domain/services/data.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
@@ -17,7 +18,7 @@ import 'package:uuid/uuid.dart';
 /// [LocalDatabase] is the source of data.
 /// Data is fetched using streams so that upon update it will
 /// automatically notify all listeners.
-class ApiProviderService {
+class DataServiceImpl implements DataService {
   final _userDao = sl.get<LocalDatabase>().userDao;
   final _categoryDao = sl.get<LocalDatabase>().categoryDao;
   final _messageDao = sl.get<LocalDatabase>().messageDao;
@@ -27,12 +28,13 @@ class ApiProviderService {
   final _firestore = sl.get<FirebaseFirestore>();
 
   // Private constructor
-  ApiProviderService._();
+  DataServiceImpl._();
 
   // Singleton
-  static ApiProviderService get instance => ApiProviderService._();
+  static DataServiceImpl get instance => DataServiceImpl._();
 
   /// Get all [Artisan]s from data source
+  @override
   Stream<List<BaseUser>> getArtisans({@required String category}) async* {
     final localSource = _userDao
         .artisans(category)
@@ -57,6 +59,7 @@ class ApiProviderService {
     // await _providerDao.addProviders(results);
   }
 
+  @override
   Stream<BaseUser> getArtisanById({@required String id}) async* {
     final localSource = _userDao
         .artisanById(id)
@@ -77,6 +80,7 @@ class ApiProviderService {
     });
   }
 
+  @override
   Future<void> sendMessage({@required Conversation conversation}) async {
     await _messageDao.sendMessage(conversation);
     await _firestore
@@ -86,6 +90,7 @@ class ApiProviderService {
   }
 
   // FIXME: Messages only return sender's chat'
+  @override
   Stream<List<Conversation>> getConversation(
       {@required String sender, @required String recipient}) async* {
     final localSource = _messageDao.conversationWithRecipient(
@@ -107,6 +112,7 @@ class ApiProviderService {
   }
 
   /// Get [Customer] by [id]
+  @override
   Stream<BaseUser> getCustomerById({@required String id}) async* {
     var localSource = _userDao
         .customerById(id)
@@ -130,6 +136,7 @@ class ApiProviderService {
   }
 
   /// Get all [ServiceCategory] from data source
+  @override
   Stream<List<ServiceCategory>> getCategories({
     CategoryGroup categoryGroup = CategoryGroup.FEATURED,
   }) async* {
@@ -151,6 +158,7 @@ class ApiProviderService {
     });
   }
 
+  @override
   Stream<List<CustomerReview>> getReviewsForProvider(String id) async* {
     final localSource = _reviewDao.reviewsForProvider(id).watch();
     yield* localSource;
@@ -168,6 +176,7 @@ class ApiProviderService {
     });
   }
 
+  @override
   Stream<List<Booking>> getBookingsForProvider(String id) async* {
     final localSource = _bookingDao.bookingsForProvider(id).watch();
     yield* localSource;
@@ -185,6 +194,7 @@ class ApiProviderService {
     });
   }
 
+  @override
   Stream<List<Booking>> getBookingsForCustomer(String id) async* {
     final localSource = _bookingDao.bookingsForCustomer(id).watch();
     yield* localSource;
@@ -202,6 +212,7 @@ class ApiProviderService {
     });
   }
 
+  @override
   Stream<List<Booking>> bookingsForCustomerAndProvider(
       String customerId, String providerId) async* {
     final localSource = _bookingDao
@@ -223,6 +234,7 @@ class ApiProviderService {
     });
   }
 
+  @override
   Stream<List<Gallery>> getPhotosForUser(String userId) async* {
     final localSource = _galleryDao.photosForUser(userId).watch();
     yield* localSource;
@@ -240,7 +252,42 @@ class ApiProviderService {
     });
   }
 
+  /// Save [CustomerReview] in database
+  @override
+  Future<void> sendReview({String message, String reviewer, artisan}) async {
+    final review = CustomerReview(
+      id: Uuid().v4(),
+      review: message,
+      customerId: reviewer,
+      providerId: artisan,
+      createdAt: DateTime.now(),
+    );
+    await _reviewDao.addItem(review);
+    await _firestore
+        .collection(FirestoreUtils.kReviewsRef)
+        .doc(review.id)
+        .set(review.toJson());
+  }
+
+  /// Fetch [ServiceCategory] by [id]
+  @override
+  Stream<ServiceCategory> getCategoryById({String id}) async* {
+    final localSource = _categoryDao.categoryById(id).watchSingle();
+    yield* localSource;
+
+    var snapshots = _firestore
+        .collection(FirestoreUtils.kCategoriesRef)
+        .doc(id)
+        .snapshots(includeMetadataChanges: true);
+
+    snapshots.listen((event) async {
+      if (event.exists)
+        await _galleryDao.addPhoto(Gallery.fromJson(event.data()));
+    });
+  }
+
   /// Performs a search for [Artisan]s in [Algolia]
+  @override
   Future<List<BaseUser>> searchFor(
       {@required String value, String categoryId}) async {
     try {
@@ -265,37 +312,5 @@ class ApiProviderService {
     } on Exception {
       return Future.value(<BaseUser>[]);
     }
-  }
-
-  /// Save [CustomerReview] in database
-  Future<void> sendReview({String message, String reviewer, artisan}) async {
-    final review = CustomerReview(
-      id: Uuid().v4(),
-      review: message,
-      customerId: reviewer,
-      providerId: artisan,
-      createdAt: DateTime.now(),
-    );
-    await _reviewDao.addItem(review);
-    await _firestore
-        .collection(FirestoreUtils.kReviewsRef)
-        .doc(review.id)
-        .set(review.toJson());
-  }
-
-  /// Fetch [ServiceCategory] by [id]
-  Stream<ServiceCategory> getCategoryById({String id}) async* {
-    final localSource = _categoryDao.categoryById(id).watchSingle();
-    yield* localSource;
-
-    var snapshots = _firestore
-        .collection(FirestoreUtils.kCategoriesRef)
-        .doc(id)
-        .snapshots(includeMetadataChanges: true);
-
-    snapshots.listen((event) async {
-      if (event.exists)
-        await _galleryDao.addPhoto(Gallery.fromJson(event.data()));
-    });
   }
 }

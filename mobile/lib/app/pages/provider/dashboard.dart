@@ -12,8 +12,8 @@ import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/entities/booking.dart';
 import 'package:handyman/data/local_database.dart';
-import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:handyman/domain/models/user.dart';
+import 'package:handyman/domain/services/data.dart';
 import 'package:provider/provider.dart';
 import 'package:auto_route/auto_route.dart';
 
@@ -24,7 +24,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _apiService = sl.get<ApiProviderService>();
+  final _apiService = sl.get<DataService>();
   double _kWidth, _kHeight;
   ThemeData _themeData;
   int _currentTabIndex = 0;

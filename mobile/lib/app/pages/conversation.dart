@@ -9,8 +9,8 @@ import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
-import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:handyman/domain/models/user.dart';
+import 'package:handyman/domain/services/data.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -27,7 +27,7 @@ class ConversationPage extends StatefulWidget {
 }
 
 class _ConversationPageState extends State<ConversationPage> {
-  final _apiService = sl.get<ApiProviderService>();
+  final _apiService = sl.get<DataService>();
 
   @override
   Widget build(BuildContext context) {

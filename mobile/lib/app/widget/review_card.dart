@@ -4,14 +4,14 @@ import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
-import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:handyman/domain/models/user.dart';
+import 'package:handyman/domain/services/data.dart';
 import 'package:random_color/random_color.dart';
 import 'package:meta/meta.dart';
 
 class CustomerReviewCard extends StatefulWidget {
   final CustomerReview review;
-  final ApiProviderService apiService;
+  final DataService apiService;
   final String userId;
 
   const CustomerReviewCard({

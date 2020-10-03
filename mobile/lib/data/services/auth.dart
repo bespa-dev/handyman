@@ -51,8 +51,9 @@ class FirebaseAuthService implements AuthService {
           .collection(FirestoreUtils.kCustomerRef)
           .doc(user.uid)
           .set(customer.toJson());
-      await _database.userDao.addCustomer(customer);
+
       final model = CustomerModel(customer: customer);
+      await _database.userDao.addCustomer(model);
       _onProcessingStateChanged.sink.add(successState);
       _onAuthStateChanged.sink.add(model);
       return model;
@@ -97,10 +98,9 @@ class FirebaseAuthService implements AuthService {
           .get();
       if (snapshot.exists) {
         final customer = Customer.fromJson(snapshot.data());
-        await _database.userDao.addCustomer(customer);
-
-        _onProcessingStateChanged.sink.add(successState);
         final model = CustomerModel(customer: customer);
+        await _database.userDao.addCustomer(model);
+        _onProcessingStateChanged.sink.add(successState);
         _onAuthStateChanged.sink.add(model);
         return model;
       } else {
@@ -162,33 +162,37 @@ class FirebaseAuthService implements AuthService {
     final userType = preferences.getString(PrefsUtils.USER_TYPE) ?? null;
     if (userId != null && userType != null) {
       if (userType == kCustomerString) {
-        var localCustomer =
-            await _database.userDao.customerById(userId).getSingle();
-        yield CustomerModel(customer: localCustomer);
+        var localCustomer = _database.userDao
+            .customerById(userId)
+            .watchSingle()
+            .map((event) => CustomerModel(customer: event));
+        yield* localCustomer;
 
-        var customerSnapshot = await _firestore
+        var customerSnapshot = _firestore
             .collection(FirestoreUtils.kCustomerRef)
             .doc(userId)
-            .get();
-        if (customerSnapshot.exists) {
-          final customer = Customer.fromJson(customerSnapshot.data());
-          await _database.userDao.addCustomer(customer);
-          yield CustomerModel(customer: customer);
-        }
+            .snapshots();
+        customerSnapshot.listen((event) async {
+          if (event.exists) {
+            final customer = Customer.fromJson(event.data());
+            final model = CustomerModel(customer: customer);
+            await _database.userDao.addCustomer(model);
+          }
+        });
       } else if (userType == kArtisanString) {
-        final snapshot = await _firestore
+        final snapshot = _firestore
             .collection(FirestoreUtils.kArtisanRef)
             .doc(userId)
-            .get();
-        if (snapshot.exists) {
-          final artisan = Artisan.fromJson(snapshot.data());
-          final model = ArtisanModel(artisan: artisan);
-          await _database.userDao.saveProvider(model);
-          yield model;
-        }
+            .snapshots();
+        snapshot.listen((event) async {
+          if (event.exists) {
+            final artisan = Artisan.fromJson(event.data());
+            final model = ArtisanModel(artisan: artisan);
+            await _database.userDao.saveProvider(model);
+          }
+        });
       }
-    } else
-      yield null;
+    }
   }
 
   @override

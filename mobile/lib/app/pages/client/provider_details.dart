@@ -14,8 +14,8 @@ import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/entities/artisan_model.dart';
 import 'package:handyman/data/local_database.dart';
-import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:handyman/domain/models/user.dart';
+import 'package:handyman/domain/services/data.dart';
 import 'package:provider/provider.dart';
 import 'package:random_color/random_color.dart';
 
@@ -31,7 +31,7 @@ class ServiceProviderDetails extends StatefulWidget {
 class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   ThemeData _themeData;
-  final _apiService = sl.get<ApiProviderService>();
+  final _apiService = sl.get<DataService>();
   final _textController = TextEditingController();
   final _focusNode = FocusNode();
 

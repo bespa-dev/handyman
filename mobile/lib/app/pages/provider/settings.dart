@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
-import 'package:handyman/data/provider/artisan_api_provider.dart';
+import 'package:handyman/domain/services/data.dart';
 import 'package:provider/provider.dart';
 
 /// activeTabIndex legend:
@@ -22,7 +22,7 @@ class ProviderSettingsPage extends StatefulWidget {
 
 class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _apiService = sl.get<ApiProviderService>();
+  final _apiService = sl.get<DataService>();
   double _kWidth, _kHeight;
   ThemeData _themeData;
 

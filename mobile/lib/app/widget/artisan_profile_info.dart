@@ -3,8 +3,8 @@ import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
-import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:handyman/domain/models/user.dart';
+import 'package:handyman/domain/services/data.dart';
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 class ArtisanProfileInfo extends StatelessWidget {
   final Artisan artisan;
-  final ApiProviderService apiService;
+  final DataService apiService;
 
   const ArtisanProfileInfo(
       {Key key, @required this.artisan, @required this.apiService})

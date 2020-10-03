@@ -9,8 +9,8 @@ import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
-import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:handyman/domain/models/user.dart';
+import 'package:handyman/domain/services/data.dart';
 import 'package:provider/provider.dart';
 
 class CategoryProvidersPage extends StatefulWidget {
@@ -102,7 +102,7 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                     SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
                     StreamBuilder<List<BaseUser>>(
                         stream: sl
-                            .get<ApiProviderService>()
+                            .get<DataService>()
                             .getArtisans(category: widget.category.id),
                         builder: (context, snapshot) {
                           final artisans = snapshot.data ?? [];
