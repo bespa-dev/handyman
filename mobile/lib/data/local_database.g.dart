@@ -208,20 +208,20 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       business: serializer.fromJson<String>(json['business']),
       phone: serializer.fromJson<String>(json['phone']),
       email: serializer.fromJson<String>(json['email']),
-      isCertified: serializer.fromJson<bool>(json['isCertified']),
-      isAvailable: serializer.fromJson<bool>(json['isAvailable']),
+      isCertified: serializer.fromJson<bool>(json['certified']),
+      isAvailable: serializer.fromJson<bool>(json['available']),
       category: serializer.fromJson<String>(json['category']),
-      startWorkingHours: serializer.fromJson<int>(json['startWorkingHours']),
+      startWorkingHours: serializer.fromJson<int>(json['start_working_hours']),
       completedBookingsCount:
-          serializer.fromJson<int>(json['completedBookingsCount']),
+          serializer.fromJson<int>(json['completed_bookings_count']),
       ongoingBookingsCount:
-          serializer.fromJson<int>(json['ongoingBookingsCount']),
+          serializer.fromJson<int>(json['ongoing_bookings_count']),
       cancelledBookingsCount:
-          serializer.fromJson<int>(json['cancelledBookingsCount']),
-      requestsCount: serializer.fromJson<int>(json['requestsCount']),
-      endWorkingHours: serializer.fromJson<int>(json['endWorkingHours']),
+          serializer.fromJson<int>(json['cancelled_bookings_count']),
+      requestsCount: serializer.fromJson<int>(json['requests_count']),
+      endWorkingHours: serializer.fromJson<int>(json['end_working_hours']),
       avatar: serializer.fromJson<String>(json['avatar']),
-      aboutMe: serializer.fromJson<String>(json['aboutMe']),
+      aboutMe: serializer.fromJson<String>(json['about_me']),
       price: serializer.fromJson<double>(json['price']),
       rating: serializer.fromJson<double>(json['rating']),
     );
@@ -235,17 +235,19 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       'business': serializer.toJson<String>(business),
       'phone': serializer.toJson<String>(phone),
       'email': serializer.toJson<String>(email),
-      'isCertified': serializer.toJson<bool>(isCertified),
-      'isAvailable': serializer.toJson<bool>(isAvailable),
+      'certified': serializer.toJson<bool>(isCertified),
+      'available': serializer.toJson<bool>(isAvailable),
       'category': serializer.toJson<String>(category),
-      'startWorkingHours': serializer.toJson<int>(startWorkingHours),
-      'completedBookingsCount': serializer.toJson<int>(completedBookingsCount),
-      'ongoingBookingsCount': serializer.toJson<int>(ongoingBookingsCount),
-      'cancelledBookingsCount': serializer.toJson<int>(cancelledBookingsCount),
-      'requestsCount': serializer.toJson<int>(requestsCount),
-      'endWorkingHours': serializer.toJson<int>(endWorkingHours),
+      'start_working_hours': serializer.toJson<int>(startWorkingHours),
+      'completed_bookings_count':
+          serializer.toJson<int>(completedBookingsCount),
+      'ongoing_bookings_count': serializer.toJson<int>(ongoingBookingsCount),
+      'cancelled_bookings_count':
+          serializer.toJson<int>(cancelledBookingsCount),
+      'requests_count': serializer.toJson<int>(requestsCount),
+      'end_working_hours': serializer.toJson<int>(endWorkingHours),
       'avatar': serializer.toJson<String>(avatar),
-      'aboutMe': serializer.toJson<String>(aboutMe),
+      'about_me': serializer.toJson<String>(aboutMe),
       'price': serializer.toJson<double>(price),
       'rating': serializer.toJson<double>(rating),
     };
@@ -2047,7 +2049,7 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
       _locationLat ??= _constructLocationLat();
   GeneratedRealColumn _constructLocationLat() {
     return GeneratedRealColumn('lat', $tableName, false,
-        defaultValue: Constant(5.11));
+        defaultValue: Constant(5.5329650));
   }
 
   final VerificationMeta _locationLngMeta =
@@ -2058,7 +2060,7 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
       _locationLng ??= _constructLocationLng();
   GeneratedRealColumn _constructLocationLng() {
     return GeneratedRealColumn('lng', $tableName, false,
-        defaultValue: Constant(-0.122));
+        defaultValue: Constant(-0.2592160));
   }
 
   final VerificationMeta _valueMeta = const VerificationMeta('value');
@@ -3320,9 +3322,6 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
       _categoryItem ??= $CategoryItemTable(this);
   $MessageTable _message;
   $MessageTable get message => _message ??= $MessageTable(this);
-  ProviderDao _providerDao;
-  ProviderDao get providerDao =>
-      _providerDao ??= ProviderDao(this as LocalDatabase);
   CategoryDao _categoryDao;
   CategoryDao get categoryDao =>
       _categoryDao ??= CategoryDao(this as LocalDatabase);
@@ -3334,9 +3333,8 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   MessageDao _messageDao;
   MessageDao get messageDao =>
       _messageDao ??= MessageDao(this as LocalDatabase);
-  CustomerDao _customerDao;
-  CustomerDao get customerDao =>
-      _customerDao ??= CustomerDao(this as LocalDatabase);
+  UserDao _userDao;
+  UserDao get userDao => _userDao ??= UserDao(this as LocalDatabase);
   GalleryDao _galleryDao;
   GalleryDao get galleryDao =>
       _galleryDao ??= GalleryDao(this as LocalDatabase);
@@ -3358,28 +3356,6 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
 // DaoGenerator
 // **************************************************************************
 
-mixin _$ProviderDaoMixin on DatabaseAccessor<LocalDatabase> {
-  $ServiceProviderTable get serviceProvider => attachedDatabase.serviceProvider;
-  Selectable<Artisan> artisanById(String var1) {
-    return customSelect('SELECT * FROM service_provider WHERE id = ?',
-        variables: [Variable.withString(var1)],
-        readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
-  }
-
-  Selectable<Artisan> artisans(String var1) {
-    return customSelect(
-        'SELECT * FROM service_provider WHERE category = ? ORDER BY id desc',
-        variables: [Variable.withString(var1)],
-        readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
-  }
-
-  Selectable<Artisan> searchFor(String var1, String var2) {
-    return customSelect(
-        'SELECT * FROM service_provider WHERE name LIKE ? OR category LIKE ? ORDER BY id desc',
-        variables: [Variable.withString(var1), Variable.withString(var2)],
-        readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
-  }
-}
 mixin _$CategoryDaoMixin on DatabaseAccessor<LocalDatabase> {
   $CategoryItemTable get categoryItem => attachedDatabase.categoryItem;
   Selectable<ServiceCategory> categoryById(String var1) {
@@ -3437,12 +3413,33 @@ mixin _$ReviewDaoMixin on DatabaseAccessor<LocalDatabase> {
 mixin _$MessageDaoMixin on DatabaseAccessor<LocalDatabase> {
   $MessageTable get message => attachedDatabase.message;
 }
-mixin _$CustomerDaoMixin on DatabaseAccessor<LocalDatabase> {
+mixin _$UserDaoMixin on DatabaseAccessor<LocalDatabase> {
   $UserTable get user => attachedDatabase.user;
+  $ServiceProviderTable get serviceProvider => attachedDatabase.serviceProvider;
   Selectable<Customer> customerById(String var1) {
     return customSelect('SELECT * FROM user WHERE id = ?',
         variables: [Variable.withString(var1)],
         readsFrom: {user}).map(user.mapFromRow);
+  }
+
+  Selectable<Artisan> artisanById(String var1) {
+    return customSelect('SELECT * FROM service_provider WHERE id = ?',
+        variables: [Variable.withString(var1)],
+        readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
+  }
+
+  Selectable<Artisan> artisans(String var1) {
+    return customSelect(
+        'SELECT * FROM service_provider WHERE category = ? ORDER BY id desc',
+        variables: [Variable.withString(var1)],
+        readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
+  }
+
+  Selectable<Artisan> searchFor(String var1, String var2) {
+    return customSelect(
+        'SELECT * FROM service_provider\n        INNER JOIN customers\n         WHERE name LIKE ? OR category LIKE ? ORDER BY id desc',
+        variables: [Variable.withString(var1), Variable.withString(var2)],
+        readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
   }
 }
 mixin _$GalleryDaoMixin on DatabaseAccessor<LocalDatabase> {

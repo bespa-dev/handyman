@@ -14,10 +14,10 @@ class Bookings extends Table {
   TextColumn get reason => text()();
   @JsonKey("lat")
   RealColumn get locationLat =>
-      real().named("lat").withDefault(Constant(5.11))();
+      real().named("lat").withDefault(Constant(5.5329650))();
   @JsonKey("lng")
   RealColumn get locationLng =>
-      real().named("lng").withDefault(Constant(-0.122))();
+      real().named("lng").withDefault(Constant(-0.2592160))();
   RealColumn get value => real().withDefault(Constant(10.99))();
   RealColumn get progress => real().withDefault(Constant(0.45))();
 

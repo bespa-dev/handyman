@@ -30,7 +30,6 @@ class ServiceProviderDetails extends StatefulWidget {
 
 class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _isBooked = false;
   ThemeData _themeData;
   final _apiService = sl.get<ApiProviderService>();
   final _textController = TextEditingController();

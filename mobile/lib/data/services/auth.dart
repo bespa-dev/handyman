@@ -51,7 +51,7 @@ class FirebaseAuthService implements AuthService {
           .collection(FirestoreUtils.kCustomerRef)
           .doc(user.uid)
           .set(customer.toJson());
-      await _database.customerDao.addCustomer(customer);
+      await _database.userDao.addCustomer(customer);
       final model = CustomerModel(customer: customer);
       _onProcessingStateChanged.sink.add(successState);
       _onAuthStateChanged.sink.add(model);
@@ -72,6 +72,7 @@ class FirebaseAuthService implements AuthService {
         endWorkingHours: DateTime.now().millisecondsSinceEpoch + 43200000,
         price: 10.99,
         rating: 3.5,
+        requestsCount: 0,
       );
       await _firestore
           .collection(FirestoreUtils.kArtisanRef)
@@ -79,7 +80,7 @@ class FirebaseAuthService implements AuthService {
           .set(artisan.toJson());
 
       final model = ArtisanModel(artisan: artisan);
-      await _database.providerDao.saveProvider(model);
+      await _database.userDao.saveProvider(model);
       _onProcessingStateChanged.sink.add(successState);
       _onAuthStateChanged.sink.add(model);
       return model;
@@ -96,7 +97,7 @@ class FirebaseAuthService implements AuthService {
           .get();
       if (snapshot.exists) {
         final customer = Customer.fromJson(snapshot.data());
-        await _database.customerDao.addCustomer(customer);
+        await _database.userDao.addCustomer(customer);
 
         _onProcessingStateChanged.sink.add(successState);
         final model = CustomerModel(customer: customer);
@@ -117,7 +118,7 @@ class FirebaseAuthService implements AuthService {
         _onProcessingStateChanged.sink.add(successState);
         final model = ArtisanModel(
             artisan: artisan.copyWith(business: artisan.business ?? ""));
-        await _database.providerDao.saveProvider(model);
+        await _database.userDao.saveProvider(model);
         _onAuthStateChanged.sink.add(model);
         return model;
       } else {
@@ -162,7 +163,7 @@ class FirebaseAuthService implements AuthService {
     if (userId != null && userType != null) {
       if (userType == kCustomerString) {
         var localCustomer =
-            await _database.customerDao.customerById(userId).getSingle();
+            await _database.userDao.customerById(userId).getSingle();
         yield CustomerModel(customer: localCustomer);
 
         var customerSnapshot = await _firestore
@@ -171,7 +172,7 @@ class FirebaseAuthService implements AuthService {
             .get();
         if (customerSnapshot.exists) {
           final customer = Customer.fromJson(customerSnapshot.data());
-          await _database.customerDao.addCustomer(customer);
+          await _database.userDao.addCustomer(customer);
           yield CustomerModel(customer: customer);
         }
       } else if (userType == kArtisanString) {
@@ -182,7 +183,7 @@ class FirebaseAuthService implements AuthService {
         if (snapshot.exists) {
           final artisan = Artisan.fromJson(snapshot.data());
           final model = ArtisanModel(artisan: artisan);
-          await _database.providerDao.saveProvider(model);
+          await _database.userDao.saveProvider(model);
           yield model;
         }
       }

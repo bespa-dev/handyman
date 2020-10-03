@@ -8,7 +8,6 @@ import 'package:handyman/domain/models/user.dart';
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 
 class ArtisanProfileInfo extends StatelessWidget {

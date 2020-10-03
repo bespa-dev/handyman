@@ -42,12 +42,11 @@ LazyDatabase _openConnection() {
     Message,
   ],
   daos: [
-    ProviderDao,
     CategoryDao,
     BookingDao,
     ReviewDao,
     MessageDao,
-    CustomerDao,
+    UserDao,
     GalleryDao,
   ],
 )
@@ -72,7 +71,7 @@ class LocalDatabase extends _$LocalDatabase {
             List<dynamic> artisans = decodedData ??= [];
 
             // Save to database
-            providerDao.addProviders(artisans
+            userDao.addProviders(artisans
                 .map((e) => ArtisanModel(artisan: Artisan.fromJson(e)))
                 .toList());
 
@@ -146,27 +145,6 @@ class LocalDatabase extends _$LocalDatabase {
           return m.createAll();
         },
       );
-}
-
-@UseDao(
-  tables: [ServiceProvider],
-  queries: {
-    "artisanById": "SELECT * FROM service_provider WHERE id = ?",
-    "artisans":
-        "SELECT * FROM service_provider WHERE category = ? ORDER BY id desc",
-    "searchFor":
-        "SELECT * FROM service_provider WHERE name LIKE ? OR category LIKE ? ORDER BY id desc",
-  },
-)
-class ProviderDao extends DatabaseAccessor<LocalDatabase>
-    with _$ProviderDaoMixin {
-  ProviderDao(LocalDatabase db) : super(db);
-
-  Future addProviders(List<BaseUser> providers) async =>
-      providers.forEach((person) async => await saveProvider(person.user));
-
-  Future<int> saveProvider(BaseUser artisan) => into(serviceProvider)
-      .insert(artisan.user, mode: InsertMode.insertOrReplace);
 }
 
 @UseDao(
@@ -248,8 +226,8 @@ class MessageDao extends DatabaseAccessor<LocalDatabase>
   Stream<List<Conversation>> conversationWithRecipient(
           {@required String sender, String recipient}) =>
       (select(message)
-            ..where((item) => item.author.equals(sender))
-            ..where((item) => item.recipient.equals(recipient))
+            ..where((item) => item.author.isSmallerOrEqualValue(sender))
+            ..where((item) => item.recipient.isSmallerOrEqualValue(recipient))
             ..orderBy(
               [
                 (u) => OrderingTerm(
@@ -260,17 +238,28 @@ class MessageDao extends DatabaseAccessor<LocalDatabase>
 }
 
 @UseDao(
-  tables: [User],
+  tables: [User, ServiceProvider],
   queries: {
     "customerById": "SELECT * FROM user WHERE id = ?",
+    "artisanById": "SELECT * FROM service_provider WHERE id = ?",
+    "artisans":
+        "SELECT * FROM service_provider WHERE category = ? ORDER BY id desc",
+    "searchFor": """SELECT * FROM service_provider
+        INNER JOIN customers
+         WHERE name LIKE ? OR category LIKE ? ORDER BY id desc""",
   },
 )
-class CustomerDao extends DatabaseAccessor<LocalDatabase>
-    with _$CustomerDaoMixin {
-  CustomerDao(LocalDatabase db) : super(db);
+class UserDao extends DatabaseAccessor<LocalDatabase> with _$UserDaoMixin {
+  UserDao(LocalDatabase db) : super(db);
 
   Future<int> addCustomer(Customer item) =>
       into(user).insert(item, mode: InsertMode.insertOrReplace);
+
+  Future addProviders(List<BaseUser> providers) async =>
+      providers.forEach((person) async => await saveProvider(person.user));
+
+  Future<int> saveProvider(BaseUser artisan) => into(serviceProvider)
+      .insert(artisan.user, mode: InsertMode.insertOrReplace);
 }
 
 @UseDao(

@@ -23,7 +23,6 @@ class BookingCardItem extends StatefulWidget {
 class _BookingCardItemState extends State<BookingCardItem> {
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     return Container();
   }
 }

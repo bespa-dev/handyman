@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
-import 'package:handyman/app/pages/client/search.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';

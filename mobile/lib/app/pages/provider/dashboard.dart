@@ -10,15 +10,12 @@ import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
-import 'package:handyman/core/utils.dart';
 import 'package:handyman/data/entities/booking.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:provider/provider.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:random_color/random_color.dart';
-import 'package:uuid/uuid.dart';
 
 class DashboardPage extends StatefulWidget {
   @override

@@ -13,12 +13,8 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(),
-      extendBodyBehindAppBar: true,
       extendBody: true,
       body: Consumer<PrefsProvider>(
         builder: (_, provider, __) => Stack(
@@ -26,13 +22,13 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
           children: [
             provider.isLightTheme
                 ? Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(kBackgroundAsset),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            )
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(kBackgroundAsset),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )
                 : SizedBox.shrink(),
           ],
         ),

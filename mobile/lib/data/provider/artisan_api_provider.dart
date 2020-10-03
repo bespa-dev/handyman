@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:algolia/algolia.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/utils.dart';
 import 'package:handyman/data/entities/artisan_model.dart';
@@ -19,8 +18,7 @@ import 'package:uuid/uuid.dart';
 /// Data is fetched using streams so that upon update it will
 /// automatically notify all listeners.
 class ApiProviderService {
-  final _providerDao = sl.get<LocalDatabase>().providerDao;
-  final _customerDao = sl.get<LocalDatabase>().customerDao;
+  final _userDao = sl.get<LocalDatabase>().userDao;
   final _categoryDao = sl.get<LocalDatabase>().categoryDao;
   final _messageDao = sl.get<LocalDatabase>().messageDao;
   final _reviewDao = sl.get<LocalDatabase>().reviewDao;
@@ -36,7 +34,7 @@ class ApiProviderService {
 
   /// Get all [Artisan]s from data source
   Stream<List<BaseUser>> getArtisans({@required String category}) async* {
-    final localSource = _providerDao
+    final localSource = _userDao
         .artisans(category)
         .watch()
         .map((event) => event.map((e) => ArtisanModel(artisan: e)).toList());
@@ -51,14 +49,14 @@ class ApiProviderService {
     snapshots.listen((event) {
       event.docs.forEach((element) async {
         final artisan = Artisan.fromJson(element.data());
-        await _providerDao.saveProvider(ArtisanModel(artisan: artisan));
+        await _userDao.saveProvider(ArtisanModel(artisan: artisan));
       });
     });
     // await _providerDao.addProviders(results);
   }
 
   Stream<BaseUser> getArtisanById({@required String id}) async* {
-    final localSource = _providerDao
+    final localSource = _userDao
         .artisanById(id)
         .watchSingle()
         .map((artisan) => ArtisanModel(artisan: artisan));
@@ -71,7 +69,7 @@ class ApiProviderService {
     snapshots.listen((event) async {
       final artisanModel =
           ArtisanModel(artisan: Artisan.fromJson(event.data()));
-      await _providerDao.saveProvider(artisanModel);
+      await _userDao.saveProvider(artisanModel);
     });
   }
 
@@ -103,7 +101,7 @@ class ApiProviderService {
   }
 
   /// Get [Customer] by [id]
-  Stream<BaseUser> getCustomerById({@required String id}) => _customerDao
+  Stream<BaseUser> getCustomerById({@required String id}) => _userDao
       .customerById(id)
       .watchSingle()
       .map((customer) => CustomerModel(customer: customer));
@@ -151,7 +149,7 @@ class ApiProviderService {
 
       // Return transformed data from API
       return snapshot.empty
-          ? _providerDao.searchFor(value, categoryId ?? "").get()
+          ? _userDao.searchFor(value, categoryId ?? "").get()
           : snapshot.hits
               .map((e) => ArtisanModel(
                     artisan: Artisan.fromJson(e.data),

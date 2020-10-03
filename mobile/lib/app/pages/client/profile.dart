@@ -12,31 +12,28 @@ class _ProfilePageState extends State<ProfilePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
-  Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(),
-      extendBodyBehindAppBar: true,
-      extendBody: true,
-      body: Consumer<PrefsProvider>(
-        builder: (_, provider, __) => Stack(
-          fit: StackFit.expand,
-          children: [
-            provider.isLightTheme
-                ? Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(kBackgroundAsset),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            )
-                : SizedBox.shrink(),
-          ],
+  Widget build(BuildContext context) => Consumer<PrefsProvider>(
+        builder: (_, provider, __) => StreamBuilder(
+          builder: (_, snapshot) => Scaffold(
+            key: _scaffoldKey,
+            extendBodyBehindAppBar: true,
+            extendBody: true,
+            body: Stack(
+              fit: StackFit.expand,
+              children: [
+                provider.isLightTheme
+                    ? Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(kBackgroundAsset),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
+                    : SizedBox.shrink(),
+              ],
+            ),
+          ),
         ),
-      ),
-    );
-  }
+      );
 }

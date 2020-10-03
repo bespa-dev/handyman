@@ -45,7 +45,6 @@ class _ChatListItemState extends State<ChatListItem> {
         final color =
             provider.isLightTheme ? kChatBackgroundLight : kChatBackgroundDark;
         final textAlignment = isMe ? TextAlign.end : TextAlign.start;
-        final themeData = Theme.of(context);
 
         return InkWell(
           onTap: () => widget.onTap(conversation),

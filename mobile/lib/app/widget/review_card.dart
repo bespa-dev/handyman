@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
-import 'package:handyman/data/entities/customer_model.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:random_color/random_color.dart';
-import 'package:uuid/uuid.dart';
 import 'package:meta/meta.dart';
 
 class CustomerReviewCard extends StatefulWidget {
@@ -32,7 +29,6 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final kHeight = MediaQuery.of(context).size.height;
     final kWidth = MediaQuery.of(context).size.width;
 
     return StreamBuilder<BaseUser>(

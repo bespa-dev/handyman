@@ -22,7 +22,6 @@ class BadgeableTabBar extends StatelessWidget {
     final themeData = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final kWidth = size.width;
-    final kHeight = size.height;
 
     return Container(
       width: kWidth,

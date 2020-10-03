@@ -23,7 +23,6 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _emailController = TextEditingController(),
-      _passwordController = TextEditingController(),
       _nameController = TextEditingController();
   File _avatar;
   final picker = ImagePicker();
@@ -68,13 +67,13 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
             children: [
               prefs.isLightTheme
                   ? Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(kBackgroundAsset),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              )
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(kBackgroundAsset),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
                   : SizedBox.shrink(),
               Positioned.fill(
                 child: SafeArea(
@@ -84,18 +83,16 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
-                            height:
-                            getProportionateScreenHeight(kSpacingX96)),
+                            height: getProportionateScreenHeight(kSpacingX96)),
                         _avatar == null
                             ? _buildImagePickerWidget()
                             : _buildAvatarWidget(),
                         SizedBox(
-                            height:
-                            getProportionateScreenHeight(kSpacingX24)),
+                            height: getProportionateScreenHeight(kSpacingX24)),
                         Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal:
-                              getProportionateScreenWidth(kSpacingX48)),
+                                  getProportionateScreenWidth(kSpacingX48)),
                           child: Form(
                             key: _formKey,
                             child: Column(
@@ -105,8 +102,9 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
                                   labelText: "Full Name",
                                   enabled: !_isLoading,
                                   controller: _nameController,
-                                  validator: (value) =>
-                                  value == null || value.isEmpty || value.length < 6
+                                  validator: (value) => value == null ||
+                                          value.isEmpty ||
+                                          value.length < 6
                                       ? "Provide your full name"
                                       : null,
                                   color: _themeData.textTheme.bodyText1.color,
@@ -115,9 +113,9 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
                                   labelText: "Email Address",
                                   enabled: false,
                                   validator: (value) =>
-                                  EmailValidator.validate(value)
-                                      ? null
-                                      : "Enter a valid email address",
+                                      EmailValidator.validate(value)
+                                          ? null
+                                          : "Enter a valid email address",
                                   color: _themeData.textTheme.bodyText1.color,
                                   controller: _emailController
                                     ..value = TextEditingValue(
@@ -128,19 +126,17 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
                           ),
                         ),
                         SizedBox(
-                            height:
-                            getProportionateScreenHeight(kSpacingX24)),
+                            height: getProportionateScreenHeight(kSpacingX24)),
                         ButtonOutlined(
                           width: getProportionateScreenWidth(kSpacingX200),
                           themeData: _themeData,
                           onTap: () {
                             _formKey.currentState.save();
-                            if(_formKey.currentState.validate()) {
+                            if (_formKey.currentState.validate()) {
                               debugPrint("Validated form successfully");
                             }
                           },
-                          enabled:
-                          !_isLoading,
+                          enabled: !_isLoading,
                           label: "Save",
                         )
                         // SizedBox(height: getProportionateScreenHeight(kSpacingX24)),
@@ -152,42 +148,42 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
               prefs.userType == kArtisanString
                   ? SizedBox.shrink()
                   : Positioned(
-                top: getProportionateScreenHeight(kSpacingX64),
-                right: 0,
-                child: InkWell(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(
-                        getProportionateScreenWidth(kSpacingX24)),
-                    bottomLeft: Radius.circular(
-                        getProportionateScreenWidth(kSpacingX24)),
-                  ),
-                  onTap: () => context.navigator.popAndPush(
-                    prefs.userType == kCustomerString
-                        ? Routes.homePage
-                        : Routes.dashboardPage,
-                  ),
-                  child: Container(
-                    height: kToolbarHeight,
-                    width: kWidth * 0.3,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: _themeData.primaryColor,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(
-                            getProportionateScreenWidth(kSpacingX24)),
-                        bottomLeft: Radius.circular(
-                            getProportionateScreenWidth(kSpacingX24)),
+                      top: getProportionateScreenHeight(kSpacingX64),
+                      right: 0,
+                      child: InkWell(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(
+                              getProportionateScreenWidth(kSpacingX24)),
+                          bottomLeft: Radius.circular(
+                              getProportionateScreenWidth(kSpacingX24)),
+                        ),
+                        onTap: () => context.navigator.popAndPush(
+                          prefs.userType == kCustomerString
+                              ? Routes.homePage
+                              : Routes.dashboardPage,
+                        ),
+                        child: Container(
+                          height: kToolbarHeight,
+                          width: kWidth * 0.3,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: _themeData.primaryColor,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(
+                                  getProportionateScreenWidth(kSpacingX24)),
+                              bottomLeft: Radius.circular(
+                                  getProportionateScreenWidth(kSpacingX24)),
+                            ),
+                          ),
+                          child: Text(
+                            "Skip".toUpperCase(),
+                            style: _themeData.textTheme.button.copyWith(
+                              color: _themeData.colorScheme.onPrimary,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                    child: Text(
-                      "Skip".toUpperCase(),
-                      style: _themeData.textTheme.button.copyWith(
-                        color: _themeData.colorScheme.onPrimary,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),

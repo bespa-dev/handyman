@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/widget/artisan_card.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:handyman/domain/models/user.dart';
-import 'package:provider/provider.dart';
 
 class SearchPage extends SearchDelegate {
   @override
@@ -86,7 +84,6 @@ class SearchPage extends SearchDelegate {
 
   @override
   ThemeData appBarTheme(BuildContext context) {
-    final bool isLightTheme = Provider.of<PrefsProvider>(context).isLightTheme;
     final ThemeData theme = Theme.of(context);
     return theme.copyWith(
       primaryColor: theme.primaryColor,
