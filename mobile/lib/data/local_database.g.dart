@@ -3398,14 +3398,21 @@ mixin _$BookingDaoMixin on DatabaseAccessor<LocalDatabase> {
   $BookingsTable get bookings => attachedDatabase.bookings;
   Selectable<Booking> bookingsForCustomer(String var1) {
     return customSelect(
-        'SELECT * FROM bookings WHERE customer_id = ? ORDER BY created_at DESC',
+        'SELECT * FROM bookings WHERE customer_id = ? ORDER BY due_date DESC',
+        variables: [Variable.withString(var1)],
+        readsFrom: {bookings}).map(bookings.mapFromRow);
+  }
+
+  Selectable<Booking> bookingsForProvider(String var1) {
+    return customSelect(
+        'SELECT * FROM bookings WHERE provider_id = ? ORDER BY due_date DESC',
         variables: [Variable.withString(var1)],
         readsFrom: {bookings}).map(bookings.mapFromRow);
   }
 
   Selectable<Booking> bookingsForCustomerAndProvider(String var1, String var2) {
     return customSelect(
-        'SELECT * FROM bookings WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC',
+        'SELECT * FROM bookings WHERE customer_id = ? AND provider_id = ? ORDER BY due_date DESC',
         variables: [Variable.withString(var1), Variable.withString(var2)],
         readsFrom: {bookings}).map(bookings.mapFromRow);
   }

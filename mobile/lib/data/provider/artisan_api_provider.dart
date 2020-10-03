@@ -64,7 +64,13 @@ class ApiProviderService {
   Stream<List<Booking>> getMyBookings(String id) =>
       _bookingDao.bookingsForCustomer(id).watch();
 
-  Stream<List<Booking>> getMyBookingsForProvider(
+  Stream<List<Booking>> getBookingsForProvider(String id) =>
+      _bookingDao.bookingsForProvider(id).watch();
+
+  Stream<List<Booking>> getBookingsForCustomer(String id) =>
+      _bookingDao.bookingsForCustomer(id).watch();
+
+  Stream<List<Booking>> bookingsForCustomerAndProvider(
           String customerId, String providerId) =>
       _bookingDao
           .bookingsForCustomerAndProvider(customerId, providerId)

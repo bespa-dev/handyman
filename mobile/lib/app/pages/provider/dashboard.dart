@@ -399,7 +399,6 @@ class _DashboardPageState extends State<DashboardPage> {
                   ...bookings.map(
                     (item) => BookingCardItem(
                       booking: item,
-                      bookingType: BookingType.NEW,
                       onTap: () {},
                     ),
                   ),
@@ -409,13 +408,4 @@ class _DashboardPageState extends State<DashboardPage> {
           );
         },
       );
-
-  // @override
-  // void initState() {
-  //   super.initState();
-
-  //   for (int i = 0; i < 12; i++) {
-  //     debugPrint(Uuid().v4());
-  //   }
-  // }
 }

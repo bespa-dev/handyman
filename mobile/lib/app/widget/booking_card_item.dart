@@ -13,7 +13,7 @@ class BookingCardItem extends StatefulWidget {
     Key key,
     @required this.booking,
     @required this.onTap,
-    @required this.bookingType,
+    this.bookingType = BookingType.NEW,
   }) : super(key: key);
 
   @override
@@ -23,6 +23,7 @@ class BookingCardItem extends StatefulWidget {
 class _BookingCardItemState extends State<BookingCardItem> {
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
     return Container();
   }
 }
