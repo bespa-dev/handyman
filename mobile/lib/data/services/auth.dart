@@ -77,8 +77,9 @@ class FirebaseAuthService implements AuthService {
           .collection(FirestoreUtils.kArtisanRef)
           .doc(user.uid)
           .set(artisan.toJson());
-      await _database.providerDao.saveProvider(artisan);
+
       final model = ArtisanModel(artisan: artisan);
+      await _database.providerDao.saveProvider(model);
       _onProcessingStateChanged.sink.add(successState);
       _onAuthStateChanged.sink.add(model);
       return model;
@@ -112,10 +113,11 @@ class FirebaseAuthService implements AuthService {
           .get();
       if (snapshot.exists) {
         final artisan = Artisan.fromJson(snapshot.data());
-        await _database.providerDao.saveProvider(artisan);
+
         _onProcessingStateChanged.sink.add(successState);
         final model = ArtisanModel(
             artisan: artisan.copyWith(business: artisan.business ?? ""));
+        await _database.providerDao.saveProvider(model);
         _onAuthStateChanged.sink.add(model);
         return model;
       } else {
@@ -179,8 +181,9 @@ class FirebaseAuthService implements AuthService {
             .get();
         if (snapshot.exists) {
           final artisan = Artisan.fromJson(snapshot.data());
-          await _database.providerDao.saveProvider(artisan);
-          yield ArtisanModel(artisan: artisan);
+          final model = ArtisanModel(artisan: artisan);
+          await _database.providerDao.saveProvider(model);
+          yield model;
         }
       }
     } else

@@ -1,15 +1,16 @@
 import 'dart:io';
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:handyman/core/constants.dart';
+import 'package:handyman/data/entities/artisan_model.dart';
 import 'package:handyman/data/entities/conversation.dart';
 import 'package:handyman/data/entities/gallery.dart';
+import 'package:handyman/domain/models/user.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:meta/meta.dart';
 
 import 'entities/booking.dart';
 import 'entities/category.dart';
@@ -71,8 +72,9 @@ class LocalDatabase extends _$LocalDatabase {
             List<dynamic> artisans = decodedData ??= [];
 
             // Save to database
-            providerDao.addProviders(
-                artisans.map((e) => Artisan.fromJson(e)).toList());
+            providerDao.addProviders(artisans
+                .map((e) => ArtisanModel(artisan: Artisan.fromJson(e)))
+                .toList());
 
             // Decode categories from json array
             final categoryData =
@@ -160,11 +162,11 @@ class ProviderDao extends DatabaseAccessor<LocalDatabase>
     with _$ProviderDaoMixin {
   ProviderDao(LocalDatabase db) : super(db);
 
-  void addProviders(List<Artisan> providers) =>
-      providers.forEach((person) async => await saveProvider(person));
+  Future addProviders(List<BaseUser> providers) async =>
+      providers.forEach((person) async => await saveProvider(person.user));
 
-  Future<int> saveProvider(Artisan artisan) =>
-      into(serviceProvider).insert(artisan, mode: InsertMode.insertOrReplace);
+  Future<int> saveProvider(BaseUser artisan) => into(serviceProvider)
+      .insert(artisan.user, mode: InsertMode.insertOrReplace);
 }
 
 @UseDao(

@@ -10,6 +10,7 @@ class Message extends Table {
 
   TextColumn get content => text()();
 
+  @JsonKey("created_at")
   TextColumn get createdAt => text()();
 
   TextColumn get image => text().nullable()();

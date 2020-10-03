@@ -1717,11 +1717,11 @@ class Booking extends DataClass implements Insertable<Booking> {
       providerId: serializer.fromJson<String>(json['providerId']),
       description: serializer.fromJson<String>(json['description']),
       reason: serializer.fromJson<String>(json['reason']),
-      locationLat: serializer.fromJson<double>(json['locationLat']),
-      locationLng: serializer.fromJson<double>(json['locationLng']),
+      locationLat: serializer.fromJson<double>(json['lat']),
+      locationLng: serializer.fromJson<double>(json['lng']),
       value: serializer.fromJson<double>(json['value']),
       progress: serializer.fromJson<double>(json['progress']),
-      createdAt: serializer.fromJson<int>(json['createdAt']),
+      createdAt: serializer.fromJson<int>(json['created_at']),
       dueDate: serializer.fromJson<int>(json['dueDate']),
     );
   }
@@ -1734,11 +1734,11 @@ class Booking extends DataClass implements Insertable<Booking> {
       'providerId': serializer.toJson<String>(providerId),
       'description': serializer.toJson<String>(description),
       'reason': serializer.toJson<String>(reason),
-      'locationLat': serializer.toJson<double>(locationLat),
-      'locationLng': serializer.toJson<double>(locationLng),
+      'lat': serializer.toJson<double>(locationLat),
+      'lng': serializer.toJson<double>(locationLng),
       'value': serializer.toJson<double>(value),
       'progress': serializer.toJson<double>(progress),
-      'createdAt': serializer.toJson<int>(createdAt),
+      'created_at': serializer.toJson<int>(createdAt),
       'dueDate': serializer.toJson<int>(dueDate),
     };
   }
@@ -2994,7 +2994,7 @@ class Conversation extends DataClass implements Insertable<Conversation> {
       author: serializer.fromJson<String>(json['author']),
       recipient: serializer.fromJson<String>(json['recipient']),
       content: serializer.fromJson<String>(json['content']),
-      createdAt: serializer.fromJson<String>(json['createdAt']),
+      createdAt: serializer.fromJson<String>(json['created_at']),
       image: serializer.fromJson<String>(json['image']),
     );
   }
@@ -3006,7 +3006,7 @@ class Conversation extends DataClass implements Insertable<Conversation> {
       'author': serializer.toJson<String>(author),
       'recipient': serializer.toJson<String>(recipient),
       'content': serializer.toJson<String>(content),
-      'createdAt': serializer.toJson<String>(createdAt),
+      'created_at': serializer.toJson<String>(createdAt),
       'image': serializer.toJson<String>(image),
     };
   }

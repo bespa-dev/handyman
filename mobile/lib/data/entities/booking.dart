@@ -1,4 +1,3 @@
-import 'package:handyman/core/constants.dart';
 import 'package:moor/moor.dart';
 
 class Bookings extends Table {
@@ -13,13 +12,16 @@ class Bookings extends Table {
           "Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cursus sit amet dictum sit amet. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique"))
       .withLength(max: 1000)();
   TextColumn get reason => text()();
+  @JsonKey("lat")
   RealColumn get locationLat =>
       real().named("lat").withDefault(Constant(5.11))();
+  @JsonKey("lng")
   RealColumn get locationLng =>
       real().named("lng").withDefault(Constant(-0.122))();
   RealColumn get value => real().withDefault(Constant(10.99))();
   RealColumn get progress => real().withDefault(Constant(0.45))();
 
+  @JsonKey("created_at")
   IntColumn get createdAt =>
       integer().withDefault(Constant(DateTime.now().millisecondsSinceEpoch))();
   IntColumn get dueDate => integer().withDefault(
