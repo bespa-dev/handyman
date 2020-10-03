@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/badgeable_tab_bar.dart';
+import 'package:handyman/app/widget/booking_card_item.dart';
+import 'package:handyman/app/widget/menu_icon.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/core/utils.dart';
+import 'package:handyman/data/entities/booking.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/provider/artisan_api_provider.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:provider/provider.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:random_color/random_color.dart';
+import 'package:uuid/uuid.dart';
 
 class DashboardPage extends StatefulWidget {
   @override
@@ -43,6 +48,7 @@ class _DashboardPageState extends State<DashboardPage> {
           stream: _apiService.getArtisanById(id: provider.userId),
           builder: (_, snapshot) {
             final artisan = snapshot.data?.user;
+            debugPrint("User -> ${artisan?.id}");
 
             return Scaffold(
               key: _scaffoldKey,
@@ -68,6 +74,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           stream:
                               _apiService.getArtisanById(id: provider.userId),
                           builder: (context, snapshot) {
+                            debugPrint(snapshot.error.toString());
                             if (snapshot.hasError) return Container();
 
                             final artisan = snapshot.data?.user;
@@ -88,11 +95,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                       BadgeableTabBarItem(
                                         title: "Ongoing",
                                         badgeCount:
-                                            artisan.ongoingBookingsCount,
+                                            artisan?.ongoingBookingsCount ?? 0,
                                       ),
                                       BadgeableTabBarItem(
                                         title: "Requests",
-                                        badgeCount: artisan.requestsCount,
+                                        badgeCount: artisan?.requestsCount ?? 0,
                                       ),
                                     ],
                                     onTabSelected: (index) {
@@ -131,9 +138,9 @@ class _DashboardPageState extends State<DashboardPage> {
                         radius: kSpacingX72,
                         ringColor: _themeData.iconTheme.color,
                       ),
-                      accountName: Text(artisan?.name),
+                      accountName: Text(artisan?.name ?? ""),
                       accountEmail: Text(
-                        artisan?.email,
+                        artisan?.email ?? "",
                         style: TextStyle(
                           color: _themeData.textTheme.bodyText1.color
                               .withOpacity(kEmphasisMedium),
@@ -157,27 +164,35 @@ class _DashboardPageState extends State<DashboardPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  tooltip: "Open drawer",
-                  icon: Icon(Entypo.menu),
-                  onPressed: () => _scaffoldKey.currentState.openDrawer(),
-                ),
-                IconButton(
-                  tooltip: "Toggle theme",
-                  icon: Icon(
-                    provider.isLightTheme ? Feather.moon : Feather.sun,
+            Container(
+              width: _kWidth,
+              padding: EdgeInsets.only(
+                left: getProportionateScreenWidth(kSpacingX12),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Tooltip(
+                    message: "Open drawer",
+                    child: MenuIcon(
+                      onTap: () => _scaffoldKey.currentState.openDrawer(),
+                    ),
                   ),
-                  onPressed: () => provider.toggleTheme(),
-                ),
-              ],
+                  IconButton(
+                    tooltip: "Toggle theme",
+                    icon: Icon(
+                      provider.isLightTheme ? Feather.moon : Feather.sun,
+                    ),
+                    onPressed: () => provider.toggleTheme(),
+                  ),
+                ],
+              ),
             ),
             SizedBox(
               height: getProportionateScreenHeight(kSpacingX12),
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 InkWell(
                   borderRadius: BorderRadius.all(
@@ -190,7 +205,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                   ),
                   child: SizedBox(
-                    width: _kWidth * 0.67,
+                    width: _kWidth * 0.65,
                     child: Card(
                       clipBehavior: Clip.hardEdge,
                       elevation: kSpacingX2,
@@ -231,7 +246,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               height: getProportionateScreenHeight(kSpacingX4),
                             ),
                             Text(
-                              "${artisan.ongoingBookingsCount} active tasks this week",
+                              "${artisan?.ongoingBookingsCount ?? "No"} active tasks this week",
                               style: _themeData.textTheme.caption.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: _themeData.colorScheme.onSecondary
@@ -290,7 +305,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               height: getProportionateScreenHeight(kSpacingX4),
                             ),
                             Text(
-                              "${artisan.completedBookingsCount} projects",
+                              "${artisan?.completedBookingsCount ?? "No"} projects",
                               style: _themeData.textTheme.caption.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -322,6 +337,22 @@ class _DashboardPageState extends State<DashboardPage> {
           child: Container(
             height: kToolbarHeight,
             width: double.infinity,
+            padding: EdgeInsets.symmetric(
+              horizontal: getProportionateScreenWidth(kSpacingX16),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Feather.search,
+                  color: _themeData.colorScheme.onBackground,
+                ),
+                SizedBox(width: getProportionateScreenWidth(kSpacingX12)),
+                Text(
+                  "Search for projects, bookings, etc.",
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -329,17 +360,62 @@ class _DashboardPageState extends State<DashboardPage> {
   /// Get ongoing [Booking]s
   Widget _buildOngoingTasksWidget(Artisan artisan) =>
       StreamBuilder<List<Booking>>(
-        stream: _apiService.getMyBookings(artisan.id),
+        stream: _apiService.getMyBookings(artisan?.id),
+        initialData: [],
         builder: (context, snapshot) {
-          return Column();
+          final bookings = snapshot.data;
+
+          return AnimationLimiter(
+            child: AnimationConfiguration.synchronized(
+              duration: kScaleDuration,
+              child: Column(
+                children: [
+                  ...bookings.map(
+                    (item) => BookingCardItem(
+                      booking: item,
+                      bookingType: BookingType.ONGOING,
+                      onTap: () {},
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
         },
       );
 
   /// Get newly requested [Booking]s
-  Widget _buildRequestsWidget(artisan) => StreamBuilder<List<Booking>>(
-        stream: _apiService.getMyBookings(artisan.id),
+  Widget _buildRequestsWidget(Artisan artisan) => StreamBuilder<List<Booking>>(
+        stream: _apiService.getMyBookings(artisan?.id),
+        initialData: [],
         builder: (context, snapshot) {
-          return Column();
+          final bookings = snapshot.data;
+
+          return AnimationLimiter(
+            child: AnimationConfiguration.synchronized(
+              duration: kScaleDuration,
+              child: Column(
+                children: [
+                  ...bookings.map(
+                    (item) => BookingCardItem(
+                      booking: item,
+                      bookingType: BookingType.NEW,
+                      onTap: () {},
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
         },
       );
+
+  // @override
+  // void initState() {
+  //   super.initState();
+
+  //   for (int i = 0; i < 12; i++) {
+  //     debugPrint(Uuid().v4());
+  //   }
+  // }
 }

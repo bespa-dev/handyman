@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:handyman/core/constants.dart';
 import 'package:handyman/data/entities/conversation.dart';
 import 'package:handyman/data/entities/gallery.dart';
 import 'package:moor/ffi.dart';
@@ -55,7 +56,7 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -84,7 +85,29 @@ class LocalDatabase extends _$LocalDatabase {
             categoryDao.addItems(
                 categories.map((e) => ServiceCategory.fromJson(e)).toList());
 
+            // Decode bookings from json array
+            final bookingsData =
+                await rootBundle.loadString("assets/sample_bookings.json");
+            var decodedBookingsData = json.decode(bookingsData);
+
+            List<dynamic> _bookings = decodedBookingsData ??= [];
+
+            // Save to database
+            await bookingDao
+                .addItems(_bookings.map((e) => Booking.fromJson(e)).toList());
+
             await customStatement('PRAGMA foreign_keys = ON');
+          } else if (details.hadUpgrade && details.versionNow == 6) {
+            // Decode bookings from json array
+            final bookingsData =
+                await rootBundle.loadString("assets/sample_bookings.json");
+            var decodedBookingsData = json.decode(bookingsData);
+
+            List<dynamic> _bookings = decodedBookingsData ??= [];
+
+            // Save to database
+            await bookingDao
+                .addItems(_bookings.map((e) => Booking.fromJson(e)).toList());
           }
         },
         onUpgrade: (m, from, to) async {
@@ -100,6 +123,19 @@ class LocalDatabase extends _$LocalDatabase {
               break;
             case 4:
               await m.addColumn(serviceProvider, serviceProvider.requestsCount);
+              break;
+            case 5:
+              await m.addColumn(bookings, bookings.locationLat);
+              await m.addColumn(bookings, bookings.locationLng);
+              await m.addColumn(bookings, bookings.description);
+              await m.addColumn(bookings, bookings.reason);
+              await m.addColumn(bookings, bookings.value);
+              await m.addColumn(bookings, bookings.dueDate);
+              await m.addColumn(bookings, bookings.progress);
+              break;
+            case 6:
+              await m.addColumn(bookings, bookings.locationLat);
+              await m.addColumn(bookings, bookings.locationLng);
               break;
           }
         },
@@ -165,7 +201,7 @@ class BookingDao extends DatabaseAccessor<LocalDatabase>
     with _$BookingDaoMixin {
   BookingDao(LocalDatabase db) : super(db);
 
-  void addItems(List<Booking> items) {
+  Future addItems(List<Booking> items) async {
     items.forEach((item) async {
       await into(bookings).insert(item, mode: InsertMode.insertOrReplace);
     });

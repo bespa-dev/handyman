@@ -43,6 +43,8 @@ class MockAuthService implements AuthService {
       completedBookingsCount: 23,
       ongoingBookingsCount: 33,
       phone: "+233123456789",
+      requestsCount: 12,
+      aboutMe: "",
     ),
   );
 

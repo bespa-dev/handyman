@@ -1585,26 +1585,54 @@ class Booking extends DataClass implements Insertable<Booking> {
   final int id;
   final String customerId;
   final String providerId;
-  final DateTime createdAt;
+  final String description;
+  final String reason;
+  final double locationLat;
+  final double locationLng;
+  final double value;
+  final double progress;
+  final int createdAt;
+  final int dueDate;
   Booking(
       {@required this.id,
       @required this.customerId,
       @required this.providerId,
-      @required this.createdAt});
+      this.description,
+      @required this.reason,
+      @required this.locationLat,
+      @required this.locationLng,
+      @required this.value,
+      @required this.progress,
+      @required this.createdAt,
+      @required this.dueDate});
   factory Booking.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
-    final dateTimeType = db.typeSystem.forDartType<DateTime>();
+    final doubleType = db.typeSystem.forDartType<double>();
     return Booking(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       customerId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}customer_id']),
       providerId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}provider_id']),
-      createdAt: dateTimeType
-          .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
+      description: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}description']),
+      reason:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}reason']),
+      locationLat:
+          doubleType.mapFromDatabaseResponse(data['${effectivePrefix}lat']),
+      locationLng:
+          doubleType.mapFromDatabaseResponse(data['${effectivePrefix}lng']),
+      value:
+          doubleType.mapFromDatabaseResponse(data['${effectivePrefix}value']),
+      progress: doubleType
+          .mapFromDatabaseResponse(data['${effectivePrefix}progress']),
+      createdAt:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
+      dueDate:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}due_date']),
     );
   }
   @override
@@ -1619,8 +1647,29 @@ class Booking extends DataClass implements Insertable<Booking> {
     if (!nullToAbsent || providerId != null) {
       map['provider_id'] = Variable<String>(providerId);
     }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || reason != null) {
+      map['reason'] = Variable<String>(reason);
+    }
+    if (!nullToAbsent || locationLat != null) {
+      map['lat'] = Variable<double>(locationLat);
+    }
+    if (!nullToAbsent || locationLng != null) {
+      map['lng'] = Variable<double>(locationLng);
+    }
+    if (!nullToAbsent || value != null) {
+      map['value'] = Variable<double>(value);
+    }
+    if (!nullToAbsent || progress != null) {
+      map['progress'] = Variable<double>(progress);
+    }
     if (!nullToAbsent || createdAt != null) {
-      map['created_at'] = Variable<DateTime>(createdAt);
+      map['created_at'] = Variable<int>(createdAt);
+    }
+    if (!nullToAbsent || dueDate != null) {
+      map['due_date'] = Variable<int>(dueDate);
     }
     return map;
   }
@@ -1634,9 +1683,28 @@ class Booking extends DataClass implements Insertable<Booking> {
       providerId: providerId == null && nullToAbsent
           ? const Value.absent()
           : Value(providerId),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      reason:
+          reason == null && nullToAbsent ? const Value.absent() : Value(reason),
+      locationLat: locationLat == null && nullToAbsent
+          ? const Value.absent()
+          : Value(locationLat),
+      locationLng: locationLng == null && nullToAbsent
+          ? const Value.absent()
+          : Value(locationLng),
+      value:
+          value == null && nullToAbsent ? const Value.absent() : Value(value),
+      progress: progress == null && nullToAbsent
+          ? const Value.absent()
+          : Value(progress),
       createdAt: createdAt == null && nullToAbsent
           ? const Value.absent()
           : Value(createdAt),
+      dueDate: dueDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dueDate),
     );
   }
 
@@ -1647,7 +1715,14 @@ class Booking extends DataClass implements Insertable<Booking> {
       id: serializer.fromJson<int>(json['id']),
       customerId: serializer.fromJson<String>(json['customerId']),
       providerId: serializer.fromJson<String>(json['providerId']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      description: serializer.fromJson<String>(json['description']),
+      reason: serializer.fromJson<String>(json['reason']),
+      locationLat: serializer.fromJson<double>(json['locationLat']),
+      locationLng: serializer.fromJson<double>(json['locationLng']),
+      value: serializer.fromJson<double>(json['value']),
+      progress: serializer.fromJson<double>(json['progress']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      dueDate: serializer.fromJson<int>(json['dueDate']),
     );
   }
   @override
@@ -1657,17 +1732,41 @@ class Booking extends DataClass implements Insertable<Booking> {
       'id': serializer.toJson<int>(id),
       'customerId': serializer.toJson<String>(customerId),
       'providerId': serializer.toJson<String>(providerId),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'description': serializer.toJson<String>(description),
+      'reason': serializer.toJson<String>(reason),
+      'locationLat': serializer.toJson<double>(locationLat),
+      'locationLng': serializer.toJson<double>(locationLng),
+      'value': serializer.toJson<double>(value),
+      'progress': serializer.toJson<double>(progress),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'dueDate': serializer.toJson<int>(dueDate),
     };
   }
 
   Booking copyWith(
-          {int id, String customerId, String providerId, DateTime createdAt}) =>
+          {int id,
+          String customerId,
+          String providerId,
+          String description,
+          String reason,
+          double locationLat,
+          double locationLng,
+          double value,
+          double progress,
+          int createdAt,
+          int dueDate}) =>
       Booking(
         id: id ?? this.id,
         customerId: customerId ?? this.customerId,
         providerId: providerId ?? this.providerId,
+        description: description ?? this.description,
+        reason: reason ?? this.reason,
+        locationLat: locationLat ?? this.locationLat,
+        locationLng: locationLng ?? this.locationLng,
+        value: value ?? this.value,
+        progress: progress ?? this.progress,
         createdAt: createdAt ?? this.createdAt,
+        dueDate: dueDate ?? this.dueDate,
       );
   @override
   String toString() {
@@ -1675,7 +1774,14 @@ class Booking extends DataClass implements Insertable<Booking> {
           ..write('id: $id, ')
           ..write('customerId: $customerId, ')
           ..write('providerId: $providerId, ')
-          ..write('createdAt: $createdAt')
+          ..write('description: $description, ')
+          ..write('reason: $reason, ')
+          ..write('locationLat: $locationLat, ')
+          ..write('locationLng: $locationLng, ')
+          ..write('value: $value, ')
+          ..write('progress: $progress, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('dueDate: $dueDate')
           ..write(')'))
         .toString();
   }
@@ -1683,8 +1789,24 @@ class Booking extends DataClass implements Insertable<Booking> {
   @override
   int get hashCode => $mrjf($mrjc(
       id.hashCode,
-      $mrjc(customerId.hashCode,
-          $mrjc(providerId.hashCode, createdAt.hashCode))));
+      $mrjc(
+          customerId.hashCode,
+          $mrjc(
+              providerId.hashCode,
+              $mrjc(
+                  description.hashCode,
+                  $mrjc(
+                      reason.hashCode,
+                      $mrjc(
+                          locationLat.hashCode,
+                          $mrjc(
+                              locationLng.hashCode,
+                              $mrjc(
+                                  value.hashCode,
+                                  $mrjc(
+                                      progress.hashCode,
+                                      $mrjc(createdAt.hashCode,
+                                          dueDate.hashCode)))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -1692,38 +1814,81 @@ class Booking extends DataClass implements Insertable<Booking> {
           other.id == this.id &&
           other.customerId == this.customerId &&
           other.providerId == this.providerId &&
-          other.createdAt == this.createdAt);
+          other.description == this.description &&
+          other.reason == this.reason &&
+          other.locationLat == this.locationLat &&
+          other.locationLng == this.locationLng &&
+          other.value == this.value &&
+          other.progress == this.progress &&
+          other.createdAt == this.createdAt &&
+          other.dueDate == this.dueDate);
 }
 
 class BookingsCompanion extends UpdateCompanion<Booking> {
   final Value<int> id;
   final Value<String> customerId;
   final Value<String> providerId;
-  final Value<DateTime> createdAt;
+  final Value<String> description;
+  final Value<String> reason;
+  final Value<double> locationLat;
+  final Value<double> locationLng;
+  final Value<double> value;
+  final Value<double> progress;
+  final Value<int> createdAt;
+  final Value<int> dueDate;
   const BookingsCompanion({
     this.id = const Value.absent(),
     this.customerId = const Value.absent(),
     this.providerId = const Value.absent(),
+    this.description = const Value.absent(),
+    this.reason = const Value.absent(),
+    this.locationLat = const Value.absent(),
+    this.locationLng = const Value.absent(),
+    this.value = const Value.absent(),
+    this.progress = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.dueDate = const Value.absent(),
   });
   BookingsCompanion.insert({
     this.id = const Value.absent(),
     @required String customerId,
     @required String providerId,
+    this.description = const Value.absent(),
+    @required String reason,
+    this.locationLat = const Value.absent(),
+    this.locationLng = const Value.absent(),
+    this.value = const Value.absent(),
+    this.progress = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.dueDate = const Value.absent(),
   })  : customerId = Value(customerId),
-        providerId = Value(providerId);
+        providerId = Value(providerId),
+        reason = Value(reason);
   static Insertable<Booking> custom({
     Expression<int> id,
     Expression<String> customerId,
     Expression<String> providerId,
-    Expression<DateTime> createdAt,
+    Expression<String> description,
+    Expression<String> reason,
+    Expression<double> locationLat,
+    Expression<double> locationLng,
+    Expression<double> value,
+    Expression<double> progress,
+    Expression<int> createdAt,
+    Expression<int> dueDate,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (customerId != null) 'customer_id': customerId,
       if (providerId != null) 'provider_id': providerId,
+      if (description != null) 'description': description,
+      if (reason != null) 'reason': reason,
+      if (locationLat != null) 'lat': locationLat,
+      if (locationLng != null) 'lng': locationLng,
+      if (value != null) 'value': value,
+      if (progress != null) 'progress': progress,
       if (createdAt != null) 'created_at': createdAt,
+      if (dueDate != null) 'due_date': dueDate,
     });
   }
 
@@ -1731,12 +1896,26 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
       {Value<int> id,
       Value<String> customerId,
       Value<String> providerId,
-      Value<DateTime> createdAt}) {
+      Value<String> description,
+      Value<String> reason,
+      Value<double> locationLat,
+      Value<double> locationLng,
+      Value<double> value,
+      Value<double> progress,
+      Value<int> createdAt,
+      Value<int> dueDate}) {
     return BookingsCompanion(
       id: id ?? this.id,
       customerId: customerId ?? this.customerId,
       providerId: providerId ?? this.providerId,
+      description: description ?? this.description,
+      reason: reason ?? this.reason,
+      locationLat: locationLat ?? this.locationLat,
+      locationLng: locationLng ?? this.locationLng,
+      value: value ?? this.value,
+      progress: progress ?? this.progress,
       createdAt: createdAt ?? this.createdAt,
+      dueDate: dueDate ?? this.dueDate,
     );
   }
 
@@ -1752,8 +1931,29 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     if (providerId.present) {
       map['provider_id'] = Variable<String>(providerId.value);
     }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (reason.present) {
+      map['reason'] = Variable<String>(reason.value);
+    }
+    if (locationLat.present) {
+      map['lat'] = Variable<double>(locationLat.value);
+    }
+    if (locationLng.present) {
+      map['lng'] = Variable<double>(locationLng.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<double>(value.value);
+    }
+    if (progress.present) {
+      map['progress'] = Variable<double>(progress.value);
+    }
     if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (dueDate.present) {
+      map['due_date'] = Variable<int>(dueDate.value);
     }
     return map;
   }
@@ -1764,7 +1964,14 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
           ..write('id: $id, ')
           ..write('customerId: $customerId, ')
           ..write('providerId: $providerId, ')
-          ..write('createdAt: $createdAt')
+          ..write('description: $description, ')
+          ..write('reason: $reason, ')
+          ..write('locationLat: $locationLat, ')
+          ..write('locationLng: $locationLng, ')
+          ..write('value: $value, ')
+          ..write('progress: $progress, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('dueDate: $dueDate')
           ..write(')'))
         .toString();
   }
@@ -1807,17 +2014,104 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
     );
   }
 
-  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
-  GeneratedDateTimeColumn _createdAt;
+  final VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  GeneratedTextColumn _description;
   @override
-  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
-  GeneratedDateTimeColumn _constructCreatedAt() {
-    return GeneratedDateTimeColumn('created_at', $tableName, false,
-        defaultValue: Constant(DateTime.now()));
+  GeneratedTextColumn get description =>
+      _description ??= _constructDescription();
+  GeneratedTextColumn _constructDescription() {
+    return GeneratedTextColumn('description', $tableName, true,
+        maxTextLength: 1000,
+        defaultValue: Constant(
+            "Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cursus sit amet dictum sit amet. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique"));
+  }
+
+  final VerificationMeta _reasonMeta = const VerificationMeta('reason');
+  GeneratedTextColumn _reason;
+  @override
+  GeneratedTextColumn get reason => _reason ??= _constructReason();
+  GeneratedTextColumn _constructReason() {
+    return GeneratedTextColumn(
+      'reason',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _locationLatMeta =
+      const VerificationMeta('locationLat');
+  GeneratedRealColumn _locationLat;
+  @override
+  GeneratedRealColumn get locationLat =>
+      _locationLat ??= _constructLocationLat();
+  GeneratedRealColumn _constructLocationLat() {
+    return GeneratedRealColumn('lat', $tableName, false,
+        defaultValue: Constant(5.11));
+  }
+
+  final VerificationMeta _locationLngMeta =
+      const VerificationMeta('locationLng');
+  GeneratedRealColumn _locationLng;
+  @override
+  GeneratedRealColumn get locationLng =>
+      _locationLng ??= _constructLocationLng();
+  GeneratedRealColumn _constructLocationLng() {
+    return GeneratedRealColumn('lng', $tableName, false,
+        defaultValue: Constant(-0.122));
+  }
+
+  final VerificationMeta _valueMeta = const VerificationMeta('value');
+  GeneratedRealColumn _value;
+  @override
+  GeneratedRealColumn get value => _value ??= _constructValue();
+  GeneratedRealColumn _constructValue() {
+    return GeneratedRealColumn('value', $tableName, false,
+        defaultValue: Constant(10.99));
+  }
+
+  final VerificationMeta _progressMeta = const VerificationMeta('progress');
+  GeneratedRealColumn _progress;
+  @override
+  GeneratedRealColumn get progress => _progress ??= _constructProgress();
+  GeneratedRealColumn _constructProgress() {
+    return GeneratedRealColumn('progress', $tableName, false,
+        defaultValue: Constant(0.45));
+  }
+
+  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  GeneratedIntColumn _createdAt;
+  @override
+  GeneratedIntColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedIntColumn _constructCreatedAt() {
+    return GeneratedIntColumn('created_at', $tableName, false,
+        defaultValue: Constant(DateTime.now().millisecondsSinceEpoch));
+  }
+
+  final VerificationMeta _dueDateMeta = const VerificationMeta('dueDate');
+  GeneratedIntColumn _dueDate;
+  @override
+  GeneratedIntColumn get dueDate => _dueDate ??= _constructDueDate();
+  GeneratedIntColumn _constructDueDate() {
+    return GeneratedIntColumn('due_date', $tableName, false,
+        defaultValue:
+            Constant(DateTime.now().millisecondsSinceEpoch + 430000000));
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, customerId, providerId, createdAt];
+  List<GeneratedColumn> get $columns => [
+        id,
+        customerId,
+        providerId,
+        description,
+        reason,
+        locationLat,
+        locationLng,
+        value,
+        progress,
+        createdAt,
+        dueDate
+      ];
   @override
   $BookingsTable get asDslTable => this;
   @override
@@ -1848,9 +2142,41 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
     } else if (isInserting) {
       context.missing(_providerIdMeta);
     }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description'], _descriptionMeta));
+    }
+    if (data.containsKey('reason')) {
+      context.handle(_reasonMeta,
+          reason.isAcceptableOrUnknown(data['reason'], _reasonMeta));
+    } else if (isInserting) {
+      context.missing(_reasonMeta);
+    }
+    if (data.containsKey('lat')) {
+      context.handle(_locationLatMeta,
+          locationLat.isAcceptableOrUnknown(data['lat'], _locationLatMeta));
+    }
+    if (data.containsKey('lng')) {
+      context.handle(_locationLngMeta,
+          locationLng.isAcceptableOrUnknown(data['lng'], _locationLngMeta));
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+          _valueMeta, value.isAcceptableOrUnknown(data['value'], _valueMeta));
+    }
+    if (data.containsKey('progress')) {
+      context.handle(_progressMeta,
+          progress.isAcceptableOrUnknown(data['progress'], _progressMeta));
+    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at'], _createdAtMeta));
+    }
+    if (data.containsKey('due_date')) {
+      context.handle(_dueDateMeta,
+          dueDate.isAcceptableOrUnknown(data['due_date'], _dueDateMeta));
     }
     return context;
   }
