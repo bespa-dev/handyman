@@ -20,6 +20,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
   final int completedBookingsCount;
   final int ongoingBookingsCount;
   final int cancelledBookingsCount;
+  final int requestsCount;
   final int endWorkingHours;
   final String avatar;
   final String aboutMe;
@@ -38,6 +39,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       @required this.completedBookingsCount,
       @required this.ongoingBookingsCount,
       @required this.cancelledBookingsCount,
+      @required this.requestsCount,
       @required this.endWorkingHours,
       this.avatar,
       this.aboutMe,
@@ -73,6 +75,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           data['${effectivePrefix}ongoing_bookings_count']),
       cancelledBookingsCount: intType.mapFromDatabaseResponse(
           data['${effectivePrefix}cancelled_bookings_count']),
+      requestsCount: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}requests_count']),
       endWorkingHours: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}end_working_hours']),
       avatar:
@@ -124,6 +128,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
     if (!nullToAbsent || cancelledBookingsCount != null) {
       map['cancelled_bookings_count'] = Variable<int>(cancelledBookingsCount);
     }
+    if (!nullToAbsent || requestsCount != null) {
+      map['requests_count'] = Variable<int>(requestsCount);
+    }
     if (!nullToAbsent || endWorkingHours != null) {
       map['end_working_hours'] = Variable<int>(endWorkingHours);
     }
@@ -174,6 +181,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       cancelledBookingsCount: cancelledBookingsCount == null && nullToAbsent
           ? const Value.absent()
           : Value(cancelledBookingsCount),
+      requestsCount: requestsCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(requestsCount),
       endWorkingHours: endWorkingHours == null && nullToAbsent
           ? const Value.absent()
           : Value(endWorkingHours),
@@ -208,6 +218,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           serializer.fromJson<int>(json['ongoingBookingsCount']),
       cancelledBookingsCount:
           serializer.fromJson<int>(json['cancelledBookingsCount']),
+      requestsCount: serializer.fromJson<int>(json['requestsCount']),
       endWorkingHours: serializer.fromJson<int>(json['endWorkingHours']),
       avatar: serializer.fromJson<String>(json['avatar']),
       aboutMe: serializer.fromJson<String>(json['aboutMe']),
@@ -231,6 +242,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       'completedBookingsCount': serializer.toJson<int>(completedBookingsCount),
       'ongoingBookingsCount': serializer.toJson<int>(ongoingBookingsCount),
       'cancelledBookingsCount': serializer.toJson<int>(cancelledBookingsCount),
+      'requestsCount': serializer.toJson<int>(requestsCount),
       'endWorkingHours': serializer.toJson<int>(endWorkingHours),
       'avatar': serializer.toJson<String>(avatar),
       'aboutMe': serializer.toJson<String>(aboutMe),
@@ -252,6 +264,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           int completedBookingsCount,
           int ongoingBookingsCount,
           int cancelledBookingsCount,
+          int requestsCount,
           int endWorkingHours,
           String avatar,
           String aboutMe,
@@ -272,6 +285,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
         ongoingBookingsCount: ongoingBookingsCount ?? this.ongoingBookingsCount,
         cancelledBookingsCount:
             cancelledBookingsCount ?? this.cancelledBookingsCount,
+        requestsCount: requestsCount ?? this.requestsCount,
         endWorkingHours: endWorkingHours ?? this.endWorkingHours,
         avatar: avatar ?? this.avatar,
         aboutMe: aboutMe ?? this.aboutMe,
@@ -293,6 +307,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           ..write('completedBookingsCount: $completedBookingsCount, ')
           ..write('ongoingBookingsCount: $ongoingBookingsCount, ')
           ..write('cancelledBookingsCount: $cancelledBookingsCount, ')
+          ..write('requestsCount: $requestsCount, ')
           ..write('endWorkingHours: $endWorkingHours, ')
           ..write('avatar: $avatar, ')
           ..write('aboutMe: $aboutMe, ')
@@ -329,16 +344,20 @@ class Artisan extends DataClass implements Insertable<Artisan> {
                                                   cancelledBookingsCount
                                                       .hashCode,
                                                   $mrjc(
-                                                      endWorkingHours.hashCode,
+                                                      requestsCount.hashCode,
                                                       $mrjc(
-                                                          avatar.hashCode,
+                                                          endWorkingHours
+                                                              .hashCode,
                                                           $mrjc(
-                                                              aboutMe.hashCode,
+                                                              avatar.hashCode,
                                                               $mrjc(
-                                                                  price
+                                                                  aboutMe
                                                                       .hashCode,
-                                                                  rating
-                                                                      .hashCode)))))))))))))))));
+                                                                  $mrjc(
+                                                                      price
+                                                                          .hashCode,
+                                                                      rating
+                                                                          .hashCode))))))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -355,6 +374,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           other.completedBookingsCount == this.completedBookingsCount &&
           other.ongoingBookingsCount == this.ongoingBookingsCount &&
           other.cancelledBookingsCount == this.cancelledBookingsCount &&
+          other.requestsCount == this.requestsCount &&
           other.endWorkingHours == this.endWorkingHours &&
           other.avatar == this.avatar &&
           other.aboutMe == this.aboutMe &&
@@ -375,6 +395,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
   final Value<int> completedBookingsCount;
   final Value<int> ongoingBookingsCount;
   final Value<int> cancelledBookingsCount;
+  final Value<int> requestsCount;
   final Value<int> endWorkingHours;
   final Value<String> avatar;
   final Value<String> aboutMe;
@@ -393,6 +414,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     this.completedBookingsCount = const Value.absent(),
     this.ongoingBookingsCount = const Value.absent(),
     this.cancelledBookingsCount = const Value.absent(),
+    this.requestsCount = const Value.absent(),
     this.endWorkingHours = const Value.absent(),
     this.avatar = const Value.absent(),
     this.aboutMe = const Value.absent(),
@@ -412,6 +434,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     this.completedBookingsCount = const Value.absent(),
     this.ongoingBookingsCount = const Value.absent(),
     this.cancelledBookingsCount = const Value.absent(),
+    this.requestsCount = const Value.absent(),
     this.endWorkingHours = const Value.absent(),
     this.avatar = const Value.absent(),
     this.aboutMe = const Value.absent(),
@@ -433,6 +456,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     Expression<int> completedBookingsCount,
     Expression<int> ongoingBookingsCount,
     Expression<int> cancelledBookingsCount,
+    Expression<int> requestsCount,
     Expression<int> endWorkingHours,
     Expression<String> avatar,
     Expression<String> aboutMe,
@@ -455,6 +479,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
         'ongoing_bookings_count': ongoingBookingsCount,
       if (cancelledBookingsCount != null)
         'cancelled_bookings_count': cancelledBookingsCount,
+      if (requestsCount != null) 'requests_count': requestsCount,
       if (endWorkingHours != null) 'end_working_hours': endWorkingHours,
       if (avatar != null) 'avatar': avatar,
       if (aboutMe != null) 'about_me': aboutMe,
@@ -476,6 +501,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       Value<int> completedBookingsCount,
       Value<int> ongoingBookingsCount,
       Value<int> cancelledBookingsCount,
+      Value<int> requestsCount,
       Value<int> endWorkingHours,
       Value<String> avatar,
       Value<String> aboutMe,
@@ -496,6 +522,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       ongoingBookingsCount: ongoingBookingsCount ?? this.ongoingBookingsCount,
       cancelledBookingsCount:
           cancelledBookingsCount ?? this.cancelledBookingsCount,
+      requestsCount: requestsCount ?? this.requestsCount,
       endWorkingHours: endWorkingHours ?? this.endWorkingHours,
       avatar: avatar ?? this.avatar,
       aboutMe: aboutMe ?? this.aboutMe,
@@ -545,6 +572,9 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       map['cancelled_bookings_count'] =
           Variable<int>(cancelledBookingsCount.value);
     }
+    if (requestsCount.present) {
+      map['requests_count'] = Variable<int>(requestsCount.value);
+    }
     if (endWorkingHours.present) {
       map['end_working_hours'] = Variable<int>(endWorkingHours.value);
     }
@@ -578,6 +608,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
           ..write('completedBookingsCount: $completedBookingsCount, ')
           ..write('ongoingBookingsCount: $ongoingBookingsCount, ')
           ..write('cancelledBookingsCount: $cancelledBookingsCount, ')
+          ..write('requestsCount: $requestsCount, ')
           ..write('endWorkingHours: $endWorkingHours, ')
           ..write('avatar: $avatar, ')
           ..write('aboutMe: $aboutMe, ')
@@ -728,6 +759,17 @@ class $ServiceProviderTable extends ServiceProvider
         defaultValue: Constant(0));
   }
 
+  final VerificationMeta _requestsCountMeta =
+      const VerificationMeta('requestsCount');
+  GeneratedIntColumn _requestsCount;
+  @override
+  GeneratedIntColumn get requestsCount =>
+      _requestsCount ??= _constructRequestsCount();
+  GeneratedIntColumn _constructRequestsCount() {
+    return GeneratedIntColumn('requests_count', $tableName, false,
+        defaultValue: Constant(0));
+  }
+
   final VerificationMeta _endWorkingHoursMeta =
       const VerificationMeta('endWorkingHours');
   GeneratedIntColumn _endWorkingHours;
@@ -792,6 +834,7 @@ class $ServiceProviderTable extends ServiceProvider
         completedBookingsCount,
         ongoingBookingsCount,
         cancelledBookingsCount,
+        requestsCount,
         endWorkingHours,
         avatar,
         aboutMe,
@@ -873,6 +916,12 @@ class $ServiceProviderTable extends ServiceProvider
           _cancelledBookingsCountMeta,
           cancelledBookingsCount.isAcceptableOrUnknown(
               data['cancelled_bookings_count'], _cancelledBookingsCountMeta));
+    }
+    if (data.containsKey('requests_count')) {
+      context.handle(
+          _requestsCountMeta,
+          requestsCount.isAcceptableOrUnknown(
+              data['requests_count'], _requestsCountMeta));
     }
     if (data.containsKey('end_working_hours')) {
       context.handle(

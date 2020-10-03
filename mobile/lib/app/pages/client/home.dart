@@ -75,14 +75,14 @@ class _HomePageState extends State<HomePage> {
                     child: Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: getProportionateScreenWidth(kSpacingX16)),
-                      child: Material(
+                      child: Card(
                         clipBehavior: Clip.hardEdge,
-                        elevation: 2,
-                        type: MaterialType.card,
+                        elevation: kSpacingX2,
                         color: themeData.cardColor,
-                        borderOnForeground: false,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(kSpacingX8),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(kSpacingX8),
+                          ),
                         ),
                         child: Container(
                           height: kToolbarHeight,
@@ -113,9 +113,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               Expanded(
                                 child: Container(
-                                  margin: EdgeInsets.only(
-                                      left: getProportionateScreenWidth(
-                                          kSpacingX8)),
+                                  alignment: Alignment.center,
                                   child: Text(
                                     "Search for artisans & more",
                                     style:

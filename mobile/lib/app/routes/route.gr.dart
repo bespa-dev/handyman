@@ -177,8 +177,14 @@ class Router extends RouterBase {
       );
     },
     ProviderSettingsPage: (data) {
+      final args = data.getArgs<ProviderSettingsPageArguments>(
+        orElse: () => ProviderSettingsPageArguments(),
+      );
       return buildAdaptivePageRoute<dynamic>(
-        builder: (context) => ProviderSettingsPage(),
+        builder: (context) => ProviderSettingsPage(
+          key: args.key,
+          activeTabIndex: args.activeTabIndex,
+        ),
         settings: data,
       );
     },
@@ -222,4 +228,11 @@ class ServiceProviderDetailsArguments {
   final Key key;
   final dynamic artisan;
   ServiceProviderDetailsArguments({this.key, this.artisan});
+}
+
+/// ProviderSettingsPage arguments holder class
+class ProviderSettingsPageArguments {
+  final Key key;
+  final int activeTabIndex;
+  ProviderSettingsPageArguments({this.key, this.activeTabIndex = 1});
 }

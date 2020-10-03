@@ -55,7 +55,7 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -97,6 +97,9 @@ class LocalDatabase extends _$LocalDatabase {
               break;
             case 3:
               await m.addColumn(review, review.rating);
+              break;
+            case 4:
+              await m.addColumn(serviceProvider, serviceProvider.requestsCount);
               break;
           }
         },
