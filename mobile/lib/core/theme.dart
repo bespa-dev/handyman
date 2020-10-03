@@ -12,7 +12,7 @@ final _kBodyFontFamily = GoogleFonts.rubik().fontFamily;
 /// Light theme
 ThemeData themeData(BuildContext context) => ThemeData(
       appBarTheme: appBarTheme,
-      shadowColor: kShadowColor,
+      // shadowColor: kShadowColor,
       disabledColor: kDisabledColor,
       errorColor: kErrorLightColor,
       toggleableActiveColor: kSecondaryLightColor,
@@ -102,7 +102,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
 
 /// Dark theme
 ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
-      shadowColor: kShadowDarkColor,
+      // shadowColor: kShadowDarkColor,
       errorColor: kErrorDarkColor,
       appBarTheme: appBarTheme,
       disabledColor: kDisabledColor,

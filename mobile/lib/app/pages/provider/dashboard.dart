@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
@@ -39,78 +38,115 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      extendBody: true,
-      body: Consumer<PrefsProvider>(
-        builder: (_, provider, __) => Stack(
-          fit: StackFit.expand,
-          children: [
-            provider.isLightTheme
-                ? Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(kBackgroundAsset),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  )
-                : SizedBox.shrink(),
-            SafeArea(
-              child: Container(
-                height: _kHeight,
-                width: _kWidth,
-                child: StreamBuilder<BaseUser>(
-                    stream: _apiService.getArtisanById(id: provider.userId),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) return Container();
+  Widget build(BuildContext context) => Consumer<PrefsProvider>(
+        builder: (_, provider, __) => StreamBuilder<BaseUser>(
+          stream: _apiService.getArtisanById(id: provider.userId),
+          builder: (_, snapshot) {
+            final artisan = snapshot.data?.user;
 
-                      final artisan = snapshot.data?.user;
-
-                      return ListView(
-                        children: [
-                          _buildAppBar(provider, artisan),
-                          SizedBox(
-                            height: getProportionateScreenHeight(kSpacingX16),
-                          ),
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal:
-                                    getProportionateScreenWidth(kSpacingX24)),
-                            child: BadgeableTabBar(
-                              tabs: [
-                                BadgeableTabBarItem(
-                                  title: "Ongoing",
-                                  badgeCount: artisan.ongoingBookingsCount,
-                                ),
-                                BadgeableTabBarItem(
-                                  title: "Requests",
-                                  badgeCount: artisan.requestsCount,
-                                ),
-                              ],
-                              onTabSelected: (index) {
-                                _currentTabIndex = index;
-                                setState(() {});
-                              },
-                              color: _themeData.primaryColor,
-                              activeIndex: _currentTabIndex,
+            return Scaffold(
+              key: _scaffoldKey,
+              extendBody: true,
+              body: Stack(
+                fit: StackFit.expand,
+                children: [
+                  provider.isLightTheme
+                      ? Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(kBackgroundAsset),
+                              fit: BoxFit.cover,
                             ),
                           ),
-                          _buildSearchBar(),
-                          _currentTabIndex == 0
-                              ? _buildOngoingTasksWidget(artisan)
-                              : _buildRequestsWidget(artisan),
-                        ],
-                      );
-                    }),
+                        )
+                      : SizedBox.shrink(),
+                  SafeArea(
+                    child: Container(
+                      height: _kHeight,
+                      width: _kWidth,
+                      child: StreamBuilder<BaseUser>(
+                          stream:
+                              _apiService.getArtisanById(id: provider.userId),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) return Container();
+
+                            final artisan = snapshot.data?.user;
+
+                            return ListView(
+                              children: [
+                                _buildAppBar(provider, artisan),
+                                SizedBox(
+                                  height:
+                                      getProportionateScreenHeight(kSpacingX16),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: getProportionateScreenWidth(
+                                          kSpacingX24)),
+                                  child: BadgeableTabBar(
+                                    tabs: [
+                                      BadgeableTabBarItem(
+                                        title: "Ongoing",
+                                        badgeCount:
+                                            artisan.ongoingBookingsCount,
+                                      ),
+                                      BadgeableTabBarItem(
+                                        title: "Requests",
+                                        badgeCount: artisan.requestsCount,
+                                      ),
+                                    ],
+                                    onTabSelected: (index) {
+                                      _currentTabIndex = index;
+                                      setState(() {});
+                                    },
+                                    color: _themeData.primaryColor,
+                                    activeIndex: _currentTabIndex,
+                                  ),
+                                ),
+                                _buildSearchBar(),
+                                _currentTabIndex == 0
+                                    ? _buildOngoingTasksWidget(artisan)
+                                    : _buildRequestsWidget(artisan),
+                              ],
+                            );
+                          }),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
+              drawer: Drawer(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    UserAccountsDrawerHeader(
+                      onDetailsPressed: () {},
+                      currentAccountPicture: UserAvatar(
+                        url: artisan?.avatar,
+                        onTap: () {
+                          _scaffoldKey.currentState.openEndDrawer();
+                          context.navigator.push(
+                            Routes.providerSettingsPage,
+                          );
+                        },
+                        radius: kSpacingX72,
+                        ringColor: _themeData.iconTheme.color,
+                      ),
+                      accountName: Text(artisan?.name),
+                      accountEmail: Text(
+                        artisan?.email,
+                        style: TextStyle(
+                          color: _themeData.textTheme.bodyText1.color
+                              .withOpacity(kEmphasisMedium),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
         ),
-      ),
-    );
-  }
+      );
 
   Widget _buildAppBar(PrefsProvider provider, Artisan artisan) => Padding(
         padding: EdgeInsets.symmetric(
@@ -121,60 +157,22 @@ class _DashboardPageState extends State<DashboardPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Card(
-              clipBehavior: Clip.hardEdge,
-              elevation: kSpacingX2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(kSpacingX8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  tooltip: "Open drawer",
+                  icon: Icon(Entypo.menu),
+                  onPressed: () => _scaffoldKey.currentState.openDrawer(),
                 ),
-              ),
-              child: Container(
-                height: kToolbarHeight,
-                width: double.infinity,
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(kSpacingX8),
+                IconButton(
+                  tooltip: "Toggle theme",
+                  icon: Icon(
+                    provider.isLightTheme ? Feather.moon : Feather.sun,
                   ),
-                  color: _themeData.cardColor,
-                  shape: BoxShape.rectangle,
+                  onPressed: () => provider.toggleTheme(),
                 ),
-                padding: EdgeInsets.symmetric(
-                    horizontal: getProportionateScreenWidth(kSpacingX16)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      tooltip: "Toggle theme",
-                      icon: Icon(
-                        provider.isLightTheme ? Feather.moon : Feather.sun,
-                      ),
-                      onPressed: () => provider.toggleTheme(),
-                    ),
-                    Expanded(
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text(
-                          kAppName,
-                          style: _themeData.textTheme.headline6,
-                        ),
-                      ),
-                    ),
-                    StreamBuilder<BaseUser>(
-                      stream: _apiService.getCustomerById(id: provider.userId),
-                      builder: (_, snapshot) => UserAvatar(
-                        url: artisan.avatar,
-                        radius: kSpacingX36,
-                        onTap: () => context.navigator.push(
-                          Routes.providerSettingsPage,
-                        ),
-                        ringColor: _themeData.iconTheme.color,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              ],
             ),
             SizedBox(
               height: getProportionateScreenHeight(kSpacingX12),
@@ -313,9 +311,19 @@ class _DashboardPageState extends State<DashboardPage> {
         margin: EdgeInsets.symmetric(
             vertical: getProportionateScreenHeight(kSpacingX16),
             horizontal: getProportionateScreenWidth(kSpacingX24)),
-        height: kToolbarHeight,
-        width: double.infinity,
-        child: Card(),
+        child: Card(
+          clipBehavior: Clip.hardEdge,
+          elevation: kSpacingX2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(kSpacingX8),
+            ),
+          ),
+          child: Container(
+            height: kToolbarHeight,
+            width: double.infinity,
+          ),
+        ),
       );
 
   /// Get ongoing [Booking]s
