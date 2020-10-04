@@ -10,7 +10,10 @@ class User extends Table {
 
   TextColumn get avatar => text().nullable()();
 
-  TextColumn get createdAt => text().nullable()();
+  @JsonKey("created_at")
+  IntColumn get createdAt => integer()
+      .nullable()
+      .withDefault(Constant(DateTime.now().millisecondsSinceEpoch))();
 
   @override
   Set<Column> get primaryKey => {id};

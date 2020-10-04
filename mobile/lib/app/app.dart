@@ -43,37 +43,44 @@ class _HandyManAppState extends State<HandyManApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<PrefsProvider>(
-          create: (context) => PrefsProvider(),
-        ),
-        Provider<AuthService>.value(
-          value: FirebaseAuthService.instance,
-        ),
-        Provider<DataService>.value(
-          value: DataServiceImpl.instance,
-        ),
-        Provider<StorageService>.value(
-          value: StorageServiceImpl.instance,
-        ),
-      ],
-      child: Consumer<PrefsProvider>(
-        builder: (ctx, prefs, child) => MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: themeData(context),
-          darkTheme: darkThemeData(context),
-          themeMode: prefs.isLightTheme ? ThemeMode.light : ThemeMode.dark,
-          navigatorObservers: <NavigatorObserver>[
-            FirebaseAnalyticsObserver(analytics: _analytics),
-          ],
-          onUnknownRoute: (_) => MaterialPageRoute(builder: (__) => Scaffold()),
-          builder: ExtendedNavigator<gr.Router>(
-            router: gr.Router(),
-            guards: [AuthGuard(), ClientGuard(), ProviderGuard()],
-          ),
-        ),
-      ),
-    );
+    return FutureBuilder(
+        future: Firebase.initializeApp(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) return MaterialApp(home: Scaffold());
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider<PrefsProvider>(
+                create: (context) => PrefsProvider(),
+              ),
+              Provider<AuthService>.value(
+                value: FirebaseAuthService.instance,
+              ),
+              Provider<DataService>.value(
+                value: DataServiceImpl.instance,
+              ),
+              Provider<StorageService>.value(
+                value: StorageServiceImpl.instance,
+              ),
+            ],
+            child: Consumer<PrefsProvider>(
+              builder: (ctx, prefs, child) => MaterialApp(
+                debugShowCheckedModeBanner: false,
+                theme: themeData(context),
+                darkTheme: darkThemeData(context),
+                themeMode:
+                    prefs.isLightTheme ? ThemeMode.light : ThemeMode.dark,
+                navigatorObservers: <NavigatorObserver>[
+                  FirebaseAnalyticsObserver(analytics: _analytics),
+                ],
+                onUnknownRoute: (_) =>
+                    MaterialPageRoute(builder: (__) => Scaffold()),
+                builder: ExtendedNavigator<gr.Router>(
+                  router: gr.Router(),
+                  guards: [AuthGuard(), ClientGuard(), ProviderGuard()],
+                ),
+              ),
+            ),
+          );
+        });
   }
 }

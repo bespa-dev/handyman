@@ -26,6 +26,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
   final String aboutMe;
   final double price;
   final double rating;
+  final int createdAt;
   Artisan(
       {@required this.id,
       @required this.name,
@@ -44,7 +45,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       this.avatar,
       this.aboutMe,
       @required this.price,
-      @required this.rating});
+      @required this.rating,
+      this.createdAt});
   factory Artisan.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -87,6 +89,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           doubleType.mapFromDatabaseResponse(data['${effectivePrefix}price']),
       rating:
           doubleType.mapFromDatabaseResponse(data['${effectivePrefix}rating']),
+      createdAt:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
     );
   }
   @override
@@ -146,6 +150,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
     if (!nullToAbsent || rating != null) {
       map['rating'] = Variable<double>(rating);
     }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<int>(createdAt);
+    }
     return map;
   }
 
@@ -196,6 +203,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           price == null && nullToAbsent ? const Value.absent() : Value(price),
       rating:
           rating == null && nullToAbsent ? const Value.absent() : Value(rating),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
     );
   }
 
@@ -224,6 +234,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       aboutMe: serializer.fromJson<String>(json['about_me']),
       price: serializer.fromJson<double>(json['price']),
       rating: serializer.fromJson<double>(json['rating']),
+      createdAt: serializer.fromJson<int>(json['created_at']),
     );
   }
   @override
@@ -250,6 +261,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       'about_me': serializer.toJson<String>(aboutMe),
       'price': serializer.toJson<double>(price),
       'rating': serializer.toJson<double>(rating),
+      'created_at': serializer.toJson<int>(createdAt),
     };
   }
 
@@ -271,7 +283,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           String avatar,
           String aboutMe,
           double price,
-          double rating}) =>
+          double rating,
+          int createdAt}) =>
       Artisan(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -293,6 +306,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
         aboutMe: aboutMe ?? this.aboutMe,
         price: price ?? this.price,
         rating: rating ?? this.rating,
+        createdAt: createdAt ?? this.createdAt,
       );
   @override
   String toString() {
@@ -314,7 +328,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           ..write('avatar: $avatar, ')
           ..write('aboutMe: $aboutMe, ')
           ..write('price: $price, ')
-          ..write('rating: $rating')
+          ..write('rating: $rating, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
@@ -358,8 +373,11 @@ class Artisan extends DataClass implements Insertable<Artisan> {
                                                                   $mrjc(
                                                                       price
                                                                           .hashCode,
-                                                                      rating
-                                                                          .hashCode))))))))))))))))));
+                                                                      $mrjc(
+                                                                          rating
+                                                                              .hashCode,
+                                                                          createdAt
+                                                                              .hashCode)))))))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -381,7 +399,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           other.avatar == this.avatar &&
           other.aboutMe == this.aboutMe &&
           other.price == this.price &&
-          other.rating == this.rating);
+          other.rating == this.rating &&
+          other.createdAt == this.createdAt);
 }
 
 class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
@@ -403,6 +422,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
   final Value<String> aboutMe;
   final Value<double> price;
   final Value<double> rating;
+  final Value<int> createdAt;
   const ServiceProviderCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -422,6 +442,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     this.aboutMe = const Value.absent(),
     this.price = const Value.absent(),
     this.rating = const Value.absent(),
+    this.createdAt = const Value.absent(),
   });
   ServiceProviderCompanion.insert({
     @required String id,
@@ -442,6 +463,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     this.aboutMe = const Value.absent(),
     this.price = const Value.absent(),
     this.rating = const Value.absent(),
+    this.createdAt = const Value.absent(),
   })  : id = Value(id),
         name = Value(name),
         email = Value(email);
@@ -464,6 +486,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     Expression<String> aboutMe,
     Expression<double> price,
     Expression<double> rating,
+    Expression<int> createdAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -487,6 +510,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       if (aboutMe != null) 'about_me': aboutMe,
       if (price != null) 'price': price,
       if (rating != null) 'rating': rating,
+      if (createdAt != null) 'created_at': createdAt,
     });
   }
 
@@ -508,7 +532,8 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       Value<String> avatar,
       Value<String> aboutMe,
       Value<double> price,
-      Value<double> rating}) {
+      Value<double> rating,
+      Value<int> createdAt}) {
     return ServiceProviderCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -530,6 +555,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       aboutMe: aboutMe ?? this.aboutMe,
       price: price ?? this.price,
       rating: rating ?? this.rating,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -592,6 +618,9 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     if (rating.present) {
       map['rating'] = Variable<double>(rating.value);
     }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
     return map;
   }
 
@@ -615,7 +644,8 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
           ..write('avatar: $avatar, ')
           ..write('aboutMe: $aboutMe, ')
           ..write('price: $price, ')
-          ..write('rating: $rating')
+          ..write('rating: $rating, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
@@ -822,6 +852,15 @@ class $ServiceProviderTable extends ServiceProvider
         defaultValue: Constant(3.5));
   }
 
+  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  GeneratedIntColumn _createdAt;
+  @override
+  GeneratedIntColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedIntColumn _constructCreatedAt() {
+    return GeneratedIntColumn('created_at', $tableName, true,
+        defaultValue: Constant(DateTime.now().millisecondsSinceEpoch));
+  }
+
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -841,7 +880,8 @@ class $ServiceProviderTable extends ServiceProvider
         avatar,
         aboutMe,
         price,
-        rating
+        rating,
+        createdAt
       ];
   @override
   $ServiceProviderTable get asDslTable => this;
@@ -947,6 +987,10 @@ class $ServiceProviderTable extends ServiceProvider
       context.handle(_ratingMeta,
           rating.isAcceptableOrUnknown(data['rating'], _ratingMeta));
     }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at'], _createdAtMeta));
+    }
     return context;
   }
 
@@ -969,7 +1013,7 @@ class Customer extends DataClass implements Insertable<Customer> {
   final String name;
   final String email;
   final String avatar;
-  final String createdAt;
+  final int createdAt;
   Customer(
       {@required this.id,
       @required this.name,
@@ -980,6 +1024,7 @@ class Customer extends DataClass implements Insertable<Customer> {
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
+    final intType = db.typeSystem.forDartType<int>();
     return Customer(
       id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
@@ -987,8 +1032,8 @@ class Customer extends DataClass implements Insertable<Customer> {
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}email']),
       avatar:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}avatar']),
-      createdAt: stringType
-          .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
+      createdAt:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
     );
   }
   @override
@@ -1007,7 +1052,7 @@ class Customer extends DataClass implements Insertable<Customer> {
       map['avatar'] = Variable<String>(avatar);
     }
     if (!nullToAbsent || createdAt != null) {
-      map['created_at'] = Variable<String>(createdAt);
+      map['created_at'] = Variable<int>(createdAt);
     }
     return map;
   }
@@ -1034,7 +1079,7 @@ class Customer extends DataClass implements Insertable<Customer> {
       name: serializer.fromJson<String>(json['name']),
       email: serializer.fromJson<String>(json['email']),
       avatar: serializer.fromJson<String>(json['avatar']),
-      createdAt: serializer.fromJson<String>(json['createdAt']),
+      createdAt: serializer.fromJson<int>(json['created_at']),
     );
   }
   @override
@@ -1045,7 +1090,7 @@ class Customer extends DataClass implements Insertable<Customer> {
       'name': serializer.toJson<String>(name),
       'email': serializer.toJson<String>(email),
       'avatar': serializer.toJson<String>(avatar),
-      'createdAt': serializer.toJson<String>(createdAt),
+      'created_at': serializer.toJson<int>(createdAt),
     };
   }
 
@@ -1054,7 +1099,7 @@ class Customer extends DataClass implements Insertable<Customer> {
           String name,
           String email,
           String avatar,
-          String createdAt}) =>
+          int createdAt}) =>
       Customer(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -1095,7 +1140,7 @@ class UserCompanion extends UpdateCompanion<Customer> {
   final Value<String> name;
   final Value<String> email;
   final Value<String> avatar;
-  final Value<String> createdAt;
+  final Value<int> createdAt;
   const UserCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -1117,7 +1162,7 @@ class UserCompanion extends UpdateCompanion<Customer> {
     Expression<String> name,
     Expression<String> email,
     Expression<String> avatar,
-    Expression<String> createdAt,
+    Expression<int> createdAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1133,7 +1178,7 @@ class UserCompanion extends UpdateCompanion<Customer> {
       Value<String> name,
       Value<String> email,
       Value<String> avatar,
-      Value<String> createdAt}) {
+      Value<int> createdAt}) {
     return UserCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -1159,7 +1204,7 @@ class UserCompanion extends UpdateCompanion<Customer> {
       map['avatar'] = Variable<String>(avatar.value);
     }
     if (createdAt.present) {
-      map['created_at'] = Variable<String>(createdAt.value);
+      map['created_at'] = Variable<int>(createdAt.value);
     }
     return map;
   }
@@ -1230,15 +1275,12 @@ class $UserTable extends User with TableInfo<$UserTable, Customer> {
   }
 
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
-  GeneratedTextColumn _createdAt;
+  GeneratedIntColumn _createdAt;
   @override
-  GeneratedTextColumn get createdAt => _createdAt ??= _constructCreatedAt();
-  GeneratedTextColumn _constructCreatedAt() {
-    return GeneratedTextColumn(
-      'created_at',
-      $tableName,
-      true,
-    );
+  GeneratedIntColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedIntColumn _constructCreatedAt() {
+    return GeneratedIntColumn('created_at', $tableName, true,
+        defaultValue: Constant(DateTime.now().millisecondsSinceEpoch));
   }
 
   @override
@@ -1584,7 +1626,7 @@ class $PhotoGalleryTable extends PhotoGallery
 }
 
 class Booking extends DataClass implements Insertable<Booking> {
-  final int id;
+  final String id;
   final String customerId;
   final String providerId;
   final String description;
@@ -1610,11 +1652,11 @@ class Booking extends DataClass implements Insertable<Booking> {
   factory Booking.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
     final doubleType = db.typeSystem.forDartType<double>();
+    final intType = db.typeSystem.forDartType<int>();
     return Booking(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       customerId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}customer_id']),
       providerId: stringType
@@ -1641,7 +1683,7 @@ class Booking extends DataClass implements Insertable<Booking> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (!nullToAbsent || id != null) {
-      map['id'] = Variable<int>(id);
+      map['id'] = Variable<String>(id);
     }
     if (!nullToAbsent || customerId != null) {
       map['customer_id'] = Variable<String>(customerId);
@@ -1714,7 +1756,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       {ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return Booking(
-      id: serializer.fromJson<int>(json['id']),
+      id: serializer.fromJson<String>(json['id']),
       customerId: serializer.fromJson<String>(json['customer_id']),
       providerId: serializer.fromJson<String>(json['provider_id']),
       description: serializer.fromJson<String>(json['description']),
@@ -1731,7 +1773,7 @@ class Booking extends DataClass implements Insertable<Booking> {
   Map<String, dynamic> toJson({ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
+      'id': serializer.toJson<String>(id),
       'customer_id': serializer.toJson<String>(customerId),
       'provider_id': serializer.toJson<String>(providerId),
       'description': serializer.toJson<String>(description),
@@ -1746,7 +1788,7 @@ class Booking extends DataClass implements Insertable<Booking> {
   }
 
   Booking copyWith(
-          {int id,
+          {String id,
           String customerId,
           String providerId,
           String description,
@@ -1827,7 +1869,7 @@ class Booking extends DataClass implements Insertable<Booking> {
 }
 
 class BookingsCompanion extends UpdateCompanion<Booking> {
-  final Value<int> id;
+  final Value<String> id;
   final Value<String> customerId;
   final Value<String> providerId;
   final Value<String> description;
@@ -1852,7 +1894,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     this.dueDate = const Value.absent(),
   });
   BookingsCompanion.insert({
-    this.id = const Value.absent(),
+    @required String id,
     @required String customerId,
     @required String providerId,
     this.description = const Value.absent(),
@@ -1863,11 +1905,12 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     this.progress = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.dueDate = const Value.absent(),
-  })  : customerId = Value(customerId),
+  })  : id = Value(id),
+        customerId = Value(customerId),
         providerId = Value(providerId),
         reason = Value(reason);
   static Insertable<Booking> custom({
-    Expression<int> id,
+    Expression<String> id,
     Expression<String> customerId,
     Expression<String> providerId,
     Expression<String> description,
@@ -1895,7 +1938,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
   }
 
   BookingsCompanion copyWith(
-      {Value<int> id,
+      {Value<String> id,
       Value<String> customerId,
       Value<String> providerId,
       Value<String> description,
@@ -1925,7 +1968,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (id.present) {
-      map['id'] = Variable<int>(id.value);
+      map['id'] = Variable<String>(id.value);
     }
     if (customerId.present) {
       map['customer_id'] = Variable<String>(customerId.value);
@@ -1984,12 +2027,15 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
   final String _alias;
   $BookingsTable(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
-  GeneratedIntColumn _id;
+  GeneratedTextColumn _id;
   @override
-  GeneratedIntColumn get id => _id ??= _constructId();
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  GeneratedTextColumn get id => _id ??= _constructId();
+  GeneratedTextColumn _constructId() {
+    return GeneratedTextColumn(
+      'id',
+      $tableName,
+      false,
+    );
   }
 
   final VerificationMeta _customerIdMeta = const VerificationMeta('customerId');
@@ -2127,6 +2173,8 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
     }
     if (data.containsKey('customer_id')) {
       context.handle(
@@ -2184,7 +2232,7 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
   @override
   Booking map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
@@ -3459,11 +3507,12 @@ mixin _$UserDaoMixin on DatabaseAccessor<LocalDatabase> {
         aboutMe: row.readString('about_me'),
         price: row.readDouble('price'),
         rating: row.readDouble('rating'),
+        createdAt: row.readInt('created_at'),
         id1: row.readString('id'),
         name1: row.readString('name'),
         email1: row.readString('email'),
         avatar1: row.readString('avatar'),
-        createdAt: row.readString('created_at'),
+        createdAt1: row.readInt('created_at'),
       );
     });
   }
@@ -3488,11 +3537,12 @@ class SearchForResult {
   final String aboutMe;
   final double price;
   final double rating;
+  final int createdAt;
   final String id1;
   final String name1;
   final String email1;
   final String avatar1;
-  final String createdAt;
+  final int createdAt1;
   SearchForResult({
     this.id,
     this.name,
@@ -3512,11 +3562,12 @@ class SearchForResult {
     this.aboutMe,
     this.price,
     this.rating,
+    this.createdAt,
     this.id1,
     this.name1,
     this.email1,
     this.avatar1,
-    this.createdAt,
+    this.createdAt1,
   });
 }
 

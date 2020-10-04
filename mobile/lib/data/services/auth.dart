@@ -46,7 +46,6 @@ class FirebaseAuthService implements AuthService {
         id: user.uid,
         name: username,
         email: user.email,
-        createdAt: DateFormat.jm().format(DateTime.now()),
       );
       await _firestore
           .collection(FirestoreUtils.kCustomerRef)

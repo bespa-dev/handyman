@@ -20,7 +20,7 @@ void main() async {
   if (defaultTargetPlatform == TargetPlatform.android ||
       defaultTargetPlatform == TargetPlatform.iOS) {
     SystemChrome.setSystemUIOverlayStyle(
-      isLightTheme ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+      isLightTheme ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
     );
     SystemChrome.setEnabledSystemUIOverlays([
       SystemUiOverlay.bottom,

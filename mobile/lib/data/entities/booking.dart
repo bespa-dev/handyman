@@ -1,7 +1,7 @@
 import 'package:moor/moor.dart';
 
 class Bookings extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  TextColumn get id => text()();
 
   @JsonKey("customer_id")
   TextColumn get customerId => text()();

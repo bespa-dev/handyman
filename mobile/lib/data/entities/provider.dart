@@ -48,6 +48,10 @@ class ServiceProvider extends Table {
 
   RealColumn get rating => real().withDefault(Constant(3.5))();
 
+  @JsonKey("created_at")
+  IntColumn get createdAt => integer()
+      .nullable()
+      .withDefault(Constant(DateTime.now().millisecondsSinceEpoch))();
   @override
   Set<Column> get primaryKey => {id};
 }
