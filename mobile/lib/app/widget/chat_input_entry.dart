@@ -6,7 +6,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
-import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/core/utils.dart';
 import 'package:meta/meta.dart';
@@ -63,9 +62,11 @@ class _UserInputState extends State<UserInput> {
                 if (selector == InputSelector.KEYBOARD)
                   FocusScope.of(context).requestFocus(_focusNode);
                 else if (selector == InputSelector.PHONE)
-                  launchUrl(url: "tel://233554635701");
+                  // FIXME: launchUrl(url: "tel:+233554635701");
+                  showNotAvailableDialog(context);
                 else if (selector == InputSelector.DM)
-                  launchUrl(url: "mailto:quabynahdennis@gmail.com");
+                  // FIXME: launchUrl(url: "mailto:quabynahdennis@gmail.com");
+                  showNotAvailableDialog(context);
                 else {
                   FocusScope.of(context).unfocus();
                   setState(() {});
@@ -337,7 +338,7 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
           liteModeEnabled: defaultTargetPlatform == TargetPlatform.android,
           initialCameraPosition: CameraPosition(
             target: _currentPosition ??= LatLng(5.5329650, -0.2592160),
-            zoom: 14.0,
+            zoom: 16.0,
           ),
           onMapCreated: (controller) async {
             _controller = controller;

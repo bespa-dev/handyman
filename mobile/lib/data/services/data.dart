@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:algolia/algolia.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/utils.dart';
 import 'package:handyman/data/entities/artisan_model.dart';
@@ -33,7 +32,7 @@ class DataServiceImpl implements DataService {
   DataServiceImpl._();
 
   // Singleton
-  static DataServiceImpl get instance => DataServiceImpl._();
+  static DataService get instance => DataServiceImpl._();
 
   /// Get all [Artisan]s from data source
   @override
@@ -321,18 +320,15 @@ class DataServiceImpl implements DataService {
       await _userDao.addCustomer(user);
     else
       await _userDao.saveProvider(user);
-    if (sync) await FlutterIsolate.spawn<BaseUser>(_sendToFirestore, user);
+    if (sync)
+      await sl
+          .get<FirebaseFirestore>()
+          .collection(
+            user.isCustomer
+                ? FirestoreUtils.kCustomerRef
+                : FirestoreUtils.kArtisanRef,
+          )
+          .doc(user.user.id)
+          .set(user.user.toJson());
   }
-}
-
-void _sendToFirestore(BaseUser user) async {
-  await sl
-      .get<FirebaseFirestore>()
-      .collection(
-        user.isCustomer
-            ? FirestoreUtils.kCustomerRef
-            : FirestoreUtils.kArtisanRef,
-      )
-      .doc(user.user.id)
-      .set(user.user.toJson());
 }

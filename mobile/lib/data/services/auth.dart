@@ -30,7 +30,7 @@ class FirebaseAuthService implements AuthService {
   FirebaseAuthService._();
 
   // Singleton
-  static FirebaseAuthService get instance => FirebaseAuthService._();
+  static AuthService get instance => FirebaseAuthService._();
 
   final StreamController<BaseUser> _onAuthStateChanged =
       StreamController.broadcast();

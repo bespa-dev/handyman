@@ -199,7 +199,6 @@ class ButtonClear extends FlatButton {
     bool enabled = true,
     Color textColor,
     double preferredHeight,
-    double preferredWidth,
     Color backgroundColor,
   }) : super(
           splashColor: kTransparent,
@@ -215,7 +214,6 @@ class ButtonClear extends FlatButton {
                   : BorderRadius.circular(kSpacingX16),
             ),
             alignment: Alignment.center,
-            width: preferredWidth ?? getProportionateScreenWidth(kSpacingX64),
             height:
                 preferredHeight ?? getProportionateScreenHeight(kSpacingX36),
             padding: EdgeInsets.symmetric(

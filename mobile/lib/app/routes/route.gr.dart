@@ -9,6 +9,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
+import '../../domain/services/messaging.dart';
 import '../pages/account_completion.dart';
 import '../pages/account_selection.dart';
 import '../pages/client/home.dart';
@@ -18,6 +19,7 @@ import '../pages/client/providers.dart';
 import '../pages/client/request_booking.dart';
 import '../pages/conversation.dart';
 import '../pages/login.dart';
+import '../pages/notification.dart';
 import '../pages/onboarding.dart';
 import '../pages/provider/dashboard.dart';
 import '../pages/provider/settings.dart';
@@ -30,6 +32,7 @@ class Routes {
   static const String loginPage = '/login-page';
   static const String registerPage = '/register-page';
   static const String accountCompletionPage = '/account-completion-page';
+  static const String notificationPage = '/notification-page';
   static const String accountSelectionPage = '/account-selection-page';
   static const String conversationPage = '/conversation-page';
   static const String homePage = '/home-page';
@@ -45,6 +48,7 @@ class Routes {
     loginPage,
     registerPage,
     accountCompletionPage,
+    notificationPage,
     accountSelectionPage,
     conversationPage,
     homePage,
@@ -66,6 +70,7 @@ class Router extends RouterBase {
     RouteDef(Routes.loginPage, page: LoginPage),
     RouteDef(Routes.registerPage, page: RegisterPage),
     RouteDef(Routes.accountCompletionPage, page: AccountCompletionPage),
+    RouteDef(Routes.notificationPage, page: NotificationPage),
     RouteDef(Routes.accountSelectionPage, page: AccountSelectionPage),
     RouteDef(Routes.conversationPage, page: ConversationPage),
     RouteDef(Routes.homePage, page: HomePage),
@@ -106,6 +111,18 @@ class Router extends RouterBase {
     AccountCompletionPage: (data) {
       return buildAdaptivePageRoute<dynamic>(
         builder: (context) => AccountCompletionPage(),
+        settings: data,
+      );
+    },
+    NotificationPage: (data) {
+      final args = data.getArgs<NotificationPageArguments>(
+        orElse: () => NotificationPageArguments(),
+      );
+      return buildAdaptivePageRoute<dynamic>(
+        builder: (context) => NotificationPage(
+          key: args.key,
+          payload: args.payload,
+        ),
         settings: data,
       );
     },
@@ -200,6 +217,13 @@ class Router extends RouterBase {
 /// ************************************************************************
 /// Arguments holder classes
 /// *************************************************************************
+
+/// NotificationPage arguments holder class
+class NotificationPageArguments {
+  final Key key;
+  final NotificationPayload payload;
+  NotificationPageArguments({this.key, this.payload});
+}
 
 /// ConversationPage arguments holder class
 class ConversationPageArguments {

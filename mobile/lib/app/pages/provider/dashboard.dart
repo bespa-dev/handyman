@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/badgeable_tab_bar.dart';
@@ -100,7 +101,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                     activeIndex: _currentTabIndex,
                                   ),
                                 ),
-                                _buildSearchBar(),
+                                _buildSearchBar(margin: kSpacingX24),
                                 StreamBuilder<List<Booking>>(
                                   stream: dataService
                                       .getBookingsForProvider(artisan?.id),
@@ -118,80 +119,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
                       ],
                     ),
-                    endDrawer: Drawer(
-                      child: Column(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: UserAccountsDrawerHeader(
-                              decoration: BoxDecoration(
-                                color: _themeData.scaffoldBackgroundColor,
-                              ),
-                              currentAccountPicture: UserAvatar(
-                                url: artisan?.avatar,
-                                onTap: () => context.navigator.popAndPush(
-                                  Routes.providerSettingsPage,
-                                ),
-                                radius: kSpacingX72,
-                                ringColor: _themeData.iconTheme.color,
-                              ),
-                              accountName:
-                                  Text(artisan?.name ?? "Create a username"),
-                              accountEmail: artisan?.email == null
-                                  ? SizedBox.shrink()
-                                  : Text(
-                                      artisan?.email ?? provider.userId,
-                                      style: TextStyle(
-                                        color: _themeData
-                                            .textTheme.bodyText1.color
-                                            .withOpacity(kEmphasisMedium),
-                                      ),
-                                    ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Column(
-                              children: [
-                                ListTile(
-                                  title: Text("My Account"),
-                                  onTap: () => context.navigator.popAndPush(
-                                    Routes.providerSettingsPage,
-                                  ),
-                                  leading: Icon(Feather.user),
-                                  selected: true,
-                                ),
-                                ListTile(
-                                  title: Text("Notifications"),
-                                  onTap: () {},
-                                  leading: Icon(Feather.bell),
-                                ),
-                                Spacer(),
-                                SignOutButton(
-                                  authService: authService,
-                                  logoutRoute: Routes.loginPage,
-                                  onConfirmSignOut: () async {
-                                    final isLoggedOut =
-                                        await authService.signOut();
-                                    if (isLoggedOut)
-                                      context.navigator
-                                          .popAndPush(Routes.loginPage);
-                                    else
-                                      _scaffoldKey.currentState
-                                        ..removeCurrentSnackBar()
-                                        ..showSnackBar(SnackBar(
-                                          content: Text(
-                                              "Unable to sign out. Try again later"),
-                                          behavior: SnackBarBehavior.floating,
-                                        ));
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    endDrawer: _buildSideBar(artisan, authService),
                   );
                 },
               ),
@@ -370,36 +298,38 @@ class _DashboardPageState extends State<DashboardPage> {
         ),
       );
 
-  Widget _buildSearchBar() => Container(
-        margin: EdgeInsets.symmetric(
-            vertical: getProportionateScreenHeight(kSpacingX16),
-            horizontal: getProportionateScreenWidth(kSpacingX24)),
-        child: Card(
-          clipBehavior: Clip.hardEdge,
-          elevation: kSpacingX2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(kSpacingX8),
+  Widget _buildSearchBar({double margin}) => InkWell(
+        onTap: () => showNotAvailableDialog(context),
+        borderRadius: BorderRadius.all(Radius.circular(kSpacingX8)),
+        child: Container(
+          margin: EdgeInsets.symmetric(
+              vertical: getProportionateScreenHeight(kSpacingX16),
+              horizontal: getProportionateScreenWidth(margin ??= kSpacingX8)),
+          child: Card(
+            clipBehavior: Clip.hardEdge,
+            elevation: kSpacingX2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(kSpacingX8)),
             ),
-          ),
-          child: Container(
-            height: kToolbarHeight,
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(
-              horizontal: getProportionateScreenWidth(kSpacingX16),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(
-                  Feather.search,
-                  color: _themeData.colorScheme.onBackground,
-                ),
-                SizedBox(width: getProportionateScreenWidth(kSpacingX12)),
-                Text(
-                  "Search for projects, bookings, etc.",
-                ),
-              ],
+            child: Container(
+              height: kToolbarHeight,
+              // width: preferredWidth,
+              padding: EdgeInsets.symmetric(
+                horizontal: getProportionateScreenWidth(kSpacingX16),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Feather.search,
+                    color: _themeData.colorScheme.onBackground,
+                  ),
+                  SizedBox(width: getProportionateScreenWidth(kSpacingX12)),
+                  Text(
+                    "Search",
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -437,6 +367,79 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
             ],
           ),
+        ),
+      );
+
+  Drawer _buildSideBar(Artisan artisan, AuthService authService) => Drawer(
+        child: Column(
+          children: [
+            SafeArea(
+              child: Container(
+                color: kTransparent,
+                height: getProportionateScreenHeight(kSpacingX100),
+                padding: EdgeInsets.symmetric(
+                  horizontal: getProportionateScreenWidth(kSpacingX24),
+                ),
+                alignment: Alignment.centerLeft,
+                child: Image(
+                  image: Svg(kLogoAsset),
+                  height: getProportionateScreenHeight(kSpacingX56),
+                  width: getProportionateScreenWidth(kSpacingX56),
+                ),
+              ),
+            ),
+            _buildSearchBar(),
+            ListTile(
+              title: Text("My Account"),
+              onTap: () => context.navigator.popAndPush(
+                Routes.providerSettingsPage,
+              ),
+              leading: Icon(Feather.user),
+              selected: false,
+              selectedTileColor: _themeData.selectedRowColor,
+            ),
+            ListTile(
+              title: Text("Notifications"),
+              onTap: () => showNotAvailableDialog(context),
+              leading: Icon(Feather.bell),
+            ),
+            Divider(),
+            ListTile(
+              onTap: () =>
+                  context.navigator.popAndPush(Routes.providerSettingsPage),
+              title: Text(
+                artisan?.name ?? "Create a username",
+                // style: _themeData.textTheme.bodyText1,
+              ),
+              leading: UserAvatar(
+                url: artisan?.avatar,
+                radius: kSpacingX42,
+                ringColor: _themeData.colorScheme.secondary,
+              ),
+              trailing: IconButton(
+                icon: Icon(Feather.help_circle),
+                onPressed: () => showNotAvailableDialog(context),
+              ),
+            ),
+            Divider(),
+            Spacer(),
+            SignOutButton(
+              authService: authService,
+              logoutRoute: Routes.loginPage,
+              onConfirmSignOut: () async {
+                final isLoggedOut = await authService.signOut();
+                if (isLoggedOut)
+                  context.navigator.popAndPush(Routes.loginPage);
+                else
+                  _scaffoldKey.currentState
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(SnackBar(
+                      content: Text("Unable to sign out. Try again later"),
+                      behavior: SnackBarBehavior.floating,
+                    ));
+              },
+            ),
+          ],
         ),
       );
 }

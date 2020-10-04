@@ -14,7 +14,7 @@ class StorageServiceImpl implements StorageService {
 
   StorageServiceImpl._();
 
-  static StorageServiceImpl get instance => StorageServiceImpl._();
+  static StorageService get instance => StorageServiceImpl._();
 
   @override
   Stream<StorageUploadResponse> uploadFile(File file, {String path}) async* {

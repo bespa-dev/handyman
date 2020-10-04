@@ -10,6 +10,11 @@ class PrefsUtils {
   static const SHOW_SPLASH_SCREEN = "show_splash_screen";
 }
 
+class NotificationUtils {
+  static const BOOKING_CHANNEL = "request_booking_channel";
+  static const CONVERSATION_CHANNEL = "conversation_channel";
+}
+
 /// Utilities for [FirebaseFirestore]
 class FirestoreUtils {
   static final String kArtisanRef = "artisans";

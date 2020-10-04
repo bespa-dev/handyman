@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/domain/models/user.dart';
@@ -54,20 +53,7 @@ class ChatHeader extends StatelessWidget {
           ),
           IconButton(
             icon: Icon(Entypo.dots_three_horizontal),
-            onPressed: () => showDialog(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                title: Text("Oops..."),
-                content: Text(kFunctionalityUnavailable),
-                actions: [
-                  ButtonClear(
-                    text: "Dismiss",
-                    onPressed: () => ctx.navigator.pop(),
-                    themeData: themeData,
-                  ),
-                ],
-              ),
-            ),
+            onPressed: () => showNotAvailableDialog(context),
           ),
         ],
       ),

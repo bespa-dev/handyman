@@ -1,8 +1,25 @@
 import 'package:algolia/algolia.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:handyman/app/widget/buttons.dart';
 
-///
+/// Defaults
 const kGeneralCategory = "bbe8a179-7797-4d87-b388-cf93125f490e";
+
+void showNotAvailableDialog(BuildContext context) => showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text("Oops..."),
+        content: Text(kFunctionalityUnavailable),
+        actions: [
+          ButtonClear(
+            text: "Dismiss",
+            onPressed: () => ctx.navigator.pop(),
+            themeData: Theme.of(context),
+          ),
+        ],
+      ),
+    );
 
 /// Dimensions
 const double kSpacingNone = 0.0;
@@ -44,9 +61,11 @@ const kAppSlogan = "Get some real work done";
 const kAppSloganDesc = "Find your service & book easily with $kAppName";
 const kPasswordHint =
     "Your password must be 8 or more characters long & must container a mix of upper & lower case letters, numbers & symbols";
-const kSignOutText = "Signing out will set you offline until you sign in again. You may not be able to receive requests. Do you wish to continue?";
+const kSignOutText =
+    "Signing out will set you offline until you sign in again. You may not be able to receive requests. Do you wish to continue?";
 const kArtisanString = "Artisan";
-const kFunctionalityUnavailable = "Functionality currently not available. Grab a beverage and check back later!";
+const kFunctionalityUnavailable =
+    "Functionality currently not available. Grab a beverage and check back later!";
 const kCustomerString = "Customer";
 const kLogoAsset = "assets/logo/logo_colored.svg";
 const kLogoDarkAsset = "assets/logo/logo_dark.svg";

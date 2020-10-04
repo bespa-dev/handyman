@@ -4,13 +4,14 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/entities/artisan_model.dart';
 import 'package:handyman/data/local_database.dart';
-import 'package:handyman/data/services/data.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
+import 'package:handyman/domain/services/messaging.dart';
 import 'package:provider/provider.dart';
 
 /// activeTabIndex legend:
@@ -31,9 +32,22 @@ class ProviderSettingsPage extends StatefulWidget {
 
 class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  DataService _dataService = DataServiceImpl.instance;
+  DataService _dataService = sl.get<DataService>();
   double _kWidth, _kHeight;
   ThemeData _themeData;
+  Artisan _currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (mounted)
+      sl.get<MessagingService>().showNotification(
+            title: "Hello world",
+            body: kLoremText,
+            payload: _currentUser,
+          );
+  }
 
   @override
   void didChangeDependencies() {
@@ -46,13 +60,19 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   }
 
   @override
+  void dispose() {
+    _dataService.updateUser(ArtisanModel(artisan: _currentUser), sync: true);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<AuthService>(
       builder: (_, service, __) {
         return StreamBuilder<BaseUser>(
             stream: service.currentUser(),
             builder: (context, snapshot) {
-              final artisan = snapshot.data?.user;
+              _currentUser = snapshot.data?.user;
               return Scaffold(
                 key: _scaffoldKey,
                 extendBody: true,
@@ -74,7 +94,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                         Positioned(
                           top: kSpacingNone,
                           width: _kWidth,
-                          child: _buildAppBar(provider, artisan),
+                          child: _buildAppBar(provider),
                         ),
                         Positioned(
                           width: _kWidth,
@@ -90,7 +110,6 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                               Container(
                                 height: _kHeight,
                                 width: _kWidth,
-                                color: Colors.redAccent,
                               ),
                             ],
                           ),
@@ -98,7 +117,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                         Positioned(
                           width: _kWidth,
                           bottom: kSpacingNone,
-                          child: _buildBottomBar(artisan),
+                          child: _buildBottomBar(),
                         ),
                       ],
                     ),
@@ -110,7 +129,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
     );
   }
 
-  Widget _buildAppBar(PrefsProvider provider, Artisan artisan) => Padding(
+  Widget _buildAppBar(PrefsProvider provider) => Padding(
         padding: EdgeInsets.symmetric(
           vertical: getProportionateScreenHeight(kSpacingX16),
         ),
@@ -148,7 +167,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
         ),
       );
 
-  Widget _buildBottomBar(Artisan artisan) => Container(
+  Widget _buildBottomBar() => Container(
         width: _kWidth,
         height: getProportionateScreenHeight(kSpacingX250),
         child: Material(
@@ -222,20 +241,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                         icon: Icons.arrow_right_alt_outlined,
                         color: _themeData.colorScheme.onSecondary,
                         iconColor: _themeData.colorScheme.onSecondary,
-                        onPressed: () => showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                            title: Text("Oops..."),
-                            content: Text(kFunctionalityUnavailable),
-                            actions: [
-                              ButtonClear(
-                                text: "Dismiss",
-                                onPressed: () => ctx.navigator.pop(),
-                                themeData: _themeData,
-                              ),
-                            ],
-                          ),
-                        ),
+                        onPressed: () => showNotAvailableDialog(context),
                       ),
                     ],
                   ),
@@ -290,12 +296,13 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                         ],
                       ),
                       Switch.adaptive(
-                        value: artisan?.isAvailable ?? false,
+                        value: _currentUser?.isAvailable ?? false,
                         onChanged: (visibility) {
-                          artisan = artisan.copyWith(isAvailable: visibility);
+                          _currentUser =
+                              _currentUser.copyWith(isAvailable: visibility);
                           _dataService.updateUser(
-                            ArtisanModel(artisan: artisan),
-                            // sync: false,
+                            ArtisanModel(artisan: _currentUser),
+                            sync: false,
                           );
                         },
                       ),
