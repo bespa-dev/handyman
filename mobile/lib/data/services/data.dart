@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:algolia/algolia.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/utils.dart';
 import 'package:handyman/data/entities/artisan_model.dart';
@@ -315,8 +316,20 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<void> updateUser(BaseUser user) {
-    // TODO: implement updateUser
-    throw UnimplementedError();
+  Future<void> updateUser(BaseUser user, {bool sync = true}) async {
+    if (user.isCustomer)
+      await _userDao.addCustomer(user);
+    else
+      await _userDao.saveProvider(user);
+    if (sync) await FlutterIsolate.spawn(_sendToFirestore, user);
   }
+
+  void _sendToFirestore(BaseUser user) async => await _firestore
+      .collection(
+        user.isCustomer
+            ? FirestoreUtils.kCustomerRef
+            : FirestoreUtils.kArtisanRef,
+      )
+      .doc(user.user.id)
+      .set(user.user.toJson());
 }

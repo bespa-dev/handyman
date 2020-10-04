@@ -28,6 +28,7 @@ const double kSpacingX230 = 230.0;
 const double kSpacingX250 = 250.0;
 const double kSpacingX300 = 300.0;
 const double kSpacingX320 = 320.0;
+const double kSpacingX360 = 360.0;
 const double kOpacityX14 = 0.14;
 const double kOpacityX35 = 0.35;
 const double kOpacityX50 = 0.5;
@@ -45,6 +46,7 @@ const kPasswordHint =
     "Your password must be 8 or more characters long & must container a mix of upper & lower case letters, numbers & symbols";
 const kSignOutText = "Signing out will set you offline until you sign in again. You may not be able to receive requests. Do you wish to continue?";
 const kArtisanString = "Artisan";
+const kFunctionalityUnavailable = "Functionality currently not available. Grab a beverage and check back later!";
 const kCustomerString = "Customer";
 const kLogoAsset = "assets/logo/logo_colored.svg";
 const kLogoDarkAsset = "assets/logo/logo_dark.svg";

@@ -58,8 +58,7 @@ class ChatHeader extends StatelessWidget {
               context: context,
               builder: (ctx) => AlertDialog(
                 title: Text("Oops..."),
-                content: Text(
-                    "Functionality currently not available. Grab a beverage and check back later!"),
+                content: Text(kFunctionalityUnavailable),
                 actions: [
                   ButtonClear(
                     text: "Dismiss",
