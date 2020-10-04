@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -268,6 +269,7 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
   EmojiStickerSelector _emojiSelector = EmojiStickerSelector.EMOJI;
   final geolocator = Geolocator();
   LatLng _currentPosition;
+  GoogleMapController _controller;
 
   @override
   void initState() {
@@ -288,7 +290,7 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
       debugPrint("Lat -> ${position.latitude} : Lng -> ${position.longitude}");
       _currentPosition = LatLng(position.latitude, position.longitude);
     } else {
-      await openAppSettings();
+      await Permission.locationWhenInUse.request();
     }
   }
 
@@ -330,11 +332,18 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
         height: kSpacingX320,
         child: GoogleMap(
           myLocationEnabled: true,
+          zoomControlsEnabled: true,
+          myLocationButtonEnabled: true,
           liteModeEnabled: defaultTargetPlatform == TargetPlatform.android,
           initialCameraPosition: CameraPosition(
-            target: _currentPosition ??= LatLng(5.1, -0.112),
+            target: _currentPosition ??= LatLng(5.5329650, -0.2592160),
             zoom: 14.0,
           ),
+          onMapCreated: (controller) async {
+            _controller = controller;
+            await _getMapStyle();
+            setState(() {});
+          },
           onTap: (address) {
             debugPrint("tapped on -> ${address.toString()}");
           },
@@ -364,6 +373,11 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
           ],
         ),
       );
+
+  Future _getMapStyle() async {
+    final mapStyle = await rootBundle.loadString("assets/map_style.json");
+    _controller.setMapStyle(mapStyle);
+  }
 }
 
 class _EmojiSelector extends StatelessWidget {

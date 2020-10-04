@@ -13,7 +13,6 @@ import 'package:handyman/data/entities/customer_model.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// [AuthService] implementation for production use

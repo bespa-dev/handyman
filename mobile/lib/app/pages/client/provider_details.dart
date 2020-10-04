@@ -81,7 +81,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                                     height: kHeight * 0.4,
                                     width: kWidth,
                                     child: CachedNetworkImage(
-                                      imageUrl: artisan.avatar,
+                                      imageUrl: artisan.avatar ?? "",
                                       fit: BoxFit.cover,
                                     ),
                                   ),
