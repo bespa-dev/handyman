@@ -176,55 +176,28 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                         ),
                                       ],
                                     ),
-                                    Column(
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.end,
                                       children: [
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            IconButton(
-                                              icon: Icon(Feather.edit_2),
-                                              onPressed: () =>
-                                                  showNotAvailableDialog(
-                                                      context),
-                                            ),
-                                            SizedBox(
-                                              width:
-                                                  getProportionateScreenWidth(
-                                                      kSpacingX8),
-                                            ),
-                                            IconButton(
-                                              icon: Icon(Feather.help_circle),
-                                              onPressed: () =>
-                                                  showNotAvailableDialog(
-                                                      context),
-                                            ),
-                                          ],
+                                        IconButton(
+                                          icon: Icon(Feather.edit_2),
+                                          onPressed: () =>
+                                              showNotAvailableDialog(
+                                                  context),
                                         ),
                                         SizedBox(
-                                          height: getProportionateScreenHeight(
-                                              kSpacingX8),
+                                          width:
+                                              getProportionateScreenWidth(
+                                                  kSpacingX8),
                                         ),
-                                        Container(
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            color: _themeData.colorScheme.error,
-                                            borderRadius: BorderRadius.circular(kSpacingX16),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: getProportionateScreenHeight(kSpacingX12),
-                                            horizontal: getProportionateScreenWidth(kSpacingX24),
-                                          ),
-                                          child: Text(
-                                            "sign out".toUpperCase(),
-                                            style: _themeData.textTheme.button
-                                                .copyWith(
-                                              color: _themeData
-                                                  .colorScheme.onError,
-                                            ),
-                                          ),
+                                        IconButton(
+                                          icon: Icon(Feather.help_circle),
+                                          onPressed: () =>
+                                              showNotAvailableDialog(
+                                                  context),
                                         ),
                                       ],
                                     ),

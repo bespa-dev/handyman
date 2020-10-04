@@ -100,7 +100,7 @@ Widget buildMapPreviewForBusinessLocation({@required Position position}) =>
                                     child: Container(
                                       color: Theme.of(context)
                                           .scaffoldBackgroundColor
-                                          .withOpacity(kOpacityX35),
+                                          .withOpacity(kOpacityX50),
                                       height: kToolbarHeight,
                                       alignment: Alignment.center,
                                       child: Text(
@@ -112,7 +112,7 @@ Widget buildMapPreviewForBusinessLocation({@required Position position}) =>
                                             .copyWith(
                                               color: Theme.of(context)
                                                   .colorScheme
-                                                  .onSecondary,
+                                                  .onBackground,
                                             ),
                                       ),
                                     ),

@@ -298,45 +298,46 @@ class _DashboardPageState extends State<DashboardPage> {
         ),
       );
 
-  Widget _buildSearchBar({double margin}) => InkWell(
-        onTap: () => showNotAvailableDialog(context),
-        borderRadius: BorderRadius.all(Radius.circular(kSpacingX8)),
+  Widget _buildSearchBar({double margin}) => Container(
+    margin: EdgeInsets.symmetric(
+        vertical: getProportionateScreenHeight(kSpacingX16),
+        horizontal: getProportionateScreenWidth(margin ??= kSpacingX8)),
+    child: InkWell(
+      onTap: () => showNotAvailableDialog(context),
+      borderRadius: BorderRadius.all(Radius.circular(kSpacingX8)),
+      child: Card(
+        clipBehavior: Clip.hardEdge,
+        elevation: kSpacingX2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(kSpacingX8)),
+        ),
         child: Container(
-          margin: EdgeInsets.symmetric(
-              vertical: getProportionateScreenHeight(kSpacingX16),
-              horizontal: getProportionateScreenWidth(margin ??= kSpacingX8)),
-          child: Card(
-            clipBehavior: Clip.hardEdge,
-            elevation: kSpacingX2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(kSpacingX8)),
-            ),
-            child: Container(
-              height: kToolbarHeight,
-              // width: preferredWidth,
-              padding: EdgeInsets.symmetric(
-                horizontal: getProportionateScreenWidth(kSpacingX16),
+          height: kToolbarHeight,
+          // width: preferredWidth,
+          padding: EdgeInsets.symmetric(
+            horizontal: getProportionateScreenWidth(kSpacingX16),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                Feather.search,
+                color: _themeData.colorScheme.onBackground,
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    Feather.search,
-                    color: _themeData.colorScheme.onBackground,
-                  ),
-                  SizedBox(width: getProportionateScreenWidth(kSpacingX12)),
-                  Text(
-                    "Search",
-                  ),
-                ],
+              SizedBox(width: getProportionateScreenWidth(kSpacingX12)),
+              Text(
+                "Search",
               ),
-            ),
+            ],
           ),
         ),
-      );
+      ),
+    ),
+  );
 
   /// Get ongoing [Booking]s
-  Widget _buildOngoingTasksWidget(bookings) => AnimationLimiter(
+  /// TODO: Build UI for tasks
+  Widget _buildOngoingTasksWidget(bookings) => /*AnimationLimiter(
         child: AnimationConfiguration.synchronized(
           duration: kScaleDuration,
           child: Column(
@@ -351,10 +352,11 @@ class _DashboardPageState extends State<DashboardPage> {
             ],
           ),
         ),
-      );
+      )*/ buildFunctionalityNotAvailablePanel(context);
 
   /// Get newly requested [Booking]s
-  Widget _buildRequestsWidget(bookings) => AnimationLimiter(
+  /// TODO: Build UI for requests
+  Widget _buildRequestsWidget(bookings) => /*AnimationLimiter(
         child: AnimationConfiguration.synchronized(
           duration: kScaleDuration,
           child: Column(
@@ -368,7 +370,7 @@ class _DashboardPageState extends State<DashboardPage> {
             ],
           ),
         ),
-      );
+      )*/ buildFunctionalityNotAvailablePanel(context);
 
   Drawer _buildSideBar(Artisan artisan, AuthService authService) => Drawer(
         child: Column(
