@@ -414,7 +414,7 @@ class _DashboardPageState extends State<DashboardPage> {
               leading: UserAvatar(
                 url: artisan?.avatar,
                 radius: kSpacingX42,
-                ringColor: _themeData.colorScheme.secondary,
+                ringColor: _themeData.colorScheme.primary,
               ),
               trailing: IconButton(
                 icon: Icon(Feather.help_circle),

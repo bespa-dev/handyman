@@ -56,7 +56,7 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -100,7 +100,14 @@ class LocalDatabase extends _$LocalDatabase {
             await customStatement('PRAGMA foreign_keys = ON');
           }
         },
-        onUpgrade: (m, from, to) async {},
+        onUpgrade: (m, from, to) async {
+          switch(from) {
+            case 1:
+              await m.addColumn(user, user.token);
+              await m.addColumn(serviceProvider, serviceProvider.token);
+              break;
+          }
+        },
         onCreate: (m) async {
           // Create all tables
           return m.createAll();

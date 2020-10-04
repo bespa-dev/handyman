@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:algolia/algolia.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/utils.dart';
@@ -316,10 +317,15 @@ class DataServiceImpl implements DataService {
 
   @override
   Future<void> updateUser(BaseUser user, {bool sync = true}) async {
-    if (user.isCustomer)
+    final token = await sl.get<FirebaseMessaging>().getToken();
+    debugPrint("Token => $token");
+    if (user.isCustomer) {
+      user = CustomerModel(customer: user.user.copyWith(token: token));
       await _userDao.addCustomer(user);
-    else
+    } else {
+      user = ArtisanModel(artisan: user.user.copyWith(token: token));
       await _userDao.saveProvider(user);
+    }
     if (sync)
       await sl
           .get<FirebaseFirestore>()

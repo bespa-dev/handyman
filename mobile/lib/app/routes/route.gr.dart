@@ -25,6 +25,7 @@ import '../pages/provider/dashboard.dart';
 import '../pages/provider/settings.dart';
 import '../pages/register.dart';
 import '../pages/splash.dart';
+import 'guard.dart';
 
 class Routes {
   static const String onboardingPage = '/';
@@ -69,17 +70,27 @@ class Router extends RouterBase {
     RouteDef(Routes.splashPage, page: SplashPage),
     RouteDef(Routes.loginPage, page: LoginPage),
     RouteDef(Routes.registerPage, page: RegisterPage),
-    RouteDef(Routes.accountCompletionPage, page: AccountCompletionPage),
-    RouteDef(Routes.notificationPage, page: NotificationPage),
-    RouteDef(Routes.accountSelectionPage, page: AccountSelectionPage),
-    RouteDef(Routes.conversationPage, page: ConversationPage),
-    RouteDef(Routes.homePage, page: HomePage),
-    RouteDef(Routes.profilePage, page: ProfilePage),
-    RouteDef(Routes.requestBookingPage, page: RequestBookingPage),
-    RouteDef(Routes.categoryProvidersPage, page: CategoryProvidersPage),
-    RouteDef(Routes.serviceProviderDetails, page: ServiceProviderDetails),
-    RouteDef(Routes.providerSettingsPage, page: ProviderSettingsPage),
-    RouteDef(Routes.dashboardPage, page: DashboardPage),
+    RouteDef(Routes.accountCompletionPage,
+        page: AccountCompletionPage, guards: [AuthGuard]),
+    RouteDef(Routes.notificationPage,
+        page: NotificationPage, guards: [AuthGuard]),
+    RouteDef(Routes.accountSelectionPage,
+        page: AccountSelectionPage, guards: [AuthGuard]),
+    RouteDef(Routes.conversationPage,
+        page: ConversationPage, guards: [AuthGuard]),
+    RouteDef(Routes.homePage, page: HomePage, guards: [AuthGuard, ClientGuard]),
+    RouteDef(Routes.profilePage,
+        page: ProfilePage, guards: [AuthGuard, ClientGuard]),
+    RouteDef(Routes.requestBookingPage,
+        page: RequestBookingPage, guards: [AuthGuard, ClientGuard]),
+    RouteDef(Routes.categoryProvidersPage,
+        page: CategoryProvidersPage, guards: [AuthGuard, ClientGuard]),
+    RouteDef(Routes.serviceProviderDetails,
+        page: ServiceProviderDetails, guards: [AuthGuard, ClientGuard]),
+    RouteDef(Routes.providerSettingsPage,
+        page: ProviderSettingsPage, guards: [AuthGuard, ProviderGuard]),
+    RouteDef(Routes.dashboardPage,
+        page: DashboardPage, guards: [AuthGuard, ProviderGuard]),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;

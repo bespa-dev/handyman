@@ -1,10 +1,13 @@
 import 'package:algolia/algolia.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/widget/buttons.dart';
 
 /// Defaults
 const kGeneralCategory = "bbe8a179-7797-4d87-b388-cf93125f490e";
+const kRatingStar = Entypo.star;
 
 void showNotAvailableDialog(BuildContext context) => showDialog(
       context: context,
@@ -20,6 +23,9 @@ void showNotAvailableDialog(BuildContext context) => showDialog(
         ],
       ),
     );
+
+Future getMapStyle() async =>
+    await rootBundle.loadString("assets/map_style.json");
 
 /// Dimensions
 const double kSpacingNone = 0.0;
@@ -40,6 +46,7 @@ const double kSpacingX84 = 84.0;
 const double kSpacingX96 = 96.0;
 const double kSpacingX100 = 100.0;
 const double kSpacingX120 = 120.0;
+const double kSpacingX160 = 160.0;
 const double kSpacingX200 = 200.0;
 const double kSpacingX230 = 230.0;
 const double kSpacingX250 = 250.0;

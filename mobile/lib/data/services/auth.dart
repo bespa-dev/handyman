@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -20,6 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class FirebaseAuthService implements AuthService {
   final FirebaseAuth _auth = sl.get<FirebaseAuth>();
   final FirebaseFirestore _firestore = sl.get<FirebaseFirestore>();
+  final FirebaseMessaging _firebaseMessaging = sl.get<FirebaseMessaging>();
   final LocalDatabase _database = sl.get<LocalDatabase>();
   final successState = AuthState.SUCCESS;
   final errorState = AuthState.ERROR;
@@ -90,6 +92,7 @@ class FirebaseAuthService implements AuthService {
   Future<BaseUser> _userFromFirebase(User user,
       {bool isCustomer = true}) async {
     _onProcessingStateChanged.sink.add(loadingState);
+    final token = await _firebaseMessaging.getToken();
     if (isCustomer) {
       final snapshot = await _firestore
           .collection(FirestoreUtils.kCustomerRef)
@@ -97,7 +100,7 @@ class FirebaseAuthService implements AuthService {
           .get();
       if (snapshot.exists) {
         final customer = Customer.fromJson(snapshot.data());
-        final model = CustomerModel(customer: customer);
+        final model = CustomerModel(customer: customer.copyWith(token: token));
         await _database.userDao.addCustomer(model);
         _onProcessingStateChanged.sink.add(successState);
         _onAuthStateChanged.sink.add(model);
@@ -116,7 +119,10 @@ class FirebaseAuthService implements AuthService {
 
         _onProcessingStateChanged.sink.add(successState);
         final model = ArtisanModel(
-            artisan: artisan.copyWith(business: artisan.business ?? ""));
+            artisan: artisan.copyWith(
+          business: artisan.business ?? "",
+          token: token,
+        ));
         await _database.userDao.saveProvider(model);
         _onAuthStateChanged.sink.add(model);
         return model;
@@ -162,8 +168,6 @@ class FirebaseAuthService implements AuthService {
       await _auth.currentUser.updateProfile(displayName: username);
 
       return _createUserInstance(credential.user, username, isCustomer);
-      // return user instance
-      // return _userFromFirebase(credential.user, isCustomer: isCustomer);
     } on Exception catch (e) {
       _onProcessingStateChanged.sink.add(errorState);
       debugPrint(e.toString());

@@ -14,6 +14,7 @@ class UserAvatar extends StatelessWidget {
   final Function onTap;
   final double radius;
   final Color ringColor;
+  final bool isCircular;
 
   const UserAvatar({
     Key key,
@@ -21,6 +22,7 @@ class UserAvatar extends StatelessWidget {
     @required this.ringColor,
     this.onTap,
     this.radius = kSpacingX48,
+    this.isCircular = true,
   }) : super(key: key);
 
   @override
@@ -36,20 +38,32 @@ class UserAvatar extends StatelessWidget {
           width: radius,
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
+            shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
             color: themeData.scaffoldBackgroundColor,
-            border: Border.all(
-              color: ringColor,
-              width: kSpacingX4,
-            ),
+            border: Border.all(color: ringColor, width: kSpacingX4),
+            borderRadius: isCircular ? null : BorderRadius.circular(radius / 4),
           ),
-          child: ClipOval(
-            clipBehavior: Clip.hardEdge,
-            child: url != null && url.isNotEmpty
-                ? CachedNetworkImage(
+          child: url != null && url.isNotEmpty
+              ? Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                    shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
+                    borderRadius:
+                        isCircular ? null : BorderRadius.circular(radius / 4),
+                  ),
+                  child: CachedNetworkImage(
                     imageUrl: url ?? "",
-                    progressIndicatorBuilder:
-                        (context, url, downloadProgress) => Container(),
+                    progressIndicatorBuilder: (_, url, downloadProgress) =>
+                        Container(
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(
+                        shape:
+                            isCircular ? BoxShape.circle : BoxShape.rectangle,
+                        borderRadius: isCircular
+                            ? null
+                            : BorderRadius.circular(radius / 4),
+                      ),
+                    ),
                     fit: BoxFit.cover,
                     width: radius,
                     height: radius,
@@ -62,21 +76,27 @@ class UserAvatar extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: themeData.colorScheme.onBackground
                             .withOpacity(kOpacityX14),
-                        shape: BoxShape.circle,
+                        borderRadius: isCircular
+                            ? null
+                            : BorderRadius.circular(radius / 4),
+                        shape:
+                            isCircular ? BoxShape.circle : BoxShape.rectangle,
                       ),
                       child: Icon(Feather.user,
                           size: radius / 2.5, color: ringColor),
                     ),
-                  )
-                : Container(
-                    clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(
-                      color: themeData.colorScheme.onBackground
-                          .withOpacity(kOpacityX14),
-                      shape: BoxShape.circle,
-                    ),
                   ),
-          ),
+                )
+              : Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                    color: themeData.colorScheme.onBackground
+                        .withOpacity(kOpacityX14),
+                    borderRadius:
+                        isCircular ? null : BorderRadius.circular(radius / 4),
+                    shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
+                  ),
+                ),
         ),
       ),
     );

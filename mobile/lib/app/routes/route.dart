@@ -15,27 +15,29 @@ import 'package:handyman/app/pages/provider/settings.dart';
 import 'package:handyman/app/pages/register.dart';
 import 'package:handyman/app/pages/splash.dart';
 
+import 'guard.dart';
+
+/// Router paths and guards registration
 @MaterialAutoRouter(
   routes: [
     AdaptiveRoute(page: OnboardingPage, initial: true),
     AdaptiveRoute(page: SplashPage),
     AdaptiveRoute(page: LoginPage),
     AdaptiveRoute(page: RegisterPage),
-    AdaptiveRoute(page: AccountCompletionPage /*, guards: [AuthGuard]*/),
-    AdaptiveRoute(page: NotificationPage /*, guards: [AuthGuard]*/),
-    AdaptiveRoute(page: AccountSelectionPage /*, guards: [AuthGuard]*/),
-    AdaptiveRoute(page: ConversationPage /*, guards: [AuthGuard]*/),
-    AdaptiveRoute(page: HomePage /*, guards: [AuthGuard, ClientGuard]*/),
-    AdaptiveRoute(page: ProfilePage /*, guards: [AuthGuard, ClientGuard]*/),
+    AdaptiveRoute(page: AccountCompletionPage, guards: [AuthGuard]),
+    AdaptiveRoute(page: NotificationPage, guards: [AuthGuard]),
+    AdaptiveRoute(page: AccountSelectionPage, guards: [AuthGuard]),
+    AdaptiveRoute(page: ConversationPage, guards: [AuthGuard]),
+    AdaptiveRoute(page: HomePage, guards: [AuthGuard, ClientGuard]),
+    AdaptiveRoute(page: ProfilePage, guards: [AuthGuard, ClientGuard]),
+    AdaptiveRoute(page: RequestBookingPage, guards: [AuthGuard, ClientGuard]),
     AdaptiveRoute(
-        page: RequestBookingPage /*, guards: [AuthGuard, ClientGuard]*/),
+        page: CategoryProvidersPage, guards: [AuthGuard, ClientGuard]),
     AdaptiveRoute(
-        page: CategoryProvidersPage /*, guards: [AuthGuard, ClientGuard]*/),
+        page: ServiceProviderDetails, guards: [AuthGuard, ClientGuard]),
     AdaptiveRoute(
-        page: ServiceProviderDetails /*, guards: [AuthGuard, ClientGuard]*/),
-    AdaptiveRoute(
-        page: ProviderSettingsPage /*, guards: [AuthGuard, ProviderGuard]*/),
-    AdaptiveRoute(page: DashboardPage /*, guards: [AuthGuard, ProviderGuard]*/),
+        page: ProviderSettingsPage, guards: [AuthGuard, ProviderGuard]),
+    AdaptiveRoute(page: DashboardPage, guards: [AuthGuard, ProviderGuard]),
   ],
 )
 class $Router {}

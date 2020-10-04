@@ -12,6 +12,8 @@ class ServiceProvider extends Table {
 
   TextColumn get email => text()();
 
+  TextColumn get token => text().nullable()();
+
   @JsonKey("certified")
   BoolColumn get isCertified =>
       boolean().named("certified").withDefault(Constant(false))();
@@ -26,12 +28,16 @@ class ServiceProvider extends Table {
   @JsonKey("start_working_hours")
   IntColumn get startWorkingHours =>
       integer().withDefault(Constant(DateTime.now().hour))();
+
   @JsonKey("completed_bookings_count")
   IntColumn get completedBookingsCount => integer().withDefault(Constant(0))();
+
   @JsonKey("ongoing_bookings_count")
   IntColumn get ongoingBookingsCount => integer().withDefault(Constant(0))();
+
   @JsonKey("cancelled_bookings_count")
   IntColumn get cancelledBookingsCount => integer().withDefault(Constant(0))();
+
   @JsonKey("requests_count")
   IntColumn get requestsCount => integer().withDefault(Constant(0))();
 
@@ -52,6 +58,7 @@ class ServiceProvider extends Table {
   IntColumn get createdAt => integer()
       .nullable()
       .withDefault(Constant(DateTime.now().millisecondsSinceEpoch))();
+
   @override
   Set<Column> get primaryKey => {id};
 }

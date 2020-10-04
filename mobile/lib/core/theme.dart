@@ -17,7 +17,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
       // shadowColor: kShadowColor,
       disabledColor: kDisabledColor,
       errorColor: kErrorLightColor,
-      toggleableActiveColor: kSecondaryLightColor,
+      toggleableActiveColor: kPrimaryColor,
       dividerTheme: DividerThemeData(
         thickness: kSpacingNone,
         color: kDisabledColor.withOpacity(kOpacityX70),

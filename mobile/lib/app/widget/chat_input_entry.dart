@@ -2,14 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/core/utils.dart';
 import 'package:meta/meta.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 enum InputSelector { NONE, KEYBOARD, MAP, DM, EMOJI, PHONE, PICTURE }
 
@@ -268,7 +267,6 @@ class _SelectorExpanded extends StatefulWidget {
 
 class __SelectorExpandedState extends State<_SelectorExpanded> {
   EmojiStickerSelector _emojiSelector = EmojiStickerSelector.EMOJI;
-  final geolocator = Geolocator();
   LatLng _currentPosition;
   GoogleMapController _controller;
 
@@ -279,19 +277,18 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
   }
 
   void _fetchCurrentLocation() async {
-    final permission = await geolocator.checkGeolocationPermissionStatus(
-      locationPermission: GeolocationPermission.locationWhenInUse,
-    );
-    if (permission == GeolocationStatus.granted) {
-      var isLocationServiceEnabled =
-          await geolocator.isLocationServiceEnabled();
+    if (await geo.checkPermission() == geo.LocationPermission.whileInUse) {
+      bool isLocationServiceEnabled = await geo.isLocationServiceEnabled();
       debugPrint("Location service enabled -> $isLocationServiceEnabled");
-      Position position = await geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+      geo.Position position = await geo.getLastKnownPosition() ??
+          await geo.getCurrentPosition(
+              desiredAccuracy: geo.LocationAccuracy.high);
       debugPrint("Lat -> ${position.latitude} : Lng -> ${position.longitude}");
       _currentPosition = LatLng(position.latitude, position.longitude);
     } else {
-      await Permission.locationWhenInUse.request();
+      var permission = await geo.requestPermission();
+      if (permission == geo.LocationPermission.whileInUse ||
+          permission == geo.LocationPermission.always) _fetchCurrentLocation();
     }
   }
 
@@ -342,7 +339,8 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
           ),
           onMapCreated: (controller) async {
             _controller = controller;
-            await _getMapStyle();
+            final mapStyle = await getMapStyle();
+            _controller.setMapStyle(mapStyle);
             setState(() {});
           },
           onTap: (address) {
@@ -374,11 +372,6 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
           ],
         ),
       );
-
-  Future _getMapStyle() async {
-    final mapStyle = await rootBundle.loadString("assets/map_style.json");
-    _controller.setMapStyle(mapStyle);
-  }
 }
 
 class _EmojiSelector extends StatelessWidget {

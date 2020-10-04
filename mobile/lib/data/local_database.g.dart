@@ -13,6 +13,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
   final String business;
   final String phone;
   final String email;
+  final String token;
   final bool isCertified;
   final bool isAvailable;
   final String category;
@@ -33,6 +34,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       this.business,
       this.phone,
       @required this.email,
+      this.token,
       @required this.isCertified,
       @required this.isAvailable,
       @required this.category,
@@ -63,6 +65,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}phone']),
       email:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}email']),
+      token:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}token']),
       isCertified:
           boolType.mapFromDatabaseResponse(data['${effectivePrefix}certified']),
       isAvailable:
@@ -110,6 +114,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
     }
     if (!nullToAbsent || email != null) {
       map['email'] = Variable<String>(email);
+    }
+    if (!nullToAbsent || token != null) {
+      map['token'] = Variable<String>(token);
     }
     if (!nullToAbsent || isCertified != null) {
       map['certified'] = Variable<bool>(isCertified);
@@ -167,6 +174,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           phone == null && nullToAbsent ? const Value.absent() : Value(phone),
       email:
           email == null && nullToAbsent ? const Value.absent() : Value(email),
+      token:
+          token == null && nullToAbsent ? const Value.absent() : Value(token),
       isCertified: isCertified == null && nullToAbsent
           ? const Value.absent()
           : Value(isCertified),
@@ -218,6 +227,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       business: serializer.fromJson<String>(json['business']),
       phone: serializer.fromJson<String>(json['phone']),
       email: serializer.fromJson<String>(json['email']),
+      token: serializer.fromJson<String>(json['token']),
       isCertified: serializer.fromJson<bool>(json['certified']),
       isAvailable: serializer.fromJson<bool>(json['available']),
       category: serializer.fromJson<String>(json['category']),
@@ -246,6 +256,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       'business': serializer.toJson<String>(business),
       'phone': serializer.toJson<String>(phone),
       'email': serializer.toJson<String>(email),
+      'token': serializer.toJson<String>(token),
       'certified': serializer.toJson<bool>(isCertified),
       'available': serializer.toJson<bool>(isAvailable),
       'category': serializer.toJson<String>(category),
@@ -271,6 +282,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           String business,
           String phone,
           String email,
+          String token,
           bool isCertified,
           bool isAvailable,
           String category,
@@ -291,6 +303,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
         business: business ?? this.business,
         phone: phone ?? this.phone,
         email: email ?? this.email,
+        token: token ?? this.token,
         isCertified: isCertified ?? this.isCertified,
         isAvailable: isAvailable ?? this.isAvailable,
         category: category ?? this.category,
@@ -316,6 +329,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           ..write('business: $business, ')
           ..write('phone: $phone, ')
           ..write('email: $email, ')
+          ..write('token: $token, ')
           ..write('isCertified: $isCertified, ')
           ..write('isAvailable: $isAvailable, ')
           ..write('category: $category, ')
@@ -346,38 +360,40 @@ class Artisan extends DataClass implements Insertable<Artisan> {
                   $mrjc(
                       email.hashCode,
                       $mrjc(
-                          isCertified.hashCode,
+                          token.hashCode,
                           $mrjc(
-                              isAvailable.hashCode,
+                              isCertified.hashCode,
                               $mrjc(
-                                  category.hashCode,
+                                  isAvailable.hashCode,
                                   $mrjc(
-                                      startWorkingHours.hashCode,
+                                      category.hashCode,
                                       $mrjc(
-                                          completedBookingsCount.hashCode,
+                                          startWorkingHours.hashCode,
                                           $mrjc(
-                                              ongoingBookingsCount.hashCode,
+                                              completedBookingsCount.hashCode,
                                               $mrjc(
-                                                  cancelledBookingsCount
-                                                      .hashCode,
+                                                  ongoingBookingsCount.hashCode,
                                                   $mrjc(
-                                                      requestsCount.hashCode,
+                                                      cancelledBookingsCount
+                                                          .hashCode,
                                                       $mrjc(
-                                                          endWorkingHours
+                                                          requestsCount
                                                               .hashCode,
                                                           $mrjc(
-                                                              avatar.hashCode,
+                                                              endWorkingHours
+                                                                  .hashCode,
                                                               $mrjc(
-                                                                  aboutMe
+                                                                  avatar
                                                                       .hashCode,
                                                                   $mrjc(
-                                                                      price
+                                                                      aboutMe
                                                                           .hashCode,
                                                                       $mrjc(
-                                                                          rating
+                                                                          price
                                                                               .hashCode,
-                                                                          createdAt
-                                                                              .hashCode)))))))))))))))))));
+                                                                          $mrjc(
+                                                                              rating.hashCode,
+                                                                              createdAt.hashCode))))))))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -387,6 +403,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           other.business == this.business &&
           other.phone == this.phone &&
           other.email == this.email &&
+          other.token == this.token &&
           other.isCertified == this.isCertified &&
           other.isAvailable == this.isAvailable &&
           other.category == this.category &&
@@ -409,6 +426,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
   final Value<String> business;
   final Value<String> phone;
   final Value<String> email;
+  final Value<String> token;
   final Value<bool> isCertified;
   final Value<bool> isAvailable;
   final Value<String> category;
@@ -429,6 +447,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     this.business = const Value.absent(),
     this.phone = const Value.absent(),
     this.email = const Value.absent(),
+    this.token = const Value.absent(),
     this.isCertified = const Value.absent(),
     this.isAvailable = const Value.absent(),
     this.category = const Value.absent(),
@@ -450,6 +469,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     this.business = const Value.absent(),
     this.phone = const Value.absent(),
     @required String email,
+    this.token = const Value.absent(),
     this.isCertified = const Value.absent(),
     this.isAvailable = const Value.absent(),
     this.category = const Value.absent(),
@@ -473,6 +493,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     Expression<String> business,
     Expression<String> phone,
     Expression<String> email,
+    Expression<String> token,
     Expression<bool> isCertified,
     Expression<bool> isAvailable,
     Expression<String> category,
@@ -494,6 +515,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       if (business != null) 'business': business,
       if (phone != null) 'phone': phone,
       if (email != null) 'email': email,
+      if (token != null) 'token': token,
       if (isCertified != null) 'certified': isCertified,
       if (isAvailable != null) 'available': isAvailable,
       if (category != null) 'category': category,
@@ -520,6 +542,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       Value<String> business,
       Value<String> phone,
       Value<String> email,
+      Value<String> token,
       Value<bool> isCertified,
       Value<bool> isAvailable,
       Value<String> category,
@@ -540,6 +563,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       business: business ?? this.business,
       phone: phone ?? this.phone,
       email: email ?? this.email,
+      token: token ?? this.token,
       isCertified: isCertified ?? this.isCertified,
       isAvailable: isAvailable ?? this.isAvailable,
       category: category ?? this.category,
@@ -576,6 +600,9 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     }
     if (email.present) {
       map['email'] = Variable<String>(email.value);
+    }
+    if (token.present) {
+      map['token'] = Variable<String>(token.value);
     }
     if (isCertified.present) {
       map['certified'] = Variable<bool>(isCertified.value);
@@ -632,6 +659,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
           ..write('business: $business, ')
           ..write('phone: $phone, ')
           ..write('email: $email, ')
+          ..write('token: $token, ')
           ..write('isCertified: $isCertified, ')
           ..write('isAvailable: $isAvailable, ')
           ..write('category: $category, ')
@@ -713,6 +741,18 @@ class $ServiceProviderTable extends ServiceProvider
       'email',
       $tableName,
       false,
+    );
+  }
+
+  final VerificationMeta _tokenMeta = const VerificationMeta('token');
+  GeneratedTextColumn _token;
+  @override
+  GeneratedTextColumn get token => _token ??= _constructToken();
+  GeneratedTextColumn _constructToken() {
+    return GeneratedTextColumn(
+      'token',
+      $tableName,
+      true,
     );
   }
 
@@ -868,6 +908,7 @@ class $ServiceProviderTable extends ServiceProvider
         business,
         phone,
         email,
+        token,
         isCertified,
         isAvailable,
         category,
@@ -918,6 +959,10 @@ class $ServiceProviderTable extends ServiceProvider
           _emailMeta, email.isAcceptableOrUnknown(data['email'], _emailMeta));
     } else if (isInserting) {
       context.missing(_emailMeta);
+    }
+    if (data.containsKey('token')) {
+      context.handle(
+          _tokenMeta, token.isAcceptableOrUnknown(data['token'], _tokenMeta));
     }
     if (data.containsKey('certified')) {
       context.handle(
@@ -1013,12 +1058,14 @@ class Customer extends DataClass implements Insertable<Customer> {
   final String name;
   final String email;
   final String avatar;
+  final String token;
   final int createdAt;
   Customer(
       {@required this.id,
       @required this.name,
       @required this.email,
       this.avatar,
+      this.token,
       this.createdAt});
   factory Customer.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
@@ -1032,6 +1079,8 @@ class Customer extends DataClass implements Insertable<Customer> {
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}email']),
       avatar:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}avatar']),
+      token:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}token']),
       createdAt:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
     );
@@ -1051,6 +1100,9 @@ class Customer extends DataClass implements Insertable<Customer> {
     if (!nullToAbsent || avatar != null) {
       map['avatar'] = Variable<String>(avatar);
     }
+    if (!nullToAbsent || token != null) {
+      map['token'] = Variable<String>(token);
+    }
     if (!nullToAbsent || createdAt != null) {
       map['created_at'] = Variable<int>(createdAt);
     }
@@ -1065,6 +1117,8 @@ class Customer extends DataClass implements Insertable<Customer> {
           email == null && nullToAbsent ? const Value.absent() : Value(email),
       avatar:
           avatar == null && nullToAbsent ? const Value.absent() : Value(avatar),
+      token:
+          token == null && nullToAbsent ? const Value.absent() : Value(token),
       createdAt: createdAt == null && nullToAbsent
           ? const Value.absent()
           : Value(createdAt),
@@ -1079,6 +1133,7 @@ class Customer extends DataClass implements Insertable<Customer> {
       name: serializer.fromJson<String>(json['name']),
       email: serializer.fromJson<String>(json['email']),
       avatar: serializer.fromJson<String>(json['avatar']),
+      token: serializer.fromJson<String>(json['token']),
       createdAt: serializer.fromJson<int>(json['created_at']),
     );
   }
@@ -1090,6 +1145,7 @@ class Customer extends DataClass implements Insertable<Customer> {
       'name': serializer.toJson<String>(name),
       'email': serializer.toJson<String>(email),
       'avatar': serializer.toJson<String>(avatar),
+      'token': serializer.toJson<String>(token),
       'created_at': serializer.toJson<int>(createdAt),
     };
   }
@@ -1099,12 +1155,14 @@ class Customer extends DataClass implements Insertable<Customer> {
           String name,
           String email,
           String avatar,
+          String token,
           int createdAt}) =>
       Customer(
         id: id ?? this.id,
         name: name ?? this.name,
         email: email ?? this.email,
         avatar: avatar ?? this.avatar,
+        token: token ?? this.token,
         createdAt: createdAt ?? this.createdAt,
       );
   @override
@@ -1114,6 +1172,7 @@ class Customer extends DataClass implements Insertable<Customer> {
           ..write('name: $name, ')
           ..write('email: $email, ')
           ..write('avatar: $avatar, ')
+          ..write('token: $token, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -1122,8 +1181,12 @@ class Customer extends DataClass implements Insertable<Customer> {
   @override
   int get hashCode => $mrjf($mrjc(
       id.hashCode,
-      $mrjc(name.hashCode,
-          $mrjc(email.hashCode, $mrjc(avatar.hashCode, createdAt.hashCode)))));
+      $mrjc(
+          name.hashCode,
+          $mrjc(
+              email.hashCode,
+              $mrjc(avatar.hashCode,
+                  $mrjc(token.hashCode, createdAt.hashCode))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -1132,6 +1195,7 @@ class Customer extends DataClass implements Insertable<Customer> {
           other.name == this.name &&
           other.email == this.email &&
           other.avatar == this.avatar &&
+          other.token == this.token &&
           other.createdAt == this.createdAt);
 }
 
@@ -1140,12 +1204,14 @@ class UserCompanion extends UpdateCompanion<Customer> {
   final Value<String> name;
   final Value<String> email;
   final Value<String> avatar;
+  final Value<String> token;
   final Value<int> createdAt;
   const UserCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.email = const Value.absent(),
     this.avatar = const Value.absent(),
+    this.token = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
   UserCompanion.insert({
@@ -1153,6 +1219,7 @@ class UserCompanion extends UpdateCompanion<Customer> {
     @required String name,
     @required String email,
     this.avatar = const Value.absent(),
+    this.token = const Value.absent(),
     this.createdAt = const Value.absent(),
   })  : id = Value(id),
         name = Value(name),
@@ -1162,6 +1229,7 @@ class UserCompanion extends UpdateCompanion<Customer> {
     Expression<String> name,
     Expression<String> email,
     Expression<String> avatar,
+    Expression<String> token,
     Expression<int> createdAt,
   }) {
     return RawValuesInsertable({
@@ -1169,6 +1237,7 @@ class UserCompanion extends UpdateCompanion<Customer> {
       if (name != null) 'name': name,
       if (email != null) 'email': email,
       if (avatar != null) 'avatar': avatar,
+      if (token != null) 'token': token,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
@@ -1178,12 +1247,14 @@ class UserCompanion extends UpdateCompanion<Customer> {
       Value<String> name,
       Value<String> email,
       Value<String> avatar,
+      Value<String> token,
       Value<int> createdAt}) {
     return UserCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
       avatar: avatar ?? this.avatar,
+      token: token ?? this.token,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -1203,6 +1274,9 @@ class UserCompanion extends UpdateCompanion<Customer> {
     if (avatar.present) {
       map['avatar'] = Variable<String>(avatar.value);
     }
+    if (token.present) {
+      map['token'] = Variable<String>(token.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<int>(createdAt.value);
     }
@@ -1216,6 +1290,7 @@ class UserCompanion extends UpdateCompanion<Customer> {
           ..write('name: $name, ')
           ..write('email: $email, ')
           ..write('avatar: $avatar, ')
+          ..write('token: $token, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -1274,6 +1349,18 @@ class $UserTable extends User with TableInfo<$UserTable, Customer> {
     );
   }
 
+  final VerificationMeta _tokenMeta = const VerificationMeta('token');
+  GeneratedTextColumn _token;
+  @override
+  GeneratedTextColumn get token => _token ??= _constructToken();
+  GeneratedTextColumn _constructToken() {
+    return GeneratedTextColumn(
+      'token',
+      $tableName,
+      true,
+    );
+  }
+
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
   GeneratedIntColumn _createdAt;
   @override
@@ -1284,7 +1371,8 @@ class $UserTable extends User with TableInfo<$UserTable, Customer> {
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, name, email, avatar, createdAt];
+  List<GeneratedColumn> get $columns =>
+      [id, name, email, avatar, token, createdAt];
   @override
   $UserTable get asDslTable => this;
   @override
@@ -1316,6 +1404,10 @@ class $UserTable extends User with TableInfo<$UserTable, Customer> {
     if (data.containsKey('avatar')) {
       context.handle(_avatarMeta,
           avatar.isAcceptableOrUnknown(data['avatar'], _avatarMeta));
+    }
+    if (data.containsKey('token')) {
+      context.handle(
+          _tokenMeta, token.isAcceptableOrUnknown(data['token'], _tokenMeta));
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -3494,6 +3586,7 @@ mixin _$UserDaoMixin on DatabaseAccessor<LocalDatabase> {
         business: row.readString('business'),
         phone: row.readString('phone'),
         email: row.readString('email'),
+        token: row.readString('token'),
         certified: row.readBool('certified'),
         available: row.readBool('available'),
         category: row.readString('category'),
@@ -3512,6 +3605,7 @@ mixin _$UserDaoMixin on DatabaseAccessor<LocalDatabase> {
         name1: row.readString('name'),
         email1: row.readString('email'),
         avatar1: row.readString('avatar'),
+        token1: row.readString('token'),
         createdAt1: row.readInt('created_at'),
       );
     });
@@ -3524,6 +3618,7 @@ class SearchForResult {
   final String business;
   final String phone;
   final String email;
+  final String token;
   final bool certified;
   final bool available;
   final String category;
@@ -3542,6 +3637,7 @@ class SearchForResult {
   final String name1;
   final String email1;
   final String avatar1;
+  final String token1;
   final int createdAt1;
   SearchForResult({
     this.id,
@@ -3549,6 +3645,7 @@ class SearchForResult {
     this.business,
     this.phone,
     this.email,
+    this.token,
     this.certified,
     this.available,
     this.category,
@@ -3567,6 +3664,7 @@ class SearchForResult {
     this.name1,
     this.email1,
     this.avatar1,
+    this.token1,
     this.createdAt1,
   });
 }

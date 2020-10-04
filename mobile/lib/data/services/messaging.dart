@@ -35,21 +35,7 @@ class MessagingServiceImpl implements MessagingService {
     await _flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: _selectNotification);
 
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        debugPrint("onMessage: $message");
-        //_showItemDialog(message);
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        debugPrint("onLaunch: $message");
-        //_navigateToItemDetail(message);
-      },
-      onResume: (Map<String, dynamic> message) async {
-        debugPrint("onResume: $message");
-        //_navigateToItemDetail(message);
-      },
-    );
-
+    // Request notification permissions
     _firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(
             sound: true, badge: true, alert: true, provisional: true));
@@ -58,7 +44,31 @@ class MessagingServiceImpl implements MessagingService {
       debugPrint("Settings registered: $settings");
     });
     final token = await _firebaseMessaging.getToken();
-    debugPrint("Token => $token");
+    debugPrint("MessagingServiceImpl._initPlugins: Token => $token");
+
+    // Configure messaging
+    _firebaseMessaging.configure(
+      onBackgroundMessage: (Map<String, dynamic> message) async {
+        debugPrint("onBackgroundMessage: $message");
+      },
+      onMessage: (Map<String, dynamic> message) async {
+        // final notification = message["notification"];
+        debugPrint("onMessage: $message");
+        // final title = notification["title"];
+        // final body = notification["body"];
+        // showNotification(
+        //   title: notification["title"],
+        //   body: notification["body"],
+        //   payload: notification["data"]?.toString(),
+        // );
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        debugPrint("onLaunch: $message");
+      },
+      onResume: (Map<String, dynamic> message) async {
+        debugPrint("onResume: $message");
+      },
+    );
   }
 
   @override
