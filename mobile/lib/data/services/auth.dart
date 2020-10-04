@@ -128,6 +128,23 @@ class FirebaseAuthService implements AuthService {
     }
   }
 
+  Future<bool> _userExists(String email, {bool isCustomer = true}) async {
+    if (isCustomer) {
+      final snapshot = await _firestore
+          .collection(FirestoreUtils.kCustomerRef)
+          .where("email", isEqualTo: email)
+          .get();
+
+      return snapshot.size > 0;
+    } else {
+      final snapshot = await _firestore
+          .collection(FirestoreUtils.kArtisanRef)
+          .where("email", isEqualTo: email)
+          .get();
+      return snapshot.size > 0;
+    }
+  }
+
   @override
   Future<BaseUser> createUserWithEmailAndPassword({
     String username,
@@ -217,12 +234,18 @@ class FirebaseAuthService implements AuthService {
       {String email, String password, bool isCustomer}) async {
     _onProcessingStateChanged.sink.add(loadingState);
     try {
-      // Sign in
-      final credential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+      final userExists = await _userExists(email, isCustomer: isCustomer);
+      if (userExists) {
+        // Sign in
+        final credential = await _auth.signInWithEmailAndPassword(
+            email: email, password: password);
 
-      // Return user instance
-      return _userFromFirebase(credential.user, isCustomer: isCustomer);
+        // Return user instance
+        return _userFromFirebase(credential.user, isCustomer: isCustomer);
+      } else {
+        _onProcessingStateChanged.sink.add(errorState);
+        return null;
+      }
     } on Exception catch (e) {
       _onProcessingStateChanged.sink.add(errorState);
       debugPrint(e.toString());
@@ -263,12 +286,12 @@ class FirebaseAuthService implements AuthService {
 
   @override
   Future<bool> signOut() async {
-
     _onProcessingStateChanged?.sink?.add(loadingState);
     try {
       // Perform sign out
       await _auth.signOut();
-      // await GoogleSignIn().signOut();
+      final googleSignIn = GoogleSignIn();
+      if (googleSignIn.currentUser != null) await googleSignIn.signOut();
 
       // Clear prefs
       final preferences = await sl.getAsync<SharedPreferences>();
