@@ -215,7 +215,7 @@ class ButtonClear extends FlatButton {
                   : BorderRadius.circular(kSpacingX16),
             ),
             alignment: Alignment.center,
-            width: preferredWidth ?? getProportionateScreenWidth(kSpacingX96),
+            width: preferredWidth ?? getProportionateScreenWidth(kSpacingX64),
             height:
                 preferredHeight ?? getProportionateScreenHeight(kSpacingX36),
             padding: EdgeInsets.symmetric(

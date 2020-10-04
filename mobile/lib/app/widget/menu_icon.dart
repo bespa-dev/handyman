@@ -12,7 +12,8 @@ class MenuIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).iconTheme.color;
-    return GestureDetector(
+    return InkWell(
+      borderRadius: BorderRadius.circular(kSpacingX4),
       onTap: onTap,
       child: Container(
         height: getProportionateScreenHeight(kSpacingX24),

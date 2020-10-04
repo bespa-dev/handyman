@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -6,6 +7,7 @@ import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/badgeable_tab_bar.dart';
 import 'package:handyman/app/widget/booking_card_item.dart';
 import 'package:handyman/app/widget/menu_icon.dart';
+import 'package:handyman/app/widget/sign_out_button.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
@@ -15,7 +17,6 @@ import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:provider/provider.dart';
-import 'package:auto_route/auto_route.dart';
 
 class DashboardPage extends StatefulWidget {
   @override
@@ -24,7 +25,6 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  DataService _apiService;
   double _kWidth, _kHeight;
   ThemeData _themeData;
   int _currentTabIndex = 0;
@@ -43,10 +43,9 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) => Consumer<AuthService>(
         builder: (_, authService, __) => Consumer<DataService>(
           builder: (_, dataService, __) {
-            _apiService = dataService;
             return Consumer<PrefsProvider>(
               builder: (_, provider, __) => StreamBuilder<BaseUser>(
-                stream: authService.currentUser(),
+                stream: dataService.getArtisanById(id: provider.userId),
                 builder: (_, snapshot) {
                   final artisan = snapshot.data?.user;
 
@@ -71,10 +70,9 @@ class _DashboardPageState extends State<DashboardPage> {
                             height: _kHeight,
                             width: _kWidth,
                             child: StreamBuilder<BaseUser>(
-                                stream: _apiService.getArtisanById(
+                                stream: dataService.getArtisanById(
                                     id: provider.userId),
                                 builder: (context, snapshot) {
-                                  debugPrint(snapshot.error.toString());
                                   if (snapshot.hasError) return Container();
                                   final artisan = snapshot.data?.user;
 
@@ -91,15 +89,15 @@ class _DashboardPageState extends State<DashboardPage> {
                                                 getProportionateScreenWidth(
                                                     kSpacingX24)),
                                         child: BadgeableTabBar(
-                                          tabs: [
+                                          tabs: <BadgeableTabBarItem>[
                                             BadgeableTabBarItem(
-                                              title: "Ongoing",
+                                              title: "Ongoing Tasks",
                                               badgeCount: artisan
                                                       ?.ongoingBookingsCount ??
                                                   0,
                                             ),
                                             BadgeableTabBarItem(
-                                              title: "Requests",
+                                              title: "New Requests",
                                               badgeCount:
                                                   artisan?.requestsCount ?? 0,
                                             ),
@@ -115,7 +113,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                       _buildSearchBar(),
                                       StreamBuilder<List<Booking>>(
                                         stream:
-                                            _apiService.getBookingsForProvider(
+                                            dataService.getBookingsForProvider(
                                                 artisan?.id),
                                         initialData: [],
                                         builder: (_, snapshot) {
@@ -133,32 +131,62 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
                       ],
                     ),
-                    drawer: Drawer(
+                    endDrawer: Drawer(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          UserAccountsDrawerHeader(
-                            onDetailsPressed: () {},
-                            currentAccountPicture: UserAvatar(
-                              url: artisan?.avatar,
-                              onTap: () {
-                                _scaffoldKey.currentState.openEndDrawer();
-                                context.navigator.push(
-                                  Routes.providerSettingsPage,
-                                );
-                              },
-                              radius: kSpacingX72,
-                              ringColor: _themeData.iconTheme.color,
-                            ),
-                            accountName: Text(artisan?.name ?? ""),
-                            accountEmail: Text(
-                              artisan?.email ?? "",
-                              style: TextStyle(
-                                color: _themeData.textTheme.bodyText1.color
-                                    .withOpacity(kEmphasisMedium),
+                          Expanded(
+                            flex: 1,
+                            child: UserAccountsDrawerHeader(
+                              decoration: BoxDecoration(
+                                color: _themeData.scaffoldBackgroundColor,
                               ),
+                              currentAccountPicture: UserAvatar(
+                                url: artisan?.avatar,
+                                onTap: () => context.navigator.popAndPush(
+                                  Routes.providerSettingsPage,
+                                ),
+                                radius: kSpacingX72,
+                                ringColor: _themeData.iconTheme.color,
+                              ),
+                              accountName:
+                                  Text(artisan?.name ?? "Create a username"),
+                              accountEmail: artisan?.email == null
+                                  ? SizedBox.shrink()
+                                  : Text(
+                                      artisan?.email ?? provider.userId,
+                                      style: TextStyle(
+                                        color: _themeData
+                                            .textTheme.bodyText1.color
+                                            .withOpacity(kEmphasisMedium),
+                                      ),
+                                    ),
                             ),
-                          )
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  title: Text("My Account"),
+                                  onTap: () => context.navigator.popAndPush(
+                                    Routes.providerSettingsPage,
+                                  ),
+                                  leading: Icon(Feather.user),
+                                  selected: true,
+                                ),
+                                ListTile(
+                                  title: Text("Notifications"),
+                                  onTap: () {},
+                                  leading: Icon(Feather.bell),
+                                ),
+                                Spacer(),
+                                SignOutButton(
+                                  authService: authService,
+                                  logoutRoute: Routes.loginPage,
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -182,23 +210,26 @@ class _DashboardPageState extends State<DashboardPage> {
             Container(
               width: _kWidth,
               padding: EdgeInsets.only(
-                left: getProportionateScreenWidth(kSpacingX12),
+                right: getProportionateScreenWidth(kSpacingX12),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Tooltip(
-                    message: "Open drawer",
-                    child: MenuIcon(
-                      onTap: () => _scaffoldKey.currentState.openDrawer(),
-                    ),
-                  ),
                   IconButton(
                     tooltip: "Toggle theme",
                     icon: Icon(
                       provider.isLightTheme ? Feather.moon : Feather.sun,
                     ),
                     onPressed: () => provider.toggleTheme(),
+                  ),
+                  Tooltip(
+                    message: "Open drawer",
+                    child: RotatedBox(
+                      quarterTurns: 2,
+                      child: MenuIcon(
+                        onTap: () => _scaffoldKey.currentState.openEndDrawer(),
+                      ),
+                    ),
                   ),
                 ],
               ),

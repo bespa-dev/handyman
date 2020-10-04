@@ -5,6 +5,10 @@ import 'package:handyman/core/constants.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
+/// User avatar widget.
+/// Use the widget below as a placeholder to show a progress indicator
+/// while images load.
+/// Center(child: CircularProgressIndicator(value: downloadProgress.progress));
 class UserAvatar extends StatelessWidget {
   final String url;
   final Function onTap;
@@ -45,9 +49,7 @@ class UserAvatar extends StatelessWidget {
                 ? CachedNetworkImage(
                     imageUrl: url ?? "",
                     progressIndicatorBuilder:
-                        (context, url, downloadProgress) => Center(
-                            child: CircularProgressIndicator(
-                                value: downloadProgress.progress)),
+                        (context, url, downloadProgress) => Container(),
                     fit: BoxFit.cover,
                     width: radius,
                     height: radius,

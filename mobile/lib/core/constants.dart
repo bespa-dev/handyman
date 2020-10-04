@@ -43,6 +43,7 @@ const kAppSlogan = "Get some real work done";
 const kAppSloganDesc = "Find your service & book easily with $kAppName";
 const kPasswordHint =
     "Your password must be 8 or more characters long & must container a mix of upper & lower case letters, numbers & symbols";
+const kSignOutText = "Signing out will set you offline until you sign in again. You may not be able to receive requests. Do you wish to continue?";
 const kArtisanString = "Artisan";
 const kCustomerString = "Customer";
 const kLogoAsset = "assets/logo/logo_colored.svg";

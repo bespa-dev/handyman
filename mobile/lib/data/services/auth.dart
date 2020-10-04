@@ -159,13 +159,14 @@ class FirebaseAuthService implements AuthService {
     var preferences = await sl.getAsync<SharedPreferences>();
     final userId = preferences.getString(PrefsUtils.USER_ID) ?? null;
     final userType = preferences.getString(PrefsUtils.USER_TYPE) ?? null;
+    debugPrint("$userId => $userType");
     if (userId != null && userType != null) {
       if (userType == kCustomerString) {
-        var localCustomer = _database.userDao
+        var localSource = _database.userDao
             .customerById(userId)
             .watchSingle()
             .map((event) => CustomerModel(customer: event));
-        yield* localCustomer;
+        yield* localSource;
 
         var customerSnapshot = _firestore
             .collection(FirestoreUtils.kCustomerRef)
@@ -179,6 +180,12 @@ class FirebaseAuthService implements AuthService {
           }
         });
       } else if (userType == kArtisanString) {
+        var localSource = _database.userDao
+            .artisanById(userId)
+            .watchSingle()
+            .map((event) => ArtisanModel(artisan: event));
+        yield* localSource;
+
         final snapshot = _firestore
             .collection(FirestoreUtils.kArtisanRef)
             .doc(userId)
@@ -256,17 +263,24 @@ class FirebaseAuthService implements AuthService {
 
   @override
   Future<bool> signOut() async {
-    _onProcessingStateChanged.sink.add(loadingState);
-    try {
-      await GoogleSignIn().signOut();
-      await _auth.signOut();
-      _onProcessingStateChanged.sink.add(successState);
-      return true;
-    } on PlatformException catch (e) {
-      debugPrint(e.message);
-      _onProcessingStateChanged.sink.add(errorState);
-      return false;
-    }
+    // FIXME: logout freezes the UI
+    final preferences = await sl.getAsync<SharedPreferences>();
+    await preferences.setString(PrefsUtils.USER_ID, null);
+    await preferences.setString(PrefsUtils.USER_TYPE, null);
+
+    // _onProcessingStateChanged?.sink?.add(loadingState);
+    // try {
+    //   await _auth.signOut();
+    //   await GoogleSignIn().signOut();
+    // _onProcessingStateChanged?.sink?.add(successState);
+    // _onAuthStateChanged?.sink?.add(null);
+    // return true;
+    // } on PlatformException catch (e) {
+    //   debugPrint(e.message);
+    // _onProcessingStateChanged?.sink?.add(errorState);
+    // return false;
+    // }
+    return false;
   }
 
   @override
