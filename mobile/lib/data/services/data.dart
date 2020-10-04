@@ -57,7 +57,6 @@ class DataServiceImpl implements DataService {
         }
       });
     });
-    // await _providerDao.addProviders(results);
   }
 
   @override

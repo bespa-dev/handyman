@@ -263,24 +263,26 @@ class FirebaseAuthService implements AuthService {
 
   @override
   Future<bool> signOut() async {
-    // FIXME: logout freezes the UI
-    final preferences = await sl.getAsync<SharedPreferences>();
-    await preferences.setString(PrefsUtils.USER_ID, null);
-    await preferences.setString(PrefsUtils.USER_TYPE, null);
 
-    // _onProcessingStateChanged?.sink?.add(loadingState);
-    // try {
-    //   await _auth.signOut();
-    //   await GoogleSignIn().signOut();
-    // _onProcessingStateChanged?.sink?.add(successState);
-    // _onAuthStateChanged?.sink?.add(null);
-    // return true;
-    // } on PlatformException catch (e) {
-    //   debugPrint(e.message);
-    // _onProcessingStateChanged?.sink?.add(errorState);
-    // return false;
-    // }
-    return false;
+    _onProcessingStateChanged?.sink?.add(loadingState);
+    try {
+      // Perform sign out
+      await _auth.signOut();
+      // await GoogleSignIn().signOut();
+
+      // Clear prefs
+      final preferences = await sl.getAsync<SharedPreferences>();
+      await preferences.setString(PrefsUtils.USER_ID, null);
+      await preferences.setString(PrefsUtils.USER_TYPE, null);
+
+      _onProcessingStateChanged?.sink?.add(successState);
+      _onAuthStateChanged?.sink?.add(null);
+      return true;
+    } on PlatformException catch (e) {
+      debugPrint(e.message);
+      _onProcessingStateChanged?.sink?.add(errorState);
+      return false;
+    }
   }
 
   @override

@@ -10,11 +10,13 @@ class SignOutButton extends StatelessWidget {
   final AuthService authService;
   final double preferredWidth;
   final String logoutRoute;
+  final Function onConfirmSignOut;
 
   const SignOutButton({
     Key key,
     @required this.authService,
     @required this.logoutRoute,
+    @required this.onConfirmSignOut,
     this.preferredWidth = double.infinity,
   }) : super(key: key);
 
@@ -39,16 +41,9 @@ class SignOutButton extends StatelessWidget {
               ),
               ButtonClear(
                 text: "Yes",
-                onPressed: () async {
+                onPressed: () {
                   ctx.navigator.pop();
-                  final isLoggedOut = await authService.signOut();
-                  if (isLoggedOut)
-                    context.navigator.popAndPush(logoutRoute);
-                  else
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text("Unable to sign out. Try again later"),
-                      behavior: SnackBarBehavior.floating,
-                    ));
+                  onConfirmSignOut();
                 },
                 themeData: _themeData,
               ),

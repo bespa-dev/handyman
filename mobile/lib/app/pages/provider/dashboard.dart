@@ -45,7 +45,7 @@ class _DashboardPageState extends State<DashboardPage> {
           builder: (_, dataService, __) {
             return Consumer<PrefsProvider>(
               builder: (_, provider, __) => StreamBuilder<BaseUser>(
-                stream: dataService.getArtisanById(id: provider.userId),
+                stream: authService.currentUser(),
                 builder: (_, snapshot) {
                   final artisan = snapshot.data?.user;
 
@@ -69,64 +69,51 @@ class _DashboardPageState extends State<DashboardPage> {
                           child: Container(
                             height: _kHeight,
                             width: _kWidth,
-                            child: StreamBuilder<BaseUser>(
-                                stream: dataService.getArtisanById(
-                                    id: provider.userId),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasError) return Container();
-                                  final artisan = snapshot.data?.user;
-
-                                  return ListView(
-                                    children: [
-                                      _buildAppBar(provider, artisan),
-                                      SizedBox(
-                                        height: getProportionateScreenHeight(
-                                            kSpacingX16),
+                            child: ListView(
+                              children: [
+                                _buildAppBar(provider, artisan),
+                                SizedBox(
+                                  height:
+                                      getProportionateScreenHeight(kSpacingX16),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: getProportionateScreenWidth(
+                                          kSpacingX24)),
+                                  child: BadgeableTabBar(
+                                    tabs: <BadgeableTabBarItem>[
+                                      BadgeableTabBarItem(
+                                        title: "Ongoing Tasks",
+                                        badgeCount:
+                                            artisan?.ongoingBookingsCount ?? 0,
                                       ),
-                                      Container(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal:
-                                                getProportionateScreenWidth(
-                                                    kSpacingX24)),
-                                        child: BadgeableTabBar(
-                                          tabs: <BadgeableTabBarItem>[
-                                            BadgeableTabBarItem(
-                                              title: "Ongoing Tasks",
-                                              badgeCount: artisan
-                                                      ?.ongoingBookingsCount ??
-                                                  0,
-                                            ),
-                                            BadgeableTabBarItem(
-                                              title: "New Requests",
-                                              badgeCount:
-                                                  artisan?.requestsCount ?? 0,
-                                            ),
-                                          ],
-                                          onTabSelected: (index) {
-                                            _currentTabIndex = index;
-                                            setState(() {});
-                                          },
-                                          color: _themeData.primaryColor,
-                                          activeIndex: _currentTabIndex,
-                                        ),
-                                      ),
-                                      _buildSearchBar(),
-                                      StreamBuilder<List<Booking>>(
-                                        stream:
-                                            dataService.getBookingsForProvider(
-                                                artisan?.id),
-                                        initialData: [],
-                                        builder: (_, snapshot) {
-                                          return _currentTabIndex == 0
-                                              ? _buildOngoingTasksWidget(
-                                                  snapshot.data)
-                                              : _buildRequestsWidget(
-                                                  snapshot.data);
-                                        },
+                                      BadgeableTabBarItem(
+                                        title: "New Requests",
+                                        badgeCount: artisan?.requestsCount ?? 0,
                                       ),
                                     ],
-                                  );
-                                }),
+                                    onTabSelected: (index) {
+                                      _currentTabIndex = index;
+                                      setState(() {});
+                                    },
+                                    color: _themeData.primaryColor,
+                                    activeIndex: _currentTabIndex,
+                                  ),
+                                ),
+                                _buildSearchBar(),
+                                StreamBuilder<List<Booking>>(
+                                  stream: dataService
+                                      .getBookingsForProvider(artisan?.id),
+                                  initialData: [],
+                                  builder: (_, snapshot) {
+                                    return _currentTabIndex == 0
+                                        ? _buildOngoingTasksWidget(
+                                            snapshot.data)
+                                        : _buildRequestsWidget(snapshot.data);
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -183,6 +170,21 @@ class _DashboardPageState extends State<DashboardPage> {
                                 SignOutButton(
                                   authService: authService,
                                   logoutRoute: Routes.loginPage,
+                                  onConfirmSignOut: () async {
+                                    final isLoggedOut =
+                                        await authService.signOut();
+                                    if (isLoggedOut)
+                                      context.navigator
+                                          .popAndPush(Routes.loginPage);
+                                    else
+                                      _scaffoldKey.currentState
+                                        ..removeCurrentSnackBar()
+                                        ..showSnackBar(SnackBar(
+                                          content: Text(
+                                              "Unable to sign out. Try again later"),
+                                          behavior: SnackBarBehavior.floating,
+                                        ));
+                                  },
                                 ),
                               ],
                             ),
