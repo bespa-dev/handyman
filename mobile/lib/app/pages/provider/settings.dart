@@ -17,7 +17,6 @@ import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:provider/provider.dart';
-import 'package:random_color/random_color.dart';
 
 /// activeTabIndex legend:
 /// 0 => calendar
@@ -177,34 +176,58 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                         ),
                                       ],
                                     ),
-                                    StreamBuilder<ServiceCategory>(
-                                        stream: _dataService.getCategoryById(
-                                            id: _currentUser?.category),
-                                        builder: (_, categorySnapshot) {
-                                          return categorySnapshot.hasError
-                                              ? SizedBox.shrink()
-                                              : Column(
-                                                  children: [
-                                                    Text(
-                                                      "${categorySnapshot.data.name} Category",
-                                                      style: _themeData
-                                                          .textTheme.bodyText1,
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () =>
-                                                          showNotAvailableDialog(
-                                                              context),
-                                                      child: Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: _themeData
-                                                              .primaryColor,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                        }),
+                                    Column(
+                                      children: [
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            IconButton(
+                                              icon: Icon(Feather.edit_2),
+                                              onPressed: () =>
+                                                  showNotAvailableDialog(
+                                                      context),
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  getProportionateScreenWidth(
+                                                      kSpacingX8),
+                                            ),
+                                            IconButton(
+                                              icon: Icon(Feather.help_circle),
+                                              onPressed: () =>
+                                                  showNotAvailableDialog(
+                                                      context),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: getProportionateScreenHeight(
+                                              kSpacingX8),
+                                        ),
+                                        Container(
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            color: _themeData.colorScheme.error,
+                                            borderRadius: BorderRadius.circular(kSpacingX16),
+                                          ),
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: getProportionateScreenHeight(kSpacingX12),
+                                            horizontal: getProportionateScreenWidth(kSpacingX24),
+                                          ),
+                                          child: Text(
+                                            "sign out".toUpperCase(),
+                                            style: _themeData.textTheme.button
+                                                .copyWith(
+                                              color: _themeData
+                                                  .colorScheme.onError,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ),
@@ -283,7 +306,17 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   Widget _buildBottomBar() => Container(
         width: _kWidth,
         height: getProportionateScreenHeight(
-            _shouldDismissEarnPointsSheet ? kSpacingX120 : kSpacingX250),
+            _shouldDismissEarnPointsSheet ? kSpacingX160 : kSpacingX250),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(kSpacingX24),
+            topRight: Radius.circular(kSpacingX24),
+          ),
+          border: Border.all(
+            color: _themeData.disabledColor,
+            style: BorderStyle.none,
+          ),
+        ),
         child: Material(
           clipBehavior: Clip.hardEdge,
           type: MaterialType.card,
@@ -298,8 +331,35 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
             fit: StackFit.passthrough,
             children: [
               _shouldDismissEarnPointsSheet
-                  ? SizedBox.shrink()
-                  : Positioned(
+                  ? Container(
+                      alignment: Alignment.topRight,
+                      height: getProportionateScreenHeight(
+                          kSpacingX250 - kSpacingX160),
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(
+                        color: _themeData.colorScheme.secondary,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(kSpacingX24),
+                          topRight: Radius.circular(kSpacingX24),
+                        ),
+                      ),
+                      padding: EdgeInsets.only(
+                        left: getProportionateScreenWidth(kSpacingX16),
+                        right: getProportionateScreenWidth(kSpacingX16),
+                      ),
+                      child: IconButton(
+                        icon: Icon(Feather.chevron_up),
+                        onPressed: () {
+                          setState(() {
+                            _shouldDismissEarnPointsSheet =
+                                !_shouldDismissEarnPointsSheet;
+                          });
+                        },
+                        color: _themeData.colorScheme.onSecondary,
+                      ),
+                    )
+                  : AnimatedPositioned(
+                      duration: kScaleDuration,
                       bottom: kSpacingNone,
                       width: _kWidth,
                       child: Container(
@@ -313,11 +373,12 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                         width: _kWidth,
                         clipBehavior: Clip.hardEdge,
                         decoration: BoxDecoration(
-                            color: _themeData.colorScheme.secondary,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(kSpacingX24),
-                              topRight: Radius.circular(kSpacingX24),
-                            )),
+                          color: _themeData.colorScheme.secondary,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(kSpacingX24),
+                            topRight: Radius.circular(kSpacingX24),
+                          ),
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -488,30 +549,15 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
         ),
       );
 
-  Widget _buildHistorySection() => ListView(
-        children: [
-          Container(
-            color: RandomColor().randomColor(),
-            height: _kHeight,
-            width: _kWidth,
-          ),
-        ],
-      );
+  Widget _buildHistorySection() => buildFunctionalityNotAvailablePanel(context);
 
-  Widget _buildCalendarSection() => ListView(
-        children: [
-          Container(
-            color: RandomColor().randomColor(),
-            height: _kHeight,
-            width: _kWidth,
-          ),
-        ],
-      );
+  Widget _buildCalendarSection() =>
+      buildFunctionalityNotAvailablePanel(context);
 
   Widget _buildProfileSection() => ListView(
         padding: EdgeInsets.only(
           bottom: getProportionateScreenHeight(
-              _shouldDismissEarnPointsSheet ? kSpacingX120 : kSpacingX250),
+              _shouldDismissEarnPointsSheet ? kSpacingX160 : kSpacingX250),
         ),
         children: [
           buildArtisanMetadataBar(

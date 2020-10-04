@@ -46,6 +46,7 @@ class MessagingServiceImpl implements MessagingService {
     final token = await _firebaseMessaging.getToken();
     debugPrint("MessagingServiceImpl._initPlugins: Token => $token");
 
+    // FIXME: Failed to push notification when sent from console
     // Configure messaging
     _firebaseMessaging.configure(
       onBackgroundMessage: (Map<String, dynamic> message) async {

@@ -311,7 +311,7 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
                 : widget.currentSelector == InputSelector.NONE ||
                         widget.currentSelector == InputSelector.KEYBOARD
                     ? SizedBox.shrink()
-                    : _buildFunctionalityNotAvailablePanel(context),
+                    : buildFunctionalityNotAvailablePanel(context),
         _buildHideUIPanel(context),
       ],
     );
@@ -346,30 +346,6 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
           onTap: (address) {
             debugPrint("tapped on -> ${address.toString()}");
           },
-        ),
-      );
-
-  Widget _buildFunctionalityNotAvailablePanel(BuildContext context) =>
-      Container(
-        height: kSpacingX320,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "Functionality currently not available",
-              style: Theme.of(context).textTheme.subtitle1,
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
-            Text(
-              "Grab a beverage and check back later!",
-              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    color: Theme.of(context).disabledColor,
-                  ),
-              textAlign: TextAlign.center,
-            ),
-          ],
         ),
       );
 }

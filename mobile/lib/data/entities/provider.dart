@@ -39,7 +39,10 @@ class ServiceProvider extends Table {
   IntColumn get cancelledBookingsCount => integer().withDefault(Constant(0))();
 
   @JsonKey("requests_count")
-  IntColumn get requestsCount => integer().withDefault(Constant(0))();
+  IntColumn get requestsCount =>
+      integer().nullable().withDefault(Constant(0))();
+
+  IntColumn get reportsCount => integer().nullable().withDefault(Constant(0))();
 
   @JsonKey("end_working_hours")
   IntColumn get endWorkingHours =>

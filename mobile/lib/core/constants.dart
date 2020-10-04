@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/widget/buttons.dart';
 
+import 'size_config.dart';
+
 /// Defaults
 const kGeneralCategory = "bbe8a179-7797-4d87-b388-cf93125f490e";
 const kRatingStar = Entypo.star;
@@ -19,6 +21,29 @@ void showNotAvailableDialog(BuildContext context) => showDialog(
             text: "Dismiss",
             onPressed: () => ctx.navigator.pop(),
             themeData: Theme.of(context),
+          ),
+        ],
+      ),
+    );
+
+Widget buildFunctionalityNotAvailablePanel(BuildContext context) => Container(
+      height: kSpacingX320,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            "Functionality currently not available",
+            style: Theme.of(context).textTheme.subtitle1,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
+          Text(
+            "Grab a beverage and check back later!",
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
+                  color: Theme.of(context).disabledColor,
+                ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
