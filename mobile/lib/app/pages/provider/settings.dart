@@ -290,7 +290,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                         ],
                       ),
                       Switch.adaptive(
-                        value: artisan.isAvailable,
+                        value: artisan?.isAvailable ?? false,
                         onChanged: (visibility) {
                           artisan = artisan.copyWith(isAvailable: visibility);
                           _dataService.updateUser(

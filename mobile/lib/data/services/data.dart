@@ -321,10 +321,13 @@ class DataServiceImpl implements DataService {
       await _userDao.addCustomer(user);
     else
       await _userDao.saveProvider(user);
-    if (sync) await FlutterIsolate.spawn(_sendToFirestore, user);
+    if (sync) await FlutterIsolate.spawn<BaseUser>(_sendToFirestore, user);
   }
+}
 
-  void _sendToFirestore(BaseUser user) async => await _firestore
+void _sendToFirestore(BaseUser user) async {
+  await sl
+      .get<FirebaseFirestore>()
       .collection(
         user.isCustomer
             ? FirestoreUtils.kCustomerRef
