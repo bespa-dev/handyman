@@ -473,7 +473,8 @@ Future<void> _showBottomSheetForDay(
                                   child: Column(
                                     children: [
                                       ...snapshot.data
-                                          .where((element) => true)
+                                          .where((element) =>
+                                              element.dueDate <= day)
                                           .map(
                                             (item) => BookingCardItem(
                                               booking: item,

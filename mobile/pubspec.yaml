@@ -41,6 +41,7 @@ dependencies:
   google_maps_flutter: ^0.5.28+1
   geolocator: ^6.0.0
   geocoder: ^0.2.1
+  after_layout: ^1.0.7+2
   jiffy: ^3.0.1
   table_calendar: ^2.2.3
   share: ^0.6.4+2

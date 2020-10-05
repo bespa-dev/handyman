@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
+import 'package:handyman/app/widget/marker_generator.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
@@ -25,7 +28,7 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
   DataService _dataService = sl.get<DataService>();
   double _kWidth, _kHeight;
   ThemeData _themeData;
-  Artisan _currentUser;
+  var markers = <Marker>[];
 
   @override
   void didChangeDependencies() {
@@ -35,6 +38,18 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
     final size = MediaQuery.of(context).size;
     _kWidth = size.width;
     _kHeight = size.height;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    MarkerGenerator([
+      Text("Hello"),
+    ], (bitmaps) {
+      setState(() {
+        // markers = mapBitmapsToMarkers(bitmaps);
+      });
+    }).generate(context);
   }
 
   @override
@@ -63,18 +78,74 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                           )
                         : SizedBox.shrink(),
                     Positioned(
-                      top: kSpacingNone,
+                      height: getProportionateScreenHeight(kSpacingX360),
                       width: _kWidth,
-                      child: _buildAppBar(provider),
+                      child: Container(
+                        height: getProportionateScreenHeight(kSpacingX360),
+                        width: _kWidth,
+                        child: GoogleMap(
+                          initialCameraPosition: CameraPosition(
+                            target: LatLng(
+                              booking.locationLat,
+                              booking.locationLng,
+                            ),
+                            zoom: 16.0,
+                          ),
+                          markers: (markers
+                                ..add(
+                                  Marker(
+                                    markerId: MarkerId(booking.id),
+                                    position: LatLng(
+                                      booking.locationLat,
+                                      booking.locationLng,
+                                    ),
+                                    draggable: false,
+                                    // icon: ,
+                                  ),
+                                ))
+                              .toSet(),
+                          liteModeEnabled:
+                              defaultTargetPlatform == TargetPlatform.android,
+                          myLocationButtonEnabled: true,
+                          myLocationEnabled: true,
+                          rotateGesturesEnabled: true,
+                          trafficEnabled: true,
+                          zoomControlsEnabled: false,
+                          zoomGesturesEnabled: true,
+                          onMapCreated: (controller) async {
+                            final mapStyle = await getMapStyle();
+                            controller.setMapStyle(mapStyle);
+                            setState(() {});
+                          },
+                        ),
+                      ),
                     ),
                     Positioned(
                       width: _kWidth,
-                      top: getProportionateScreenHeight(
-                          kToolbarHeight + kSpacingX24),
+                      top: getProportionateScreenHeight(kSpacingX320),
                       bottom: kSpacingNone,
                       child: ListView(
-                        children: [],
+                        padding: EdgeInsets.zero,
+                        children: [
+                          Container(
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(
+                              color: kGreenColor,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(kSpacingX24),
+                                topRight: Radius.circular(kSpacingX24),
+                              ),
+                            ),
+                            height: _kHeight,
+                            width: _kWidth,
+                          ),
+                        ],
                       ),
+                    ),
+                    Positioned(
+                      top: kSpacingNone,
+                      width: _kWidth,
+                      child: _buildAppBar(provider),
                     ),
                   ],
                 );
@@ -84,41 +155,38 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
     );
   }
 
-  Widget _buildAppBar(PrefsProvider provider) => Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: getProportionateScreenHeight(kSpacingX16),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: _kWidth,
-              padding: EdgeInsets.only(
-                right: getProportionateScreenWidth(kSpacingX12),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    tooltip: "Go back",
-                    icon: Icon(Feather.x),
-                    onPressed: () => context.navigator.pop(),
-                  ),
-                  IconButton(
-                    tooltip: "Toggle theme",
-                    icon: Icon(
-                      provider.isLightTheme ? Feather.moon : Feather.sun,
+  Widget _buildAppBar(PrefsProvider provider) => SafeArea(
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            vertical: getProportionateScreenHeight(kSpacingX8),
+          ),
+          color: _themeData.scaffoldBackgroundColor.withOpacity(kOpacityX50),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: _kWidth,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      tooltip: "Go back",
+                      icon: Icon(Feather.x),
+                      onPressed: () => context.navigator.pop(),
                     ),
-                    onPressed: () => provider.toggleTheme(),
-                  ),
-                ],
+                    IconButton(
+                      tooltip: "Toggle theme",
+                      icon: Icon(
+                        provider.isLightTheme ? Feather.moon : Feather.sun,
+                      ),
+                      onPressed: () => provider.toggleTheme(),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(
-              height: getProportionateScreenHeight(kSpacingX12),
-            ),
-          ],
+            ],
+          ),
         ),
       );
 }

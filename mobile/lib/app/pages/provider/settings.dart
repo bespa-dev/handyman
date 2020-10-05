@@ -105,7 +105,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                         Positioned(
                           width: _kWidth,
                           top: getProportionateScreenHeight(
-                              kToolbarHeight + kSpacingX24),
+                              kToolbarHeight + kSpacingX16),
                           bottom: kSpacingNone,
                           child: Column(
                             children: [
@@ -238,9 +238,9 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
     );
   }
 
-  Widget _buildAppBar(PrefsProvider provider) => Padding(
+  Widget _buildAppBar(PrefsProvider provider) => Container(
         padding: EdgeInsets.symmetric(
-          vertical: getProportionateScreenHeight(kSpacingX16),
+          vertical: getProportionateScreenHeight(kSpacingX8),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -268,9 +268,6 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                   ),
                 ],
               ),
-            ),
-            SizedBox(
-              height: getProportionateScreenHeight(kSpacingX12),
             ),
           ],
         ),

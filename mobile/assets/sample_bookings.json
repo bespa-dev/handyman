@@ -33,7 +33,7 @@
     "category" : "bbe8a179-7797-4d87-b388-cf93125f490e",
     "progress": 1.0,
     "value": 123.99,
-    "completed": true
+    "completed": false
   },
   {
     "id": "fbaf23c0-f86a-4269-a467-e1ddd1865abb",
@@ -45,7 +45,7 @@
     "category" : "bbe8a179-7797-4d87-b388-cf93125f490e",
     "progress": 1.0,
     "value": 123.99,
-    "completed": true
+    "completed": false
   },
   {
     "id": "c8c6f878-4875-4eaf-8354-29dc4db078f6",
