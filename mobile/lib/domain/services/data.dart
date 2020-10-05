@@ -39,4 +39,7 @@ abstract class DataService {
   Future<void> updateUser(BaseUser user, {bool sync = true});
 
   Stream<Booking> getBookingById({String id});
+
+  Stream<List<Booking>> getBookingsByDueDate(
+      {String dueDate, String providerId});
 }

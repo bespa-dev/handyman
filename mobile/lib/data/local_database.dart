@@ -56,7 +56,7 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -137,6 +137,8 @@ class CategoryDao extends DatabaseAccessor<LocalDatabase>
   tables: [Bookings],
   queries: {
     "bookingById": "SELECT * FROM bookings WHERE id = ?",
+    "bookingByDueDate":
+        "SELECT * FROM bookings WHERE due_date LIKE ? AND provider_id = ? ORDER BY due_date DESC",
     "bookingsForCustomer":
         "SELECT * FROM bookings WHERE customer_id = ? ORDER BY due_date DESC",
     "bookingsForProvider":

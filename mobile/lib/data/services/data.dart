@@ -367,4 +367,25 @@ class DataServiceImpl implements DataService {
       }
     });
   }
+
+  @override
+  Stream<List<Booking>> getBookingsByDueDate(
+      {String dueDate, String providerId}) async* {
+    final localSource =
+        _bookingDao.bookingByDueDate(dueDate, providerId).watch();
+    yield* localSource;
+
+    var snapshots = _firestore
+        .collection(FirestoreUtils.kBookingsRef)
+        .where("due_date", isLessThanOrEqualTo: int.parse(dueDate))
+        .where("provider_id", isEqualTo: providerId)
+        .snapshots(includeMetadataChanges: true);
+
+    snapshots.listen((event) {
+      event.docs.forEach((element) async {
+        if (element.exists)
+          await _bookingDao.addItem(Booking.fromJson(element.data()));
+      });
+    });
+  }
 }

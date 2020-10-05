@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/routes/route.gr.dart';
@@ -366,11 +365,7 @@ Widget buildCalendarTable(
         calendarController: controller,
         onDaySelected: (day, _) async {
           await _showBottomSheetForDay(
-            context,
-            themeData,
-            artisan,
-            Jiffy.unix(day.millisecondsSinceEpoch).yMd,
-          );
+              context, themeData, artisan, day.millisecondsSinceEpoch);
         },
       ),
     );
@@ -392,7 +387,7 @@ Future<void> _showBottomSheetForDay(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "Showing bookings for $day",
+                "Showing bookings for ${Jiffy.unix(day).yMd}",
                 style: themeData.textTheme.headline6,
               ),
               IconButton(
@@ -437,9 +432,8 @@ Future<void> _showBottomSheetForDay(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   StreamBuilder<List<Booking>>(
-                      stream: sl
-                          .get<DataService>()
-                          .getBookingsForProvider(artisan.id),
+                      stream: sl.get<DataService>().getBookingsByDueDate(
+                          dueDate: day.toString(), providerId: artisan.id),
                       initialData: [],
                       builder: (context, snapshot) {
                         debugPrint("Bookings found -> ${snapshot.data}");

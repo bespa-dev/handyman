@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
+import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:provider/provider.dart';
 import 'package:meta/meta.dart';
+import 'package:auto_route/auto_route.dart';
 
 class BookingsDetailsPage extends StatefulWidget {
   final Booking booking;
@@ -59,6 +62,20 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                             ),
                           )
                         : SizedBox.shrink(),
+                    Positioned(
+                      top: kSpacingNone,
+                      width: _kWidth,
+                      child: _buildAppBar(provider),
+                    ),
+                    Positioned(
+                      width: _kWidth,
+                      top: getProportionateScreenHeight(
+                          kToolbarHeight + kSpacingX24),
+                      bottom: kSpacingNone,
+                      child: ListView(
+                        children: [],
+                      ),
+                    ),
                   ],
                 );
               }),
@@ -66,4 +83,42 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
       ),
     );
   }
+
+  Widget _buildAppBar(PrefsProvider provider) => Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: getProportionateScreenHeight(kSpacingX16),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: _kWidth,
+              padding: EdgeInsets.only(
+                right: getProportionateScreenWidth(kSpacingX12),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    tooltip: "Go back",
+                    icon: Icon(Feather.x),
+                    onPressed: () => context.navigator.pop(),
+                  ),
+                  IconButton(
+                    tooltip: "Toggle theme",
+                    icon: Icon(
+                      provider.isLightTheme ? Feather.moon : Feather.sun,
+                    ),
+                    onPressed: () => provider.toggleTheme(),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: getProportionateScreenHeight(kSpacingX12),
+            ),
+          ],
+        ),
+      );
 }

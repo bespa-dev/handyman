@@ -3563,6 +3563,13 @@ mixin _$BookingDaoMixin on DatabaseAccessor<LocalDatabase> {
         readsFrom: {bookings}).map(bookings.mapFromRow);
   }
 
+  Selectable<Booking> bookingByDueDate(String var1, String var2) {
+    return customSelect(
+        'SELECT * FROM bookings WHERE due_date LIKE ? AND provider_id = ? ORDER BY due_date DESC',
+        variables: [Variable.withString(var1), Variable.withString(var2)],
+        readsFrom: {bookings}).map(bookings.mapFromRow);
+  }
+
   Selectable<Booking> bookingsForCustomer(String var1) {
     return customSelect(
         'SELECT * FROM bookings WHERE customer_id = ? ORDER BY due_date DESC',

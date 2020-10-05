@@ -108,6 +108,40 @@ class _DashboardPageState extends State<DashboardPage> {
                                       .getBookingsForProvider(artisan?.id),
                                   initialData: [],
                                   builder: (_, snapshot) {
+                                    if (snapshot.data.isEmpty)
+                                      return Container(
+                                        height: kSpacingX320,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Entypo.bucket,
+                                              size:
+                                                  getProportionateScreenHeight(
+                                                      kSpacingX96),
+                                              color: _themeData
+                                                  .colorScheme.onBackground,
+                                            ),
+                                            SizedBox(
+                                              height:
+                                                  getProportionateScreenHeight(
+                                                      kSpacingX16),
+                                            ),
+                                            Text(
+                                              "You have no bookings for today",
+                                              style: _themeData
+                                                  .textTheme.bodyText2
+                                                  .copyWith(
+                                                color: _themeData.disabledColor,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      );
                                     return _currentTabIndex == 0
                                         ? _buildOngoingTasksWidget(
                                             snapshot.data)
@@ -337,45 +371,67 @@ class _DashboardPageState extends State<DashboardPage> {
       );
 
   /// Get ongoing [Booking]s
-  /// TODO: Build UI for tasks
-  Widget _buildOngoingTasksWidget(bookings) =>
-      /*AnimationLimiter(
-        child: AnimationConfiguration.synchronized(
-          duration: kScaleDuration,
-          child: Column(
-            children: [
-              ...bookings.map(
-                (item) => BookingCardItem(
-                  booking: item,
-                  bookingType: BookingType.ONGOING,
-                  onTap: () {},
-                ),
-              ),
-            ],
+  Widget _buildOngoingTasksWidget(List<Booking> bookings) => Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: getProportionateScreenWidth(kSpacingX24),
+        ),
+        child: AnimationLimiter(
+          child: AnimationConfiguration.synchronized(
+            duration: kScaleDuration,
+            child: Column(
+              children: [
+                ...bookings
+                    .where((element) =>
+                        element.dueDate >=
+                        DateTime.now().millisecondsSinceEpoch)
+                    .map(
+                      (item) => BookingCardItem(
+                        booking: item,
+                        bookingType: BookingType.ONGOING,
+                        onTap: () => context.navigator.push(
+                          Routes.bookingsDetailsPage,
+                          arguments:
+                              BookingsDetailsPageArguments(booking: item),
+                        ),
+                      ),
+                    ),
+              ],
+            ),
           ),
         ),
-      )*/
-      buildFunctionalityNotAvailablePanel(context);
+      );
 
   /// Get newly requested [Booking]s
-  /// TODO: Build UI for requests
-  Widget _buildRequestsWidget(bookings) =>
-      /*AnimationLimiter(
-        child: AnimationConfiguration.synchronized(
-          duration: kScaleDuration,
-          child: Column(
-            children: [
-              ...bookings.map(
-                (item) => BookingCardItem(
-                  booking: item,
-                  onTap: () {},
-                ),
-              ),
-            ],
+  Widget _buildRequestsWidget(List<Booking> bookings) => Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: getProportionateScreenWidth(kSpacingX24),
+        ),
+        child: AnimationLimiter(
+          child: AnimationConfiguration.synchronized(
+            duration: kScaleDuration,
+            child: Column(
+              children: [
+                ...bookings
+                    .where((element) =>
+                        element.createdAt <=
+                            DateTime.now().millisecondsSinceEpoch &&
+                        element.dueDate >=
+                            DateTime.now().millisecondsSinceEpoch)
+                    .map(
+                      (item) => BookingCardItem(
+                        booking: item,
+                        onTap: () => context.navigator.push(
+                          Routes.bookingsDetailsPage,
+                          arguments:
+                              BookingsDetailsPageArguments(booking: item),
+                        ),
+                      ),
+                    ),
+              ],
+            ),
           ),
         ),
-      )*/
-      buildFunctionalityNotAvailablePanel(context);
+      );
 
   Drawer _buildSideBar(Artisan artisan, AuthService authService) => Drawer(
         child: Column(
