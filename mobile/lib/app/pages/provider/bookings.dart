@@ -1,8 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
+import 'package:handyman/app/widget/artisan_settings_widgets.dart';
+import 'package:handyman/app/widget/badgeable_tab_bar.dart';
 import 'package:handyman/app/widget/marker_generator.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
@@ -10,15 +13,15 @@ import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
-import 'package:provider/provider.dart';
 import 'package:meta/meta.dart';
-import 'package:auto_route/auto_route.dart';
+import 'package:provider/provider.dart';
 
 class BookingsDetailsPage extends StatefulWidget {
   final Booking booking;
 
   const BookingsDetailsPage({Key key, @required this.booking})
       : super(key: key);
+
   @override
   _BookingsDetailsPageState createState() => _BookingsDetailsPageState();
 }
@@ -29,6 +32,7 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
   double _kWidth, _kHeight;
   ThemeData _themeData;
   var markers = <Marker>[];
+  int _currentTabIndex = 0;
 
   @override
   void didChangeDependencies() {
@@ -113,7 +117,8 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                           zoomControlsEnabled: false,
                           zoomGesturesEnabled: true,
                           onMapCreated: (controller) async {
-                            final mapStyle = await getMapStyle();
+                            final mapStyle = await getMapStyle(
+                                isLightTheme: provider.isLightTheme);
                             controller.setMapStyle(mapStyle);
                             setState(() {});
                           },
@@ -124,22 +129,104 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                       width: _kWidth,
                       top: getProportionateScreenHeight(kSpacingX320),
                       bottom: kSpacingNone,
-                      child: ListView(
-                        padding: EdgeInsets.zero,
-                        children: [
-                          Container(
-                            clipBehavior: Clip.hardEdge,
-                            decoration: BoxDecoration(
-                              color: _themeData.cardColor,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(kSpacingX24),
-                                topRight: Radius.circular(kSpacingX24),
+                      child: Container(
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                          color: _themeData.cardColor,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(kSpacingX24),
+                            topRight: Radius.circular(kSpacingX24),
+                          ),
+                        ),
+                        padding: EdgeInsets.only(
+                          top: getProportionateScreenHeight(kSpacingX16),
+                        ),
+                        height: _kHeight,
+                        width: _kWidth,
+                        child: ListView(
+                          physics: kScrollPhysics,
+                          padding: EdgeInsets.symmetric(
+                            horizontal:
+                                getProportionateScreenWidth(kSpacingX24),
+                            vertical: getProportionateScreenHeight(kSpacingX16),
+                          ),
+                          children: [
+                            Text(
+                              widget.booking.reason,
+                              style: _themeData.textTheme.headline5.copyWith(
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            height: _kHeight,
-                            width: _kWidth,
-                          ),
-                        ],
+                            SizedBox(
+                                height:
+                                    getProportionateScreenHeight(kSpacingX16)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Overall progress",
+                                  style: _themeData.textTheme.caption.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  "${(widget.booking.progress * 100).round()}%",
+                                  style: _themeData.textTheme.caption.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                                height:
+                                    getProportionateScreenHeight(kSpacingX8)),
+                            LinearProgressIndicator(
+                              minHeight: 6,
+                              value: widget.booking.progress,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                _themeData.colorScheme.primary,
+                              ),
+                              backgroundColor: _themeData.disabledColor
+                                  .withOpacity(kEmphasisLow),
+                            ),
+                            SizedBox(
+                                height:
+                                    getProportionateScreenHeight(kSpacingX16)),
+                            buildProfileDescriptor(
+                              themeData: _themeData,
+                              title: "Description",
+                              isEditable: false,
+                              content: widget.booking.description,
+                              onTap: () => showNotAvailableDialog(context),
+                            ),
+                            SizedBox(
+                                height:
+                                    getProportionateScreenHeight(kSpacingX16)),
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                horizontal:
+                                    getProportionateScreenWidth(kSpacingNone),
+                              ),
+                              child: BadgeableTabBar(
+                                tabs: <BadgeableTabBarItem>[
+                                  BadgeableTabBarItem(title: "Tasks"),
+                                  BadgeableTabBarItem(title: "Overview"),
+                                  BadgeableTabBarItem(title: "Notes"),
+                                ],
+                                onTabSelected: (index) {
+                                  _currentTabIndex = index;
+                                  setState(() {});
+                                },
+                                color: _themeData.colorScheme.primary,
+                                activeIndex: _currentTabIndex,
+                              ),
+                            ),
+                            SizedBox(
+                                height:
+                                    getProportionateScreenHeight(kSpacingX16)),
+                            buildFunctionalityNotAvailablePanel(context),
+                          ],
+                        ),
                       ),
                     ),
                     Positioned(

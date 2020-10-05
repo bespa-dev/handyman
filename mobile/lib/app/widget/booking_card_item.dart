@@ -7,7 +7,6 @@ import 'package:handyman/data/entities/booking.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:meta/meta.dart';
-import 'package:random_color/random_color.dart';
 
 /// [Booking] card item
 class BookingCardItem extends StatefulWidget {
@@ -70,7 +69,9 @@ class _BookingCardItemState extends State<BookingCardItem> {
                       children: [
                         Text(
                           widget.booking.reason,
-                          style: themeData.textTheme.headline6,
+                          style: themeData.textTheme.headline6.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         SizedBox(
                           height: getProportionateScreenHeight(kSpacingX8),
@@ -94,7 +95,7 @@ class _BookingCardItemState extends State<BookingCardItem> {
                                         color: themeData.colorScheme.primary,
                                       ),
                                       text:
-                                          "Due date - ${Jiffy.unix(widget.booking.dueDate).yMd}"),
+                                          "Due date - ${Jiffy.unix(widget.booking.dueDate).yMMMMd}"),
                                 ],
                               ),
                               textAlign: TextAlign.start,
@@ -105,7 +106,7 @@ class _BookingCardItemState extends State<BookingCardItem> {
                     ),
                     Container(
                       height: getProportionateScreenHeight(kSpacingX42),
-                      width: getProportionateScreenWidth(kSpacingX42),
+                      width: getProportionateScreenHeight(kSpacingX42),
                       decoration: BoxDecoration(
                         color: themeData.scaffoldBackgroundColor,
                         shape: BoxShape.circle,
@@ -136,8 +137,11 @@ class _BookingCardItemState extends State<BookingCardItem> {
                                       color: themeData.colorScheme.primary,
                                     )
                                   : Text(
-                                      "${(widget.booking.progress * 100).round()} %",
-                                      style: themeData.textTheme.overline,
+                                      "${(widget.booking.progress * 100).round()}%",
+                                      style:
+                                          themeData.textTheme.overline.copyWith(
+                                        color: themeData.colorScheme.primary,
+                                      ),
                                     ),
                             ),
                           ),
@@ -155,7 +159,6 @@ class _BookingCardItemState extends State<BookingCardItem> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Column(
-                      // mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
@@ -199,8 +202,7 @@ class _BookingCardItemState extends State<BookingCardItem> {
                       ],
                     ),
                     Column(
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           "Value",

@@ -104,12 +104,10 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                         ),
                         Positioned(
                           width: _kWidth,
-                          top: getProportionateScreenHeight(
-                              kToolbarHeight + kSpacingX16),
+                          top: getProportionateScreenHeight(kSpacingX64),
                           bottom: kSpacingNone,
                           child: Column(
                             children: [
-                              _buildInfoBar(),
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                   horizontal:
@@ -127,7 +125,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                               showNotAvailableDialog(context),
                                           url: _currentUser?.avatar,
                                           radius: kSpacingX72,
-                                          isCircular: false,
+                                          isCircular: true,
                                           ringColor:
                                               _currentUser?.isAvailable ?? false
                                                   ? kGreenColor
@@ -150,9 +148,10 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                                   .textTheme.headline6,
                                             ),
                                             SizedBox(
-                                                height:
-                                                    getProportionateScreenHeight(
-                                                        kSpacingX8)),
+                                              height:
+                                                  getProportionateScreenHeight(
+                                                      kSpacingX8),
+                                            ),
                                             _currentUser?.business == null
                                                 ? SizedBox.shrink()
                                                 : Text(
@@ -486,11 +485,8 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
       );
 
   // Gets user's current location and finds the name of that address
-  Future<geo.Position> _getUserLocation() async {
-    return geo.getCurrentPosition(desiredAccuracy: geo.LocationAccuracy.high);
-  }
-
-  Widget _buildInfoBar() => Container();
+  Future<geo.Position> _getUserLocation() async =>
+      geo.getCurrentPosition(desiredAccuracy: geo.LocationAccuracy.high);
 
   Widget _buildTabBar() => Container(
         margin: EdgeInsets.symmetric(
@@ -545,22 +541,36 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
               return locationSnapshot.hasError
                   ? SizedBox.shrink()
                   : buildMapPreviewForBusinessLocation(
-                      position: locationSnapshot.data);
+                      position: locationSnapshot.data,
+                    );
             },
           ),
-          SizedBox(height: getProportionateScreenHeight(kSpacingX36)),
-          buildProfileDescriptor(
-            themeData: _themeData,
-            title: "About Me",
-            content: _currentUser?.aboutMe ??
-                "Brand yourself to your prospective customers",
-            onTap: () => showNotAvailableDialog(context),
+          Container(
+            margin: EdgeInsets.only(
+              left: getProportionateScreenWidth(kSpacingX24),
+              right: getProportionateScreenWidth(kSpacingX24),
+              bottom: getProportionateScreenHeight(kSpacingX16),
+            ),
+            child: buildProfileDescriptor(
+              themeData: _themeData,
+              title: "About Me",
+              content: _currentUser?.aboutMe ??
+                  "Brand yourself to your prospective customers",
+              onTap: () => showNotAvailableDialog(context),
+            ),
           ),
-          buildProfileDescriptor(
-            themeData: _themeData,
-            title: "Business Name",
-            content: _currentUser?.business ?? "Create one...",
-            onTap: () => showNotAvailableDialog(context),
+          Container(
+            margin: EdgeInsets.only(
+              left: getProportionateScreenWidth(kSpacingX24),
+              right: getProportionateScreenWidth(kSpacingX24),
+              bottom: getProportionateScreenHeight(kSpacingX16),
+            ),
+            child: buildProfileDescriptor(
+              themeData: _themeData,
+              title: "Business Name",
+              content: _currentUser?.business ?? "Create one...",
+              onTap: () => showNotAvailableDialog(context),
+            ),
           ),
         ],
       );

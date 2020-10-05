@@ -6,7 +6,6 @@ import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/pages/client/search.dart';
 import 'package:handyman/app/widget/artisan_card.dart';
 import 'package:handyman/core/constants.dart';
-import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/models/user.dart';
@@ -122,9 +121,29 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                                 height: kHeight -
                                     getProportionateScreenHeight(kHeight * 0.3),
                                 width: kWidth,
-                                child: Center(
-                                  child: Text(
-                                      "No registered service providers found"),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Entypo.bucket,
+                                      size: getProportionateScreenHeight(
+                                          kSpacingX96),
+                                      color: themeData.colorScheme.onBackground,
+                                    ),
+                                    SizedBox(
+                                      height: getProportionateScreenHeight(
+                                          kSpacingX16),
+                                    ),
+                                    Text(
+                                      "No artisans available",
+                                      style: themeData.textTheme.bodyText2
+                                          .copyWith(
+                                        color: themeData.disabledColor,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
                                 ),
                               );
                             return Expanded(

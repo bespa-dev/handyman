@@ -48,7 +48,7 @@ class ButtonOutlined extends StatelessWidget {
         child: Row(
           mainAxisAlignment: icon == null || gravity != ButtonIconGravity.NONE
               ? MainAxisAlignment.center
-              : MainAxisAlignment.spaceAround,
+              : MainAxisAlignment.spaceBetween,
           children: [
             icon != null && gravity == ButtonIconGravity.START
                 ? _buildIcon(icon)
@@ -56,9 +56,9 @@ class ButtonOutlined extends StatelessWidget {
             Text(
               label.toUpperCase(),
               style: themeData.textTheme.button.copyWith(
-                  color: enabled
-                      ? themeData.primaryColor
-                      : themeData.disabledColor),
+                color:
+                    enabled ? themeData.primaryColor : themeData.disabledColor,
+              ),
             ),
             icon != null && gravity == ButtonIconGravity.END
                 ? _buildIcon(icon)
@@ -71,7 +71,8 @@ class ButtonOutlined extends StatelessWidget {
 
   Widget _buildIcon(icon) => Padding(
         padding: EdgeInsets.symmetric(
-            horizontal: getProportionateScreenWidth(kSpacingX16)),
+          horizontal: getProportionateScreenWidth(kSpacingX8),
+        ),
         child: Icon(
           icon,
           color: enabled ? themeData.primaryColor : themeData.disabledColor,
@@ -169,7 +170,7 @@ class ButtonPrimary extends StatelessWidget {
             Text(
               label.toUpperCase(),
               style: themeData.textTheme.button.copyWith(
-                color: textColor ?? themeData.colorScheme.onSecondary,
+                color: textColor ?? themeData.colorScheme.onPrimary,
               ),
             ),
             icon != null && gravity == ButtonIconGravity.END
@@ -186,7 +187,7 @@ class ButtonPrimary extends StatelessWidget {
             horizontal: getProportionateScreenWidth(kSpacingX16)),
         child: Icon(
           icon,
-          color: enabled ? themeData.primaryColor : themeData.disabledColor,
+          color: textColor ?? themeData.colorScheme.onPrimary,
         ),
       );
 }

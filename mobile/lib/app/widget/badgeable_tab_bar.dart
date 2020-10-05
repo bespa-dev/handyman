@@ -59,7 +59,7 @@ class BadgeableTabBarItem extends StatelessWidget {
   BadgeableTabBarItem({
     Key key,
     @required this.title,
-    @required this.badgeCount,
+    this.badgeCount = 0,
     this.color,
   }) : super(key: key);
 

@@ -8,6 +8,7 @@ import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:random_color/random_color.dart';
 import 'package:meta/meta.dart';
+import 'package:share/share.dart';
 
 class CustomerReviewCard extends StatefulWidget {
   final CustomerReview review;
@@ -51,73 +52,74 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
               vertical: getProportionateScreenHeight(kSpacingX4),
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.max,
                   children: [
-                    Row(
-                      children: [
-                        UserAvatar(
-                          url: customer?.avatar ?? "",
-                          ringColor: RandomColor().randomColor(
-                              colorBrightness: ColorBrightness.dark),
-                        ),
-                        SizedBox(
-                            width: getProportionateScreenWidth(kSpacingX16)),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              customer?.name ?? "",
-                              style: themeData.textTheme.headline6,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            Text(
-                              "@${customer?.name?.toString()?.toLowerCase()?.replaceAll(" ", "_")}",
-                              style: themeData.textTheme.caption,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            SizedBox(
-                                height:
-                                    getProportionateScreenHeight(kSpacingX8)),
-                            Text(
-                              widget.review.review ?? "",
-                              style: themeData.textTheme.bodyText2,
-                              maxLines: 3,
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.fade,
-                            ),
-                            SizedBox(
-                                height:
-                                    getProportionateScreenHeight(kSpacingX8)),
-                          ],
-                        ),
-                      ],
+                    UserAvatar(
+                      url: customer?.avatar ?? "",
+                      ringColor: RandomColor()
+                          .randomColor(colorBrightness: ColorBrightness.dark),
                     ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
+                    SizedBox(width: getProportionateScreenWidth(kSpacingX16)),
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        IconButton(
-                          icon: Icon(Feather.thumbs_up),
-                          onPressed: () {},
+                        Text(
+                          customer?.name ?? "",
+                          style: themeData.textTheme.headline6,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        IconButton(
-                          icon: Icon(Feather.share_2),
-                          onPressed: () {},
+                        Text(
+                          "@${customer?.name?.toString()?.toLowerCase()?.replaceAll(" ", "_")}",
+                          style: themeData.textTheme.caption,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        IconButton(
-                          icon: Icon(Icons.reply_outlined),
-                          onPressed: () {},
+                        SizedBox(
+                            height: getProportionateScreenHeight(kSpacingX8)),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: kWidth * 0.7,
+                          ),
+                          child: Text(
+                            widget.review.review ?? "",
+                            style: themeData.textTheme.bodyText2,
+                            textAlign: TextAlign.start,
+                          ),
                         ),
                       ],
                     ),
                   ],
+                ),
+                SizedBox(
+                  height: getProportionateScreenHeight(kSpacingX12),
+                ),
+                Container(
+                  width: kWidth,
+                  margin: EdgeInsets.only(
+                    right: getProportionateScreenWidth(kSpacingX8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        icon: Icon(Feather.thumbs_up),
+                        onPressed: () => showNotAvailableDialog(context),
+                      ),
+                      IconButton(
+                        icon: Icon(Feather.share_2),
+                        onPressed: () => Share.share(widget.review.review),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.reply_outlined),
+                        onPressed: () => showNotAvailableDialog(context),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

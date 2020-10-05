@@ -7,6 +7,7 @@ import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/badgeable_tab_bar.dart';
 import 'package:handyman/app/widget/booking_card_item.dart';
+import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/menu_icon.dart';
 import 'package:handyman/app/widget/sign_out_button.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
@@ -98,7 +99,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                       _currentTabIndex = index;
                                       setState(() {});
                                     },
-                                    color: _themeData.primaryColor,
+                                    color: _themeData.colorScheme.primary,
                                     activeIndex: _currentTabIndex,
                                   ),
                                 ),
@@ -109,39 +110,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                   initialData: [],
                                   builder: (_, snapshot) {
                                     if (snapshot.data.isEmpty)
-                                      return Container(
-                                        height: kSpacingX320,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Entypo.bucket,
-                                              size:
-                                                  getProportionateScreenHeight(
-                                                      kSpacingX96),
-                                              color: _themeData
-                                                  .colorScheme.onBackground,
-                                            ),
-                                            SizedBox(
-                                              height:
-                                                  getProportionateScreenHeight(
-                                                      kSpacingX16),
-                                            ),
-                                            Text(
-                                              "You have no bookings for today",
-                                              style: _themeData
-                                                  .textTheme.bodyText2
-                                                  .copyWith(
-                                                color: _themeData.disabledColor,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ],
-                                        ),
-                                      );
+                                      return _buildEmptyListView();
                                     return _currentTabIndex == 0
                                         ? _buildOngoingTasksWidget(
                                             snapshot.data)
@@ -241,7 +210,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             Icon(
                               FlutterIcons.calendar_outline_mco,
                               size: getProportionateScreenHeight(kSpacingX36),
-                              color: _themeData.colorScheme.onSecondary,
+                              color: _themeData.colorScheme.onBackground,
                             ),
                             SizedBox(
                               height: getProportionateScreenHeight(kSpacingX8),
@@ -250,7 +219,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               "Calendar",
                               style: _themeData.textTheme.headline6.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: _themeData.colorScheme.onSecondary,
+                                color: _themeData.colorScheme.onBackground,
                               ),
                             ),
                             SizedBox(
@@ -260,7 +229,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               "${artisan?.ongoingBookingsCount ?? "No"} active tasks this week",
                               style: _themeData.textTheme.caption.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: _themeData.colorScheme.onSecondary
+                                color: _themeData.colorScheme.onBackground
                                     .withOpacity(kEmphasisMedium),
                               ),
                             ),
@@ -302,6 +271,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             Icon(
                               FlutterIcons.history_mco,
                               size: getProportionateScreenHeight(kSpacingX36),
+                              color: _themeData.colorScheme.onBackground,
                             ),
                             SizedBox(
                               height: getProportionateScreenHeight(kSpacingX8),
@@ -402,21 +372,21 @@ class _DashboardPageState extends State<DashboardPage> {
       );
 
   /// Get newly requested [Booking]s
-  Widget _buildRequestsWidget(List<Booking> bookings) => Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: getProportionateScreenWidth(kSpacingX24),
-        ),
-        child: AnimationLimiter(
-          child: AnimationConfiguration.synchronized(
-            duration: kScaleDuration,
-            child: Column(
-              children: [
-                ...bookings
-                    .where((element) =>
-                        element.createdAt <=
-                            DateTime.now().millisecondsSinceEpoch &&
-                        element.dueDate == null)
-                    .map(
+  Widget _buildRequestsWidget(List<Booking> bookings) {
+    final filteredBooking = bookings.where((element) =>
+        element.createdAt <= DateTime.now().millisecondsSinceEpoch &&
+        element.dueDate == null);
+    return filteredBooking.isNotEmpty
+        ? Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: getProportionateScreenWidth(kSpacingX24),
+            ),
+            child: AnimationLimiter(
+              child: AnimationConfiguration.synchronized(
+                duration: kScaleDuration,
+                child: Column(
+                  children: [
+                    ...filteredBooking.map(
                       (item) => BookingCardItem(
                         booking: item,
                         onTap: () => context.navigator.push(
@@ -426,11 +396,13 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
                       ),
                     ),
-              ],
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
-      );
+          )
+        : _buildEmptyListView();
+  }
 
   Drawer _buildSideBar(Artisan artisan, AuthService authService) => Drawer(
         child: Column(
@@ -456,19 +428,26 @@ class _DashboardPageState extends State<DashboardPage> {
               onTap: () => context.navigator.popAndPush(
                 Routes.providerSettingsPage,
               ),
-              leading: Icon(Feather.user),
+              leading: Icon(Entypo.user),
               selected: false,
               selectedTileColor: _themeData.selectedRowColor,
             ),
             ListTile(
               title: Text("Notifications"),
+              // TODO: Fix notifications UI
               onTap: () => context.navigator.push(
                 Routes.notificationPage,
                 arguments: NotificationPageArguments(
                   payload: NotificationPayload.empty(),
                 ),
               ),
-              leading: Icon(Feather.bell),
+              leading: Icon(Entypo.bell),
+            ),
+            ListTile(
+              title: Text("Conversations"),
+              // TODO: Add conversations page for provider
+              onTap: () => showNotAvailableDialog(context),
+              leading: Icon(Entypo.chat),
             ),
             Divider(),
             ListTile(
@@ -505,6 +484,42 @@ class _DashboardPageState extends State<DashboardPage> {
                       behavior: SnackBarBehavior.floating,
                     ));
               },
+            ),
+          ],
+        ),
+      );
+
+  Widget _buildEmptyListView() => Container(
+        height: kSpacingX320,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              Entypo.bucket,
+              size: getProportionateScreenHeight(kSpacingX96),
+              color: _themeData.colorScheme.onBackground,
+            ),
+            SizedBox(
+              height: getProportionateScreenHeight(kSpacingX16),
+            ),
+            Text(
+              "You have no bookings for today",
+              style: _themeData.textTheme.bodyText2.copyWith(
+                color: _themeData.colorScheme.onBackground,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: getProportionateScreenHeight(kSpacingX24),
+            ),
+            ButtonOutlined(
+              width: _kWidth * 0.6,
+              themeData: _themeData,
+              gravity: ButtonIconGravity.END,
+              icon: Icons.arrow_right_alt_outlined,
+              onTap: () => showNotAvailableDialog(context),
+              label: "Earn Skills Badge",
             ),
           ],
         ),

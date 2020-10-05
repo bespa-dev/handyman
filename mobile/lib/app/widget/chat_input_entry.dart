@@ -6,9 +6,11 @@ import 'package:geolocator/geolocator.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/core/utils.dart';
 import 'package:meta/meta.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum InputSelector { NONE, KEYBOARD, MAP, DM, EMOJI, PHONE, PICTURE }
 
@@ -339,7 +341,9 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
           ),
           onMapCreated: (controller) async {
             _controller = controller;
-            final mapStyle = await getMapStyle();
+            var preferences = await sl.getAsync<SharedPreferences>();
+            var isLightTheme = preferences.getBool(PrefsUtils.THEME_MODE);
+            final mapStyle = await getMapStyle(isLightTheme: isLightTheme);
             _controller.setMapStyle(mapStyle);
             setState(() {});
           },

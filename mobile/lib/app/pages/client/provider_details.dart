@@ -143,7 +143,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                                             ),
                                           ),
                                           child: IconButton(
-                                            icon: Icon(Icons.message_outlined),
+                                            icon: Icon(Entypo.chat),
                                             color: _themeData.iconTheme.color,
                                             onPressed: () =>
                                                 context.navigator.push(

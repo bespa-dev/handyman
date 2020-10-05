@@ -42,6 +42,12 @@ Widget buildFunctionalityNotAvailablePanel(BuildContext context) => Container(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Icon(
+            Entypo.feather,
+            size: getProportionateScreenHeight(kSpacingX96),
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
+          SizedBox(height: getProportionateScreenHeight(kSpacingX24)),
           Text(
             "Functionality currently not available",
             style: Theme.of(context).textTheme.subtitle1,
@@ -59,8 +65,9 @@ Widget buildFunctionalityNotAvailablePanel(BuildContext context) => Container(
       ),
     );
 
-Future getMapStyle() async =>
-    await rootBundle.loadString("assets/map_style.json");
+Future getMapStyle({bool isLightTheme = true}) async =>
+    await rootBundle.loadString(
+        isLightTheme ? "assets/map_style.json" : "assets/dark_map_style.json");
 
 /// Dimensions
 const double kSpacingNone = 0.0;

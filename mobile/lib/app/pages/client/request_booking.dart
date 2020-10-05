@@ -79,7 +79,7 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                                 children: [
                                   IconButton(
                                     tooltip: "Chat",
-                                    icon: Icon(Icons.message_outlined),
+                                    icon: Icon(Entypo.chat),
                                     onPressed: () => context.navigator.push(
                                         Routes.conversationPage,
                                         arguments: ConversationPageArguments(

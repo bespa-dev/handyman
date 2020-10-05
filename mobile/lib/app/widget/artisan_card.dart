@@ -68,7 +68,7 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                       right: kSpacingNone,
                       child: Container(
                         height: getProportionateScreenHeight(kSpacingX48),
-                        width: getProportionateScreenWidth(kSpacingX48),
+                        width: getProportionateScreenHeight(kSpacingX48),
                         decoration: BoxDecoration(
                           color: kGreenColor,
                           borderRadius: BorderRadius.only(

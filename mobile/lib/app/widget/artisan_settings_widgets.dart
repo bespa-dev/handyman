@@ -26,133 +26,142 @@ final _kDefaultMargin = EdgeInsets.only(
   bottom: getProportionateScreenHeight(kSpacingX16),
 );
 
-Widget buildMapPreviewForBusinessLocation({@required Position position}) =>
+Widget buildMapPreviewForBusinessLocation(
+        {@required Position position, bool isLightTheme}) =>
     position == null
         ? SizedBox.shrink()
-        : FutureBuilder<String>(
-            future: getLocationName(position),
-            builder: (context, snapshot) {
-              return Stack(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: getProportionateScreenWidth(kSpacingX16),
-                      right: getProportionateScreenWidth(kSpacingX16),
-                      bottom: getProportionateScreenHeight(kSpacingNone),
-                    ),
-                    child: Material(
-                      clipBehavior: Clip.hardEdge,
-                      borderRadius: BorderRadius.circular(kSpacingX16),
-                      child: Container(
-                        clipBehavior: Clip.hardEdge,
-                        height: getProportionateScreenHeight(kSpacingX160),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(kSpacingX16),
-                          border: Border.all(
-                              color: Theme.of(context)
-                                  .disabledColor
-                                  .withOpacity(kEmphasisLow)),
-                        ),
-                        child: Stack(
-                          fit: StackFit.loose,
-                          children: [
-                            GoogleMap(
-                              markers: [
-                                Marker(
-                                  markerId: MarkerId(Uuid().v4()),
-                                  position: LatLng(
-                                      position.latitude, position.longitude),
-                                  infoWindow: InfoWindow(
-                                    title: "Your current location",
-                                    snippet: snapshot.data ?? "",
-                                  ),
-                                ),
-                              ].toSet(),
-                              initialCameraPosition: CameraPosition(
-                                target: LatLng(
-                                    position.latitude, position.longitude),
-                                zoom: 18.0,
-                              ),
-                              zoomControlsEnabled: false,
-                              liteModeEnabled: defaultTargetPlatform ==
-                                  TargetPlatform.android,
-                              mapToolbarEnabled: false,
-                              compassEnabled: false,
-                              indoorViewEnabled: false,
-                              myLocationButtonEnabled: false,
-                              myLocationEnabled: false,
-                              rotateGesturesEnabled: false,
-                              scrollGesturesEnabled: false,
-                              tiltGesturesEnabled: false,
-                              zoomGesturesEnabled: false,
-                              onMapCreated: (controller) async {
-                                final mapStyle = await getMapStyle();
-                                controller.setMapStyle(mapStyle);
-                              },
-                            ),
-                            snapshot.hasData
-                                ? Positioned(
-                                    bottom: kSpacingNone,
-                                    left: kSpacingNone,
-                                    right: kSpacingNone,
-                                    child: Container(
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor
-                                          .withOpacity(kOpacityX50),
-                                      height: kToolbarHeight,
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        snapshot.data,
-                                        textAlign: TextAlign.center,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline6
-                                            .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onBackground,
-                                            ),
-                                      ),
-                                    ),
-                                  )
-                                : SizedBox.shrink(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: kSpacingNone,
-                    right: getProportionateScreenWidth(kSpacingX16),
-                    child: InkWell(
-                      onTap: () => showNotAvailableDialog(context),
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(kSpacingX16),
-                        bottomLeft: Radius.circular(kSpacingX16),
-                      ),
-                      splashColor: Theme.of(context).splashColor,
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: getProportionateScreenHeight(kSpacingX42),
-                        width: getProportionateScreenWidth(kSpacingX42),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(kSpacingX16),
-                            bottomLeft: Radius.circular(kSpacingX16),
+        : Column(
+            children: [
+              FutureBuilder<String>(
+                  future: getLocationName(position),
+                  builder: (context, snapshot) {
+                    return Stack(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: getProportionateScreenWidth(kSpacingX16),
+                            right: getProportionateScreenWidth(kSpacingX16),
+                            bottom: getProportionateScreenHeight(kSpacingNone),
                           ),
-                          color: Theme.of(context).primaryColor,
+                          child: Material(
+                            clipBehavior: Clip.hardEdge,
+                            borderRadius: BorderRadius.circular(kSpacingX16),
+                            child: Container(
+                              clipBehavior: Clip.hardEdge,
+                              height:
+                                  getProportionateScreenHeight(kSpacingX160),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(kSpacingX16),
+                                border: Border.all(
+                                    color: Theme.of(context)
+                                        .disabledColor
+                                        .withOpacity(kEmphasisLow)),
+                              ),
+                              child: Stack(
+                                fit: StackFit.loose,
+                                children: [
+                                  GoogleMap(
+                                    markers: [
+                                      Marker(
+                                        markerId: MarkerId(Uuid().v4()),
+                                        position: LatLng(position.latitude,
+                                            position.longitude),
+                                        infoWindow: InfoWindow(
+                                          title: "Your current location",
+                                          snippet: snapshot.data ?? "",
+                                        ),
+                                      ),
+                                    ].toSet(),
+                                    initialCameraPosition: CameraPosition(
+                                      target: LatLng(position.latitude,
+                                          position.longitude),
+                                      zoom: 18.0,
+                                    ),
+                                    zoomControlsEnabled: false,
+                                    liteModeEnabled: defaultTargetPlatform ==
+                                        TargetPlatform.android,
+                                    mapToolbarEnabled: false,
+                                    compassEnabled: false,
+                                    indoorViewEnabled: false,
+                                    myLocationButtonEnabled: false,
+                                    myLocationEnabled: false,
+                                    rotateGesturesEnabled: false,
+                                    scrollGesturesEnabled: false,
+                                    tiltGesturesEnabled: false,
+                                    zoomGesturesEnabled: false,
+                                    onMapCreated: (controller) async {
+                                      final mapStyle = await getMapStyle(
+                                          isLightTheme: isLightTheme);
+                                      controller.setMapStyle(mapStyle);
+                                    },
+                                  ),
+                                  snapshot.hasData
+                                      ? Positioned(
+                                          bottom: kSpacingNone,
+                                          left: kSpacingNone,
+                                          right: kSpacingNone,
+                                          child: Container(
+                                            color: Theme.of(context)
+                                                .scaffoldBackgroundColor
+                                                .withOpacity(kOpacityX50),
+                                            height: kToolbarHeight,
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              snapshot.data,
+                                              textAlign: TextAlign.center,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline6
+                                                  .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onBackground,
+                                                  ),
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox.shrink(),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
-                        child: Icon(
-                          Feather.map_pin,
-                          color: Theme.of(context).colorScheme.onPrimary,
+                        Positioned(
+                          top: kSpacingNone,
+                          right: getProportionateScreenWidth(kSpacingX16),
+                          child: InkWell(
+                            onTap: () => showNotAvailableDialog(context),
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(kSpacingX16),
+                              bottomLeft: Radius.circular(kSpacingX16),
+                            ),
+                            splashColor: Theme.of(context).splashColor,
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: getProportionateScreenHeight(kSpacingX42),
+                              width: getProportionateScreenWidth(kSpacingX42),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(kSpacingX16),
+                                  bottomLeft: Radius.circular(kSpacingX16),
+                                ),
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              child: Icon(
+                                Feather.map_pin,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            });
+                      ],
+                    );
+                  }),
+              SizedBox(height: getProportionateScreenHeight(kSpacingX36)),
+            ],
+          );
 
 Widget buildArtisanMetadataBar(BuildContext context, ThemeData themeData,
         {@required Artisan artisan}) =>
@@ -315,11 +324,11 @@ String _parseDateInYears(int createdAt) => Jiffy(
 Widget buildProfileDescriptor({
   String title,
   String content,
+  bool isEditable = true,
   void Function() onTap,
   ThemeData themeData,
 }) =>
     Container(
-      margin: _kDefaultMargin,
       padding: EdgeInsets.fromLTRB(
         getProportionateScreenWidth(kSpacingX16),
         getProportionateScreenHeight(kSpacingX4),
@@ -340,10 +349,12 @@ Widget buildProfileDescriptor({
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(title, style: themeData.textTheme.headline6),
-              IconButton(
-                icon: Icon(Feather.edit_2),
-                onPressed: () => onTap(),
-              ),
+              isEditable
+                  ? IconButton(
+                      icon: Icon(Feather.edit_2),
+                      onPressed: () => onTap(),
+                    )
+                  : SizedBox(height: getProportionateScreenHeight(kSpacingX36)),
             ],
           ),
           SizedBox(
