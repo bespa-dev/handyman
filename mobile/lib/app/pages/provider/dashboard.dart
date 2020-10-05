@@ -415,8 +415,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     .where((element) =>
                         element.createdAt <=
                             DateTime.now().millisecondsSinceEpoch &&
-                        element.dueDate >=
-                            DateTime.now().millisecondsSinceEpoch)
+                        element.dueDate == null)
                     .map(
                       (item) => BookingCardItem(
                         booking: item,

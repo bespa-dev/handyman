@@ -1,9 +1,39 @@
 [
   {
+    "id": "bb7c0d03-add2-49cb-bdd5-9a55f67adb30",
+    "name": "Home Cleaning",
+    "avatar": "https://images.unsplash.com/photo-1489274495757-95c7c837b101?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
+    "groupName": 10
+  },
+  {
+    "id": "8ecf642d-429f-4b51-805b-0678a9af8e28",
+    "name": "Bathroom Remodeling",
+    "avatar": "https://images.unsplash.com/photo-1521783593447-5702b9bfd267?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
+    "groupName": 11
+  },
+  {
+    "id": "781ec80c-63c6-4e9f-89a7-54b85f0c1666",
+    "name": "Kitchen Remodeling",
+    "avatar": "https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
+    "groupName": 12
+  },
+  {
+    "id": "5f0301dd-b8e8-4f76-9d41-f8392656ac61",
+    "name": "Fence Installation",
+    "avatar": "https://images.unsplash.com/photo-1597502999344-5a3e933dc108?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
+    "groupName": 13
+  },
+  {
+    "id": "e177c9ba-bedb-498c-93b5-3598cbd2e37e",
+    "name": "Exterior Painting",
+    "avatar": "https://images.unsplash.com/photo-1584661156681-540e80a161d3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
+    "groupName": 14
+  },
+  {
     "id": "bbe8a179-7797-4d87-b388-cf93125f490e",
     "name": "General",
     "avatar": "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
-    "groupName": 12
+    "groupName": 15
   },
   {
     "id": "4dcd2140-7ab5-43d3-8e17-68abce8c6dc6",

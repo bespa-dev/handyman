@@ -8,6 +8,8 @@ class Bookings extends Table {
 
   @JsonKey("provider_id")
   TextColumn get providerId => text()();
+
+  TextColumn get category => text()();
   TextColumn get description => text()
       .nullable()
       .withDefault(Constant(

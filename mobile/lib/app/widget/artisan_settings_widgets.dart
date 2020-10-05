@@ -432,8 +432,9 @@ Future<void> _showBottomSheetForDay(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   StreamBuilder<List<Booking>>(
-                      stream: sl.get<DataService>().getBookingsByDueDate(
-                          dueDate: day.toString(), providerId: artisan.id),
+                      stream: sl
+                          .get<DataService>()
+                          .getBookingsForProvider(artisan.id),
                       initialData: [],
                       builder: (context, snapshot) {
                         debugPrint("Bookings found -> ${snapshot.data}");
@@ -472,6 +473,7 @@ Future<void> _showBottomSheetForDay(
                                   child: Column(
                                     children: [
                                       ...snapshot.data
+                                          .where((element) => true)
                                           .map(
                                             (item) => BookingCardItem(
                                               booking: item,

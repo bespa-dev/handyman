@@ -1766,6 +1766,7 @@ class Booking extends DataClass implements Insertable<Booking> {
   final String id;
   final String customerId;
   final String providerId;
+  final String category;
   final String description;
   final String reason;
   final double locationLat;
@@ -1778,6 +1779,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       {@required this.id,
       @required this.customerId,
       @required this.providerId,
+      @required this.category,
       this.description,
       @required this.reason,
       this.locationLat,
@@ -1798,6 +1800,8 @@ class Booking extends DataClass implements Insertable<Booking> {
           .mapFromDatabaseResponse(data['${effectivePrefix}customer_id']),
       providerId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}provider_id']),
+      category: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}category']),
       description: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}description']),
       reason:
@@ -1827,6 +1831,9 @@ class Booking extends DataClass implements Insertable<Booking> {
     }
     if (!nullToAbsent || providerId != null) {
       map['provider_id'] = Variable<String>(providerId);
+    }
+    if (!nullToAbsent || category != null) {
+      map['category'] = Variable<String>(category);
     }
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
@@ -1864,6 +1871,9 @@ class Booking extends DataClass implements Insertable<Booking> {
       providerId: providerId == null && nullToAbsent
           ? const Value.absent()
           : Value(providerId),
+      category: category == null && nullToAbsent
+          ? const Value.absent()
+          : Value(category),
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
@@ -1896,6 +1906,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       id: serializer.fromJson<String>(json['id']),
       customerId: serializer.fromJson<String>(json['customer_id']),
       providerId: serializer.fromJson<String>(json['provider_id']),
+      category: serializer.fromJson<String>(json['category']),
       description: serializer.fromJson<String>(json['description']),
       reason: serializer.fromJson<String>(json['reason']),
       locationLat: serializer.fromJson<double>(json['lat']),
@@ -1913,6 +1924,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       'id': serializer.toJson<String>(id),
       'customer_id': serializer.toJson<String>(customerId),
       'provider_id': serializer.toJson<String>(providerId),
+      'category': serializer.toJson<String>(category),
       'description': serializer.toJson<String>(description),
       'reason': serializer.toJson<String>(reason),
       'lat': serializer.toJson<double>(locationLat),
@@ -1928,6 +1940,7 @@ class Booking extends DataClass implements Insertable<Booking> {
           {String id,
           String customerId,
           String providerId,
+          String category,
           String description,
           String reason,
           double locationLat,
@@ -1940,6 +1953,7 @@ class Booking extends DataClass implements Insertable<Booking> {
         id: id ?? this.id,
         customerId: customerId ?? this.customerId,
         providerId: providerId ?? this.providerId,
+        category: category ?? this.category,
         description: description ?? this.description,
         reason: reason ?? this.reason,
         locationLat: locationLat ?? this.locationLat,
@@ -1955,6 +1969,7 @@ class Booking extends DataClass implements Insertable<Booking> {
           ..write('id: $id, ')
           ..write('customerId: $customerId, ')
           ..write('providerId: $providerId, ')
+          ..write('category: $category, ')
           ..write('description: $description, ')
           ..write('reason: $reason, ')
           ..write('locationLat: $locationLat, ')
@@ -1975,19 +1990,21 @@ class Booking extends DataClass implements Insertable<Booking> {
           $mrjc(
               providerId.hashCode,
               $mrjc(
-                  description.hashCode,
+                  category.hashCode,
                   $mrjc(
-                      reason.hashCode,
+                      description.hashCode,
                       $mrjc(
-                          locationLat.hashCode,
+                          reason.hashCode,
                           $mrjc(
-                              locationLng.hashCode,
+                              locationLat.hashCode,
                               $mrjc(
-                                  value.hashCode,
+                                  locationLng.hashCode,
                                   $mrjc(
-                                      progress.hashCode,
-                                      $mrjc(createdAt.hashCode,
-                                          dueDate.hashCode)))))))))));
+                                      value.hashCode,
+                                      $mrjc(
+                                          progress.hashCode,
+                                          $mrjc(createdAt.hashCode,
+                                              dueDate.hashCode))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -1995,6 +2012,7 @@ class Booking extends DataClass implements Insertable<Booking> {
           other.id == this.id &&
           other.customerId == this.customerId &&
           other.providerId == this.providerId &&
+          other.category == this.category &&
           other.description == this.description &&
           other.reason == this.reason &&
           other.locationLat == this.locationLat &&
@@ -2009,6 +2027,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
   final Value<String> id;
   final Value<String> customerId;
   final Value<String> providerId;
+  final Value<String> category;
   final Value<String> description;
   final Value<String> reason;
   final Value<double> locationLat;
@@ -2021,6 +2040,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     this.id = const Value.absent(),
     this.customerId = const Value.absent(),
     this.providerId = const Value.absent(),
+    this.category = const Value.absent(),
     this.description = const Value.absent(),
     this.reason = const Value.absent(),
     this.locationLat = const Value.absent(),
@@ -2034,6 +2054,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     @required String id,
     @required String customerId,
     @required String providerId,
+    @required String category,
     this.description = const Value.absent(),
     @required String reason,
     this.locationLat = const Value.absent(),
@@ -2045,11 +2066,13 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
   })  : id = Value(id),
         customerId = Value(customerId),
         providerId = Value(providerId),
+        category = Value(category),
         reason = Value(reason);
   static Insertable<Booking> custom({
     Expression<String> id,
     Expression<String> customerId,
     Expression<String> providerId,
+    Expression<String> category,
     Expression<String> description,
     Expression<String> reason,
     Expression<double> locationLat,
@@ -2063,6 +2086,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
       if (id != null) 'id': id,
       if (customerId != null) 'customer_id': customerId,
       if (providerId != null) 'provider_id': providerId,
+      if (category != null) 'category': category,
       if (description != null) 'description': description,
       if (reason != null) 'reason': reason,
       if (locationLat != null) 'lat': locationLat,
@@ -2078,6 +2102,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
       {Value<String> id,
       Value<String> customerId,
       Value<String> providerId,
+      Value<String> category,
       Value<String> description,
       Value<String> reason,
       Value<double> locationLat,
@@ -2090,6 +2115,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
       id: id ?? this.id,
       customerId: customerId ?? this.customerId,
       providerId: providerId ?? this.providerId,
+      category: category ?? this.category,
       description: description ?? this.description,
       reason: reason ?? this.reason,
       locationLat: locationLat ?? this.locationLat,
@@ -2112,6 +2138,9 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     }
     if (providerId.present) {
       map['provider_id'] = Variable<String>(providerId.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
     }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
@@ -2146,6 +2175,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
           ..write('id: $id, ')
           ..write('customerId: $customerId, ')
           ..write('providerId: $providerId, ')
+          ..write('category: $category, ')
           ..write('description: $description, ')
           ..write('reason: $reason, ')
           ..write('locationLat: $locationLat, ')
@@ -2194,6 +2224,18 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
   GeneratedTextColumn _constructProviderId() {
     return GeneratedTextColumn(
       'provider_id',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _categoryMeta = const VerificationMeta('category');
+  GeneratedTextColumn _category;
+  @override
+  GeneratedTextColumn get category => _category ??= _constructCategory();
+  GeneratedTextColumn _constructCategory() {
+    return GeneratedTextColumn(
+      'category',
       $tableName,
       false,
     );
@@ -2288,6 +2330,7 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
         id,
         customerId,
         providerId,
+        category,
         description,
         reason,
         locationLat,
@@ -2328,6 +2371,12 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
               data['provider_id'], _providerIdMeta));
     } else if (isInserting) {
       context.missing(_providerIdMeta);
+    }
+    if (data.containsKey('category')) {
+      context.handle(_categoryMeta,
+          category.isAcceptableOrUnknown(data['category'], _categoryMeta));
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
     }
     if (data.containsKey('description')) {
       context.handle(
