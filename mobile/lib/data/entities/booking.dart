@@ -31,6 +31,9 @@ class Bookings extends Table {
   @JsonKey("due_date")
   IntColumn get dueDate => integer().nullable().withDefault(
       Constant(DateTime.now().millisecondsSinceEpoch + 430000000))();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 enum BookingType { NEW, ONGOING, COMPLETED }

@@ -3,6 +3,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:handyman/app/widget/buttons.dart';
 
 import 'size_config.dart';
@@ -10,6 +12,14 @@ import 'size_config.dart';
 /// Defaults
 const kGeneralCategory = "bbe8a179-7797-4d87-b388-cf93125f490e";
 const kRatingStar = Entypo.star;
+
+Future<String> getLocationName(Position position) async {
+  final addresses = await Geocoder.local.findAddressesFromCoordinates(
+      Coordinates(position.latitude, position.longitude));
+  final first = addresses.first;
+  debugPrint("${first?.featureName} : ${first?.addressLine}");
+  return addresses.first?.addressLine ?? "Unknown location";
+}
 
 void showNotAvailableDialog(BuildContext context) => showDialog(
       context: context,

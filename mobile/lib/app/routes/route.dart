@@ -10,6 +10,7 @@ import 'package:handyman/app/pages/conversation.dart';
 import 'package:handyman/app/pages/login.dart';
 import 'package:handyman/app/pages/notification.dart';
 import 'package:handyman/app/pages/onboarding.dart';
+import 'package:handyman/app/pages/provider/bookings.dart';
 import 'package:handyman/app/pages/provider/dashboard.dart';
 import 'package:handyman/app/pages/provider/settings.dart';
 import 'package:handyman/app/pages/register.dart';
@@ -26,6 +27,7 @@ import 'guard.dart';
     AdaptiveRoute(page: RegisterPage),
     AdaptiveRoute(page: AccountCompletionPage, guards: [AuthGuard]),
     AdaptiveRoute(page: NotificationPage, guards: [AuthGuard]),
+    AdaptiveRoute(page: BookingsDetailsPage, guards: [AuthGuard]),
     AdaptiveRoute(page: AccountSelectionPage, guards: [AuthGuard]),
     AdaptiveRoute(page: ConversationPage, guards: [AuthGuard]),
     AdaptiveRoute(page: HomePage, guards: [AuthGuard, ClientGuard]),

@@ -2369,7 +2369,7 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   Booking map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
@@ -3557,6 +3557,12 @@ mixin _$CategoryDaoMixin on DatabaseAccessor<LocalDatabase> {
 }
 mixin _$BookingDaoMixin on DatabaseAccessor<LocalDatabase> {
   $BookingsTable get bookings => attachedDatabase.bookings;
+  Selectable<Booking> bookingById(String var1) {
+    return customSelect('SELECT * FROM bookings WHERE id = ?',
+        variables: [Variable.withString(var1)],
+        readsFrom: {bookings}).map(bookings.mapFromRow);
+  }
+
   Selectable<Booking> bookingsForCustomer(String var1) {
     return customSelect(
         'SELECT * FROM bookings WHERE customer_id = ? ORDER BY due_date DESC',
@@ -3564,9 +3570,11 @@ mixin _$BookingDaoMixin on DatabaseAccessor<LocalDatabase> {
         readsFrom: {bookings}).map(bookings.mapFromRow);
   }
 
-  Selectable<Booking> bookingsForProvider() {
-    return customSelect('SELECT * FROM bookings ORDER BY due_date DESC',
-        variables: [], readsFrom: {bookings}).map(bookings.mapFromRow);
+  Selectable<Booking> bookingsForProvider(String var1) {
+    return customSelect(
+        'SELECT * FROM bookings WHERE provider_id = ? ORDER BY due_date DESC',
+        variables: [Variable.withString(var1)],
+        readsFrom: {bookings}).map(bookings.mapFromRow);
   }
 
   Selectable<Booking> bookingsForCustomerAndProvider(String var1, String var2) {

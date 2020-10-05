@@ -21,6 +21,7 @@ import '../pages/conversation.dart';
 import '../pages/login.dart';
 import '../pages/notification.dart';
 import '../pages/onboarding.dart';
+import '../pages/provider/bookings.dart';
 import '../pages/provider/dashboard.dart';
 import '../pages/provider/settings.dart';
 import '../pages/register.dart';
@@ -34,6 +35,7 @@ class Routes {
   static const String registerPage = '/register-page';
   static const String accountCompletionPage = '/account-completion-page';
   static const String notificationPage = '/notification-page';
+  static const String bookingsDetailsPage = '/bookings-details-page';
   static const String accountSelectionPage = '/account-selection-page';
   static const String conversationPage = '/conversation-page';
   static const String homePage = '/home-page';
@@ -50,6 +52,7 @@ class Routes {
     registerPage,
     accountCompletionPage,
     notificationPage,
+    bookingsDetailsPage,
     accountSelectionPage,
     conversationPage,
     homePage,
@@ -74,6 +77,8 @@ class Router extends RouterBase {
         page: AccountCompletionPage, guards: [AuthGuard]),
     RouteDef(Routes.notificationPage,
         page: NotificationPage, guards: [AuthGuard]),
+    RouteDef(Routes.bookingsDetailsPage,
+        page: BookingsDetailsPage, guards: [AuthGuard]),
     RouteDef(Routes.accountSelectionPage,
         page: AccountSelectionPage, guards: [AuthGuard]),
     RouteDef(Routes.conversationPage,
@@ -133,6 +138,16 @@ class Router extends RouterBase {
         builder: (context) => NotificationPage(
           key: args.key,
           payload: args.payload,
+        ),
+        settings: data,
+      );
+    },
+    BookingsDetailsPage: (data) {
+      final args = data.getArgs<BookingsDetailsPageArguments>(nullOk: false);
+      return buildAdaptivePageRoute<dynamic>(
+        builder: (context) => BookingsDetailsPage(
+          key: args.key,
+          booking: args.booking,
         ),
         settings: data,
       );
@@ -234,6 +249,13 @@ class NotificationPageArguments {
   final Key key;
   final NotificationPayload payload;
   NotificationPageArguments({this.key, this.payload});
+}
+
+/// BookingsDetailsPage arguments holder class
+class BookingsDetailsPageArguments {
+  final Key key;
+  final dynamic booking;
+  BookingsDetailsPageArguments({this.key, @required this.booking});
 }
 
 /// ConversationPage arguments holder class

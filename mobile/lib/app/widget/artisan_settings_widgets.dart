@@ -7,6 +7,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/booking_card_item.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
@@ -20,27 +21,17 @@ import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:uuid/uuid.dart';
 
-import 'buttons.dart';
-
 final _kDefaultMargin = EdgeInsets.only(
   left: getProportionateScreenWidth(kSpacingX24),
   right: getProportionateScreenWidth(kSpacingX24),
   bottom: getProportionateScreenHeight(kSpacingX16),
 );
 
-Future<String> _getLocationName(Position position) async {
-  final addresses = await Geocoder.local.findAddressesFromCoordinates(
-      Coordinates(position.latitude, position.longitude));
-  final first = addresses.first;
-  debugPrint("${first?.featureName} : ${first?.addressLine}");
-  return addresses.first?.addressLine ?? "Unknown location";
-}
-
 Widget buildMapPreviewForBusinessLocation({@required Position position}) =>
     position == null
         ? SizedBox.shrink()
         : FutureBuilder<String>(
-            future: _getLocationName(position),
+            future: getLocationName(position),
             builder: (context, snapshot) {
               return Stack(
                 children: [
@@ -415,7 +406,7 @@ Future<void> _showBottomSheetForDay(
           ),
         ),
       ),
-      color: themeData.cardColor.withOpacity(kOpacityX50),
+      color: themeData.scaffoldBackgroundColor.withOpacity(kOpacityX50),
       duration: kScaleDuration,
       cornerRadius: kSpacingX16,
       snapSpec: const SnapSpec(
@@ -434,8 +425,8 @@ Future<void> _showBottomSheetForDay(
           child: Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              color: themeData.cardColor,
-            ),
+                // color: themeData.scaffoldBackgroundColor,
+                ),
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(
                 vertical: getProportionateScreenHeight(kSpacingX16),
@@ -449,6 +440,7 @@ Future<void> _showBottomSheetForDay(
                       stream: sl
                           .get<DataService>()
                           .getBookingsForProvider(artisan.id),
+                      initialData: [],
                       builder: (context, snapshot) {
                         debugPrint("Bookings found -> ${snapshot.data}");
                         return snapshot.hasError ||
@@ -485,15 +477,20 @@ Future<void> _showBottomSheetForDay(
                                   duration: kScaleDuration,
                                   child: Column(
                                     children: [
-                                      Text("Hello -> ${snapshot.data?.length}"),
-                                      // ...snapshot.data
-                                      //     ?.map(
-                                      //       (item) => BookingCardItem(
-                                      //         booking: item,
-                                      //         onTap: () {},
-                                      //       ),
-                                      //     )
-                                      //     .toList(),
+                                      ...snapshot.data
+                                          .map(
+                                            (item) => BookingCardItem(
+                                              booking: item,
+                                              onTap: () =>
+                                                  context.navigator.push(
+                                                Routes.bookingsDetailsPage,
+                                                arguments:
+                                                    BookingsDetailsPageArguments(
+                                                        booking: item),
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
                                     ],
                                   ),
                                 ),

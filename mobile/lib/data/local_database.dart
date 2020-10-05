@@ -56,7 +56,7 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -101,23 +101,8 @@ class LocalDatabase extends _$LocalDatabase {
           }
         },
         onUpgrade: (m, from, to) async {
-          switch (from) {
-            case 1:
-              await m.addColumn(user, user.token);
-              await m.addColumn(serviceProvider, serviceProvider.token);
-              break;
-            case 2:
-              await m.addColumn(serviceProvider, serviceProvider.reportsCount);
-              break;
-            case 3:
-              await m.addColumn(bookings, bookings.createdAt);
-              await m.addColumn(bookings, bookings.dueDate);
-              break;
-            case 5:
-              await m.addColumn(bookings, bookings.locationLat);
-              await m.addColumn(bookings, bookings.locationLng);
-              break;
-          }
+          if (from == to) m.createAll();
+          // switch (from) {}
         },
         onCreate: (m) async {
           // Create all tables
@@ -151,9 +136,11 @@ class CategoryDao extends DatabaseAccessor<LocalDatabase>
 @UseDao(
   tables: [Bookings],
   queries: {
+    "bookingById": "SELECT * FROM bookings WHERE id = ?",
     "bookingsForCustomer":
         "SELECT * FROM bookings WHERE customer_id = ? ORDER BY due_date DESC",
-    "bookingsForProvider": "SELECT * FROM bookings ORDER BY due_date DESC",
+    "bookingsForProvider":
+        "SELECT * FROM bookings WHERE provider_id = ? ORDER BY due_date DESC",
     "bookingsForCustomerAndProvider":
         "SELECT * FROM bookings WHERE customer_id = ? AND provider_id = ? ORDER BY due_date DESC"
   },

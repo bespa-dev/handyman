@@ -192,7 +192,7 @@ class DataServiceImpl implements DataService {
     await _bookingDao
         .addItems(_bookings.map((e) => Booking.fromJson(e)).toList());
 
-    final localSource = _bookingDao.bookingsForProvider(/*id*/).watch();
+    final localSource = _bookingDao.bookingsForProvider(id).watch();
     yield* localSource;
 
     var snapshots = _firestore
@@ -349,5 +349,22 @@ class DataServiceImpl implements DataService {
           )
           .doc(user.user.id)
           .set(user.user.toJson());
+  }
+
+  @override
+  Stream<Booking> getBookingById({String id}) async* {
+    final localSource = _bookingDao.bookingById(id).watchSingle();
+    yield* localSource;
+
+    _firestore
+        .collection(FirestoreUtils.kBookingsRef)
+        .doc(id)
+        .snapshots(includeMetadataChanges: true)
+        .listen((event) async {
+      if (event.exists) {
+        final bookingItem = Booking.fromJson(event.data());
+        await _bookingDao.addItem(bookingItem);
+      }
+    });
   }
 }

@@ -37,4 +37,6 @@ abstract class DataService {
   Future<void> sendMessage({@required Conversation conversation});
 
   Future<void> updateUser(BaseUser user, {bool sync = true});
+
+  Stream<Booking> getBookingById({String id});
 }
