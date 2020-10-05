@@ -36,16 +36,16 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       this.phone,
       @required this.email,
       this.token,
-      @required this.isCertified,
-      @required this.isAvailable,
+      this.isCertified,
+      this.isAvailable,
       @required this.category,
-      @required this.startWorkingHours,
-      @required this.completedBookingsCount,
-      @required this.ongoingBookingsCount,
-      @required this.cancelledBookingsCount,
+      this.startWorkingHours,
+      this.completedBookingsCount,
+      this.ongoingBookingsCount,
+      this.cancelledBookingsCount,
       this.requestsCount,
       this.reportsCount,
-      @required this.endWorkingHours,
+      this.endWorkingHours,
       this.avatar,
       this.aboutMe,
       @required this.price,
@@ -249,7 +249,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       cancelledBookingsCount:
           serializer.fromJson<int>(json['cancelled_bookings_count']),
       requestsCount: serializer.fromJson<int>(json['requests_count']),
-      reportsCount: serializer.fromJson<int>(json['reportsCount']),
+      reportsCount: serializer.fromJson<int>(json['reports_count']),
       endWorkingHours: serializer.fromJson<int>(json['end_working_hours']),
       avatar: serializer.fromJson<String>(json['avatar']),
       aboutMe: serializer.fromJson<String>(json['about_me']),
@@ -278,7 +278,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       'cancelled_bookings_count':
           serializer.toJson<int>(cancelledBookingsCount),
       'requests_count': serializer.toJson<int>(requestsCount),
-      'reportsCount': serializer.toJson<int>(reportsCount),
+      'reports_count': serializer.toJson<int>(reportsCount),
       'end_working_hours': serializer.toJson<int>(endWorkingHours),
       'avatar': serializer.toJson<String>(avatar),
       'about_me': serializer.toJson<String>(aboutMe),
@@ -790,7 +790,7 @@ class $ServiceProviderTable extends ServiceProvider
   GeneratedBoolColumn get isCertified =>
       _isCertified ??= _constructIsCertified();
   GeneratedBoolColumn _constructIsCertified() {
-    return GeneratedBoolColumn('certified', $tableName, false,
+    return GeneratedBoolColumn('certified', $tableName, true,
         defaultValue: Constant(false));
   }
 
@@ -801,7 +801,7 @@ class $ServiceProviderTable extends ServiceProvider
   GeneratedBoolColumn get isAvailable =>
       _isAvailable ??= _constructIsAvailable();
   GeneratedBoolColumn _constructIsAvailable() {
-    return GeneratedBoolColumn('available', $tableName, false,
+    return GeneratedBoolColumn('available', $tableName, true,
         defaultValue: Constant(false));
   }
 
@@ -821,7 +821,7 @@ class $ServiceProviderTable extends ServiceProvider
   GeneratedIntColumn get startWorkingHours =>
       _startWorkingHours ??= _constructStartWorkingHours();
   GeneratedIntColumn _constructStartWorkingHours() {
-    return GeneratedIntColumn('start_working_hours', $tableName, false,
+    return GeneratedIntColumn('start_working_hours', $tableName, true,
         defaultValue: Constant(DateTime.now().hour));
   }
 
@@ -832,7 +832,7 @@ class $ServiceProviderTable extends ServiceProvider
   GeneratedIntColumn get completedBookingsCount =>
       _completedBookingsCount ??= _constructCompletedBookingsCount();
   GeneratedIntColumn _constructCompletedBookingsCount() {
-    return GeneratedIntColumn('completed_bookings_count', $tableName, false,
+    return GeneratedIntColumn('completed_bookings_count', $tableName, true,
         defaultValue: Constant(0));
   }
 
@@ -843,7 +843,7 @@ class $ServiceProviderTable extends ServiceProvider
   GeneratedIntColumn get ongoingBookingsCount =>
       _ongoingBookingsCount ??= _constructOngoingBookingsCount();
   GeneratedIntColumn _constructOngoingBookingsCount() {
-    return GeneratedIntColumn('ongoing_bookings_count', $tableName, false,
+    return GeneratedIntColumn('ongoing_bookings_count', $tableName, true,
         defaultValue: Constant(0));
   }
 
@@ -854,7 +854,7 @@ class $ServiceProviderTable extends ServiceProvider
   GeneratedIntColumn get cancelledBookingsCount =>
       _cancelledBookingsCount ??= _constructCancelledBookingsCount();
   GeneratedIntColumn _constructCancelledBookingsCount() {
-    return GeneratedIntColumn('cancelled_bookings_count', $tableName, false,
+    return GeneratedIntColumn('cancelled_bookings_count', $tableName, true,
         defaultValue: Constant(0));
   }
 
@@ -887,7 +887,7 @@ class $ServiceProviderTable extends ServiceProvider
   GeneratedIntColumn get endWorkingHours =>
       _endWorkingHours ??= _constructEndWorkingHours();
   GeneratedIntColumn _constructEndWorkingHours() {
-    return GeneratedIntColumn('end_working_hours', $tableName, false,
+    return GeneratedIntColumn('end_working_hours', $tableName, true,
         defaultValue: Constant(DateTime.now().hour + 12));
   }
 

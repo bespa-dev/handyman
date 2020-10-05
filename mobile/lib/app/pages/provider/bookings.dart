@@ -130,7 +130,7 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                           Container(
                             clipBehavior: Clip.hardEdge,
                             decoration: BoxDecoration(
-                              color: kGreenColor,
+                              color: _themeData.cardColor,
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(kSpacingX24),
                                 topRight: Radius.circular(kSpacingX24),

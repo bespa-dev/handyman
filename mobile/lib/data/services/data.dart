@@ -40,6 +40,17 @@ class DataServiceImpl implements DataService {
   /// Get all [Artisan]s from data source
   @override
   Stream<List<BaseUser>> getArtisans({@required String category}) async* {
+    final data = await rootBundle.loadString("assets/sample_artisan.json");
+    var decodedData = json.decode(data);
+
+    List<dynamic> artisans = decodedData ??= [];
+    debugPrint("Artisans -> $artisans");
+
+    // Save to database
+    _userDao.addProviders(artisans
+        .map((e) => ArtisanModel(artisan: Artisan.fromJson(e)))
+        .toList());
+
     final localSource = _userDao
         .artisans(category)
         .watch()

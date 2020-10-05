@@ -18,7 +18,7 @@
     "avatar": "https://images.unsplash.com/photo-1507038732509-8b1a9623223a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "category": "8e357ae9-d856-4a3b-82c3-7a05d0928a7f",
     "phone": "+23355123456",
-    "isCertified": true
+    "certified": true
   },
   {
     "id": "b71536de-56da-4419-bca8-487eaba3b2db",
@@ -69,7 +69,7 @@
     "avatar": "https://images.unsplash.com/photo-1464863979621-258859e62245?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "category": "4dcd2140-7ab5-43d3-8e17-68abce8c6dc6",
     "phone": "+23355123456",
-    "isCertified": true
+    "certified": true
   },
   {
     "id": "673c204a-c81d-4c60-8584-3ab931d22615",
@@ -80,7 +80,7 @@
     "avatar": "https://images.unsplash.com/photo-1574981370294-edbbf06bb159?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "category": "598d67f5-b84b-4572-9058-57f36463aeac",
     "phone": "+23355123456",
-    "isCertified": true
+    "certified": true
   },
   {
     "id": "b595d228-2db0-4aa7-b8e6-d5c8fba05099",
@@ -121,6 +121,6 @@
     "avatar": "https://images.unsplash.com/photo-1552162864-987ac51d1177?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "category": "598d67f5-b84b-4572-9058-57f36463aeac",
     "phone": "+23355123456",
-    "isCertified": true
+    "certified": true
   }
 ]
