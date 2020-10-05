@@ -16,19 +16,20 @@ class Bookings extends Table {
   TextColumn get reason => text()();
   @JsonKey("lat")
   RealColumn get locationLat =>
-      real().named("lat").withDefault(Constant(5.5329650))();
+      real().nullable().named("lat").withDefault(Constant(5.5329650))();
   @JsonKey("lng")
   RealColumn get locationLng =>
-      real().named("lng").withDefault(Constant(-0.2592160))();
+      real().nullable().named("lng").withDefault(Constant(-0.2592160))();
   RealColumn get value => real().withDefault(Constant(10.99))();
   RealColumn get progress => real().withDefault(Constant(0.45))();
 
   @JsonKey("created_at")
-  IntColumn get createdAt =>
-      integer().withDefault(Constant(DateTime.now().millisecondsSinceEpoch))();
+  IntColumn get createdAt => integer()
+      .nullable()
+      .withDefault(Constant(DateTime.now().millisecondsSinceEpoch))();
 
   @JsonKey("due_date")
-  IntColumn get dueDate => integer().withDefault(
+  IntColumn get dueDate => integer().nullable().withDefault(
       Constant(DateTime.now().millisecondsSinceEpoch + 430000000))();
 }
 

@@ -1780,12 +1780,12 @@ class Booking extends DataClass implements Insertable<Booking> {
       @required this.providerId,
       this.description,
       @required this.reason,
-      @required this.locationLat,
-      @required this.locationLng,
+      this.locationLat,
+      this.locationLng,
       @required this.value,
       @required this.progress,
-      @required this.createdAt,
-      @required this.dueDate});
+      this.createdAt,
+      this.dueDate});
   factory Booking.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -2231,7 +2231,7 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
   GeneratedRealColumn get locationLat =>
       _locationLat ??= _constructLocationLat();
   GeneratedRealColumn _constructLocationLat() {
-    return GeneratedRealColumn('lat', $tableName, false,
+    return GeneratedRealColumn('lat', $tableName, true,
         defaultValue: Constant(5.5329650));
   }
 
@@ -2242,7 +2242,7 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
   GeneratedRealColumn get locationLng =>
       _locationLng ??= _constructLocationLng();
   GeneratedRealColumn _constructLocationLng() {
-    return GeneratedRealColumn('lng', $tableName, false,
+    return GeneratedRealColumn('lng', $tableName, true,
         defaultValue: Constant(-0.2592160));
   }
 
@@ -2269,7 +2269,7 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
   @override
   GeneratedIntColumn get createdAt => _createdAt ??= _constructCreatedAt();
   GeneratedIntColumn _constructCreatedAt() {
-    return GeneratedIntColumn('created_at', $tableName, false,
+    return GeneratedIntColumn('created_at', $tableName, true,
         defaultValue: Constant(DateTime.now().millisecondsSinceEpoch));
   }
 
@@ -2278,7 +2278,7 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
   @override
   GeneratedIntColumn get dueDate => _dueDate ??= _constructDueDate();
   GeneratedIntColumn _constructDueDate() {
-    return GeneratedIntColumn('due_date', $tableName, false,
+    return GeneratedIntColumn('due_date', $tableName, true,
         defaultValue:
             Constant(DateTime.now().millisecondsSinceEpoch + 430000000));
   }
@@ -3564,11 +3564,9 @@ mixin _$BookingDaoMixin on DatabaseAccessor<LocalDatabase> {
         readsFrom: {bookings}).map(bookings.mapFromRow);
   }
 
-  Selectable<Booking> bookingsForProvider(String var1) {
-    return customSelect(
-        'SELECT * FROM bookings WHERE provider_id = ? ORDER BY due_date DESC',
-        variables: [Variable.withString(var1)],
-        readsFrom: {bookings}).map(bookings.mapFromRow);
+  Selectable<Booking> bookingsForProvider() {
+    return customSelect('SELECT * FROM bookings ORDER BY due_date DESC',
+        variables: [], readsFrom: {bookings}).map(bookings.mapFromRow);
   }
 
   Selectable<Booking> bookingsForCustomerAndProvider(String var1, String var2) {

@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:handyman/app/app.dart';
 import 'package:handyman/core/service_locator.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/utils.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Locale support for calendar
+  await initializeDateFormatting();
 
   // Initialize Firebase App
   await Firebase.initializeApp();

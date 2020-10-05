@@ -16,6 +16,9 @@ class NotificationPayload {
 
   factory NotificationPayload.fromJson(Map<String, dynamic> json) =>
       _$NotificationPayloadFromJson(json);
+
+  factory NotificationPayload.empty() =>
+      NotificationPayload(null, PayloadType.BOOKING);
 }
 
 /// For payload types of a notification

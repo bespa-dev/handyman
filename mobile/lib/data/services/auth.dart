@@ -180,7 +180,6 @@ class FirebaseAuthService implements AuthService {
     var preferences = await sl.getAsync<SharedPreferences>();
     final userId = preferences.getString(PrefsUtils.USER_ID) ?? null;
     final userType = preferences.getString(PrefsUtils.USER_TYPE) ?? null;
-    debugPrint("$userId => $userType");
     if (userId != null && userType != null) {
       if (userType == kCustomerString) {
         var localSource = _database.userDao

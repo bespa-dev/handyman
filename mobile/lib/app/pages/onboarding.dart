@@ -15,13 +15,24 @@ class OnboardingPage extends StatefulWidget {
 
 class _OnboardingPageState extends State<OnboardingPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  int _currentPage = 0;
+  int _currentPage = 2;
+  final PageController _pageController =
+      PageController(initialPage: 2, keepPage: true);
 
   final _titles = const <String>[
-    "$kAppName is here for you",
+    "Earn Skills Badge",
     "Save time",
-    "Simple booking",
-    "1000+ services",
+    "$kAppName is Here for You",
+    "Simple Booking",
+    "1000+ Services",
+  ];
+
+  final _images = <String>[
+    kLogoDarkAsset,
+    kTimeSvgAsset,
+    kLogoAsset,
+    kBookingSvgAsset,
+    kPeopleSvgAsset,
   ];
 
   @override
@@ -54,6 +65,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               child: PageView.builder(
                 itemCount: _titles.length,
                 physics: kScrollPhysics,
+                controller: _pageController,
                 onPageChanged: (newIndex) {
                   setState(() {
                     _currentPage = newIndex;
@@ -66,23 +78,21 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     fit: StackFit.expand,
                     children: [
                       Positioned(
-                        top: kHeight * 0.2,
+                        top: kHeight * 0.25,
                         bottom: kHeight * 0.5,
                         width: kWidth,
                         child: Container(
+                          height: getProportionateScreenHeight(
+                              index == 2 ? kSpacingX100 : kSpacingX120),
+                          width: getProportionateScreenWidth(
+                              index == 2 ? kSpacingX100 : kSpacingX120),
                           child: Image(
                             fit: BoxFit.contain,
-                            height: getProportionateScreenHeight(kSpacingX120),
-                            width: getProportionateScreenWidth(kSpacingX120),
-                            image: Svg(
-                              index == 0
-                                  ? kLogoAsset
-                                  : index == 1
-                                      ? kTimeSvgAsset
-                                      : index == 2
-                                          ? kPeopleSvgAsset
-                                          : kBookingSvgAsset,
-                            ),
+                            height: getProportionateScreenHeight(
+                                index == 2 ? kSpacingX100 : kSpacingX120),
+                            width: getProportionateScreenWidth(
+                                index == 2 ? kSpacingX100 : kSpacingX120),
+                            image: Svg(_images[index]),
                           ),
                         ),
                       ),

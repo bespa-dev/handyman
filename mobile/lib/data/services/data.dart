@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:algolia/algolia.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/utils.dart';
 import 'package:handyman/data/entities/artisan_model.dart';
@@ -179,7 +181,18 @@ class DataServiceImpl implements DataService {
 
   @override
   Stream<List<Booking>> getBookingsForProvider(String id) async* {
-    final localSource = _bookingDao.bookingsForProvider(id).watch();
+    // Decode bookings from json array
+    final bookingsData =
+        await rootBundle.loadString("assets/sample_bookings.json");
+    var decodedBookingsData = json.decode(bookingsData);
+
+    List<dynamic> _bookings = decodedBookingsData ??= [];
+
+    // Save to database
+    await _bookingDao
+        .addItems(_bookings.map((e) => Booking.fromJson(e)).toList());
+
+    final localSource = _bookingDao.bookingsForProvider(/*id*/).watch();
     yield* localSource;
 
     var snapshots = _firestore

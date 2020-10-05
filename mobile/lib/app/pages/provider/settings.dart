@@ -17,6 +17,7 @@ import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:provider/provider.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 /// activeTabIndex legend:
 /// 0 => calendar
@@ -40,12 +41,14 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   double _kWidth, _kHeight;
   ThemeData _themeData;
   Artisan _currentUser;
-  bool _shouldDismissEarnPointsSheet = false;
+  bool _shouldDismissEarnPointsSheet = true;
   int _activeTabIndex;
+  CalendarController _calendarController;
 
   @override
   void initState() {
     super.initState();
+    _calendarController = CalendarController();
     if (mounted) {
       _activeTabIndex = widget.activeTabIndex;
     }
@@ -63,6 +66,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
 
   @override
   void dispose() {
+    _calendarController?.dispose();
     _dataService.updateUser(ArtisanModel(artisan: _currentUser), sync: true);
     super.dispose();
   }
@@ -179,25 +183,21 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                     Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.end,
+                                      mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         IconButton(
                                           icon: Icon(Feather.edit_2),
                                           onPressed: () =>
-                                              showNotAvailableDialog(
-                                                  context),
+                                              showNotAvailableDialog(context),
                                         ),
                                         SizedBox(
-                                          width:
-                                              getProportionateScreenWidth(
-                                                  kSpacingX8),
+                                          width: getProportionateScreenWidth(
+                                              kSpacingX8),
                                         ),
                                         IconButton(
                                           icon: Icon(Feather.help_circle),
                                           onPressed: () =>
-                                              showNotAvailableDialog(
-                                                  context),
+                                              showNotAvailableDialog(context),
                                         ),
                                       ],
                                     ),
@@ -361,7 +361,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Earn Skill Badge",
+                                  "Earn Skills Badge",
                                   style:
                                       _themeData.textTheme.headline6.copyWith(
                                     color: _themeData.colorScheme.onSecondary,
@@ -524,8 +524,12 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
 
   Widget _buildHistorySection() => buildFunctionalityNotAvailablePanel(context);
 
-  Widget _buildCalendarSection() =>
-      buildFunctionalityNotAvailablePanel(context);
+  Widget _buildCalendarSection() => ListView(
+        children: [
+          buildCalendarTable(
+              _themeData, context, _currentUser, _calendarController),
+        ],
+      );
 
   Widget _buildProfileSection() => ListView(
         padding: EdgeInsets.only(

@@ -96,7 +96,8 @@ class _ChatListItemState extends State<ChatListItem> {
                   crossAxisAlignment:
                       isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                   children: [
-                    // TODO: Add support for images
+                    // TODO: Add support for images & timestamps
+                    // Use  -> Jiffy.unix(timestampInMilliseconds).yMd
                     ConstrainedBox(
                       constraints: BoxConstraints(
                         maxWidth: _kWidth * 0.5,

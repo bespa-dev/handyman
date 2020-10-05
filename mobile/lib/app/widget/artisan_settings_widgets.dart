@@ -1,17 +1,26 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:handyman/app/widget/booking_card_item.dart';
 import 'package:handyman/core/constants.dart';
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
+import 'package:handyman/domain/services/data.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:meta/meta.dart';
+import 'package:sliding_sheet/sliding_sheet.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:uuid/uuid.dart';
+
+import 'buttons.dart';
 
 final _kDefaultMargin = EdgeInsets.only(
   left: getProportionateScreenWidth(kSpacingX24),
@@ -206,7 +215,8 @@ Widget buildArtisanMetadataBar(BuildContext context, ThemeData themeData,
                     Text("Reports".toUpperCase(),
                         style: themeData.textTheme.subtitle2),
                     SizedBox(height: getProportionateScreenHeight(kSpacingX4)),
-                    Text("${artisan?.reportsCount ?? 0}", style: themeData.textTheme.bodyText1),
+                    Text("${artisan?.reportsCount ?? 0}",
+                        style: themeData.textTheme.bodyText1),
                   ],
                 ),
               ],
@@ -353,3 +363,157 @@ Widget buildProfileDescriptor({
         ],
       ),
     );
+
+Widget buildCalendarTable(
+  ThemeData themeData,
+  BuildContext context,
+  Artisan artisan,
+  CalendarController controller,
+) =>
+    Container(
+      child: TableCalendar(
+        calendarController: controller,
+        onDaySelected: (day, _) async {
+          await _showBottomSheetForDay(
+            context,
+            themeData,
+            artisan,
+            Jiffy.unix(day.millisecondsSinceEpoch).yMd,
+          );
+        },
+      ),
+    );
+
+Future<void> _showBottomSheetForDay(
+    BuildContext context, ThemeData themeData, Artisan artisan, day) async {
+  await showSlidingBottomSheet(context, builder: (context) {
+    return SlidingSheetDialog(
+      elevation: kSpacingX8,
+      dismissOnBackdropTap: false,
+      addTopViewPaddingOnFullscreen: true,
+      headerBuilder: (_, __) => Material(
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: getProportionateScreenWidth(kSpacingX16),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "Showing bookings for $day",
+                style: themeData.textTheme.headline6,
+              ),
+              IconButton(
+                icon: Icon(
+                  Feather.chevron_down,
+                ),
+                color: themeData.colorScheme.onBackground,
+                onPressed: () => context.navigator.pop(),
+              ),
+            ],
+          ),
+        ),
+      ),
+      color: themeData.cardColor.withOpacity(kOpacityX50),
+      duration: kScaleDuration,
+      cornerRadius: kSpacingX16,
+      snapSpec: const SnapSpec(
+        snap: true,
+        snappings: [0.4, 0.75],
+        positioning: SnapPositioning.relativeToAvailableSpace,
+      ),
+      padding: EdgeInsets.symmetric(
+        vertical: getProportionateScreenHeight(kSpacingX8),
+      ),
+      // addTopViewPaddingOnFullscreen: true,
+      builder: (context, state) {
+        return Material(
+          type: MaterialType.card,
+          clipBehavior: Clip.hardEdge,
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: themeData.cardColor,
+            ),
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                vertical: getProportionateScreenHeight(kSpacingX16),
+                horizontal: getProportionateScreenWidth(kSpacingX16),
+              ),
+              physics: kScrollPhysics,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  StreamBuilder<List<Booking>>(
+                      stream: sl
+                          .get<DataService>()
+                          .getBookingsForProvider(artisan.id),
+                      builder: (context, snapshot) {
+                        debugPrint("Bookings found -> ${snapshot.data}");
+                        return snapshot.hasError ||
+                                snapshot.hasData && snapshot.data.isEmpty
+                            ? Container(
+                                height: kSpacingX320,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Entypo.bucket,
+                                      size: getProportionateScreenHeight(
+                                          kSpacingX96),
+                                      color: themeData.colorScheme.onBackground,
+                                    ),
+                                    SizedBox(
+                                      height: getProportionateScreenHeight(
+                                          kSpacingX16),
+                                    ),
+                                    Text(
+                                      "You have no bookings for today",
+                                      style: themeData.textTheme.bodyText2
+                                          .copyWith(
+                                        color: themeData.disabledColor,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : AnimationLimiter(
+                                child: AnimationConfiguration.synchronized(
+                                  duration: kScaleDuration,
+                                  child: Column(
+                                    children: [
+                                      Text("Hello -> ${snapshot.data?.length}"),
+                                      // ...snapshot.data
+                                      //     ?.map(
+                                      //       (item) => BookingCardItem(
+                                      //         booking: item,
+                                      //         onTap: () {},
+                                      //       ),
+                                      //     )
+                                      //     .toList(),
+                                    ],
+                                  ),
+                                ),
+                              );
+                      }),
+                  // SizedBox(
+                  //   height: getProportionateScreenHeight(kSpacingX16),
+                  // ),
+                  // ButtonOutlined(
+                  //   label: "Save",
+                  //   onTap: () {},
+                  //   width: MediaQuery.of(context).size.width * 0.4,
+                  //   themeData: themeData,
+                  // ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  });
+}
