@@ -1,13 +1,15 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/data.dart';
-import 'package:random_color/random_color.dart';
 import 'package:meta/meta.dart';
+import 'package:random_color/random_color.dart';
 import 'package:share/share.dart';
 
 class CustomerReviewCard extends StatefulWidget {
@@ -121,10 +123,30 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
                       widget.review.customerId == widget.userId
                           ? IconButton(
                               icon: Icon(Feather.trash_2),
-                              onPressed: () => widget.apiService
-                                  .deleteReviewById(
-                                      id: widget.review.id,
-                                      customerId: widget.userId),
+                              onPressed: () => showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  content: Text(
+                                      "Do you wish to delete this review?"),
+                                  actions: [
+                                    ButtonClear(
+                                      text: "No",
+                                      onPressed: () => ctx.navigator.pop(),
+                                      themeData: themeData,
+                                    ),
+                                    ButtonClear(
+                                      text: "Yes",
+                                      onPressed: () {
+                                        widget.apiService.deleteReviewById(
+                                            id: widget.review.id,
+                                            customerId: widget.userId);
+                                        ctx.navigator.pop();
+                                      },
+                                      themeData: themeData,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             )
                           : SizedBox.shrink(),
                     ],

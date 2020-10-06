@@ -449,6 +449,8 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<void> deleteReviewById({String id, String customerId}) async =>
-      await _reviewDao.deleteReviewById(id, customerId);
+  Future<void> deleteReviewById({String id, String customerId}) async {
+    await _reviewDao.deleteReviewById(id, customerId);
+    await _firestore.collection(FirestoreUtils.kReviewsRef).doc(id).delete();
+  }
 }
