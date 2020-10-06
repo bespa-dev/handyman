@@ -1749,7 +1749,7 @@ class $PhotoGalleryTable extends PhotoGallery
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id, userId};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   Gallery map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
@@ -3655,6 +3655,15 @@ mixin _$ReviewDaoMixin on DatabaseAccessor<LocalDatabase> {
         'SELECT * FROM review WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC',
         variables: [Variable.withString(var1), Variable.withString(var2)],
         readsFrom: {review}).map(review.mapFromRow);
+  }
+
+  Future<int> deleteReviewById(String var1, String var2) {
+    return customUpdate(
+      'DELETE FROM review WHERE id = ? AND customer_id = ?',
+      variables: [Variable.withString(var1), Variable.withString(var2)],
+      updates: {review},
+      updateKind: UpdateKind.delete,
+    );
   }
 }
 mixin _$MessageDaoMixin on DatabaseAccessor<LocalDatabase> {

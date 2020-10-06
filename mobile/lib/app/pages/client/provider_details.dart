@@ -16,7 +16,6 @@ import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:provider/provider.dart';
-import 'package:random_color/random_color.dart';
 
 class ServiceProviderDetails extends StatefulWidget {
   final Artisan artisan;
@@ -39,6 +38,8 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
     _themeData = Theme.of(context);
     final kHeight = MediaQuery.of(context).size.height;
     final kWidth = MediaQuery.of(context).size.width;
+
+    debugPrint(widget.artisan.id);
 
     return Consumer<DataService>(
       builder: (_, service, __) {
@@ -71,6 +72,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                           height: kHeight,
                           width: kWidth,
                           child: ListView(
+                            //physics: kScrollPhysics,
                             padding: EdgeInsets.only(
                                 bottom: getProportionateScreenHeight(
                                     kToolbarHeight)),
@@ -162,7 +164,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                                 ],
                               ),
                               _buildProfileTab(artisan),
-                              _buildPhotoTab(provider.userId),
+                              _buildPhotoTab(artisan.id),
                               _buildReviewTab(artisan, provider.userId),
                             ],
                           ),
@@ -256,6 +258,8 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
 
   Widget _buildPhotoTab(userId) => Container(
         clipBehavior: Clip.hardEdge,
+        width: MediaQuery.of(context).size.width,
+        height: getProportionateScreenHeight(kSpacingX360),
         padding: EdgeInsets.symmetric(
           vertical: getProportionateScreenHeight(kSpacingX24),
           horizontal: getProportionateScreenWidth(kSpacingX8),
@@ -270,7 +274,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
               if (snapshot.hasError || snapshot.data.isEmpty)
                 return Container(
                   width: double.infinity,
-                  height: getProportionateScreenHeight(kSpacingX230),
+                  height: getProportionateScreenHeight(kSpacingX250),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -282,52 +286,39 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                           height: getProportionateScreenHeight(kSpacingX16)),
                       Text(
                         "No photos found",
-                        style: _themeData.textTheme.bodyText1,
+                        style: _themeData.textTheme.bodyText2.copyWith(),
                       ),
                     ],
                   ),
                 );
-              return AnimationLimiter(
-                child: GridView.builder(
+              else
+                return GridView.builder(
                   scrollDirection: Axis.horizontal,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 1,
-                    mainAxisSpacing: getProportionateScreenHeight(kSpacingX8),
+                    mainAxisSpacing: getProportionateScreenHeight(kSpacingX12),
                     crossAxisSpacing: getProportionateScreenWidth(kSpacingX8),
                   ),
-                  physics: kScrollPhysics,
-                  itemCount: snapshot.data.length,
                   itemBuilder: (_, index) {
                     final photo = snapshot.data[index];
 
-                    return AnimationConfiguration.staggeredGrid(
-                      position: index,
-                      columnCount: 1,
-                      duration: kScaleDuration,
-                      child: ScaleAnimation(
-                        child: FadeInAnimation(
-                          child: Container(
-                            clipBehavior: Clip.hardEdge,
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            decoration: BoxDecoration(
-                              color: RandomColor()
-                                  .randomColor(
-                                      colorBrightness:
-                                          ColorBrightness.veryLight)
-                                  .withOpacity(kOpacityX70),
-                              borderRadius: BorderRadius.circular(kSpacingX16),
-                            ),
-                            child: CachedNetworkImage(
-                              imageUrl: photo.imageUrl,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
+                    return Container(
+                      clipBehavior: Clip.hardEdge,
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      height: getProportionateScreenHeight(kSpacingX250),
+                      decoration: BoxDecoration(
+                        color: _themeData.errorColor,
+                        borderRadius: BorderRadius.circular(kSpacingX16),
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl: photo.imageUrl,
+                        fit: BoxFit.cover,
                       ),
                     );
                   },
-                ),
-              );
+                  itemCount: snapshot.data.length,
+                  physics: kScrollPhysics,
+                );
             }),
       );
 

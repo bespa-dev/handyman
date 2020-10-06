@@ -18,6 +18,8 @@ abstract class DataService {
 
   Stream<List<CustomerReview>> getReviewsForProvider(String id);
 
+  Future<void> deleteReviewById({String id, String customerId});
+
   Future<void> sendReview({String message, String reviewer, artisan});
 
   Stream<List<Booking>> getBookingsForProvider(String id);

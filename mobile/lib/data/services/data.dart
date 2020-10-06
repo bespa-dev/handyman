@@ -109,6 +109,19 @@ class DataServiceImpl implements DataService {
   @override
   Stream<List<Conversation>> getConversation(
       {@required String sender, @required String recipient}) async* {
+    // Sample data
+    final msgData =
+        await rootBundle.loadString("assets/sample_conversation.json");
+    var msgDecodedData = json.decode(msgData);
+
+    List<dynamic> msgs = msgDecodedData ??= [];
+
+    List<Conversation> conversationModels =
+        msgs.map((e) => Conversation.fromJson(e)).toList();
+    conversationModels.forEach((element) {
+      _messageDao.sendMessage(element);
+    });
+
     final localSource = _messageDao.conversationWithRecipient(
         sender: sender, recipient: recipient);
     yield* localSource;
@@ -156,6 +169,17 @@ class DataServiceImpl implements DataService {
   Stream<List<ServiceCategory>> getCategories({
     CategoryGroup categoryGroup = CategoryGroup.FEATURED,
   }) async* {
+    // Decode categories from json array
+    final categoryData =
+        await rootBundle.loadString("assets/sample_categories.json");
+    var decodedCategoryData = json.decode(categoryData);
+
+    List<dynamic> categories = decodedCategoryData ??= [];
+
+    // Convert each object to `ServiceCategory` object
+    _categoryDao
+        .addItems(categories.map((e) => ServiceCategory.fromJson(e)).toList());
+
     final localSource =
         _categoryDao.categoryByGroup(categoryGroup.index).watch();
     yield* localSource;
@@ -223,6 +247,17 @@ class DataServiceImpl implements DataService {
 
   @override
   Stream<List<Booking>> getBookingsForCustomer(String id) async* {
+    // Decode bookings from json array
+    final bookingsData =
+        await rootBundle.loadString("assets/sample_bookings.json");
+    var decodedBookingsData = json.decode(bookingsData);
+
+    List<dynamic> _bookings = decodedBookingsData ??= [];
+
+    // Save to database
+    await _bookingDao
+        .addItems(_bookings.map((e) => Booking.fromJson(e)).toList());
+
     final localSource = _bookingDao.bookingsForCustomer(id).watch();
     yield* localSource;
 
@@ -412,4 +447,8 @@ class DataServiceImpl implements DataService {
       });
     });
   }
+
+  @override
+  Future<void> deleteReviewById({String id, String customerId}) async =>
+      await _reviewDao.deleteReviewById(id, customerId);
 }

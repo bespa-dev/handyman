@@ -56,12 +56,12 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         beforeOpen: (details) async {
-          if (details.wasCreated) {
+          if (details.wasCreated || details.hadUpgrade) {
             // Prepopulate the database with some sample data
             // Decode artisans from json array
             final data =
@@ -96,6 +96,32 @@ class LocalDatabase extends _$LocalDatabase {
             // Save to database
             await bookingDao
                 .addItems(_bookings.map((e) => Booking.fromJson(e)).toList());
+
+            // Sample data
+            final photosData =
+                await rootBundle.loadString("assets/sample_photos.json");
+            var photosDecodedData = json.decode(photosData);
+
+            List<dynamic> photos = photosDecodedData ??= [];
+
+            List<Gallery> photosModels =
+                photos.map((e) => Gallery.fromJson(e)).toList();
+            photosModels.forEach((element) {
+              galleryDao.addPhoto(element);
+            });
+
+            // Sample data
+            final msgData =
+                await rootBundle.loadString("assets/sample_conversation.json");
+            var msgDecodedData = json.decode(msgData);
+
+            List<dynamic> msgs = msgDecodedData ??= [];
+
+            List<Conversation> conversationModels =
+                msgs.map((e) => Conversation.fromJson(e)).toList();
+            conversationModels.forEach((element) {
+              messageDao.sendMessage(element);
+            });
 
             await customStatement('PRAGMA foreign_keys = ON');
           }
@@ -169,7 +195,8 @@ class BookingDao extends DatabaseAccessor<LocalDatabase>
     "reviewsForProvider":
         "SELECT * FROM review WHERE provider_id = ? ORDER BY created_at DESC",
     "reviewsForCustomerAndProvider":
-        "SELECT * FROM review WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC"
+        "SELECT * FROM review WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC",
+    "deleteReviewById": "DELETE FROM review WHERE id = ? AND customer_id = ?"
   },
 )
 class ReviewDao extends DatabaseAccessor<LocalDatabase> with _$ReviewDaoMixin {

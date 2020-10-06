@@ -35,7 +35,7 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
     return StreamBuilder<BaseUser>(
         stream: widget.apiService.getCustomerById(id: widget.userId),
         builder: (context, snapshot) {
-          final customer = snapshot.data.user;
+          final customer = snapshot.data?.user;
           return Container(
             width: kWidth,
             clipBehavior: Clip.hardEdge,
@@ -118,6 +118,15 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
                         icon: Icon(Icons.reply_outlined),
                         onPressed: () => showNotAvailableDialog(context),
                       ),
+                      widget.review.customerId == widget.userId
+                          ? IconButton(
+                              icon: Icon(Feather.trash_2),
+                              onPressed: () => widget.apiService
+                                  .deleteReviewById(
+                                      id: widget.review.id,
+                                      customerId: widget.userId),
+                            )
+                          : SizedBox.shrink(),
                     ],
                   ),
                 ),

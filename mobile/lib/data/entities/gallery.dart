@@ -16,5 +16,5 @@ class PhotoGallery extends Table {
       .withDefault(Constant(DateTime.now().millisecondsSinceEpoch))();
 
   @override
-  Set<Column> get primaryKey => {id, userId};
+  Set<Column> get primaryKey => {id};
 }
