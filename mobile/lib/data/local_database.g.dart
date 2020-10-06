@@ -1479,25 +1479,25 @@ class Gallery extends DataClass implements Insertable<Gallery> {
   final String id;
   final String userId;
   final String imageUrl;
-  final DateTime createdAt;
+  final int createdAt;
   Gallery(
       {@required this.id,
       @required this.userId,
       @required this.imageUrl,
-      @required this.createdAt});
+      this.createdAt});
   factory Gallery.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
-    final dateTimeType = db.typeSystem.forDartType<DateTime>();
+    final intType = db.typeSystem.forDartType<int>();
     return Gallery(
       id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       userId:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}user_id']),
       imageUrl: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}image_url']),
-      createdAt: dateTimeType
-          .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
+      createdAt:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
     );
   }
   @override
@@ -1513,7 +1513,7 @@ class Gallery extends DataClass implements Insertable<Gallery> {
       map['image_url'] = Variable<String>(imageUrl);
     }
     if (!nullToAbsent || createdAt != null) {
-      map['created_at'] = Variable<DateTime>(createdAt);
+      map['created_at'] = Variable<int>(createdAt);
     }
     return map;
   }
@@ -1539,7 +1539,7 @@ class Gallery extends DataClass implements Insertable<Gallery> {
       id: serializer.fromJson<String>(json['id']),
       userId: serializer.fromJson<String>(json['user_id']),
       imageUrl: serializer.fromJson<String>(json['image_url']),
-      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      createdAt: serializer.fromJson<int>(json['created_at']),
     );
   }
   @override
@@ -1549,12 +1549,12 @@ class Gallery extends DataClass implements Insertable<Gallery> {
       'id': serializer.toJson<String>(id),
       'user_id': serializer.toJson<String>(userId),
       'image_url': serializer.toJson<String>(imageUrl),
-      'created_at': serializer.toJson<DateTime>(createdAt),
+      'created_at': serializer.toJson<int>(createdAt),
     };
   }
 
   Gallery copyWith(
-          {String id, String userId, String imageUrl, DateTime createdAt}) =>
+          {String id, String userId, String imageUrl, int createdAt}) =>
       Gallery(
         id: id ?? this.id,
         userId: userId ?? this.userId,
@@ -1589,7 +1589,7 @@ class PhotoGalleryCompanion extends UpdateCompanion<Gallery> {
   final Value<String> id;
   final Value<String> userId;
   final Value<String> imageUrl;
-  final Value<DateTime> createdAt;
+  final Value<int> createdAt;
   const PhotoGalleryCompanion({
     this.id = const Value.absent(),
     this.userId = const Value.absent(),
@@ -1608,7 +1608,7 @@ class PhotoGalleryCompanion extends UpdateCompanion<Gallery> {
     Expression<String> id,
     Expression<String> userId,
     Expression<String> imageUrl,
-    Expression<DateTime> createdAt,
+    Expression<int> createdAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1622,7 +1622,7 @@ class PhotoGalleryCompanion extends UpdateCompanion<Gallery> {
       {Value<String> id,
       Value<String> userId,
       Value<String> imageUrl,
-      Value<DateTime> createdAt}) {
+      Value<int> createdAt}) {
     return PhotoGalleryCompanion(
       id: id ?? this.id,
       userId: userId ?? this.userId,
@@ -1644,7 +1644,7 @@ class PhotoGalleryCompanion extends UpdateCompanion<Gallery> {
       map['image_url'] = Variable<String>(imageUrl.value);
     }
     if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
+      map['created_at'] = Variable<int>(createdAt.value);
     }
     return map;
   }
@@ -1703,12 +1703,12 @@ class $PhotoGalleryTable extends PhotoGallery
   }
 
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
-  GeneratedDateTimeColumn _createdAt;
+  GeneratedIntColumn _createdAt;
   @override
-  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
-  GeneratedDateTimeColumn _constructCreatedAt() {
-    return GeneratedDateTimeColumn('created_at', $tableName, false,
-        defaultValue: Constant(DateTime.now()));
+  GeneratedIntColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedIntColumn _constructCreatedAt() {
+    return GeneratedIntColumn('created_at', $tableName, true,
+        defaultValue: Constant(DateTime.now().millisecondsSinceEpoch));
   }
 
   @override

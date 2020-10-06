@@ -515,7 +515,11 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
         ),
       );
 
-  Widget _buildHistorySection() => buildFunctionalityNotAvailablePanel(context);
+  Widget _buildHistorySection() => ListView(
+        children: [
+          buildFunctionalityNotAvailablePanel(context),
+        ],
+      );
 
   Widget _buildCalendarSection() => ListView(
         children: [

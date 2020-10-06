@@ -391,26 +391,7 @@ class _EmojiSelector extends StatelessWidget {
           selector == EmojiStickerSelector.EMOJI
               ? Expanded(child: _EmojiTable(onTextAdded: onTextAdded))
               : Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Functionality currently not available",
-                        style: Theme.of(context).textTheme.subtitle1,
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(
-                          height: getProportionateScreenHeight(kSpacingX8)),
-                      Text(
-                        "Grab a beverage and check back later!",
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              color: Theme.of(context).disabledColor,
-                            ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+                  child: buildFunctionalityNotAvailablePanel(context),
                 ),
         ],
       ),
@@ -476,7 +457,7 @@ class _EmojiTable extends StatelessWidget {
                       emoji,
                       style: TextStyle(
                         fontSize:
-                            Theme.of(context).textTheme.headline6.fontSize,
+                            Theme.of(context).textTheme.headline5.fontSize,
                       ),
                       textAlign: TextAlign.center,
                     ),

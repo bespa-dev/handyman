@@ -73,6 +73,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             height: _kHeight,
                             width: _kWidth,
                             child: ListView(
+                              physics: kScrollPhysics,
                               children: [
                                 _buildAppBar(provider, artisan),
                                 SizedBox(

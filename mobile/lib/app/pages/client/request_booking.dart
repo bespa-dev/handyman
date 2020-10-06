@@ -1,19 +1,19 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/core/constants.dart';
-import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:provider/provider.dart';
-import 'package:auto_route/auto_route.dart';
 
 class RequestBookingPage extends StatefulWidget {
   final Artisan artisan;
 
   const RequestBookingPage({Key key, this.artisan}) : super(key: key);
+
   @override
   _RequestBookingPageState createState() => _RequestBookingPageState();
 }
@@ -80,13 +80,14 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                                   IconButton(
                                     tooltip: "Chat",
                                     icon: Icon(Entypo.chat),
-                                    onPressed: () => context.navigator.push(
-                                        Routes.conversationPage,
-                                        arguments: ConversationPageArguments(
-                                          isCustomer: provider.userType ==
-                                              kArtisanString,
-                                          recipient: widget.artisan.id,
-                                        )),
+                                    onPressed: () => context.navigator
+                                        .popAndPush(Routes.conversationPage,
+                                            arguments:
+                                                ConversationPageArguments(
+                                              isCustomer: provider.userType ==
+                                                  kArtisanString,
+                                              recipient: widget.artisan.id,
+                                            )),
                                   ),
                                   IconButton(
                                     tooltip: "Toggle theme",
@@ -115,30 +116,31 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
   Widget _buildRequestSection() => Column();
 
   Widget _buildArtisanInfoSection() => StreamBuilder<ServiceCategory>(
-      stream: _apiService.getCategoryById(id: widget.artisan.category),
-      builder: (context, snapshot) {
-        final category = snapshot.data;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            category == null
-                ? SizedBox.shrink()
-                : Column(
-                    children: [
-                      Text(
-                        "Service category",
-                        style: _themeData.textTheme.headline6,
-                      ),
-                      SizedBox(
-                        height: getProportionateScreenHeight(kSpacingX12),
-                      ),
-                      Text(
-                        category.name,
-                        style: _themeData.textTheme.headline6,
-                      ),
-                    ],
-                  ),
-          ],
-        );
-      });
+        stream: _apiService.getCategoryById(id: widget.artisan.category),
+        builder: (context, snapshot) {
+          final category = snapshot.data;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              category == null
+                  ? SizedBox.shrink()
+                  : Column(
+                      children: [
+                        // Text(
+                        //   "Service category",
+                        //   style: _themeData.textTheme.headline6,
+                        // ),
+                        // SizedBox(
+                        //   height: getProportionateScreenHeight(kSpacingX12),
+                        // ),
+                        // Text(
+                        //   category.name,
+                        //   style: _themeData.textTheme.headline6,
+                        // ),
+                      ],
+                    ),
+            ],
+          );
+        },
+      );
 }

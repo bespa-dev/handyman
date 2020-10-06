@@ -263,6 +263,17 @@ class DataServiceImpl implements DataService {
 
   @override
   Stream<List<Gallery>> getPhotosForUser(String userId) async* {
+    // Sample data
+    final data = await rootBundle.loadString("assets/sample_photos.json");
+    var decodedData = json.decode(data);
+
+    List<dynamic> photos = decodedData ??= [];
+
+    List<Gallery> models = photos.map((e) => Gallery.fromJson(e)).toList();
+    models.forEach((element) {
+      _galleryDao.addPhoto(element);
+    });
+
     final localSource = _galleryDao.photosForUser(userId).watch();
     yield* localSource;
 

@@ -56,7 +56,7 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -101,7 +101,9 @@ class LocalDatabase extends _$LocalDatabase {
           }
         },
         onUpgrade: (m, from, to) async {
-          if (from == to) m.createAll();
+          if (from == 1) {
+            await m.addColumn(photoGallery, photoGallery.createdAt);
+          }
           // switch (from) {}
         },
         onCreate: (m) async {

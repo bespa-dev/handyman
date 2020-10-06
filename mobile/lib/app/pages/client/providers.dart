@@ -109,17 +109,17 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting)
                               return Container(
-                                height: kHeight -
-                                    getProportionateScreenHeight(kHeight * 0.3),
+                                height:
+                                    getProportionateScreenHeight(kSpacingX320),
                                 width: kWidth,
                                 child: Center(
-                                  child: Text("Fetching handymen..."),
+                                  child: Text("Fetching artisans..."),
                                 ),
                               );
                             else if (snapshot.hasError || artisans.isEmpty)
                               return Container(
-                                height: kHeight -
-                                    getProportionateScreenHeight(kHeight * 0.3),
+                                height:
+                                    getProportionateScreenHeight(kSpacingX320),
                                 width: kWidth,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -139,7 +139,8 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                                       "No artisans available",
                                       style: themeData.textTheme.bodyText2
                                           .copyWith(
-                                        color: themeData.disabledColor,
+                                        color:
+                                            themeData.colorScheme.onBackground,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
