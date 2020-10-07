@@ -114,89 +114,57 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                       getProportionateScreenWidth(kSpacingX24),
                                 ),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Row(
-                                      children: [
-                                        UserAvatar(
-                                          onTap: () =>
-                                              showNotAvailableDialog(context),
-                                          url: _currentUser?.avatar,
-                                          radius: kSpacingX72,
-                                          isCircular: true,
-                                          ringColor:
-                                              _currentUser?.isAvailable ?? false
-                                                  ? kGreenColor
-                                                  : _themeData
-                                                      .colorScheme.error,
-                                        ),
-                                        SizedBox(
-                                          width: getProportionateScreenWidth(
-                                              kSpacingX12),
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              _currentUser?.name ?? "",
-                                              style: _themeData
-                                                  .textTheme.headline6,
-                                            ),
-                                            SizedBox(
-                                              height:
-                                                  getProportionateScreenHeight(
-                                                      kSpacingX8),
-                                            ),
-                                            _currentUser?.business == null
-                                                ? SizedBox.shrink()
-                                                : Text(
-                                                    _currentUser?.business,
-                                                    style: _themeData
-                                                        .textTheme.bodyText2,
-                                                  ),
-                                            SizedBox(
-                                                height:
-                                                    getProportionateScreenHeight(
-                                                        kSpacingX4)),
-                                            RatingBarIndicator(
-                                              rating:
-                                                  _currentUser?.rating ?? 0.00,
-                                              direction: Axis.horizontal,
-                                              itemCount: 5,
-                                              itemSize: kSpacingX12,
-                                              itemPadding: EdgeInsets.symmetric(
-                                                  horizontal: 4.0),
-                                              itemBuilder: (context, _) => Icon(
-                                                  kRatingStar,
-                                                  color: kAmberColor),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                    UserAvatar(
+                                      onTap: () =>
+                                          showNotAvailableDialog(context),
+                                      url: _currentUser?.avatar,
+                                      radius: kSpacingX72,
+                                      isCircular: true,
+                                      ringColor:
+                                          _currentUser?.isAvailable ?? false
+                                              ? kGreenColor
+                                              : _themeData.colorScheme.error,
                                     ),
-                                    Row(
+                                    SizedBox(
+                                      width: getProportionateScreenWidth(
+                                          kSpacingX12),
+                                    ),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.end,
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        IconButton(
-                                          icon: Icon(Feather.edit_2),
-                                          onPressed: () =>
-                                              showNotAvailableDialog(context),
+                                        Text(
+                                          _currentUser?.name ?? "",
+                                          style: _themeData.textTheme.headline6,
                                         ),
                                         SizedBox(
-                                          width: getProportionateScreenWidth(
+                                          height: getProportionateScreenHeight(
                                               kSpacingX8),
                                         ),
-                                        IconButton(
-                                          icon: Icon(Feather.help_circle),
-                                          onPressed: () =>
-                                              showNotAvailableDialog(context),
+                                        _currentUser?.business == null
+                                            ? SizedBox.shrink()
+                                            : Text(
+                                                _currentUser?.business,
+                                                style: _themeData
+                                                    .textTheme.bodyText2,
+                                              ),
+                                        SizedBox(
+                                            height:
+                                                getProportionateScreenHeight(
+                                                    kSpacingX4)),
+                                        RatingBarIndicator(
+                                          rating: _currentUser?.rating ?? 0.00,
+                                          direction: Axis.horizontal,
+                                          itemCount: 5,
+                                          itemSize: kSpacingX12,
+                                          itemPadding: EdgeInsets.symmetric(
+                                              horizontal: 4.0),
+                                          itemBuilder: (context, _) => Icon(
+                                              kRatingStar,
+                                              color: kAmberColor),
                                         ),
                                       ],
                                     ),
@@ -258,13 +226,28 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                     icon: Icon(Feather.x),
                     onPressed: () => context.navigator.pop(),
                   ),
-                  IconButton(
-                    tooltip: "Toggle theme",
-                    icon: Icon(
-                      provider.isLightTheme ? Feather.moon : Feather.sun,
-                    ),
-                    onPressed: () => provider.toggleTheme(),
-                  ),
+                  Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                          tooltip: "Toggle theme",
+                          icon: Icon(
+                            provider.isLightTheme ? Feather.moon : Feather.sun,
+                          ),
+                          onPressed: () => provider.toggleTheme(),
+                        ),
+                        IconButton(
+                          icon: Icon(Feather.help_circle),
+                          onPressed: () => showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: Text("Help"),
+                              content: Text(kArtisanReviewHelpDialogContent),
+                            ),
+                          ),
+                        ),
+                      ]),
                 ],
               ),
             ),
@@ -272,7 +255,8 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
         ),
       );
 
-  Widget _buildBottomBar() => Container(
+  Widget _buildBottomBar() => AnimatedContainer(
+        duration: kScaleDuration,
         width: _kWidth,
         height: getProportionateScreenHeight(
             _shouldDismissEarnPointsSheet ? kSpacingX160 : kSpacingX250),
@@ -316,19 +300,22 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                         left: getProportionateScreenWidth(kSpacingX16),
                         right: getProportionateScreenWidth(kSpacingX16),
                       ),
-                      child: IconButton(
-                        icon: Icon(Feather.chevron_up),
-                        onPressed: () {
-                          setState(() {
-                            _shouldDismissEarnPointsSheet =
-                                !_shouldDismissEarnPointsSheet;
-                          });
-                        },
-                        color: _themeData.colorScheme.onSecondary,
+                      child: AnimatedOpacity(
+                        opacity: _shouldDismissEarnPointsSheet ? 1.0 : 0.0,
+                        duration: kSheetDuration,
+                        child: IconButton(
+                          icon: Icon(Feather.chevron_up),
+                          onPressed: () {
+                            setState(() {
+                              _shouldDismissEarnPointsSheet =
+                                  !_shouldDismissEarnPointsSheet;
+                            });
+                          },
+                          color: _themeData.colorScheme.onSecondary,
+                        ),
                       ),
                     )
-                  : AnimatedPositioned(
-                      duration: kScaleDuration,
+                  : Positioned(
                       bottom: kSpacingNone,
                       width: _kWidth,
                       child: Container(
@@ -486,7 +473,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
 
   // Gets user's current location and finds the name of that address
   Future<geo.Position> _getUserLocation() async =>
-      geo.getCurrentPosition(desiredAccuracy: geo.LocationAccuracy.high);
+      await geo.getCurrentPosition(desiredAccuracy: geo.LocationAccuracy.high);
 
   Widget _buildTabBar() => Container(
         margin: EdgeInsets.symmetric(

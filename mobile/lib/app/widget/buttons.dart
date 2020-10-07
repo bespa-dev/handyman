@@ -146,7 +146,7 @@ class ButtonPrimary extends StatelessWidget {
     return InkWell(
       borderRadius:
           BorderRadius.circular(getProportionateScreenWidth(kSpacingX36)),
-      onTap: onTap,
+      onTap: enabled ? onTap : null,
       child: AnimatedContainer(
         duration: kScaleDuration,
         curve: Curves.fastOutSlowIn,

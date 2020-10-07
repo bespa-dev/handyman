@@ -1,7 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
+import 'package:handyman/app/pages/login.dart';
+import 'package:handyman/app/routes/route.gr.dart';
+import 'package:handyman/app/widget/booking_card_item.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
@@ -37,6 +41,14 @@ class _ProfilePageState extends State<ProfilePage> {
     final size = MediaQuery.of(context).size;
     _kWidth = size.width;
     _kHeight = size.height;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    /// FIXME: User data not loaded when page is first viewed
+    if (mounted) setState(() {});
   }
 
   @override
@@ -106,7 +118,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildProfileHeader(PrefsProvider provider) => SafeArea(
         child: Container(
-          height: getProportionateScreenHeight(_kHeight * 0.35),
+          height: getProportionateScreenHeight(_kHeight * 0.38),
           width: _kWidth,
           padding: EdgeInsets.only(
             top: getProportionateScreenHeight(kSpacingX16),
@@ -254,6 +266,42 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                       ),
+                      ButtonPrimary(
+                        width: _kWidth * 0.4,
+                        themeData: _themeData,
+                        color: _themeData.colorScheme.error,
+                        enabled: user != null,
+                        textColor: _themeData.colorScheme.onError,
+                        onTap: () => showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: Text("Leaving already?"),
+                            content: Text(
+                              kSignOutText,
+                            ),
+                            actions: [
+                              ButtonClear(
+                                text: "No",
+                                onPressed: () => ctx.navigator.pop(),
+                                themeData: _themeData,
+                              ),
+                              ButtonClear(
+                                text: "Yes",
+                                onPressed: () async {
+                                  ctx.navigator.pop();
+                                  await authService.signOut();
+                                  context.navigator.pushAndRemoveUntil(
+                                    Routes.loginPage,
+                                    (route) => route is LoginPage,
+                                  );
+                                },
+                                themeData: _themeData,
+                              ),
+                            ],
+                          ),
+                        ),
+                        label: "Sign out",
+                      ),
                     ],
                   );
                 }),
@@ -265,7 +313,96 @@ class _ProfilePageState extends State<ProfilePage> {
         padding: EdgeInsets.symmetric(
           horizontal: getProportionateScreenWidth(kSpacingX24),
         ),
+        width: _kWidth,
         decoration: BoxDecoration(),
+        child: StreamBuilder<List<Booking>>(
+            stream: _dataService.getBookingsForCustomer(provider.userId),
+            initialData: [],
+            builder: (context, snapshot) {
+              return AnimationLimiter(
+                child: snapshot.data.isEmpty
+                    ? Container(
+                        height: kSpacingX320,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Entypo.bucket,
+                              size: getProportionateScreenHeight(kSpacingX96),
+                              color: Theme.of(context).colorScheme.onBackground,
+                            ),
+                            SizedBox(
+                                height:
+                                    getProportionateScreenHeight(kSpacingX24)),
+                            Text(
+                              "No bookings",
+                              style: Theme.of(context).textTheme.subtitle1,
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(
+                                height:
+                                    getProportionateScreenHeight(kSpacingX8)),
+                            Text(
+                              "You do not have any bookings yet",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                    color: Theme.of(context).disabledColor,
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: _kWidth,
+                            decoration: BoxDecoration(),
+                            padding: EdgeInsets.symmetric(
+                              vertical:
+                                  getProportionateScreenHeight(kSpacingX24),
+                              horizontal:
+                                  getProportionateScreenWidth(kSpacingX16),
+                            ),
+                            child: Text(
+                              "My Recent Bookings",
+                              textAlign: TextAlign.start,
+                              style: _themeData.textTheme.headline6,
+                            ),
+                          ),
+                          Expanded(
+                            child: ListView.builder(
+                              physics: kScrollPhysics,
+                              itemCount: snapshot.data.length,
+                              itemBuilder: (_, index) =>
+                                  AnimationConfiguration.staggeredList(
+                                position: index,
+                                duration: kScaleDuration,
+                                child: SlideAnimation(
+                                  verticalOffset: kSlideOffset,
+                                  child: FadeInAnimation(
+                                    child: BookingCardItem(
+                                      booking: snapshot.data[index],
+                                      onTap: () => context.navigator.push(
+                                        Routes.bookingsDetailsPage,
+                                        arguments: BookingsDetailsPageArguments(
+                                          booking: snapshot.data[index],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+              );
+            }),
       );
 
   Future<void> _editProfileInfo(Customer user) async =>

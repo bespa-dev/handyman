@@ -37,7 +37,7 @@ class TextFormInput extends TextFormField {
           onFieldSubmitted: onFieldSubmitted ?? (_) {},
           autofocus: autofocus,
           maxLines: maxLines,
-          style: TextStyle(color: color ?? kPrimaryColor),
+          style: TextStyle(color: color ?? kBlackColor),
         );
 }
 

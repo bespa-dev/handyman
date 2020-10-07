@@ -6,6 +6,7 @@ import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/category_card.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/entities/category.dart';
 import 'package:handyman/data/local_database.dart';
@@ -25,7 +26,8 @@ class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _preferGridFormat = true;
   DataService _apiService = DataServiceImpl.create();
-  Stream<List<ServiceCategory>> _categoriesStream;
+  Stream<List<ServiceCategory>> _categoriesStream =
+      sl.get<DataService>().getCategories();
 
   final _categoryFilterMenu = Map.from({
     CategoryGroup.FEATURED: "Featured",
@@ -39,7 +41,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    if (mounted) _categoriesStream = _apiService.getCategories();
+    if (mounted) setState(() {});
   }
 
   @override

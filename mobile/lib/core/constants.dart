@@ -121,10 +121,12 @@ const double kEmphasisHigh = 0.9;
 const kAppName = "HandyMan";
 const kAppSlogan = "Get some real work done";
 const kAppSloganDesc = "Find your service & book easily with $kAppName";
+const kArtisanReviewHelpDialogContent =
+    "Sensitive data (like email addresses, phone numbers, user ids etc) will not be made public to customers on this platform.\nYour ratings are also based on the accumulated reviews by customers you have served over the last 6 months";
 const kPasswordHint =
     "Your password must be 8 or more characters long & must container a mix of upper & lower case letters, numbers & symbols";
 const kSignOutText =
-    "Signing out will set you offline until you sign in again. You may not be able to receive requests. Do you wish to continue?";
+    "Signing out will set you offline until you sign in again. You may not be able to send/receive requests. Do you wish to continue?";
 const kArtisanString = "Artisan";
 const kFunctionalityUnavailable =
     "Functionality currently not available. Grab a beverage and check back later!";
@@ -144,6 +146,7 @@ const kAlgoliaKey = "604022a17d65f30d23e80a38f285be57";
 
 /// Durations
 const kScaleDuration = const Duration(milliseconds: 350);
+const kSheetDuration = const Duration(milliseconds: 850);
 
 /// Others
 const kScrollPhysics = const BouncingScrollPhysics();
@@ -152,6 +155,7 @@ const kSlideOffset = 50.0;
 /// Colors
 const kGreenColor = Color(0xFF009688);
 const kWhiteColor = Colors.white;
+const kBlackColor = Colors.black87;
 const kAmberColor = Colors.amber;
 const kChatBackgroundLight = Color(0xFFF5F5F5);
 const kChatBackgroundDark = Color(0xFF222222);

@@ -28,9 +28,7 @@ final _kDefaultMargin = EdgeInsets.only(
 
 Widget buildMapPreviewForBusinessLocation(
         {@required Position position, bool isLightTheme}) =>
-    position == null
-        ? SizedBox.shrink()
-        : Column(
+    Column(
             children: [
               FutureBuilder<String>(
                   future: getLocationName(position),

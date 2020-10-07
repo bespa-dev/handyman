@@ -9,7 +9,6 @@ import 'package:handyman/app/widget/badgeable_tab_bar.dart';
 import 'package:handyman/app/widget/booking_card_item.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/menu_icon.dart';
-import 'package:handyman/app/widget/sign_out_button.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
@@ -40,6 +39,14 @@ class _DashboardPageState extends State<DashboardPage> {
     final size = MediaQuery.of(context).size;
     _kWidth = size.width;
     _kHeight = size.height;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    /// FIXME: User data not loaded when page is first viewed
+    if (mounted) setState(() {});
   }
 
   @override
@@ -450,7 +457,7 @@ class _DashboardPageState extends State<DashboardPage> {
               onTap: () => showNotAvailableDialog(context),
               leading: Icon(Entypo.chat),
             ),
-            Divider(),
+            Spacer(),
             ListTile(
               onTap: () =>
                   context.navigator.popAndPush(Routes.providerSettingsPage),
@@ -468,24 +475,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 onPressed: () => showNotAvailableDialog(context),
               ),
             ),
-            Divider(),
-            Spacer(),
-            SignOutButton(
-              authService: authService,
-              logoutRoute: Routes.loginPage,
-              onConfirmSignOut: () async {
-                final isLoggedOut = await authService.signOut();
-                if (isLoggedOut)
-                  context.navigator.popAndPush(Routes.loginPage);
-                else
-                  _scaffoldKey.currentState
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(
-                      content: Text("Unable to sign out. Try again later"),
-                      behavior: SnackBarBehavior.floating,
-                    ));
-              },
-            ),
+            SizedBox(height: getProportionateScreenHeight(kSpacingX4),),
           ],
         ),
       );
