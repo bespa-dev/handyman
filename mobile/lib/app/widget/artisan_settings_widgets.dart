@@ -28,7 +28,9 @@ final _kDefaultMargin = EdgeInsets.only(
 
 Widget buildMapPreviewForBusinessLocation(
         {@required Position position, bool isLightTheme}) =>
-    Column(
+    position == null
+        ? SizedBox.shrink()
+        : Column(
             children: [
               FutureBuilder<String>(
                   future: getLocationName(position),
@@ -64,8 +66,9 @@ Widget buildMapPreviewForBusinessLocation(
                                     markers: [
                                       Marker(
                                         markerId: MarkerId(Uuid().v4()),
-                                        position: LatLng(position.latitude,
-                                            position.longitude),
+                                        position: LatLng(
+                                            position?.latitude ?? 0,
+                                            position?.longitude ?? 0),
                                         infoWindow: InfoWindow(
                                           title: "Your current location",
                                           snippet: snapshot.data ?? "",
@@ -201,7 +204,7 @@ Widget buildArtisanMetadataBar(BuildContext context, ThemeData themeData,
                     Text(
                       artisan?.requestsCount == 0
                           ? "None recently"
-                          : "${artisan.requestsCount} bookings",
+                          : "${artisan?.requestsCount ?? 0} bookings",
                       style: themeData.textTheme.bodyText1,
                     ),
                   ],
@@ -319,14 +322,23 @@ String _parseDateInYears(int createdAt) => Jiffy(
         border: Border.all(
             color: themeData.disabledColor.withOpacity(kEmphasisLow)),*/
 
-Widget buildProfileDescriptor({
+Widget buildProfileDescriptor(
+  BuildContext context, {
   String title,
   String content,
-  bool isEditable = true,
-  void Function() onTap,
   ThemeData themeData,
+  FocusNode focusNode,
+  void Function() onTap,
+  void Function(String) onEditComplete,
+  TextEditingController controller,
+  bool isEditable = true,
+  String hint = "Say something...",
+  bool isEditing = false,
+  TextInputAction inputAction = TextInputAction.send,
+  IconData iconData = Feather.edit_2,
 }) =>
-    Container(
+    AnimatedContainer(
+      duration: kScaleDuration,
       padding: EdgeInsets.fromLTRB(
         getProportionateScreenWidth(kSpacingX16),
         getProportionateScreenHeight(kSpacingX4),
@@ -349,7 +361,7 @@ Widget buildProfileDescriptor({
               Text(title, style: themeData.textTheme.headline6),
               isEditable
                   ? IconButton(
-                      icon: Icon(Feather.edit_2),
+                      icon: Icon(iconData),
                       onPressed: () => onTap(),
                     )
                   : SizedBox(height: getProportionateScreenHeight(kSpacingX36)),
@@ -358,7 +370,30 @@ Widget buildProfileDescriptor({
           SizedBox(
             height: getProportionateScreenHeight(kSpacingX8),
           ),
-          Text(content, style: themeData.textTheme.bodyText2),
+          isEditing
+              ? Container(
+                  child: TextFormField(
+                    focusNode: focusNode ?? FocusNode(),
+                    autofocus: false,
+                    minLines: 5,
+                    maxLines: 8,
+                    enableSuggestions: true,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: hint,
+                      hintStyle: TextStyle(color: themeData.disabledColor),
+                    ),
+                    textAlign: TextAlign.start,
+                    // keyboardType: ,
+                    onFieldSubmitted: (input) => onEditComplete(input),
+                    controller: controller,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    autocorrect: true,
+                    textInputAction: inputAction,
+                    onTap: () {},
+                  ),
+                )
+              : Text(content, style: themeData.textTheme.bodyText2),
         ],
       ),
     );

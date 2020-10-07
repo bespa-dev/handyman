@@ -193,7 +193,7 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                             SizedBox(
                                 height:
                                     getProportionateScreenHeight(kSpacingX16)),
-                            buildProfileDescriptor(
+                            buildProfileDescriptor(context,
                               themeData: _themeData,
                               title: "Description",
                               isEditable: false,

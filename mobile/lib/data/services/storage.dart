@@ -61,7 +61,6 @@ class StorageServiceImpl implements StorageService {
             url: null, state: UploadProgressState.IN_PROGRESS),
       );
 
-      // get shared preferences instance
       switch (event.type) {
         case StorageTaskEventType.success:
           try {

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -14,8 +16,10 @@ import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/entities/customer_model.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/services/data.dart';
+import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
@@ -31,7 +35,24 @@ class _ProfilePageState extends State<ProfilePage> {
   double _kWidth, _kHeight;
   ThemeData _themeData;
   final _dataService = DataServiceImpl.create();
+  final _storageService = StorageServiceImpl.create();
   bool _isSaving = false;
+
+  File _avatar;
+  String _userId;
+  final picker = ImagePicker();
+
+  Future<void> _getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      debugPrint("Image picked as -> ${pickedFile.path}");
+      _avatar = File(pickedFile.path);
+      await _storageService.uploadFile(_avatar, path: _userId);
+    } else {
+      debugPrint('No image selected.');
+    }
+    setState(() {});
+  }
 
   @override
   void didChangeDependencies() {
@@ -46,50 +67,54 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-
-    /// FIXME: User data not loaded when page is first viewed
-    if (mounted) setState(() {});
+    if (mounted)
+      _storageService.onStorageUploadResponse.listen((event) {
+        debugPrint(event.state.toString());
+      });
   }
 
   @override
   Widget build(BuildContext context) => Consumer<PrefsProvider>(
-        builder: (_, provider, __) => StreamBuilder(
-          builder: (_, snapshot) => Scaffold(
-            key: _scaffoldKey,
-            extendBodyBehindAppBar: true,
-            extendBody: true,
-            body: SafeArea(
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  provider.isLightTheme
-                      ? Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(kBackgroundAsset),
-                              fit: BoxFit.cover,
+        builder: (_, provider, __) {
+          _userId = provider.userId;
+          return StreamBuilder(
+            builder: (_, snapshot) => Scaffold(
+              key: _scaffoldKey,
+              extendBodyBehindAppBar: true,
+              extendBody: true,
+              body: SafeArea(
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    provider.isLightTheme
+                        ? Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(kBackgroundAsset),
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                        )
-                      : SizedBox.shrink(),
-                  Positioned(
-                      top: getProportionateScreenHeight(_kHeight * 0.43),
-                      bottom: kSpacingNone,
-                      width: _kWidth,
-                      child: _buildProfileContent(provider)),
-                  Positioned(
-                      top: getProportionateScreenHeight(kToolbarHeight),
-                      width: _kWidth,
-                      child: _buildProfileHeader(provider)),
-                  Positioned(
-                      height: getProportionateScreenHeight(kToolbarHeight),
-                      width: _kWidth,
-                      child: _buildAppbar(provider)),
-                ],
+                          )
+                        : SizedBox.shrink(),
+                    Positioned(
+                        top: getProportionateScreenHeight(_kHeight * 0.43),
+                        bottom: kSpacingNone,
+                        width: _kWidth,
+                        child: _buildProfileContent(provider)),
+                    Positioned(
+                        top: getProportionateScreenHeight(kToolbarHeight),
+                        width: _kWidth,
+                        child: _buildProfileHeader(provider)),
+                    Positioned(
+                        height: getProportionateScreenHeight(kToolbarHeight),
+                        width: _kWidth,
+                        child: _buildAppbar(provider)),
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       );
 
   Widget _buildAppbar(PrefsProvider provider) => Container(
@@ -139,46 +164,95 @@ class _ProfilePageState extends State<ProfilePage> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      UserAvatar(
-                        url: user?.avatar,
-                        radius: kSpacingX120,
-                        ringColor: _themeData.scaffoldBackgroundColor
-                            .withOpacity(kEmphasisLow),
-                        onTap: () => showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                            title: Text("Select an option"),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ListTile(
-                                  title: Text("View"),
-                                  leading: Icon(Feather.eye),
-                                  onTap: () {
-                                    ctx.navigator.pop();
-                                    showNotAvailableDialog(ctx);
-                                  },
+                      _avatar == null
+                          ? UserAvatar(
+                              url: user?.avatar,
+                              radius: kSpacingX120,
+                              ringColor: _themeData.scaffoldBackgroundColor
+                                  .withOpacity(kEmphasisLow),
+                              onTap: () => showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: Text("Select an option"),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ListTile(
+                                        title: Text("View"),
+                                        leading: Icon(Feather.eye),
+                                        onTap: () {
+                                          ctx.navigator.pop();
+                                          showNotAvailableDialog(ctx);
+                                        },
+                                      ),
+                                      ListTile(
+                                        title: Text("Change avatar"),
+                                        leading: Icon(Feather.user),
+                                        onTap: () async {
+                                          ctx.navigator.pop();
+                                          await _getImage();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  actions: [
+                                    ButtonClear(
+                                      text: "Dismiss",
+                                      onPressed: () => ctx.navigator.pop(),
+                                      themeData: _themeData,
+                                    )
+                                  ],
                                 ),
-                                ListTile(
-                                  title: Text("Change avatar"),
-                                  leading: Icon(Feather.user),
-                                  onTap: () {
-                                    ctx.navigator.pop();
-                                    showNotAvailableDialog(ctx);
-                                  },
-                                ),
-                              ],
+                              ),
+                            )
+                          : Container(
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    clipBehavior: Clip.hardEdge,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Image.file(
+                                      _avatar,
+                                      fit: BoxFit.cover,
+                                      height: getProportionateScreenHeight(
+                                          kSpacingX120),
+                                      width: getProportionateScreenHeight(
+                                          kSpacingX120),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: getProportionateScreenHeight(
+                                        kSpacingX16),
+                                    right: getProportionateScreenWidth(
+                                        kSpacingNone),
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(kSpacingX56)),
+                                      onTap: () async => await _getImage(),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        height: getProportionateScreenHeight(
+                                            kSpacingX56),
+                                        width: getProportionateScreenWidth(
+                                            kSpacingX56),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: _themeData.colorScheme.primary,
+                                        ),
+                                        child: Icon(
+                                          Feather.image,
+                                          size: kSpacingX24,
+                                          color:
+                                              _themeData.colorScheme.onPrimary,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            actions: [
-                              ButtonClear(
-                                text: "Dismiss",
-                                onPressed: () => ctx.navigator.pop(),
-                                themeData: _themeData,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
                       SizedBox(
                           height: getProportionateScreenHeight(kSpacingX16)),
                       Row(

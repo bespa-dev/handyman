@@ -40,7 +40,7 @@ class FirebaseAuthService implements AuthService {
   void _init() async {
     var preferences = await sl.getAsync<SharedPreferences>();
     _userId =
-        preferences.getString(PrefsUtils.USER_ID) ?? _auth.currentUser.uid;
+        preferences.getString(PrefsUtils.USER_ID);
     _userType = preferences.getString(PrefsUtils.USER_TYPE);
   }
 

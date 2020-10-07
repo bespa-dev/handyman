@@ -399,8 +399,7 @@ class DataServiceImpl implements DataService {
       await _userDao.saveProvider(user);
     }
     if (sync)
-      await sl
-          .get<FirebaseFirestore>()
+      await _firestore
           .collection(
             user.isCustomer
                 ? FirestoreUtils.kCustomerRef

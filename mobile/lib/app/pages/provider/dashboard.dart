@@ -403,7 +403,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               BookingsDetailsPageArguments(booking: item),
                         ),
                       ),
-                    ),
+                    ).toList(),
                   ],
                 ),
               ),
