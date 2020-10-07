@@ -22,7 +22,7 @@ class StorageServiceImpl implements StorageService {
 
   StorageServiceImpl._();
 
-  static StorageService get instance => StorageServiceImpl._();
+  factory StorageServiceImpl.create() => StorageServiceImpl._();
 
   final StreamController<StorageUploadResponse> _onStorageUploadResponse =
       StreamController.broadcast();

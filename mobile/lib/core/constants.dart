@@ -2,16 +2,29 @@ import 'package:algolia/algolia.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:handyman/app/widget/buttons.dart';
 
 import 'size_config.dart';
 
 /// Defaults
 const kGeneralCategory = "bbe8a179-7797-4d87-b388-cf93125f490e";
+const _kGoogleApiKey = "AIzaSyByvL9jc4UvlhILkhAZs7ZrQP68LwWDgFg";
 const kRatingStar = Entypo.star;
+
+/// Predicts location address info using Google Places API
+Future<Prediction> getLocationPrediction(context) async =>
+    await PlacesAutocomplete.show(
+      context: context,
+      apiKey: _kGoogleApiKey,
+      mode: Mode.overlay,
+      // Mode.fullscreen
+      language: "en",
+    );
 
 Future<String> getLocationName(Position position) async {
   final addresses = await Geocoder.local.findAddressesFromCoordinates(

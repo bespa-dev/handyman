@@ -18,7 +18,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   bool _isLoading = false;
-  AuthService _authService = FirebaseAuthService.instance;
+  AuthService _authService = FirebaseAuthService.create();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override

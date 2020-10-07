@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _emailController = TextEditingController(),
       _passwordController = TextEditingController();
-  AuthService _authService = FirebaseAuthService.instance;
+  AuthService _authService = FirebaseAuthService.create();
   PrefsProvider _prefsProvider;
 
   // Perform login

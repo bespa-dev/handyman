@@ -10,6 +10,7 @@ import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
+import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
@@ -23,7 +24,7 @@ class AccountCompletionPage extends StatefulWidget {
 }
 
 class _AccountCompletionPageState extends State<AccountCompletionPage> {
-  final _storageService = sl.get<StorageService>();
+  final _storageService = StorageServiceImpl.create();
 
   // region Form
   final _formKey = GlobalKey<FormState>();

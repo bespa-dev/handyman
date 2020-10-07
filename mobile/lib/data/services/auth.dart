@@ -27,12 +27,22 @@ class FirebaseAuthService implements AuthService {
   final errorState = AuthState.ERROR;
   final loadingState = AuthState.AUTHENTICATING;
   final initialState = AuthState.NONE;
+  String _userId, _userType;
 
   // Private constructor
   FirebaseAuthService._();
 
   // Singleton
   static AuthService get instance => FirebaseAuthService._();
+
+  factory FirebaseAuthService.create() => FirebaseAuthService._().._init();
+
+  void _init() async {
+    var preferences = await sl.getAsync<SharedPreferences>();
+    _userId =
+        preferences.getString(PrefsUtils.USER_ID) ?? _auth.currentUser.uid;
+    _userType = preferences.getString(PrefsUtils.USER_TYPE);
+  }
 
   final StreamController<BaseUser> _onAuthStateChanged =
       StreamController.broadcast();
@@ -177,47 +187,42 @@ class FirebaseAuthService implements AuthService {
 
   @override
   Stream<BaseUser> currentUser() async* {
-    var preferences = await sl.getAsync<SharedPreferences>();
-    final userId = preferences.getString(PrefsUtils.USER_ID);
-    final userType = preferences.getString(PrefsUtils.USER_TYPE);
-    if (userId != null && userType != null) {
-      if (userType == kCustomerString) {
-        var localSource = _database.userDao
-            .customerById(userId)
-            .watchSingle()
-            .map((event) => CustomerModel(customer: event));
-        yield* localSource;
+    if (_userType == kCustomerString) {
+      var localSource = _database.userDao
+          .customerById(_userId)
+          .watchSingle()
+          .map((customer) => CustomerModel(customer: customer));
+      yield* localSource;
 
-        var customerSnapshot = _firestore
-            .collection(FirestoreUtils.kCustomerRef)
-            .doc(userId)
-            .snapshots();
-        customerSnapshot.listen((event) async {
-          if (event.exists) {
-            final customer = Customer.fromJson(event.data());
-            final model = CustomerModel(customer: customer);
-            await _database.userDao.addCustomer(model);
-          }
-        });
-      } else if (userType == kArtisanString) {
-        var localSource = _database.userDao
-            .artisanById(userId)
-            .watchSingle()
-            .map((event) => ArtisanModel(artisan: event));
-        yield* localSource;
+      var customerSnapshot = _firestore
+          .collection(FirestoreUtils.kCustomerRef)
+          .doc(_userId)
+          .snapshots(includeMetadataChanges: true);
+      customerSnapshot.listen((event) async {
+        if (event.exists) {
+          final customer = Customer.fromJson(event.data());
+          final model = CustomerModel(customer: customer);
+          await _database.userDao.addCustomer(model);
+        }
+      });
+    } else if (_userType == kArtisanString) {
+      var localSource = _database.userDao
+          .artisanById(_userId)
+          .watchSingle()
+          .map((event) => ArtisanModel(artisan: event));
+      yield* localSource;
 
-        final snapshot = _firestore
-            .collection(FirestoreUtils.kArtisanRef)
-            .doc(userId)
-            .snapshots();
-        snapshot.listen((event) async {
-          if (event.exists) {
-            final artisan = Artisan.fromJson(event.data());
-            final model = ArtisanModel(artisan: artisan);
-            await _database.userDao.saveProvider(model);
-          }
-        });
-      }
+      final snapshot = _firestore
+          .collection(FirestoreUtils.kArtisanRef)
+          .doc(_userId)
+          .snapshots(includeMetadataChanges: true);
+      snapshot.listen((event) async {
+        if (event.exists) {
+          final artisan = Artisan.fromJson(event.data());
+          final model = ArtisanModel(artisan: artisan);
+          await _database.userDao.saveProvider(model);
+        }
+      });
     }
   }
 

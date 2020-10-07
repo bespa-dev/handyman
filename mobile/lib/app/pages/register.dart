@@ -28,7 +28,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController(),
       _passwordController = TextEditingController(),
       _nameController = TextEditingController();
-  AuthService _authService = FirebaseAuthService.instance;
+  AuthService _authService = FirebaseAuthService.create();
   PrefsProvider _prefsProvider;
 
   // Perform registration

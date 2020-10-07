@@ -389,6 +389,8 @@ Future<void> _showBottomSheetForDay(
       dismissOnBackdropTap: false,
       addTopViewPaddingOnFullscreen: true,
       headerBuilder: (_, __) => Material(
+        type: MaterialType.card,
+        clipBehavior: Clip.hardEdge,
         child: Container(
           padding: EdgeInsets.symmetric(
             horizontal: getProportionateScreenWidth(kSpacingX16),

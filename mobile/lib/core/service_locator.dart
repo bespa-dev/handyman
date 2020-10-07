@@ -46,9 +46,9 @@ Future<void> registerServiceLocator() async {
   sl.registerSingleton<LocalDatabase>(LocalDatabase.instance);
 
   // Services
-  sl.registerLazySingleton<DataService>(() => DataServiceImpl.instance);
-  sl.registerLazySingleton<AuthService>(() => FirebaseAuthService.instance);
-  sl.registerLazySingleton<StorageService>(() => StorageServiceImpl.instance);
+  sl.registerLazySingleton<DataService>(() => DataServiceImpl.create());
+  sl.registerLazySingleton<AuthService>(() => FirebaseAuthService.create());
+  sl.registerLazySingleton<StorageService>(() => StorageServiceImpl.create());
   sl.registerLazySingleton<MessagingService>(
       () => MessagingServiceImpl.create());
 

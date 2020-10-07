@@ -49,13 +49,13 @@ class _HandyManAppState extends State<HandyManApp> {
           create: (context) => PrefsProvider(),
         ),
         Provider<AuthService>.value(
-          value: FirebaseAuthService.instance,
+          value: FirebaseAuthService.create(),
         ),
         Provider<DataService>.value(
-          value: DataServiceImpl.instance,
+          value: DataServiceImpl.create(),
         ),
         Provider<StorageService>.value(
-          value: StorageServiceImpl.instance,
+          value: StorageServiceImpl.create(),
         ),
       ],
       child: Consumer<PrefsProvider>(

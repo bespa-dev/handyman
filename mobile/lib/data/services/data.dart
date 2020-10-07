@@ -35,7 +35,7 @@ class DataServiceImpl implements DataService {
   DataServiceImpl._();
 
   // Singleton
-  static DataService get instance => DataServiceImpl._();
+  factory DataServiceImpl.create() => DataServiceImpl._();
 
   /// Get all [Artisan]s from data source
   @override
@@ -102,7 +102,7 @@ class DataServiceImpl implements DataService {
     await _firestore
         .collection(FirestoreUtils.kMessagesRef)
         .doc(conversation.id)
-        .set(conversation.toJson());
+        .set(conversation.toJson(), SetOptions(merge: true));
   }
 
   // FIXME: Messages only return sender's chat'
@@ -339,7 +339,7 @@ class DataServiceImpl implements DataService {
     await _firestore
         .collection(FirestoreUtils.kReviewsRef)
         .doc(review.id)
-        .set(review.toJson());
+        .set(review.toJson(), SetOptions(merge: true));
   }
 
   /// Fetch [ServiceCategory] by [id]
@@ -407,7 +407,7 @@ class DataServiceImpl implements DataService {
                 : FirestoreUtils.kArtisanRef,
           )
           .doc(user.user.id)
-          .set(user.user.toJson());
+          .set(user.user.toJson(), SetOptions(merge: true));
   }
 
   @override

@@ -6,10 +6,10 @@ import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/category_card.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
-import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/entities/category.dart';
 import 'package:handyman/data/local_database.dart';
+import 'package:handyman/data/services/data.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
@@ -24,7 +24,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _preferGridFormat = true;
-  DataService _apiService = sl.get<DataService>();
+  DataService _apiService = DataServiceImpl.create();
   Stream<List<ServiceCategory>> _categoriesStream;
 
   final _categoryFilterMenu = Map.from({
@@ -124,17 +124,16 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 StreamBuilder<BaseUser>(
                                     stream: authService.currentUser(),
-                                    builder: (context, snapshot) {
-                                      return UserAvatar(
-                                        url: snapshot.data?.user?.avatar,
-                                        radius: kSpacingX36,
-                                        onTap: () => context.navigator
-                                            .push(Routes.profilePage),
-                                        ringColor: RandomColor(1).randomColor(
-                                            colorBrightness:
-                                                ColorBrightness.dark),
-                                      );
-                                    }),
+                                    builder: (context, userSnapshot) =>
+                                        UserAvatar(
+                                          url: userSnapshot.data?.user?.avatar,
+                                          radius: kSpacingX36,
+                                          onTap: () => context.navigator
+                                              .push(Routes.profilePage),
+                                          ringColor: RandomColor(1).randomColor(
+                                              colorBrightness:
+                                                  ColorBrightness.dark),
+                                        )),
                               ],
                             ),
                           ),
