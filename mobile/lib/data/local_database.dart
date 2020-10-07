@@ -1,16 +1,16 @@
-import 'dart:io';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:handyman/data/entities/artisan_model.dart';
 import 'package:handyman/data/entities/conversation.dart';
 import 'package:handyman/data/entities/gallery.dart';
 import 'package:handyman/domain/models/user.dart';
+import 'package:meta/meta.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:meta/meta.dart';
 
 import 'entities/booking.dart';
 import 'entities/category.dart';
@@ -194,6 +194,8 @@ class BookingDao extends DatabaseAccessor<LocalDatabase>
   queries: {
     "reviewsForProvider":
         "SELECT * FROM review WHERE provider_id = ? ORDER BY created_at DESC",
+    "reviewsByCustomer":
+        "SELECT * FROM review WHERE customer_id = ? ORDER BY created_at DESC",
     "reviewsForCustomerAndProvider":
         "SELECT * FROM review WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC",
     "deleteReviewById": "DELETE FROM review WHERE id = ? AND customer_id = ?"

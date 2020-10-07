@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
                       child: Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal:
-                                getProportionateScreenWidth(kSpacingX16)),
+                                getProportionateScreenWidth(kSpacingX8)),
                         child: Card(
                           clipBehavior: Clip.hardEdge,
                           elevation: kSpacingX2,
@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             padding: EdgeInsets.symmetric(
                                 horizontal:
-                                    getProportionateScreenWidth(kSpacingX16)),
+                                    getProportionateScreenWidth(kSpacingX8)),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -126,9 +126,7 @@ class _HomePageState extends State<HomePage> {
                                     stream: authService.currentUser(),
                                     builder: (context, snapshot) {
                                       return UserAvatar(
-                                        url: snapshot.hasData
-                                            ? snapshot.data?.user?.avatar
-                                            : "",
+                                        url: snapshot.data?.user?.avatar,
                                         radius: kSpacingX36,
                                         onTap: () => context.navigator
                                             .push(Routes.profilePage),

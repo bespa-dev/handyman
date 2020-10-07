@@ -453,4 +453,22 @@ class DataServiceImpl implements DataService {
     await _reviewDao.deleteReviewById(id, customerId);
     await _firestore.collection(FirestoreUtils.kReviewsRef).doc(id).delete();
   }
+
+  @override
+  Stream<List<CustomerReview>> getReviewsByCustomer(String id) async* {
+    final localSource = _reviewDao.reviewsByCustomer(id).watch();
+    yield* localSource;
+
+    var snapshots = _firestore
+        .collection(FirestoreUtils.kReviewsRef)
+        .where("customer_id", isEqualTo: id)
+        .snapshots(includeMetadataChanges: true);
+
+    snapshots.listen((event) {
+      event.docs.forEach((element) async {
+        if (element.exists)
+          await _reviewDao.addItem(CustomerReview.fromJson(element.data()));
+      });
+    });
+  }
 }

@@ -3649,6 +3649,13 @@ mixin _$ReviewDaoMixin on DatabaseAccessor<LocalDatabase> {
         readsFrom: {review}).map(review.mapFromRow);
   }
 
+  Selectable<CustomerReview> reviewsByCustomer(String var1) {
+    return customSelect(
+        'SELECT * FROM review WHERE customer_id = ? ORDER BY created_at DESC',
+        variables: [Variable.withString(var1)],
+        readsFrom: {review}).map(review.mapFromRow);
+  }
+
   Selectable<CustomerReview> reviewsForCustomerAndProvider(
       String var1, String var2) {
     return customSelect(
