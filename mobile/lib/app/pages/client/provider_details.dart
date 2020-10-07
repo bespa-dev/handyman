@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
-import 'package:handyman/app/pages/client/search.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/artisan_profile_info.dart';
 import 'package:handyman/app/widget/chat_input_entry.dart';
@@ -193,10 +192,8 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                                     IconButton(
                                       tooltip: "Search",
                                       icon: Icon(Feather.search),
-                                      onPressed: () => showSearch(
-                                        context: context,
-                                        delegate: SearchPage(),
-                                      ),
+                                      onPressed: () => context.navigator
+                                          .push(Routes.searchPage),
                                     ),
                                     IconButton(
                                       tooltip: "Toggle theme",
@@ -259,7 +256,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
   Widget _buildPhotoTab(userId) => Container(
         clipBehavior: Clip.hardEdge,
         width: MediaQuery.of(context).size.width,
-        height: getProportionateScreenHeight(kSpacingX360),
+        height: getProportionateScreenHeight(kSpacingX160),
         padding: EdgeInsets.symmetric(
           vertical: getProportionateScreenHeight(kSpacingX24),
           horizontal: getProportionateScreenWidth(kSpacingX8),
@@ -304,8 +301,8 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
 
                     return Container(
                       clipBehavior: Clip.hardEdge,
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      height: getProportionateScreenHeight(kSpacingX250),
+                      width: MediaQuery.of(context).size.width * 0.25,
+                      height: getProportionateScreenHeight(kSpacingX160),
                       decoration: BoxDecoration(
                         color: _themeData.errorColor,
                         borderRadius: BorderRadius.circular(kSpacingX16),

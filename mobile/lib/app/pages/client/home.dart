@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
-import 'package:handyman/app/pages/client/search.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/category_card.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
@@ -11,7 +10,6 @@ import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/entities/category.dart';
 import 'package:handyman/data/local_database.dart';
-import 'package:handyman/data/services/data.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
@@ -71,10 +69,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     SizedBox(height: getProportionateScreenHeight(kSpacingX12)),
                     GestureDetector(
-                      onTap: () => showSearch(
-                        context: context,
-                        delegate: SearchPage(),
-                      ),
+                      onTap: () => context.navigator.push(Routes.searchPage),
                       child: Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal:
@@ -202,7 +197,7 @@ class _HomePageState extends State<HomePage> {
                                   SizedBox(
                                       height: getProportionateScreenHeight(
                                           kSpacingX16)),
-                                  snapshot.hasData
+                                  snapshot.hasData && snapshot.data.isNotEmpty
                                       ? Expanded(
                                           child: _preferGridFormat
                                               ? GridCategoryCardItem(
@@ -210,7 +205,43 @@ class _HomePageState extends State<HomePage> {
                                               : ListCategoryCardItem(
                                                   categories: snapshot.data),
                                         )
-                                      : Container(),
+                                      : Container(
+                                          height: getProportionateScreenHeight(
+                                              kSpacingX320),
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Entypo.bucket,
+                                                size:
+                                                    getProportionateScreenHeight(
+                                                        kSpacingX96),
+                                                color: themeData
+                                                    .colorScheme.onBackground,
+                                              ),
+                                              SizedBox(
+                                                height:
+                                                    getProportionateScreenHeight(
+                                                        kSpacingX16),
+                                              ),
+                                              Text(
+                                                "No categories available for this filter",
+                                                style: themeData
+                                                    .textTheme.bodyText2
+                                                    .copyWith(
+                                                  color: themeData
+                                                      .colorScheme.onBackground,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                 ],
                               ),
                             );

@@ -45,8 +45,6 @@ dependencies:
   jiffy: ^3.0.1
   table_calendar: ^2.2.3
   share: ^0.6.4+2
-  bloc: ^4.0.0
-  flutter_bloc: ^4.0.1
   json_annotation: ^3.0.1
   email_validator: ^1.0.4
   flutter_image_compress: ^0.6.5+1

@@ -1,23 +1,40 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
+import 'package:handyman/core/utils.dart';
 import 'package:handyman/domain/services/storage.dart';
 import 'package:meta/meta.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 @immutable
 class StorageServiceImpl implements StorageService {
   final _bucket = sl.get<StorageReference>();
+  final _firestore = sl.get<FirebaseFirestore>();
 
   StorageServiceImpl._();
 
   static StorageService get instance => StorageServiceImpl._();
 
+  final StreamController<StorageUploadResponse> _onStorageUploadResponse =
+      StreamController.broadcast();
+
   @override
-  Stream<StorageUploadResponse> uploadFile(File file, {String path}) async* {
+  Future<void> uploadFile(File file, {String path}) async {
+    if (file == null) {
+      _onStorageUploadResponse.sink.add(
+        StorageUploadResponse(url: null, state: UploadProgressState.FAILED),
+      );
+      return;
+    }
     path = path ??= Uuid().v4();
     final dir = await path_provider.getTemporaryDirectory();
     final targetPath = dir.absolute.path + "/$path.jpg";
@@ -37,36 +54,54 @@ class StorageServiceImpl implements StorageService {
 
     // Upload to storage bucket
     var events = _bucket.child(path).putFile(result).events;
-    events.listen((event) async* {
+    events.listen((event) async {
       print("Uploading => ${_bytesTransferred(event.snapshot)}");
-      yield StorageUploadResponse(
-          url: null, state: UploadProgressState.IN_PROGRESS);
+      _onStorageUploadResponse.sink.add(
+        StorageUploadResponse(
+            url: null, state: UploadProgressState.IN_PROGRESS),
+      );
 
+      // get shared preferences instance
       switch (event.type) {
         case StorageTaskEventType.success:
-          event.snapshot.ref.getDownloadURL().then((url) async* {
-            yield StorageUploadResponse(
+          try {
+            final url = await event.snapshot.ref.getDownloadURL();
+            _onStorageUploadResponse.sink.add(StorageUploadResponse(
               url: url,
               state: UploadProgressState.DONE,
               isInComplete: false,
+            ));
+            final prefs = await sl.getAsync<SharedPreferences>();
+            var userId = prefs.getString(PrefsUtils.USER_ID);
+            var userType = prefs.getString(PrefsUtils.USER_TYPE);
+
+            await _firestore
+                .collection(userType == kCustomerString
+                    ? FirestoreUtils.kCustomerRef
+                    : FirestoreUtils.kArtisanRef)
+                .doc(userId)
+                .set(
+              {"avatar": url},
+              SetOptions(merge: true),
             );
-          }).catchError((e) async* {
-            yield StorageUploadResponse(
-                url: null, state: UploadProgressState.FAILED);
-          });
+          } on PlatformException catch (e) {
+            debugPrint("Upload error -> ${e.message}");
+            _onStorageUploadResponse.sink.add(StorageUploadResponse(
+                url: null, state: UploadProgressState.FAILED));
+          }
           break;
         case StorageTaskEventType.resume:
         case StorageTaskEventType.progress:
-          yield StorageUploadResponse(
-              url: null, state: UploadProgressState.IN_PROGRESS);
+          _onStorageUploadResponse.sink.add(StorageUploadResponse(
+              url: null, state: UploadProgressState.IN_PROGRESS));
           break;
         case StorageTaskEventType.pause:
-          yield StorageUploadResponse(
-              url: null, state: UploadProgressState.PAUSED);
+          _onStorageUploadResponse.sink.add(StorageUploadResponse(
+              url: null, state: UploadProgressState.PAUSED));
           break;
         case StorageTaskEventType.failure:
-          yield StorageUploadResponse(
-              url: null, state: UploadProgressState.FAILED);
+          _onStorageUploadResponse.sink.add(StorageUploadResponse(
+              url: null, state: UploadProgressState.FAILED));
           break;
       }
     });
@@ -76,11 +111,12 @@ class StorageServiceImpl implements StorageService {
   double _bytesTransferred(StorageTaskSnapshot snapshot) =>
       (snapshot.bytesTransferred / snapshot.totalByteCount) * 100;
 
-  Future<StorageUploadResponse> uploadNow(
-    File result,
-    String key, {
-    @required Function(String) onComplete,
-    Function onCancel,
-    Function(double) onProgress,
-  }) async {}
+  @override
+  Stream<StorageUploadResponse> get onStorageUploadResponse =>
+      _onStorageUploadResponse.stream;
+
+  @override
+  void dispose() {
+    _onStorageUploadResponse.close();
+  }
 }

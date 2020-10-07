@@ -117,6 +117,7 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                           zoomControlsEnabled: false,
                           zoomGesturesEnabled: true,
                           onMapCreated: (controller) async {
+                            debugPrint("Light mode for map => ${provider.isLightTheme}");
                             final mapStyle = await getMapStyle(
                                 isLightTheme: provider.isLightTheme);
                             controller.setMapStyle(mapStyle);

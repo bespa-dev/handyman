@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
-import 'package:handyman/app/pages/client/search.dart';
+import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/artisan_card.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
@@ -42,10 +42,7 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
           IconButton(
             tooltip: "Search",
             icon: Icon(Feather.search),
-            onPressed: () => showSearch(
-              context: context,
-              delegate: SearchPage(),
-            ),
+            onPressed: () => context.navigator.push(Routes.searchPage),
           ),
         ],
       ),

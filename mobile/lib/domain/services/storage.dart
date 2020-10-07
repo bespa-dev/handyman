@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart' as j;
+import 'package:meta/meta.dart';
 
 part 'storage.g.dart';
 
@@ -28,5 +28,9 @@ class StorageUploadResponse {
 
 /// Base storage service
 abstract class StorageService {
-  Stream<StorageUploadResponse> uploadFile(File file, {String path});
+  Stream<StorageUploadResponse> get onStorageUploadResponse;
+
+  Future<void> uploadFile(File file, {String path});
+
+  void dispose();
 }

@@ -10,8 +10,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/services/messaging.dart';
-import '../pages/account_completion.dart';
 import '../pages/account_selection.dart';
+import '../pages/client/checkout.dart';
 import '../pages/client/home.dart';
 import '../pages/client/profile.dart';
 import '../pages/client/provider_details.dart';
@@ -25,6 +25,7 @@ import '../pages/provider/bookings.dart';
 import '../pages/provider/dashboard.dart';
 import '../pages/provider/settings.dart';
 import '../pages/register.dart';
+import '../pages/search.dart';
 import '../pages/splash.dart';
 import 'guard.dart';
 
@@ -33,7 +34,8 @@ class Routes {
   static const String splashPage = '/splash-page';
   static const String loginPage = '/login-page';
   static const String registerPage = '/register-page';
-  static const String accountCompletionPage = '/account-completion-page';
+  static const String checkoutPage = '/checkout-page';
+  static const String searchPage = '/search-page';
   static const String notificationPage = '/notification-page';
   static const String bookingsDetailsPage = '/bookings-details-page';
   static const String accountSelectionPage = '/account-selection-page';
@@ -50,7 +52,8 @@ class Routes {
     splashPage,
     loginPage,
     registerPage,
-    accountCompletionPage,
+    checkoutPage,
+    searchPage,
     notificationPage,
     bookingsDetailsPage,
     accountSelectionPage,
@@ -73,8 +76,8 @@ class Router extends RouterBase {
     RouteDef(Routes.splashPage, page: SplashPage),
     RouteDef(Routes.loginPage, page: LoginPage),
     RouteDef(Routes.registerPage, page: RegisterPage),
-    RouteDef(Routes.accountCompletionPage,
-        page: AccountCompletionPage, guards: [AuthGuard]),
+    RouteDef(Routes.checkoutPage, page: CheckoutPage, guards: [AuthGuard]),
+    RouteDef(Routes.searchPage, page: SearchPage, guards: [AuthGuard]),
     RouteDef(Routes.notificationPage,
         page: NotificationPage, guards: [AuthGuard]),
     RouteDef(Routes.bookingsDetailsPage,
@@ -124,9 +127,20 @@ class Router extends RouterBase {
         settings: data,
       );
     },
-    AccountCompletionPage: (data) {
+    CheckoutPage: (data) {
+      final args = data.getArgs<CheckoutPageArguments>(nullOk: false);
       return buildAdaptivePageRoute<dynamic>(
-        builder: (context) => AccountCompletionPage(),
+        builder: (context) => CheckoutPage(
+          key: args.key,
+          booking: args.booking,
+          artisan: args.artisan,
+        ),
+        settings: data,
+      );
+    },
+    SearchPage: (data) {
+      return buildAdaptivePageRoute<dynamic>(
+        builder: (context) => SearchPage(),
         settings: data,
       );
     },
@@ -243,6 +257,15 @@ class Router extends RouterBase {
 /// ************************************************************************
 /// Arguments holder classes
 /// *************************************************************************
+
+/// CheckoutPage arguments holder class
+class CheckoutPageArguments {
+  final Key key;
+  final dynamic booking;
+  final dynamic artisan;
+  CheckoutPageArguments(
+      {this.key, @required this.booking, @required this.artisan});
+}
 
 /// NotificationPage arguments holder class
 class NotificationPageArguments {

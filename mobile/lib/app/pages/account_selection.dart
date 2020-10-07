@@ -47,13 +47,13 @@ class _AccountSelectionPageState extends State<AccountSelectionPage> {
           children: [
             provider.isLightTheme
                 ? Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(kBackgroundAsset),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            )
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(kBackgroundAsset),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )
                 : SizedBox.shrink(),
             SafeArea(
               child: Column(
@@ -82,8 +82,10 @@ class _AccountSelectionPageState extends State<AccountSelectionPage> {
                   ButtonPrimary(
                     width: getProportionateScreenWidth(kSpacingX200),
                     themeData: themeData,
-                    onTap: () => context.navigator
-                        .popAndPush(Routes.accountCompletionPage),
+                    onTap: () => context.navigator.popAndPush(
+                        _currentProfile == kCustomerString
+                            ? Routes.homePage
+                            : Routes.dashboardPage),
                     icon: _hasSelection ? Icons.arrow_right_alt : null,
                     label: _hasSelection ? "Continue" : "Waiting...",
                     enabled: _hasSelection,

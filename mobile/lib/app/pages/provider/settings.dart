@@ -37,13 +37,13 @@ class ProviderSettingsPage extends StatefulWidget {
 
 class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  DataService _dataService = sl.get<DataService>();
   double _kWidth, _kHeight;
   ThemeData _themeData;
   Artisan _currentUser;
   bool _shouldDismissEarnPointsSheet = true;
   int _activeTabIndex;
   CalendarController _calendarController;
+  DataService _dataService = sl.get<DataService>();
 
   @override
   void initState() {
