@@ -46,7 +46,8 @@ class _DashboardPageState extends State<DashboardPage> {
     super.initState();
 
     /// FIXME: User data not loaded when page is first viewed
-    if (mounted) setState(() {});
+    if (mounted)
+      Future.delayed(kScaleDuration).then((value) => setState(() => {}));
   }
 
   @override
@@ -394,16 +395,18 @@ class _DashboardPageState extends State<DashboardPage> {
                 duration: kScaleDuration,
                 child: Column(
                   children: [
-                    ...filteredBooking.map(
-                      (item) => BookingCardItem(
-                        booking: item,
-                        onTap: () => context.navigator.push(
-                          Routes.bookingsDetailsPage,
-                          arguments:
-                              BookingsDetailsPageArguments(booking: item),
-                        ),
-                      ),
-                    ).toList(),
+                    ...filteredBooking
+                        .map(
+                          (item) => BookingCardItem(
+                            booking: item,
+                            onTap: () => context.navigator.push(
+                              Routes.bookingsDetailsPage,
+                              arguments:
+                                  BookingsDetailsPageArguments(booking: item),
+                            ),
+                          ),
+                        )
+                        .toList(),
                   ],
                 ),
               ),
@@ -451,12 +454,23 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
               leading: Icon(Entypo.bell),
             ),
-            ListTile(
-              title: Text("Conversations"),
-              // TODO: Add conversations page for provider
-              onTap: () => showNotAvailableDialog(context),
-              leading: Icon(Entypo.chat),
+            Divider(),
+            AboutListTile(
+              applicationVersion: "v0.0.1-alpha",
+              applicationName: kAppName,
+              applicationLegalese: kAppSloganDesc,
+              applicationIcon: Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: getProportionateScreenHeight(kSpacingX16),
+                ),
+                child: Image(
+                  image: Svg(kLogoAsset),
+                  height: getProportionateScreenHeight(kSpacingX48),
+                  width: getProportionateScreenHeight(kSpacingX48),
+                ),
+              ),
             ),
+            Divider(),
             Spacer(),
             ListTile(
               onTap: () =>
@@ -475,7 +489,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 onPressed: () => showNotAvailableDialog(context),
               ),
             ),
-            SizedBox(height: getProportionateScreenHeight(kSpacingX4),),
+            SizedBox(
+              height: getProportionateScreenHeight(kSpacingX4),
+            ),
           ],
         ),
       );

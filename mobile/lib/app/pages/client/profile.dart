@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/pages/login.dart';
 import 'package:handyman/app/routes/route.gr.dart';
@@ -67,10 +68,14 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    if (mounted)
+    if (mounted) {
+      /// FIXME: User data not loaded when page is first viewed
+      if (mounted)
+        Future.delayed(kScaleDuration).then((value) => setState(() => {}));
       _storageService.onStorageUploadResponse.listen((event) {
         debugPrint(event.state.toString());
       });
+    }
   }
 
   @override
@@ -132,10 +137,37 @@ class _ProfilePageState extends State<ProfilePage> {
               icon: Icon(Feather.x),
               onPressed: () => context.navigator.pop(),
             ),
-            IconButton(
-              tooltip: "Toggle theme",
-              icon: Icon(provider.isLightTheme ? Feather.moon : Feather.sun),
-              onPressed: () => provider.toggleTheme(),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  tooltip: "Toggle theme",
+                  icon: Icon(
+                    provider.isLightTheme ? Feather.moon : Feather.sun,
+                  ),
+                  onPressed: () => provider.toggleTheme(),
+                ),
+                IconButton(
+                  icon: Icon(Entypo.info_with_circle),
+                  onPressed: () => showAboutDialog(
+                    context: context,
+                    applicationVersion: "v0.0.1-alpha",
+                    applicationName: kAppName,
+                    applicationLegalese: kAppSloganDesc,
+                    applicationIcon: Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: getProportionateScreenHeight(kSpacingX16),
+                      ),
+                      child: Image(
+                        image: Svg(kLogoAsset),
+                        height: getProportionateScreenHeight(kSpacingX48),
+                        width: getProportionateScreenHeight(kSpacingX48),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -157,7 +189,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           child: Consumer<AuthService>(
             builder: (_, authService, __) => StreamBuilder<BaseUser>(
-                stream: _dataService.getCustomerById(id: provider.userId),
+                stream: authService.currentUser(),
                 builder: (context, snapshot) {
                   final user = snapshot.data?.user;
                   _nameController.text = user?.name;

@@ -392,34 +392,35 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                     onPressed: () => context.navigator.pop(),
                   ),
                   Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IconButton(
-                          tooltip: "Toggle theme",
-                          icon: Icon(
-                            provider.isLightTheme ? Feather.moon : Feather.sun,
-                          ),
-                          onPressed: () => provider.toggleTheme(),
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      IconButton(
+                        tooltip: "Toggle theme",
+                        icon: Icon(
+                          provider.isLightTheme ? Feather.moon : Feather.sun,
                         ),
-                        IconButton(
-                          icon: Icon(Feather.help_circle),
-                          onPressed: () => showDialog(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: Text("Help"),
-                              content: Text(kArtisanReviewHelpDialogContent),
-                              actions: [
-                                ButtonClear(
-                                  text: "Dismiss",
-                                  onPressed: () => ctx.navigator.pop(),
-                                  themeData: _themeData,
-                                ),
-                              ],
-                            ),
+                        onPressed: () => provider.toggleTheme(),
+                      ),
+                      IconButton(
+                        icon: Icon(Feather.help_circle),
+                        onPressed: () => showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: Text("Help"),
+                            content: Text(kArtisanReviewHelpDialogContent),
+                            actions: [
+                              ButtonClear(
+                                text: "Dismiss",
+                                onPressed: () => ctx.navigator.pop(),
+                                themeData: _themeData,
+                              ),
+                            ],
                           ),
                         ),
-                      ]),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

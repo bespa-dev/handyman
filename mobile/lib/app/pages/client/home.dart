@@ -41,7 +41,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    if (mounted) setState(() {});
+    /// FIXME: User data not loaded when page is first viewed
+    if (mounted) Future.delayed(kScaleDuration).then((value) => setState(() => {}));
   }
 
   @override
