@@ -317,7 +317,7 @@ class _DashboardPageState extends State<DashboardPage> {
             vertical: getProportionateScreenHeight(kSpacingX16),
             horizontal: getProportionateScreenWidth(margin ??= kSpacingX8)),
         child: InkWell(
-          onTap: () => showNotAvailableDialog(context),
+          onTap: () => context.navigator.push(Routes.searchPage),
           borderRadius: BorderRadius.all(Radius.circular(kSpacingX8)),
           child: Card(
             clipBehavior: Clip.hardEdge,

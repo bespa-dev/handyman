@@ -29,8 +29,6 @@ Future<Prediction> getLocationPrediction(context) async =>
 Future<String> getLocationName(Position position) async {
   final addresses = await Geocoder.local.findAddressesFromCoordinates(
       Coordinates(position.latitude, position.longitude));
-  final first = addresses.first;
-  debugPrint("${first?.featureName} : ${first?.addressLine}");
   return addresses.first?.addressLine ?? "Unknown location";
 }
 
