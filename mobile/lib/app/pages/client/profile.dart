@@ -152,7 +152,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   icon: Icon(Entypo.info_with_circle),
                   onPressed: () => showAboutDialog(
                     context: context,
-                    applicationVersion: "v0.0.1-alpha",
+                    applicationVersion: kAppVersion,
                     applicationName: kAppName,
                     applicationLegalese: kAppSloganDesc,
                     applicationIcon: Padding(

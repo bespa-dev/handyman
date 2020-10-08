@@ -362,8 +362,8 @@ class DataServiceImpl implements DataService {
   /// Performs a search for [Artisan]s in [Algolia]
   @override
   Future<List<BaseUser>> searchFor(
-      {@required String value, String categoryId}) async {
-    try {
+      {@required String value, String categoryId = ""}) async {
+    /*try {
       // Perform search with index
       var query =
           algolia.instance.index(AlgoliaUtils.kArtisanIndex).search(value);
@@ -376,7 +376,7 @@ class DataServiceImpl implements DataService {
 
       // Return transformed data from API
       return snapshot.empty
-          ? _userDao.searchFor(value, categoryId ?? "").get()
+          ? _userDao.searchFor(value, categoryId).get()
           : snapshot.hits
               .map((e) => ArtisanModel(
                     artisan: Artisan.fromJson(e.data),
@@ -384,7 +384,17 @@ class DataServiceImpl implements DataService {
               .toList();
     } on Exception {
       return Future.value(<BaseUser>[]);
-    }
+    }*/
+    // Sample data
+    final data = await rootBundle.loadString("assets/sample_artisan.json");
+    var decodedData = json.decode(data);
+
+    List<dynamic> artisans = decodedData ??= [];
+
+    List<BaseUser> models = artisans
+        .map((e) => ArtisanModel(artisan: Artisan.fromJson(e)))
+        .toList();
+    return models;
   }
 
   @override

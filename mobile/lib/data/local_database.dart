@@ -243,9 +243,8 @@ class MessageDao extends DatabaseAccessor<LocalDatabase>
     "artisanById": "SELECT * FROM service_provider WHERE id = ?",
     "artisans":
         "SELECT * FROM service_provider WHERE category = ? ORDER BY id desc",
-    "searchFor": """SELECT * FROM service_provider
-        INNER JOIN user
-        ON service_provider.name LIKE ? OR service_provider.category LIKE ? ORDER BY user.id, service_provider.id DESC""",
+    "searchFor":
+        "SELECT * FROM service_provider INNER JOIN user ON service_provider.name LIKE ? OR service_provider.category LIKE ? ORDER BY user.id, service_provider.id DESC",
   },
 )
 class UserDao extends DatabaseAccessor<LocalDatabase> with _$UserDaoMixin {

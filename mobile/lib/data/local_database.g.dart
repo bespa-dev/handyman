@@ -3700,7 +3700,7 @@ mixin _$UserDaoMixin on DatabaseAccessor<LocalDatabase> {
 
   Selectable<SearchForResult> searchFor(String var1, String var2) {
     return customSelect(
-        'SELECT * FROM service_provider\n        INNER JOIN user\n        ON service_provider.name LIKE ? OR service_provider.category LIKE ? ORDER BY user.id, service_provider.id DESC',
+        'SELECT * FROM service_provider INNER JOIN user ON service_provider.name LIKE ? OR service_provider.category LIKE ? ORDER BY user.id, service_provider.id DESC',
         variables: [Variable.withString(var1), Variable.withString(var2)],
         readsFrom: {serviceProvider, user}).map((QueryRow row) {
       return SearchForResult(

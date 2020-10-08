@@ -456,7 +456,7 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
             Divider(),
             AboutListTile(
-              applicationVersion: "v0.0.1-alpha",
+              applicationVersion: kAppVersion,
               applicationName: kAppName,
               applicationLegalese: kAppSloganDesc,
               applicationIcon: Padding(

@@ -483,7 +483,6 @@ Future<void> _showBottomSheetForDay(
                           .getBookingsForProvider(artisan.id),
                       initialData: [],
                       builder: (context, snapshot) {
-                        debugPrint("Bookings found -> ${snapshot.data}");
                         return snapshot.hasError ||
                                 snapshot.hasData && snapshot.data.isEmpty
                             ? Container(

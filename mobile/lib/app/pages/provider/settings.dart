@@ -100,13 +100,10 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   Future<void> _getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      debugPrint("Image picked as -> ${pickedFile.path}");
       _avatar = File(pickedFile.path);
       await _storageService.uploadFile(_avatar, path: _userId);
-    } else {
-      debugPrint('No image selected.');
+      setState(() {});
     }
-    setState(() {});
   }
 
   @override
