@@ -158,7 +158,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   width: kWidth * 0.3,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: themeData.primaryColor,
+                    color: themeData.colorScheme.primary,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(
                           getProportionateScreenWidth(kSpacingX24)),

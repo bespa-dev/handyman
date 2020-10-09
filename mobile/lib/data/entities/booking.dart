@@ -10,19 +10,28 @@ class Bookings extends Table {
   TextColumn get providerId => text()();
 
   TextColumn get category => text()();
+
+  @JsonKey("image_url")
+  TextColumn get imageUrl => text().nullable()();
+
   TextColumn get description => text()
       .nullable()
       .withDefault(Constant(
           "Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cursus sit amet dictum sit amet. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique"))
       .withLength(max: 1000)();
+
   TextColumn get reason => text()();
+
   @JsonKey("lat")
   RealColumn get locationLat =>
       real().nullable().named("lat").withDefault(Constant(5.5329650))();
+
   @JsonKey("lng")
   RealColumn get locationLng =>
       real().nullable().named("lng").withDefault(Constant(-0.2592160))();
+
   RealColumn get value => real().withDefault(Constant(10.99))();
+
   RealColumn get progress => real().withDefault(Constant(0.45))();
 
   @JsonKey("created_at")

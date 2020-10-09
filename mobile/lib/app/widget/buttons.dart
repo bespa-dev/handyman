@@ -40,7 +40,9 @@ class ButtonOutlined extends StatelessWidget {
         decoration: BoxDecoration(
           color: themeData.scaffoldBackgroundColor,
           border: Border.all(
-            color: enabled ? themeData.primaryColor : themeData.disabledColor,
+            color: enabled
+                ? themeData.colorScheme.primary
+                : themeData.disabledColor,
           ),
           borderRadius:
               BorderRadius.circular(getProportionateScreenWidth(kSpacingX36)),
@@ -56,8 +58,9 @@ class ButtonOutlined extends StatelessWidget {
             Text(
               label.toUpperCase(),
               style: themeData.textTheme.button.copyWith(
-                color:
-                    enabled ? themeData.primaryColor : themeData.disabledColor,
+                color: enabled
+                    ? themeData.colorScheme.primary
+                    : themeData.disabledColor,
               ),
             ),
             icon != null && gravity == ButtonIconGravity.END
@@ -75,7 +78,8 @@ class ButtonOutlined extends StatelessWidget {
         ),
         child: Icon(
           icon,
-          color: enabled ? themeData.primaryColor : themeData.disabledColor,
+          color:
+              enabled ? themeData.colorScheme.primary : themeData.disabledColor,
         ),
       );
 }
@@ -106,12 +110,12 @@ class ButtonIconOnly extends StatelessWidget {
         width: kToolbarHeight,
         padding: const EdgeInsets.all(kSpacingX4),
         decoration: BoxDecoration(
-          border: Border.all(color: color ?? themeData.accentColor),
+          border: Border.all(color: color ?? themeData.colorScheme.primary),
           borderRadius: BorderRadius.circular(kToolbarHeight),
         ),
         alignment: Alignment.center,
         clipBehavior: Clip.hardEdge,
-        child: Icon(icon, color: iconColor ?? themeData.accentColor),
+        child: Icon(icon, color: iconColor ?? themeData.colorScheme.primary),
       ),
     );
   }
@@ -154,7 +158,7 @@ class ButtonPrimary extends StatelessWidget {
         height: kMinInteractiveDimension,
         decoration: BoxDecoration(
           color: enabled
-              ? color ?? themeData.primaryColor
+              ? color ?? themeData.colorScheme.primary
               : themeData.disabledColor,
           borderRadius:
               BorderRadius.circular(getProportionateScreenWidth(kSpacingX36)),
@@ -224,16 +228,17 @@ class ButtonClear extends FlatButton {
               text.toUpperCase(),
               style: themeData.textTheme.button.copyWith(
                 color: textColor == null || !enabled
-                    ? themeData.primaryColor
+                    ? themeData.colorScheme.primary
                     : textColor ?? themeData.disabledColor,
               ),
             ),
           ),
           onPressed: enabled ? onPressed : null,
           color: enabled
-              ? themeData.accentColor.withOpacity(kSpacingNone)
+              ? themeData.colorScheme.primary.withOpacity(kSpacingNone)
               : themeData.disabledColor,
-          disabledColor: themeData.accentColor.withOpacity(kSpacingNone),
+          disabledColor:
+              themeData.colorScheme.primary.withOpacity(kSpacingNone),
           disabledTextColor: themeData.disabledColor,
         );
 }

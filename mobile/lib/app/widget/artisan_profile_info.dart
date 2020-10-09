@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
@@ -8,7 +8,6 @@ import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
 class ArtisanProfileInfo extends StatelessWidget {
@@ -143,7 +142,8 @@ class ArtisanProfileInfo extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  artisan?.completedBookingsCount?.toString() ?? "",
+                                  artisan?.completedBookingsCount?.toString() ??
+                                      "",
                                   style:
                                       _themeData.textTheme.headline5.copyWith(
                                     color: _themeData.primaryColor,
@@ -171,7 +171,8 @@ class ArtisanProfileInfo extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  artisan?.ongoingBookingsCount?.toString() ?? "",
+                                  artisan?.ongoingBookingsCount?.toString() ??
+                                      "",
                                   style: _themeData.textTheme.headline5
                                       .copyWith(color: kGreenColor),
                                 ),
@@ -197,7 +198,8 @@ class ArtisanProfileInfo extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  artisan?.cancelledBookingsCount?.toString() ?? "",
+                                  artisan?.cancelledBookingsCount?.toString() ??
+                                      "",
                                   style:
                                       _themeData.textTheme.headline5.copyWith(
                                     color: _themeData.errorColor
@@ -219,49 +221,54 @@ class ArtisanProfileInfo extends StatelessWidget {
                       ],
                     ),
                   ),
-                  artisan?.aboutMe?.isNotEmpty ?? false ? Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: getProportionateScreenHeight(kSpacingX16),
-                      horizontal: getProportionateScreenWidth(kSpacingX24),
-                    ),
-                    decoration: BoxDecoration(
-                      color: _themeData.primaryColor.withOpacity(kOpacityX90),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        RotatedBox(
-                          quarterTurns: 2,
-                          child: Container(
-                            alignment: Alignment.topCenter,
-                            child: Icon(
-                              Icons.format_quote_outlined,
-                              size: _themeData.textTheme.headline4.fontSize,
-                              color: _themeData.colorScheme.onPrimary,
-                            ),
+                  artisan?.aboutMe?.isNotEmpty ?? false
+                      ? Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: getProportionateScreenHeight(kSpacingX16),
+                            horizontal:
+                                getProportionateScreenWidth(kSpacingX24),
                           ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            artisan?.aboutMe ?? "",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: _themeData.colorScheme.onPrimary,
-                            ),
+                          decoration: BoxDecoration(
+                            color: _themeData.colorScheme.primary
+                                .withOpacity(kEmphasisHigh),
                           ),
-                        ),
-                        Container(
-                          alignment: Alignment.topCenter,
-                          child: Icon(
-                            Icons.format_quote_outlined,
-                            size: _themeData.textTheme.headline4.fontSize,
-                            color: _themeData.colorScheme.onPrimary,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              RotatedBox(
+                                quarterTurns: 2,
+                                child: Container(
+                                  alignment: Alignment.topCenter,
+                                  child: Icon(
+                                    Icons.format_quote_outlined,
+                                    size:
+                                        _themeData.textTheme.headline4.fontSize,
+                                    color: _themeData.colorScheme.onPrimary,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  artisan?.aboutMe ?? "",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: _themeData.colorScheme.onPrimary,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.topCenter,
+                                child: Icon(
+                                  Icons.format_quote_outlined,
+                                  size: _themeData.textTheme.headline4.fontSize,
+                                  color: _themeData.colorScheme.onPrimary,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ) : SizedBox.shrink(),
+                        )
+                      : SizedBox.shrink(),
                 ],
               ),
             );

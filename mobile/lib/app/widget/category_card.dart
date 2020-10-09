@@ -97,7 +97,7 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
                                   "127 available",
                                   // FIXME: Added # of registered artisans here
                                   style: themeData.textTheme.bodyText1.copyWith(
-                                    color: themeData.primaryColor,
+                                    color: themeData.colorScheme.primary,
                                   ),
                                 ),
                               ],

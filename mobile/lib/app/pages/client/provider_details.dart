@@ -152,7 +152,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                                                               kSpacingX16),
                                                     ),
                                                     color:
-                                                        _themeData.primaryColor,
+                                                        _themeData.colorScheme.primary,
                                                   ),
                                                   width: kWidth * 0.25,
                                                   child: Text(

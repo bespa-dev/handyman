@@ -123,7 +123,7 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                       Text(
                         "\$${widget.artisan?.user?.price}",
                         style: themeData.textTheme.headline6.copyWith(
-                          color: themeData.primaryColor,
+                          color: themeData.colorScheme.primary,
                         ),
                       ),
                     ],
@@ -203,7 +203,7 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
                 Text(
                   "\$${widget.artisan.user?.price}",
                   style: themeData.textTheme.headline6.copyWith(
-                    color: themeData.primaryColor,
+                    color: themeData.colorScheme.primary,
                   ),
                 ),
               ],

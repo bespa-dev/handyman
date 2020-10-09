@@ -45,7 +45,7 @@ class _PageIndicatorState extends State<PageIndicator> {
             ? getProportionateScreenWidth(kSpacingX36)
             : getProportionateScreenWidth(kSpacingX8),
         decoration: BoxDecoration(
-          color: isActive ? _themeData.primaryColor : _themeData.disabledColor,
+          color: isActive ? _themeData.colorScheme.primary : _themeData.disabledColor,
           borderRadius: BorderRadius.all(
             Radius.circular(getProportionateScreenWidth(kSpacingX12)),
           ),

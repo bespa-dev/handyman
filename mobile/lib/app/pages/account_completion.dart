@@ -207,7 +207,7 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
                                 width: kWidth * 0.3,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
-                                  color: _themeData.primaryColor,
+                                  color: _themeData.colorScheme.primary,
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(
                                         getProportionateScreenWidth(

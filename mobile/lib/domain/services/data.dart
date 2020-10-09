@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:handyman/data/entities/category.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/models/user.dart';
@@ -46,4 +48,13 @@ abstract class DataService {
 
   Stream<List<Booking>> getBookingsByDueDate(
       {String dueDate, String providerId});
+
+  Future<void> requestBooking({
+    Artisan artisan,
+    String customer,
+    String category,
+    int hourOfDay,
+    String description,
+    File image,
+  });
 }

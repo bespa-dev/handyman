@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
+import 'package:handyman/app/widget/artisan_hours.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
@@ -13,6 +17,7 @@ import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class RequestBookingPage extends StatefulWidget {
@@ -25,7 +30,7 @@ class RequestBookingPage extends StatefulWidget {
 }
 
 class _RequestBookingPageState extends State<RequestBookingPage> {
-  DataService _apiService;
+  DataService _dataService;
   double _kWidth, _kHeight;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
@@ -34,6 +39,9 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
       _descriptionController = TextEditingController(),
       _phoneController = TextEditingController();
   ThemeData _themeData;
+  int _currentHour = 0;
+  File _imageFile;
+  ServiceCategory _category;
 
   @override
   void didChangeDependencies() {
@@ -48,7 +56,7 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
   @override
   Widget build(BuildContext context) => Consumer<DataService>(
         builder: (_, service, __) {
-          _apiService = service;
+          _dataService = service;
           return Consumer<PrefsProvider>(
             builder: (_, provider, __) => Consumer<AuthService>(
               builder: (_, authService, __) => Scaffold(
@@ -70,11 +78,16 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                                 top: getProportionateScreenHeight(
                                     kToolbarHeight),
                                 child: ListView(
+                                  padding: EdgeInsets.only(
+                                    bottom: getProportionateScreenHeight(
+                                        kSpacingX24),
+                                  ),
                                   physics: kScrollPhysics,
                                   children: [
                                     _buildArtisanInfoSection(),
                                     _buildRequestSection(snapshot.data?.user),
-                                    _buildDatePickerSection(),
+                                    _buildDatePickerSection(
+                                        snapshot.data?.user),
                                   ],
                                 ),
                               ),
@@ -141,7 +154,7 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
         },
       );
 
-  Widget _buildDatePickerSection() => Column(
+  Widget _buildDatePickerSection(Customer user) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: getProportionateScreenHeight(kSpacingX24)),
@@ -152,14 +165,66 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
             ),
           ),
           SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
-          SizedBox(height: getProportionateScreenHeight(kSpacingX96)),
+          ArtisanHoursPicker(
+            artisan: widget.artisan,
+            currentSelection: _currentHour,
+            onSelectionChanged: (newSelection) {
+              setState(() {
+                _currentHour = newSelection;
+              });
+            },
+          ),
+          SizedBox(height: getProportionateScreenHeight(kSpacingX24)),
+          GestureDetector(
+            onTap: () async {
+              var picker = ImagePicker();
+              var pickedFile = await picker.getImage(
+                source: kReleaseMode ? ImageSource.camera : ImageSource.gallery,
+              );
+              _imageFile = File(pickedFile.path);
+              setState(() {});
+            },
+            child: Container(
+              alignment: Alignment.center,
+              clipBehavior: Clip.hardEdge,
+              width: _kWidth,
+              height: getProportionateScreenHeight(kSpacingX230),
+              decoration: BoxDecoration(
+                color: _themeData.disabledColor.withOpacity(kEmphasisLow),
+                borderRadius: BorderRadius.circular(kSpacingX8),
+              ),
+              child: _imageFile == null
+                  ? Icon(
+                      Entypo.image,
+                      size: kSpacingX48,
+                      color: _themeData.colorScheme.primary,
+                    )
+                  : Image.file(
+                      _imageFile,
+                      width: _kWidth,
+                      fit: BoxFit.cover,
+                      height: getProportionateScreenHeight(kSpacingX230),
+                    ),
+            ),
+          ),
+          SizedBox(height: getProportionateScreenHeight(kSpacingX24)),
           Container(
             alignment: Alignment.center,
             child: ButtonOutlined(
               width: _kWidth * 0.7,
               themeData: _themeData,
               enabled: widget.artisan.isAvailable,
-              onTap: () {},
+              onTap: () {
+                context.navigator.pop();
+                _dataService.requestBooking(
+                  artisan: widget.artisan,
+                  customer: user?.id,
+                  hourOfDay: _currentHour,
+                  category: _category?.id,
+                  description: _descriptionController.text?.trim(),
+                  image: _imageFile,
+                );
+              },
               label: widget.artisan.isAvailable
                   ? "Book service"
                   : "Artisan is unavailable",
@@ -168,7 +233,7 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
         ],
       );
 
-  Widget _buildRequestSection([Customer user]) => Column(
+  Widget _buildRequestSection(Customer user) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: getProportionateScreenHeight(kSpacingX36)),
@@ -208,10 +273,10 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
       );
 
   Widget _buildArtisanInfoSection() => StreamBuilder<ServiceCategory>(
-        stream: _apiService.getCategoryById(id: widget.artisan.category),
+        stream: _dataService.getCategoryById(id: widget.artisan.category),
         builder: (context, snapshot) {
-          final category = snapshot.data;
-          return category == null
+          _category = snapshot.data;
+          return _category == null
               ? SizedBox.shrink()
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -275,7 +340,7 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                           alignment: Alignment.center,
                           width: _kWidth * 0.45,
                           decoration: BoxDecoration(
-                            color: kGreenColor.withOpacity(kEmphasisMedium),
+                            color: _themeData.colorScheme.primary.withOpacity(kEmphasisMedium),
                             borderRadius: BorderRadius.circular(kSpacingX8),
                           ),
                           padding: EdgeInsets.symmetric(
@@ -284,7 +349,7 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                                 getProportionateScreenWidth(kSpacingX24),
                           ),
                           child: Text(
-                            category.name,
+                            _category?.name ?? "",
                             style: _themeData.textTheme.button.copyWith(
                               color: _themeData.colorScheme.onPrimary,
                             ),

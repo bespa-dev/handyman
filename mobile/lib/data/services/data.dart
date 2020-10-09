@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:algolia/algolia.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,6 +14,7 @@ import 'package:handyman/data/entities/artisan_model.dart';
 import 'package:handyman/data/entities/category.dart';
 import 'package:handyman/data/entities/customer_model.dart';
 import 'package:handyman/data/local_database.dart';
+import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:meta/meta.dart';
@@ -481,4 +483,36 @@ class DataServiceImpl implements DataService {
       });
     });
   }
+
+  @override
+  Future<void> requestBooking({
+    Artisan artisan,
+    String customer,
+    String category,
+    int hourOfDay,
+    String description,
+    File image,
+  }) async {
+    final booking = Booking(
+      id: Uuid().v4(),
+      customerId: customer,
+      providerId: artisan?.id,
+      category: category,
+      reason: description,
+      value: artisan?.price,
+      progress: 0.0,
+    );
+    final storageService = StorageServiceImpl.create();
+    await storageService.uploadFile(image, path: booking.id);
+    storageService.onStorageUploadResponse.listen((event) async {
+      if (!event.isInComplete) {
+        await _bookingDao.addItem(booking.copyWith(imageUrl: event.url));
+        await _firestore
+            .collection(FirestoreUtils.kBookingsRef)
+            .doc(booking.id)
+            .set(booking.toJson(), SetOptions(merge: true));
+      }
+    });
+  }
+
 }

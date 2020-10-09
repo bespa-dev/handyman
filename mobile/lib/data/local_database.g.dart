@@ -1811,6 +1811,7 @@ class Booking extends DataClass implements Insertable<Booking> {
   final String customerId;
   final String providerId;
   final String category;
+  final String imageUrl;
   final String description;
   final String reason;
   final double locationLat;
@@ -1824,6 +1825,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       @required this.customerId,
       @required this.providerId,
       @required this.category,
+      this.imageUrl,
       this.description,
       @required this.reason,
       this.locationLat,
@@ -1846,6 +1848,8 @@ class Booking extends DataClass implements Insertable<Booking> {
           .mapFromDatabaseResponse(data['${effectivePrefix}provider_id']),
       category: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}category']),
+      imageUrl: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}image_url']),
       description: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}description']),
       reason:
@@ -1878,6 +1882,9 @@ class Booking extends DataClass implements Insertable<Booking> {
     }
     if (!nullToAbsent || category != null) {
       map['category'] = Variable<String>(category);
+    }
+    if (!nullToAbsent || imageUrl != null) {
+      map['image_url'] = Variable<String>(imageUrl);
     }
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
@@ -1918,6 +1925,9 @@ class Booking extends DataClass implements Insertable<Booking> {
       category: category == null && nullToAbsent
           ? const Value.absent()
           : Value(category),
+      imageUrl: imageUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(imageUrl),
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
@@ -1951,6 +1961,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       customerId: serializer.fromJson<String>(json['customer_id']),
       providerId: serializer.fromJson<String>(json['provider_id']),
       category: serializer.fromJson<String>(json['category']),
+      imageUrl: serializer.fromJson<String>(json['image_url']),
       description: serializer.fromJson<String>(json['description']),
       reason: serializer.fromJson<String>(json['reason']),
       locationLat: serializer.fromJson<double>(json['lat']),
@@ -1969,6 +1980,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       'customer_id': serializer.toJson<String>(customerId),
       'provider_id': serializer.toJson<String>(providerId),
       'category': serializer.toJson<String>(category),
+      'image_url': serializer.toJson<String>(imageUrl),
       'description': serializer.toJson<String>(description),
       'reason': serializer.toJson<String>(reason),
       'lat': serializer.toJson<double>(locationLat),
@@ -1985,6 +1997,7 @@ class Booking extends DataClass implements Insertable<Booking> {
           String customerId,
           String providerId,
           String category,
+          String imageUrl,
           String description,
           String reason,
           double locationLat,
@@ -1998,6 +2011,7 @@ class Booking extends DataClass implements Insertable<Booking> {
         customerId: customerId ?? this.customerId,
         providerId: providerId ?? this.providerId,
         category: category ?? this.category,
+        imageUrl: imageUrl ?? this.imageUrl,
         description: description ?? this.description,
         reason: reason ?? this.reason,
         locationLat: locationLat ?? this.locationLat,
@@ -2014,6 +2028,7 @@ class Booking extends DataClass implements Insertable<Booking> {
           ..write('customerId: $customerId, ')
           ..write('providerId: $providerId, ')
           ..write('category: $category, ')
+          ..write('imageUrl: $imageUrl, ')
           ..write('description: $description, ')
           ..write('reason: $reason, ')
           ..write('locationLat: $locationLat, ')
@@ -2036,19 +2051,21 @@ class Booking extends DataClass implements Insertable<Booking> {
               $mrjc(
                   category.hashCode,
                   $mrjc(
-                      description.hashCode,
+                      imageUrl.hashCode,
                       $mrjc(
-                          reason.hashCode,
+                          description.hashCode,
                           $mrjc(
-                              locationLat.hashCode,
+                              reason.hashCode,
                               $mrjc(
-                                  locationLng.hashCode,
+                                  locationLat.hashCode,
                                   $mrjc(
-                                      value.hashCode,
+                                      locationLng.hashCode,
                                       $mrjc(
-                                          progress.hashCode,
-                                          $mrjc(createdAt.hashCode,
-                                              dueDate.hashCode))))))))))));
+                                          value.hashCode,
+                                          $mrjc(
+                                              progress.hashCode,
+                                              $mrjc(createdAt.hashCode,
+                                                  dueDate.hashCode)))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -2057,6 +2074,7 @@ class Booking extends DataClass implements Insertable<Booking> {
           other.customerId == this.customerId &&
           other.providerId == this.providerId &&
           other.category == this.category &&
+          other.imageUrl == this.imageUrl &&
           other.description == this.description &&
           other.reason == this.reason &&
           other.locationLat == this.locationLat &&
@@ -2072,6 +2090,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
   final Value<String> customerId;
   final Value<String> providerId;
   final Value<String> category;
+  final Value<String> imageUrl;
   final Value<String> description;
   final Value<String> reason;
   final Value<double> locationLat;
@@ -2085,6 +2104,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     this.customerId = const Value.absent(),
     this.providerId = const Value.absent(),
     this.category = const Value.absent(),
+    this.imageUrl = const Value.absent(),
     this.description = const Value.absent(),
     this.reason = const Value.absent(),
     this.locationLat = const Value.absent(),
@@ -2099,6 +2119,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     @required String customerId,
     @required String providerId,
     @required String category,
+    this.imageUrl = const Value.absent(),
     this.description = const Value.absent(),
     @required String reason,
     this.locationLat = const Value.absent(),
@@ -2117,6 +2138,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     Expression<String> customerId,
     Expression<String> providerId,
     Expression<String> category,
+    Expression<String> imageUrl,
     Expression<String> description,
     Expression<String> reason,
     Expression<double> locationLat,
@@ -2131,6 +2153,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
       if (customerId != null) 'customer_id': customerId,
       if (providerId != null) 'provider_id': providerId,
       if (category != null) 'category': category,
+      if (imageUrl != null) 'image_url': imageUrl,
       if (description != null) 'description': description,
       if (reason != null) 'reason': reason,
       if (locationLat != null) 'lat': locationLat,
@@ -2147,6 +2170,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
       Value<String> customerId,
       Value<String> providerId,
       Value<String> category,
+      Value<String> imageUrl,
       Value<String> description,
       Value<String> reason,
       Value<double> locationLat,
@@ -2160,6 +2184,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
       customerId: customerId ?? this.customerId,
       providerId: providerId ?? this.providerId,
       category: category ?? this.category,
+      imageUrl: imageUrl ?? this.imageUrl,
       description: description ?? this.description,
       reason: reason ?? this.reason,
       locationLat: locationLat ?? this.locationLat,
@@ -2185,6 +2210,9 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     }
     if (category.present) {
       map['category'] = Variable<String>(category.value);
+    }
+    if (imageUrl.present) {
+      map['image_url'] = Variable<String>(imageUrl.value);
     }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
@@ -2220,6 +2248,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
           ..write('customerId: $customerId, ')
           ..write('providerId: $providerId, ')
           ..write('category: $category, ')
+          ..write('imageUrl: $imageUrl, ')
           ..write('description: $description, ')
           ..write('reason: $reason, ')
           ..write('locationLat: $locationLat, ')
@@ -2282,6 +2311,18 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
       'category',
       $tableName,
       false,
+    );
+  }
+
+  final VerificationMeta _imageUrlMeta = const VerificationMeta('imageUrl');
+  GeneratedTextColumn _imageUrl;
+  @override
+  GeneratedTextColumn get imageUrl => _imageUrl ??= _constructImageUrl();
+  GeneratedTextColumn _constructImageUrl() {
+    return GeneratedTextColumn(
+      'image_url',
+      $tableName,
+      true,
     );
   }
 
@@ -2375,6 +2416,7 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
         customerId,
         providerId,
         category,
+        imageUrl,
         description,
         reason,
         locationLat,
@@ -2421,6 +2463,10 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
           category.isAcceptableOrUnknown(data['category'], _categoryMeta));
     } else if (isInserting) {
       context.missing(_categoryMeta);
+    }
+    if (data.containsKey('image_url')) {
+      context.handle(_imageUrlMeta,
+          imageUrl.isAcceptableOrUnknown(data['image_url'], _imageUrlMeta));
     }
     if (data.containsKey('description')) {
       context.handle(

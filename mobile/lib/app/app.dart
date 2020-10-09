@@ -25,8 +25,12 @@ class _HandyManAppState extends State<HandyManApp> {
   final _analytics = FirebaseAnalytics();
 
   Future<void> setupRemoteConfig() async {
+    // Initialize Firebase
     await Firebase.initializeApp();
+
+    // RemoteConfig
     final RemoteConfig remoteConfig = await RemoteConfig.instance;
+
     // Enable developer mode to relax fetch throttling
     remoteConfig.setConfigSettings(RemoteConfigSettings(debugMode: true));
     remoteConfig.setDefaults(<String, dynamic>{
