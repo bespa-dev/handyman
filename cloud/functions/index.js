@@ -37,11 +37,17 @@ admin.initializeApp();
 exports.onArtisanCreateOrEdit = functions.firestore
   .document("artisans/{id}")
   .onWrite(async (change, context) => {
+    let clientIndex = client.initIndex("artisans");
     if (change.after.data()) {
       let data = change.after.data();
       data.objectID = change.after.id;
-      client.initIndex("artisans").saveObject(data);
+      await clientIndex.saveObject(data);
       console.log("artisan updated");
+    } else if (!change.after.exists) {
+      let data = change.before.data();
+      data.objectID = change.before.id;
+      await clientIndex.deleteObject(data.objectID);
+      console.log("artisan deleted");
     }
     
     return Promise.resolve();

@@ -25,7 +25,7 @@ class ArtisanProfileInfo extends StatelessWidget {
 
     return Consumer<PrefsProvider>(
       builder: (_, prefs, __) => StreamBuilder<BaseUser>(
-          stream: apiService.getArtisanById(id: artisan.id),
+          stream: apiService.getArtisanById(id: artisan?.id),
           builder: (context, snapshot) {
             return Material(
               type: MaterialType.card,
@@ -51,7 +51,7 @@ class ArtisanProfileInfo extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  artisan.name,
+                                  artisan?.name ?? "",
                                   style: _themeData.textTheme.headline4,
                                 ),
                                 SizedBox(
@@ -59,7 +59,7 @@ class ArtisanProfileInfo extends StatelessWidget {
                                       getProportionateScreenHeight(kSpacingX4),
                                 ),
                                 Text(
-                                  artisan.business,
+                                  artisan?.business ?? "",
                                   style: _themeData.textTheme.bodyText2,
                                 ),
                                 SizedBox(
@@ -79,13 +79,13 @@ class ArtisanProfileInfo extends StatelessWidget {
                                       ),
                                       TextSpan(
                                         text:
-                                            "${DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(artisan.startWorkingHours))} - ",
+                                            "${DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(artisan?.startWorkingHours ?? 0))} - ",
                                         style: _themeData.textTheme.bodyText2,
                                       ),
                                       TextSpan(
                                         text: DateFormat.jm().format(
                                             DateTime.fromMillisecondsSinceEpoch(
-                                                artisan.endWorkingHours)),
+                                                artisan?.endWorkingHours ?? 0)),
                                         style: _themeData.textTheme.bodyText2,
                                       ),
                                     ],
@@ -104,7 +104,7 @@ class ArtisanProfileInfo extends StatelessWidget {
                                         BorderRadius.circular(kSpacingX8),
                                   ),
                                   child: Text(
-                                    artisan.rating.toString(),
+                                    artisan?.rating?.toString() ?? "",
                                     style:
                                         _themeData.textTheme.bodyText1.copyWith(
                                       color: _themeData.colorScheme.onPrimary,
@@ -116,7 +116,7 @@ class ArtisanProfileInfo extends StatelessWidget {
                                       getProportionateScreenHeight(kSpacingX4),
                                 ),
                                 RatingBarIndicator(
-                                  rating: artisan.rating,
+                                  rating: artisan?.rating ?? 0,
                                   itemBuilder: (_, index) => Icon(
                                     kRatingStar,
                                     color: kAmberColor,
@@ -143,7 +143,7 @@ class ArtisanProfileInfo extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  artisan.completedBookingsCount.toString(),
+                                  artisan?.completedBookingsCount?.toString() ?? "",
                                   style:
                                       _themeData.textTheme.headline5.copyWith(
                                     color: _themeData.primaryColor,
@@ -171,7 +171,7 @@ class ArtisanProfileInfo extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  artisan.ongoingBookingsCount.toString(),
+                                  artisan?.ongoingBookingsCount?.toString() ?? "",
                                   style: _themeData.textTheme.headline5
                                       .copyWith(color: kGreenColor),
                                 ),
@@ -197,7 +197,7 @@ class ArtisanProfileInfo extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  artisan.cancelledBookingsCount.toString(),
+                                  artisan?.cancelledBookingsCount?.toString() ?? "",
                                   style:
                                       _themeData.textTheme.headline5.copyWith(
                                     color: _themeData.errorColor
@@ -219,7 +219,7 @@ class ArtisanProfileInfo extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Container(
+                  artisan?.aboutMe?.isNotEmpty ?? false ? Container(
                     padding: EdgeInsets.symmetric(
                       vertical: getProportionateScreenHeight(kSpacingX16),
                       horizontal: getProportionateScreenWidth(kSpacingX24),
@@ -244,7 +244,7 @@ class ArtisanProfileInfo extends StatelessWidget {
                         ),
                         Expanded(
                           child: Text(
-                            artisan.aboutMe ?? kLoremText,
+                            artisan?.aboutMe ?? "",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: _themeData.colorScheme.onPrimary,
@@ -261,7 +261,7 @@ class ArtisanProfileInfo extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ),
+                  ) : SizedBox.shrink(),
                 ],
               ),
             );

@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/utils.dart';
 import 'package:handyman/data/entities/artisan_model.dart';
@@ -362,8 +363,8 @@ class DataServiceImpl implements DataService {
   /// Performs a search for [Artisan]s in [Algolia]
   @override
   Future<List<BaseUser>> searchFor(
-      {@required String value, String categoryId = ""}) async {
-    /*try {
+      {@required String value, String categoryId = kGeneralCategory}) async {
+    try {
       // Perform search with index
       var query =
           algolia.instance.index(AlgoliaUtils.kArtisanIndex).search(value);
@@ -384,8 +385,8 @@ class DataServiceImpl implements DataService {
               .toList();
     } on Exception {
       return Future.value(<BaseUser>[]);
-    }*/
-    // Sample data
+    }
+    /*// Sample data
     final data = await rootBundle.loadString("assets/sample_artisan.json");
     var decodedData = json.decode(data);
 
@@ -394,7 +395,7 @@ class DataServiceImpl implements DataService {
     List<BaseUser> models = artisans
         .map((e) => ArtisanModel(artisan: Artisan.fromJson(e)))
         .toList();
-    return models;
+    return models;*/
   }
 
   @override

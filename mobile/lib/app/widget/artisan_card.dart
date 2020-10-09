@@ -44,9 +44,9 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
           child: Stack(
             children: [
               Hero(
-                tag: widget.artisan?.user?.avatar,
+                tag: widget.artisan?.user?.id,
                 child: CachedNetworkImage(
-                    imageUrl: widget.artisan?.user?.avatar,
+                    imageUrl: widget.artisan?.user?.avatar ?? "",
                     height: getProportionateScreenHeight(kSpacingX300),
                     width: double.infinity,
                     progressIndicatorBuilder:
@@ -103,7 +103,7 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        widget.artisan?.user?.name,
+                        widget.artisan?.user?.name ?? "",
                         style: themeData.textTheme.headline6,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
@@ -112,7 +112,7 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                       SizedBox(
                           height: getProportionateScreenHeight(kSpacingX4)),
                       Text(
-                        widget.artisan?.user?.business,
+                        widget.artisan?.user?.business ?? "",
                         style: themeData.textTheme.caption,
                         overflow: TextOverflow.fade,
                         maxLines: 2,

@@ -22,8 +22,8 @@ class _SearchPageState extends State<SearchPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   double _kWidth, _kHeight;
   ThemeData _themeData;
-  bool _isEditing = true;
-  List<dynamic> _searchResults = <dynamic>[];
+  bool _isSearching = false;
+  List<dynamic> _searchResults = [];
   TextEditingController _searchController = TextEditingController();
 
   @override
@@ -59,14 +59,14 @@ class _SearchPageState extends State<SearchPage> {
               Positioned.fill(
                   top: getProportionateScreenHeight(
                       provider.userType == kCustomerString
-                          ? _kHeight * 0.25
-                          : kSpacingX200),
+                          ? _kHeight * 0.22
+                          : kSpacingX160),
                   left: kSpacingNone,
                   right: kSpacingNone,
                   bottom: kSpacingNone,
                   child: _buildSearchContent(provider)),
               Positioned(
-                  top: getProportionateScreenHeight(kSpacingX96),
+                  top: getProportionateScreenHeight(kSpacingX64),
                   width: _kWidth,
                   child: _buildSearchBar()),
               Positioned(
@@ -147,18 +147,10 @@ class _SearchPageState extends State<SearchPage> {
                                     .withOpacity(kEmphasisHigh),
                               ),
                             ),
-                            onFieldSubmitted:
-                                provider.userType == kCustomerString
-                                    ? _performArtisanSearch
-                                    : (_) => _performSearch(_, provider.userId),
+                            onFieldSubmitted: (_) =>
+                                setState(() => _isSearching = true),
                             textAlign: TextAlign.start,
                             autocorrect: true,
-                            onChanged: (_) {
-                              // setState(() {
-                              //   _isEditing = _.isNotEmpty;
-                              //   if (_.isEmpty) _searchResults = [];
-                              // });
-                            },
                           ),
                         ),
                         Row(
@@ -169,7 +161,8 @@ class _SearchPageState extends State<SearchPage> {
                             GestureDetector(
                               onTap: () {
                                 _searchController.clear();
-                                _searchResults = [];
+                                _searchResults.clear();
+                                _isSearching = false;
                                 setState(() {});
                               },
                               child: Icon(
@@ -204,18 +197,8 @@ class _SearchPageState extends State<SearchPage> {
                                         final category = snapshot.data[index];
                                         return InkWell(
                                           onTap: () async {
-                                            _searchController.text =
-                                                category.name;
-                                            var results =
-                                                await _dataService.searchFor(
-                                                    value: "",
-                                                    categoryId: category.id);
-                                            _searchResults = results
-                                                .where((element) =>
-                                                    element.user.category ==
-                                                    category.id)
-                                                .toList();
-                                            _isEditing = false;
+                                            _isSearching = true;
+                                            _searchController.text = category.name;
                                             setState(() {});
                                           },
                                           child: Chip(
@@ -242,7 +225,7 @@ class _SearchPageState extends State<SearchPage> {
                 ],
               ),
             ),
-            _searchResults.isEmpty
+            _isSearching
                 ? SizedBox.shrink()
                 : Padding(
                     padding: EdgeInsets.symmetric(
@@ -261,111 +244,115 @@ class _SearchPageState extends State<SearchPage> {
         ),
       );
 
-  void _performSearch(String value, String userId) async {
-    _dataService.getBookingsForProvider(userId).listen((results) {
-      _searchResults = results
-          .where((element) =>
-              element.reason.toLowerCase().contains(value.toLowerCase().trim()))
-          .toList();
-      setState(() {});
-    });
-  }
-
-  void _performArtisanSearch(String value) async {
-    _searchResults =
-        await _dataService.searchFor(value: value.toLowerCase().trim());
-    setState(() {});
-  }
-
-  Widget _buildSearchContent(PrefsProvider provider) => _isEditing
-      ? SizedBox.shrink()
-      : _searchResults.isEmpty
-          ? Container(
-              height: getProportionateScreenHeight(kSpacingX320),
-              width: _kWidth,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    Entypo.bucket,
-                    size: getProportionateScreenHeight(kSpacingX96),
-                    color: _themeData.colorScheme.onBackground,
-                  ),
-                  SizedBox(
-                    height: getProportionateScreenHeight(kSpacingX16),
-                  ),
-                  Text(
-                    "No results found for\n\`${_searchController.text?.trim()}\`",
-                    style: _themeData.textTheme.bodyText2.copyWith(
-                      color: _themeData.colorScheme.onBackground,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            )
-          : Container(
-              height: _kHeight,
-              width: _kWidth,
-              margin: EdgeInsets.symmetric(
-                horizontal: getProportionateScreenWidth(kSpacingX24),
-              ),
-              decoration: BoxDecoration(),
-              child: AnimationLimiter(
-                child: provider.userType == kCustomerString
-                    ? GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing:
-                              getProportionateScreenWidth(kSpacingX8),
-                          mainAxisSpacing:
-                              getProportionateScreenHeight(kSpacingX4),
+  Widget _buildSearchContent(PrefsProvider provider) => _isSearching
+      ? FutureBuilder<List<dynamic>>(
+          initialData: [],
+          future: provider.userType == kCustomerString
+              ? _dataService.searchFor(
+                  value: _searchController.text.toLowerCase().trim())
+              : _dataService.getBookingsForProvider(provider.userId).single,
+          builder: (ctx, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              _isSearching = false;
+              if (snapshot.hasError || snapshot.data.isEmpty) {
+                return Container(
+                  height: getProportionateScreenHeight(kSpacingX320),
+                  width: _kWidth,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Entypo.bucket,
+                        size: getProportionateScreenHeight(kSpacingX96),
+                        color: _themeData.colorScheme.onBackground,
+                      ),
+                      SizedBox(
+                        height: getProportionateScreenHeight(kSpacingX16),
+                      ),
+                      Text(
+                        "No results found for\n\`${_searchController.text?.trim()}\`",
+                        style: _themeData.textTheme.bodyText2.copyWith(
+                          color: _themeData.colorScheme.onBackground,
                         ),
-                        physics: kScrollPhysics,
-                        itemBuilder: (_, index) {
-                          final item = _searchResults[index];
-                          return AnimationConfiguration.staggeredList(
-                            position: index,
-                            duration: kScaleDuration,
-                            child: ScaleAnimation(
-                              duration: kScaleDuration,
-                              child: FadeInAnimation(
-                                child: GridArtisanCardItem(artisan: item),
-                              ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                _searchResults = snapshot.data;
+                return Container(
+                  height: _kHeight,
+                  width: _kWidth,
+                  margin: EdgeInsets.symmetric(
+                    horizontal: getProportionateScreenWidth(kSpacingX24),
+                  ),
+                  decoration: BoxDecoration(),
+                  child: AnimationLimiter(
+                    child: provider.userType == kCustomerString
+                        ? GridView.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing:
+                                  getProportionateScreenWidth(kSpacingX8),
+                              mainAxisSpacing:
+                                  getProportionateScreenHeight(kSpacingX4),
                             ),
-                          );
-                        },
-                        itemCount: _searchResults.length,
-                      )
-                    : ListView.separated(
-                        physics: kScrollPhysics,
-                        itemBuilder: (_, index) {
-                          final item = _searchResults[index];
-                          return AnimationConfiguration.staggeredList(
-                            position: index,
-                            duration: kScaleDuration,
-                            child: ScaleAnimation(
-                              duration: kScaleDuration,
-                              child: FadeInAnimation(
-                                child: BookingCardItem(
-                                  booking: item,
-                                  onTap: () => context.navigator.push(
-                                    Routes.bookingsDetailsPage,
-                                    arguments: BookingsDetailsPageArguments(
+                            physics: kScrollPhysics,
+                            itemBuilder: (_, index) {
+                              final item = snapshot.data[index];
+                              return AnimationConfiguration.staggeredList(
+                                position: index,
+                                duration: kScaleDuration,
+                                child: ScaleAnimation(
+                                  duration: kScaleDuration,
+                                  child: FadeInAnimation(
+                                    child: GridArtisanCardItem(artisan: item),
+                                  ),
+                                ),
+                              );
+                            },
+                            itemCount: snapshot.data.length,
+                          )
+                        : ListView.separated(
+                            physics: kScrollPhysics,
+                            itemBuilder: (_, index) {
+                              final item = snapshot.data[index];
+                              return AnimationConfiguration.staggeredList(
+                                position: index,
+                                duration: kScaleDuration,
+                                child: ScaleAnimation(
+                                  duration: kScaleDuration,
+                                  child: FadeInAnimation(
+                                    child: BookingCardItem(
                                       booking: item,
+                                      onTap: () => context.navigator.push(
+                                        Routes.bookingsDetailsPage,
+                                        arguments: BookingsDetailsPageArguments(
+                                          booking: item,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
+                              );
+                            },
+                            separatorBuilder: (_, __) => SizedBox(
+                              height: getProportionateScreenHeight(kSpacingX8),
                             ),
-                          );
-                        },
-                        separatorBuilder: (_, __) => SizedBox(
-                          height: getProportionateScreenHeight(kSpacingX8),
-                        ),
-                        itemCount: _searchResults.length,
-                      ),
-              ),
-            );
+                            itemCount: snapshot.data.length,
+                          ),
+                  ),
+                );
+              }
+            }
+          },
+        )
+      : SizedBox.shrink();
 }
