@@ -10,6 +10,8 @@ class User extends Table {
 
   TextColumn get avatar => text().nullable()();
 
+  TextColumn get phone => text().nullable()();
+
   TextColumn get token => text().nullable()();
 
   @JsonKey("created_at")

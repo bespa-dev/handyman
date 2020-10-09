@@ -1103,6 +1103,7 @@ class Customer extends DataClass implements Insertable<Customer> {
   final String name;
   final String email;
   final String avatar;
+  final String phone;
   final String token;
   final int createdAt;
   Customer(
@@ -1110,6 +1111,7 @@ class Customer extends DataClass implements Insertable<Customer> {
       @required this.name,
       @required this.email,
       this.avatar,
+      this.phone,
       this.token,
       this.createdAt});
   factory Customer.fromData(Map<String, dynamic> data, GeneratedDatabase db,
@@ -1124,6 +1126,8 @@ class Customer extends DataClass implements Insertable<Customer> {
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}email']),
       avatar:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}avatar']),
+      phone:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}phone']),
       token:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}token']),
       createdAt:
@@ -1145,6 +1149,9 @@ class Customer extends DataClass implements Insertable<Customer> {
     if (!nullToAbsent || avatar != null) {
       map['avatar'] = Variable<String>(avatar);
     }
+    if (!nullToAbsent || phone != null) {
+      map['phone'] = Variable<String>(phone);
+    }
     if (!nullToAbsent || token != null) {
       map['token'] = Variable<String>(token);
     }
@@ -1162,6 +1169,8 @@ class Customer extends DataClass implements Insertable<Customer> {
           email == null && nullToAbsent ? const Value.absent() : Value(email),
       avatar:
           avatar == null && nullToAbsent ? const Value.absent() : Value(avatar),
+      phone:
+          phone == null && nullToAbsent ? const Value.absent() : Value(phone),
       token:
           token == null && nullToAbsent ? const Value.absent() : Value(token),
       createdAt: createdAt == null && nullToAbsent
@@ -1178,6 +1187,7 @@ class Customer extends DataClass implements Insertable<Customer> {
       name: serializer.fromJson<String>(json['name']),
       email: serializer.fromJson<String>(json['email']),
       avatar: serializer.fromJson<String>(json['avatar']),
+      phone: serializer.fromJson<String>(json['phone']),
       token: serializer.fromJson<String>(json['token']),
       createdAt: serializer.fromJson<int>(json['created_at']),
     );
@@ -1190,6 +1200,7 @@ class Customer extends DataClass implements Insertable<Customer> {
       'name': serializer.toJson<String>(name),
       'email': serializer.toJson<String>(email),
       'avatar': serializer.toJson<String>(avatar),
+      'phone': serializer.toJson<String>(phone),
       'token': serializer.toJson<String>(token),
       'created_at': serializer.toJson<int>(createdAt),
     };
@@ -1200,6 +1211,7 @@ class Customer extends DataClass implements Insertable<Customer> {
           String name,
           String email,
           String avatar,
+          String phone,
           String token,
           int createdAt}) =>
       Customer(
@@ -1207,6 +1219,7 @@ class Customer extends DataClass implements Insertable<Customer> {
         name: name ?? this.name,
         email: email ?? this.email,
         avatar: avatar ?? this.avatar,
+        phone: phone ?? this.phone,
         token: token ?? this.token,
         createdAt: createdAt ?? this.createdAt,
       );
@@ -1217,6 +1230,7 @@ class Customer extends DataClass implements Insertable<Customer> {
           ..write('name: $name, ')
           ..write('email: $email, ')
           ..write('avatar: $avatar, ')
+          ..write('phone: $phone, ')
           ..write('token: $token, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -1230,8 +1244,10 @@ class Customer extends DataClass implements Insertable<Customer> {
           name.hashCode,
           $mrjc(
               email.hashCode,
-              $mrjc(avatar.hashCode,
-                  $mrjc(token.hashCode, createdAt.hashCode))))));
+              $mrjc(
+                  avatar.hashCode,
+                  $mrjc(phone.hashCode,
+                      $mrjc(token.hashCode, createdAt.hashCode)))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -1240,6 +1256,7 @@ class Customer extends DataClass implements Insertable<Customer> {
           other.name == this.name &&
           other.email == this.email &&
           other.avatar == this.avatar &&
+          other.phone == this.phone &&
           other.token == this.token &&
           other.createdAt == this.createdAt);
 }
@@ -1249,6 +1266,7 @@ class UserCompanion extends UpdateCompanion<Customer> {
   final Value<String> name;
   final Value<String> email;
   final Value<String> avatar;
+  final Value<String> phone;
   final Value<String> token;
   final Value<int> createdAt;
   const UserCompanion({
@@ -1256,6 +1274,7 @@ class UserCompanion extends UpdateCompanion<Customer> {
     this.name = const Value.absent(),
     this.email = const Value.absent(),
     this.avatar = const Value.absent(),
+    this.phone = const Value.absent(),
     this.token = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
@@ -1264,6 +1283,7 @@ class UserCompanion extends UpdateCompanion<Customer> {
     @required String name,
     @required String email,
     this.avatar = const Value.absent(),
+    this.phone = const Value.absent(),
     this.token = const Value.absent(),
     this.createdAt = const Value.absent(),
   })  : id = Value(id),
@@ -1274,6 +1294,7 @@ class UserCompanion extends UpdateCompanion<Customer> {
     Expression<String> name,
     Expression<String> email,
     Expression<String> avatar,
+    Expression<String> phone,
     Expression<String> token,
     Expression<int> createdAt,
   }) {
@@ -1282,6 +1303,7 @@ class UserCompanion extends UpdateCompanion<Customer> {
       if (name != null) 'name': name,
       if (email != null) 'email': email,
       if (avatar != null) 'avatar': avatar,
+      if (phone != null) 'phone': phone,
       if (token != null) 'token': token,
       if (createdAt != null) 'created_at': createdAt,
     });
@@ -1292,6 +1314,7 @@ class UserCompanion extends UpdateCompanion<Customer> {
       Value<String> name,
       Value<String> email,
       Value<String> avatar,
+      Value<String> phone,
       Value<String> token,
       Value<int> createdAt}) {
     return UserCompanion(
@@ -1299,6 +1322,7 @@ class UserCompanion extends UpdateCompanion<Customer> {
       name: name ?? this.name,
       email: email ?? this.email,
       avatar: avatar ?? this.avatar,
+      phone: phone ?? this.phone,
       token: token ?? this.token,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -1319,6 +1343,9 @@ class UserCompanion extends UpdateCompanion<Customer> {
     if (avatar.present) {
       map['avatar'] = Variable<String>(avatar.value);
     }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
     if (token.present) {
       map['token'] = Variable<String>(token.value);
     }
@@ -1335,6 +1362,7 @@ class UserCompanion extends UpdateCompanion<Customer> {
           ..write('name: $name, ')
           ..write('email: $email, ')
           ..write('avatar: $avatar, ')
+          ..write('phone: $phone, ')
           ..write('token: $token, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -1394,6 +1422,18 @@ class $UserTable extends User with TableInfo<$UserTable, Customer> {
     );
   }
 
+  final VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  GeneratedTextColumn _phone;
+  @override
+  GeneratedTextColumn get phone => _phone ??= _constructPhone();
+  GeneratedTextColumn _constructPhone() {
+    return GeneratedTextColumn(
+      'phone',
+      $tableName,
+      true,
+    );
+  }
+
   final VerificationMeta _tokenMeta = const VerificationMeta('token');
   GeneratedTextColumn _token;
   @override
@@ -1417,7 +1457,7 @@ class $UserTable extends User with TableInfo<$UserTable, Customer> {
 
   @override
   List<GeneratedColumn> get $columns =>
-      [id, name, email, avatar, token, createdAt];
+      [id, name, email, avatar, phone, token, createdAt];
   @override
   $UserTable get asDslTable => this;
   @override
@@ -1449,6 +1489,10 @@ class $UserTable extends User with TableInfo<$UserTable, Customer> {
     if (data.containsKey('avatar')) {
       context.handle(_avatarMeta,
           avatar.isAcceptableOrUnknown(data['avatar'], _avatarMeta));
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+          _phoneMeta, phone.isAcceptableOrUnknown(data['phone'], _phoneMeta));
     }
     if (data.containsKey('token')) {
       context.handle(
@@ -3729,6 +3773,7 @@ mixin _$UserDaoMixin on DatabaseAccessor<LocalDatabase> {
         name1: row.readString('name'),
         email1: row.readString('email'),
         avatar1: row.readString('avatar'),
+        phone1: row.readString('phone'),
         token1: row.readString('token'),
         createdAt1: row.readInt('created_at'),
       );
@@ -3762,6 +3807,7 @@ class SearchForResult {
   final String name1;
   final String email1;
   final String avatar1;
+  final String phone1;
   final String token1;
   final int createdAt1;
   SearchForResult({
@@ -3790,6 +3836,7 @@ class SearchForResult {
     this.name1,
     this.email1,
     this.avatar1,
+    this.phone1,
     this.token1,
     this.createdAt1,
   });
