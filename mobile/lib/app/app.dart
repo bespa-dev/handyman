@@ -50,7 +50,7 @@ class _HandyManAppState extends State<HandyManApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<PrefsProvider>(
-          create: (context) => PrefsProvider(),
+          create: (context) => PrefsProvider.create(),
         ),
         Provider<AuthService>.value(
           value: FirebaseAuthService.create(),
@@ -63,7 +63,7 @@ class _HandyManAppState extends State<HandyManApp> {
         ),
       ],
       child: Consumer<PrefsProvider>(
-        builder: (ctx, prefs, child) => MaterialApp(
+        builder: (_, prefs, __) => MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: themeData(context),
           darkTheme: darkThemeData(context),

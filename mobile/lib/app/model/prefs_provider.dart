@@ -26,9 +26,9 @@ class PrefsProvider extends ChangeNotifier {
   SharedPreferences _prefs;
 
   // Constructor
-  PrefsProvider() {
-    _init();
-  }
+  PrefsProvider._();
+
+  factory PrefsProvider.create() => PrefsProvider._().._init();
 
   void _init() async {
     _prefs = await sl.getAsync<SharedPreferences>();
@@ -37,6 +37,7 @@ class PrefsProvider extends ChangeNotifier {
     _userId = _prefs.getString(PrefsUtils.USER_ID) ?? null;
     _userType = _prefs.getString(PrefsUtils.USER_TYPE) ?? null;
     _isLoggedIn = _userId != null && _userId.isNotEmpty;
+    debugPrint("Light mode state -> $isLightTheme");
     toggleTheme(value: _isLightTheme);
   }
 
