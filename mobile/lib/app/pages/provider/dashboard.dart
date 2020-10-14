@@ -60,80 +60,87 @@ class _DashboardPageState extends State<DashboardPage> {
                 builder: (_, snapshot) {
                   final artisan = snapshot.data?.user;
 
-                  return Scaffold(
-                    key: _scaffoldKey,
-                    extendBody: true,
-                    body: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        provider.isLightTheme
-                            ? Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(kBackgroundAsset),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
-                            : SizedBox.shrink(),
-                        SafeArea(
-                          child: Container(
-                            height: _kHeight,
-                            width: _kWidth,
-                            child: ListView(
-                              physics: kScrollPhysics,
-                              children: [
-                                _buildAppBar(provider, artisan),
-                                SizedBox(
-                                  height:
-                                      getProportionateScreenHeight(kSpacingX16),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: getProportionateScreenWidth(
-                                          kSpacingX24)),
-                                  child: BadgeableTabBar(
-                                    tabs: <BadgeableTabBarItem>[
-                                      BadgeableTabBarItem(
-                                        title: "Ongoing Tasks",
-                                        badgeCount:
-                                            artisan?.ongoingBookingsCount ?? 0,
+                  return snapshot.data?.isCustomer ?? true
+                      ? Container()
+                      : Scaffold(
+                          key: _scaffoldKey,
+                          extendBody: true,
+                          body: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              provider.isLightTheme
+                                  ? Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: AssetImage(kBackgroundAsset),
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
-                                      BadgeableTabBarItem(
-                                        title: "New Requests",
-                                        badgeCount: artisan?.requestsCount ?? 0,
+                                    )
+                                  : SizedBox.shrink(),
+                              SafeArea(
+                                child: Container(
+                                  height: _kHeight,
+                                  width: _kWidth,
+                                  child: ListView(
+                                    physics: kScrollPhysics,
+                                    children: [
+                                      _buildAppBar(provider, artisan),
+                                      SizedBox(
+                                        height: getProportionateScreenHeight(
+                                            kSpacingX16),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal:
+                                                getProportionateScreenWidth(
+                                                    kSpacingX24)),
+                                        child: BadgeableTabBar(
+                                          tabs: <BadgeableTabBarItem>[
+                                            BadgeableTabBarItem(
+                                              title: "Ongoing Tasks",
+                                              badgeCount: artisan
+                                                      ?.ongoingBookingsCount ??
+                                                  0,
+                                            ),
+                                            BadgeableTabBarItem(
+                                              title: "New Requests",
+                                              badgeCount:
+                                                  artisan?.requestsCount ?? 0,
+                                            ),
+                                          ],
+                                          onTabSelected: (index) {
+                                            _currentTabIndex = index;
+                                            setState(() {});
+                                          },
+                                          color: _themeData.colorScheme.primary,
+                                          activeIndex: _currentTabIndex,
+                                        ),
+                                      ),
+                                      _buildSearchBar(margin: kSpacingX24),
+                                      StreamBuilder<List<Booking>>(
+                                        stream:
+                                            dataService.getBookingsForProvider(
+                                                artisan?.id),
+                                        initialData: [],
+                                        builder: (_, snapshot) {
+                                          if (snapshot.data.isEmpty)
+                                            return _buildEmptyListView();
+                                          return _currentTabIndex == 0
+                                              ? _buildOngoingTasksWidget(
+                                                  snapshot.data)
+                                              : _buildRequestsWidget(
+                                                  snapshot.data);
+                                        },
                                       ),
                                     ],
-                                    onTabSelected: (index) {
-                                      _currentTabIndex = index;
-                                      setState(() {});
-                                    },
-                                    color: _themeData.colorScheme.primary,
-                                    activeIndex: _currentTabIndex,
                                   ),
                                 ),
-                                _buildSearchBar(margin: kSpacingX24),
-                                StreamBuilder<List<Booking>>(
-                                  stream: dataService
-                                      .getBookingsForProvider(artisan?.id),
-                                  initialData: [],
-                                  builder: (_, snapshot) {
-                                    if (snapshot.data.isEmpty)
-                                      return _buildEmptyListView();
-                                    return _currentTabIndex == 0
-                                        ? _buildOngoingTasksWidget(
-                                            snapshot.data)
-                                        : _buildRequestsWidget(snapshot.data);
-                                  },
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                    endDrawer: _buildSideBar(artisan, authService),
-                  );
+                          endDrawer: _buildSideBar(artisan, authService),
+                        );
                 },
               ),
             );

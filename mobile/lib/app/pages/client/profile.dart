@@ -102,7 +102,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           )
                         : SizedBox.shrink(),
                     Positioned(
-                        top: getProportionateScreenHeight(_kHeight * 0.43),
+                        top: getProportionateScreenHeight(_kHeight * 0.5),
                         bottom: kSpacingNone,
                         width: _kWidth,
                         child: _buildProfileContent(provider)),
@@ -175,7 +175,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildProfileHeader(PrefsProvider provider) => SafeArea(
         child: Container(
-          height: getProportionateScreenHeight(_kHeight * 0.38),
+          height: getProportionateScreenHeight(_kHeight * 0.45),
           width: _kWidth,
           padding: EdgeInsets.only(
             top: getProportionateScreenHeight(kSpacingX16),
