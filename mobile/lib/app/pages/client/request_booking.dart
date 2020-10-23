@@ -82,7 +82,6 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                                     bottom: getProportionateScreenHeight(
                                         kSpacingX24),
                                   ),
-                                  physics: kScrollPhysics,
                                   children: [
                                     _buildArtisanInfoSection(),
                                     _buildRequestSection(snapshot.data?.user),
@@ -340,7 +339,7 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                           alignment: Alignment.center,
                           width: _kWidth * 0.45,
                           decoration: BoxDecoration(
-                            color: _themeData.colorScheme.primary.withOpacity(kEmphasisMedium),
+                            color: _themeData.scaffoldBackgroundColor.withOpacity(kEmphasisMedium),
                             borderRadius: BorderRadius.circular(kSpacingX8),
                           ),
                           padding: EdgeInsets.symmetric(
@@ -351,7 +350,7 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                           child: Text(
                             _category?.name ?? "",
                             style: _themeData.textTheme.button.copyWith(
-                              color: _themeData.colorScheme.onPrimary,
+                              color: _themeData.colorScheme.onBackground,
                             ),
                           ),
                         ),
