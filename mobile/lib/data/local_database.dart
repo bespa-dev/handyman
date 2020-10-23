@@ -20,16 +20,13 @@ import 'entities/user.dart';
 
 part 'local_database.g.dart';
 
-LazyDatabase _openConnection() {
-  // the LazyDatabase util lets us find the right location for the file async.
-  return LazyDatabase(() async {
-    // put the database file, called db.sqlite here, into the documents folder
-    // for your app.
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'db.sqlite'));
-    return VmDatabase(file);
-  });
-}
+LazyDatabase _openConnection() => LazyDatabase(() async {
+      // put the database file, called db.sqlite here, into the documents folder
+      // for your app.
+      final dbFolder = await getApplicationDocumentsDirectory();
+      final file = File(p.join(dbFolder.path, 'db.sqlite'));
+      return VmDatabase(file);
+    });
 
 @UseMoor(
   tables: [
@@ -129,10 +126,9 @@ class LocalDatabase extends _$LocalDatabase {
         onUpgrade: (m, from, to) async {
           if (from == 1) {
             await m.addColumn(photoGallery, photoGallery.createdAt);
-          } else if(from == 4)
+          } else if (from == 4)
             await m.addColumn(user, user.phone);
-           else if(from == 6)
-            await m.addColumn(bookings, bookings.imageUrl);
+          else if (from == 6) await m.addColumn(bookings, bookings.imageUrl);
 
           // switch (from) {}
         },

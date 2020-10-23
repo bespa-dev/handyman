@@ -38,6 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final _dataService = DataServiceImpl.create();
   final _storageService = StorageServiceImpl.create();
   bool _isSaving = false;
+  SheetController _sheetController = SheetController();
 
   File _avatar;
   String _userId;
@@ -512,132 +513,137 @@ class _ProfilePageState extends State<ProfilePage> {
       );
 
   Future<void> _editProfileInfo(Customer user) async =>
-      await showSlidingBottomSheet(context, builder: (context) {
-        return SlidingSheetDialog(
-          elevation: kSpacingX8,
-          dismissOnBackdropTap: false,
-          addTopViewPaddingOnFullscreen: true,
-          headerBuilder: (_, __) => Material(
-            type: MaterialType.card,
-            clipBehavior: Clip.hardEdge,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: getProportionateScreenWidth(kSpacingX16),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Update profile information",
-                    style: _themeData.textTheme.headline6,
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Feather.chevron_down,
+      await showSlidingBottomSheet(context,
+          builder: (context) => SlidingSheetDialog(
+                elevation: kSpacingX8,
+                controller: _sheetController,
+                dismissOnBackdropTap: false,
+                addTopViewPaddingOnFullscreen: true,
+                headerBuilder: (_, __) => Material(
+                  type: MaterialType.card,
+                  clipBehavior: Clip.hardEdge,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: getProportionateScreenWidth(kSpacingX16),
                     ),
-                    color: _themeData.colorScheme.onBackground,
-                    onPressed: () => context.navigator.pop(),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Update profile information",
+                          style: _themeData.textTheme.headline6,
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Feather.chevron_down,
+                          ),
+                          color: _themeData.colorScheme.onBackground,
+                          onPressed: () => context.navigator.pop(),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          footerBuilder: (ctx, __) => Material(
-            type: MaterialType.card,
-            clipBehavior: Clip.hardEdge,
-            child: InkWell(
-              onTap: () async {
-                if (_formKey.currentState.validate()) {
-                  setState(() {
-                    _isSaving = !_isSaving;
-                  });
-                  await _dataService.updateUser(
-                    CustomerModel(
-                      customer: user.copyWith(
-                        name: _nameController.text.trim(),
+                ),
+                footerBuilder: (ctx, __) => Material(
+                  type: MaterialType.card,
+                  clipBehavior: Clip.hardEdge,
+                  child: InkWell(
+                    onTap: () async {
+                      if (_formKey.currentState.validate()) {
+                        /// Fix for setState in a non-stateful widget child
+                        /// https://stackoverflow.com/questions/52414629/how-to-update-state-of-a-modalbottomsheet-in-flutter
+                        _sheetController.rebuild();
+                        setState(() {
+                          _isSaving = true;
+                        });
+                        await _dataService.updateUser(
+                          CustomerModel(
+                            customer: user.copyWith(
+                              name: _nameController.text.trim(),
+                            ),
+                          ),
+                        );
+                        setState(() {
+                          _isSaving = false;
+                        });
+                        ctx.navigator.pop();
+                      }
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: getProportionateScreenHeight(kToolbarHeight),
+                      width: _kWidth,
+                      decoration: BoxDecoration(
+                        color: _themeData.colorScheme.secondary,
+                      ),
+                      child: _isSaving
+                          ? CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation(
+                                  _themeData.colorScheme.onSecondary),
+                            )
+                          : Text(
+                              "Save & continue".toUpperCase(),
+                              style: _themeData.textTheme.button.copyWith(
+                                color: _themeData.colorScheme.onSecondary,
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+                color:
+                    _themeData.scaffoldBackgroundColor.withOpacity(kOpacityX50),
+                duration: kScaleDuration,
+                cornerRadius: kSpacingX16,
+                snapSpec: const SnapSpec(
+                  snap: true,
+                  snappings: [0.4, 0.75, 1.0],
+                  positioning: SnapPositioning.relativeToAvailableSpace,
+                ),
+                padding: EdgeInsets.symmetric(
+                  vertical: getProportionateScreenHeight(kSpacingX8),
+                ),
+                builder: (context, state) {
+                  return Material(
+                    type: MaterialType.card,
+                    clipBehavior: Clip.hardEdge,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: getProportionateScreenWidth(kSpacingX24),
+                        vertical: getProportionateScreenHeight(kSpacingX36),
+                      ),
+                      decoration: BoxDecoration(),
+                      child: Column(
+                        children: [
+                          Form(
+                            key: _formKey,
+                            child: TextFormInput(
+                              labelText: "Full Name",
+                              controller: _nameController,
+                              onFieldSubmitted: (username) async {
+                                setState(() {
+                                  _isSaving = !_isSaving;
+                                });
+                                await _dataService.updateUser(
+                                  CustomerModel(
+                                    customer: user.copyWith(name: username),
+                                  ),
+                                );
+                                setState(() {
+                                  _isSaving = !_isSaving;
+                                });
+                                context.navigator.pop();
+                              },
+                              validator: (input) => input.isNotEmpty
+                                  ? null
+                                  : "Enter your full name",
+                              color: _themeData.colorScheme.onBackground,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );
-                  setState(() {
-                    _isSaving = !_isSaving;
-                  });
-                  ctx.navigator.pop();
-                }
-              },
-              child: Container(
-                alignment: Alignment.center,
-                height: getProportionateScreenHeight(kToolbarHeight),
-                width: _kWidth,
-                decoration: BoxDecoration(
-                  color: _themeData.colorScheme.secondary,
-                ),
-                child: _isSaving
-                    ? CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(
-                            _themeData.colorScheme.onSecondary),
-                      )
-                    : Text(
-                        "Save & continue".toUpperCase(),
-                        style: _themeData.textTheme.button.copyWith(
-                          color: _themeData.colorScheme.onSecondary,
-                        ),
-                      ),
-              ),
-            ),
-          ),
-          color: _themeData.scaffoldBackgroundColor.withOpacity(kOpacityX50),
-          duration: kScaleDuration,
-          cornerRadius: kSpacingX16,
-          snapSpec: const SnapSpec(
-            snap: true,
-            snappings: [0.4, 0.75, 1.0],
-            positioning: SnapPositioning.relativeToAvailableSpace,
-          ),
-          padding: EdgeInsets.symmetric(
-            vertical: getProportionateScreenHeight(kSpacingX8),
-          ),
-          builder: (context, state) {
-            return Material(
-              type: MaterialType.card,
-              clipBehavior: Clip.hardEdge,
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: getProportionateScreenWidth(kSpacingX24),
-                  vertical: getProportionateScreenHeight(kSpacingX36),
-                ),
-                decoration: BoxDecoration(),
-                child: Column(
-                  children: [
-                    Form(
-                      key: _formKey,
-                      child: TextFormInput(
-                        labelText: "Full Name",
-                        controller: _nameController,
-                        onFieldSubmitted: (username) async {
-                          setState(() {
-                            _isSaving = !_isSaving;
-                          });
-                          await _dataService.updateUser(
-                            CustomerModel(
-                              customer: user.copyWith(name: username),
-                            ),
-                          );
-                          setState(() {
-                            _isSaving = !_isSaving;
-                          });
-                          context.navigator.pop();
-                        },
-                        validator: (input) =>
-                            input.isNotEmpty ? null : "Enter your full name",
-                        color: _themeData.colorScheme.onBackground,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      });
+                },
+              ));
 }
