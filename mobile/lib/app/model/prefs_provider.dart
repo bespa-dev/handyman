@@ -38,7 +38,7 @@ class PrefsProvider extends ChangeNotifier {
     _userType = _prefs.getString(PrefsUtils.USER_TYPE) ?? null;
     _isLoggedIn = _userId != null && _userId.isNotEmpty;
     debugPrint("Light mode state -> $isLightTheme");
-    toggleTheme(value: _isLightTheme);
+    toggleTheme(_isLightTheme);
   }
 
   void saveUserId(String value) async {
@@ -54,10 +54,10 @@ class PrefsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleTheme({bool value}) async {
-    await _prefs.setBool(PrefsUtils.THEME_MODE, value);
-    _isLightTheme = value ?? !_isLightTheme;
-    _themeController.sink.add(value);
+  void toggleTheme([bool isLightMode]) async {
+    _isLightTheme = isLightMode ??= !_isLightTheme;
+    await _prefs.setBool(PrefsUtils.THEME_MODE, _isLightTheme);
+    _themeController.sink.add(_isLightTheme);
     notifyListeners();
   }
 

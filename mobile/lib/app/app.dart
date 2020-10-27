@@ -50,7 +50,7 @@ class _HandyManAppState extends State<HandyManApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<PrefsProvider>(
-          create: (context) => PrefsProvider.create(),
+          create: (_) => PrefsProvider.create(),
         ),
         Provider<AuthService>.value(
           value: FirebaseAuthService.create(),

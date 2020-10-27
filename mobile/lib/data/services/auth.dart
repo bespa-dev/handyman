@@ -17,7 +17,6 @@ import 'package:handyman/domain/services/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// [AuthService] implementation for production use
-@immutable
 class FirebaseAuthService implements AuthService {
   final FirebaseAuth _auth = sl.get<FirebaseAuth>();
   final FirebaseFirestore _firestore = sl.get<FirebaseFirestore>();
@@ -33,14 +32,13 @@ class FirebaseAuthService implements AuthService {
   FirebaseAuthService._();
 
   // Singleton
-  static AuthService get instance => FirebaseAuthService._();
+  static AuthService get instance => FirebaseAuthService._().._init();
 
   factory FirebaseAuthService.create() => FirebaseAuthService._().._init();
 
   void _init() async {
     var preferences = await sl.getAsync<SharedPreferences>();
-    _userId =
-        preferences.getString(PrefsUtils.USER_ID);
+    _userId = preferences.getString(PrefsUtils.USER_ID);
     _userType = preferences.getString(PrefsUtils.USER_TYPE);
   }
 
