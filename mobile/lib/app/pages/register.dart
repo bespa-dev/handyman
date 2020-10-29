@@ -72,7 +72,7 @@ class _RegisterPageState extends State<RegisterPage> {
         _isLoading = state == AuthState.AUTHENTICATING;
         if (mounted) setState(() {});
         if (state == AuthState.ERROR)
-          _scaffoldKey.currentState
+          ScaffoldMessenger.of(context)
             ..removeCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
@@ -81,7 +81,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             );
         else if (state == AuthState.AUTHENTICATING)
-          _scaffoldKey.currentState
+          ScaffoldMessenger.of(context)
             ..removeCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
@@ -91,7 +91,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             );
         else if (state == AuthState.SUCCESS) {
-          _scaffoldKey.currentState.removeCurrentSnackBar();
+          ScaffoldMessenger.of(context).removeCurrentSnackBar();
         }
       });
     }

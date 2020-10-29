@@ -3,6 +3,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/guard.dart';
@@ -25,9 +26,6 @@ class _HandyManAppState extends State<HandyManApp> {
   final _analytics = FirebaseAnalytics();
 
   Future<void> setupRemoteConfig() async {
-    // Initialize Firebase
-    await Firebase.initializeApp();
-
     // RemoteConfig
     final RemoteConfig remoteConfig = await RemoteConfig.instance;
 
@@ -64,7 +62,7 @@ class _HandyManAppState extends State<HandyManApp> {
       ],
       child: Consumer<PrefsProvider>(
         builder: (_, prefs, __) => MaterialApp(
-          debugShowCheckedModeBanner: false,
+          debugShowCheckedModeBanner: !kReleaseMode,
           theme: themeData(context),
           darkTheme: darkThemeData(context),
           themeMode: prefs.isLightTheme ? ThemeMode.light : ThemeMode.dark,

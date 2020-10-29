@@ -30,7 +30,7 @@ class _SplashPageState extends State<SplashPage> {
         _isLoading = state == AuthState.AUTHENTICATING;
         setState(() {});
         if (state == AuthState.ERROR)
-          _scaffoldKey.currentState
+          ScaffoldMessenger.of(context)
             ..removeCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
@@ -39,7 +39,7 @@ class _SplashPageState extends State<SplashPage> {
               ),
             );
         else if (state == AuthState.AUTHENTICATING)
-          _scaffoldKey.currentState
+          ScaffoldMessenger.of(context)
             ..removeCurrentSnackBar()
             ..showSnackBar(
               SnackBar(

@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:geolocator/geolocator.dart' as geo;
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/core/utils.dart';
+import 'package:handyman/domain/models/user.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,8 +21,10 @@ enum EmojiStickerSelector { EMOJI, STICKER }
 /// User message input area with options
 class UserInput extends StatefulWidget {
   final Function(String) onMessageSent;
+  final BaseUser user;
 
-  const UserInput({Key key, @required this.onMessageSent}) : super(key: key);
+  const UserInput({Key key, @required this.onMessageSent, @required this.user})
+      : super(key: key);
 
   @override
   _UserInputState createState() => _UserInputState();
@@ -63,11 +67,15 @@ class _UserInputState extends State<UserInput> {
                 if (selector == InputSelector.KEYBOARD)
                   FocusScope.of(context).requestFocus(_focusNode);
                 else if (selector == InputSelector.PHONE)
-                  // FIXME: launchUrl(url: "tel:+233554635701");
-                  showNotAvailableDialog(context);
+                  widget.user.user.phone.isNotEmpty
+                      ? showNotAvailableDialog(context)
+                      : launchUrl(url: "tel:${widget.user.user.phone}");
                 else if (selector == InputSelector.DM)
-                  // FIXME: launchUrl(url: "mailto:quabynahdennis@gmail.com");
-                  showNotAvailableDialog(context);
+                  widget.user.user.email.isEmpty
+                      ? showNotAvailableDialog(context)
+                      : launchUrl(
+                          url:
+                              "mailto:${widget.user.user.email}?subject=Request%20your%20service");
                 else {
                   FocusScope.of(context).unfocus();
                   setState(() {});
@@ -279,16 +287,18 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
   }
 
   void _fetchCurrentLocation() async {
-    if (await geo.checkPermission() == geo.LocationPermission.whileInUse) {
-      bool isLocationServiceEnabled = await geo.isLocationServiceEnabled();
+    if (await Geolocator.checkPermission() ==
+        geo.LocationPermission.whileInUse) {
+      bool isLocationServiceEnabled =
+          await Geolocator.isLocationServiceEnabled();
       debugPrint("Location service enabled -> $isLocationServiceEnabled");
-      geo.Position position = await geo.getLastKnownPosition() ??
-          await geo.getCurrentPosition(
+      geo.Position position = await Geolocator.getLastKnownPosition() ??
+          await Geolocator.getCurrentPosition(
               desiredAccuracy: geo.LocationAccuracy.high);
       debugPrint("Lat -> ${position.latitude} : Lng -> ${position.longitude}");
       _currentPosition = LatLng(position.latitude, position.longitude);
     } else {
-      var permission = await geo.requestPermission();
+      var permission = await Geolocator.requestPermission();
       if (permission == geo.LocationPermission.whileInUse ||
           permission == geo.LocationPermission.always) _fetchCurrentLocation();
     }

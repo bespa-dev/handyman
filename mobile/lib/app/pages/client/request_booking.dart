@@ -72,13 +72,15 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                             fit: StackFit.expand,
                             children: [
                               Positioned(
-                                left: getProportionateScreenWidth(kSpacingX24),
-                                right: getProportionateScreenWidth(kSpacingX24),
+                                left: getProportionateScreenWidth(kSpacingNone),
+                                right: getProportionateScreenWidth(kSpacingNone),
                                 bottom: kSpacingNone,
                                 top: getProportionateScreenHeight(
                                     kToolbarHeight),
                                 child: ListView(
                                   padding: EdgeInsets.only(
+                                    left: getProportionateScreenWidth(kSpacingX24),
+                                    right: getProportionateScreenWidth(kSpacingX24),
                                     bottom: getProportionateScreenHeight(
                                         kSpacingX24),
                                   ),

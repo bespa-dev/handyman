@@ -650,7 +650,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
 
   // Gets user's current location and finds the name of that address
   Future<geo.Position> _getUserLocation() async =>
-      await geo.getCurrentPosition(desiredAccuracy: geo.LocationAccuracy.high);
+      await geo.Geolocator.getCurrentPosition(desiredAccuracy: geo.LocationAccuracy.high);
 
   Widget _buildTabBar() => Container(
         margin: EdgeInsets.symmetric(

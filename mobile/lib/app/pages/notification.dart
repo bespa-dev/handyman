@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:handyman/domain/services/messaging.dart';
-import 'package:meta/meta.dart';
-import 'package:auto_route/auto_route.dart';
 
 class NotificationPage extends StatefulWidget {
   final NotificationPayload payload;

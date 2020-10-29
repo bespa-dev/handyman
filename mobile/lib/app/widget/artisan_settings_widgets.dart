@@ -407,7 +407,7 @@ Widget buildCalendarTable(
     Container(
       child: TableCalendar(
         calendarController: controller,
-        onDaySelected: (day, _) async {
+        onDaySelected: (day, _, __) async {
           await _showBottomSheetForDay(
               context, themeData, artisan, day.millisecondsSinceEpoch);
         },

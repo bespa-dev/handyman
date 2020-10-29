@@ -123,7 +123,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
 
   void _showLearnMoreFor(String profile) async {
     // TODO: Show bottom sheet with information for current profile
-    Scaffold.of(context)
+    ScaffoldMessenger.of(context)
       ..removeCurrentSnackBar()
       ..showSnackBar(SnackBar(
         content: Text("Feature unavailable"),

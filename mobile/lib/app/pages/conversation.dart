@@ -96,6 +96,7 @@ class _ConversationPageState extends State<ConversationPage> {
                           ),
                         ),
                         UserInput(
+                          user: snapshot.data,
                           onMessageSent: (content) async {
                             final timestamp =
                                 DateFormat.jms().format(DateTime.now());

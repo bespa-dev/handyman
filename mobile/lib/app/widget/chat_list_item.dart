@@ -72,7 +72,7 @@ class _ChatListItemState extends State<ChatListItem> {
               Container(
                 padding: EdgeInsets.only(
                   left: isMe
-                      ? getProportionateScreenWidth(kSpacingX4)
+                      ? getProportionateScreenWidth(kSpacingX8)
                       : getProportionateScreenWidth(kSpacingX16),
                   right: isMe
                       ? getProportionateScreenWidth(kSpacingX16)
@@ -110,23 +110,6 @@ class _ChatListItemState extends State<ChatListItem> {
                   ],
                 ),
               ),
-              isMe
-                  ? Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: getProportionateScreenWidth(kSpacingX8),
-                        ),
-                        UserAvatar(
-                          url: widget.sender?.user?.avatar,
-                          radius: kSpacingX42,
-                          ringColor: RandomColor(14).randomColor(
-                            colorBrightness: ColorBrightness.dark,
-                          ),
-                        ),
-                      ],
-                    )
-                  : SizedBox.shrink(),
             ],
           ),
         );
