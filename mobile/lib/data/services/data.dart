@@ -129,13 +129,28 @@ class DataServiceImpl implements DataService {
         sender: sender, recipient: recipient);
     yield* localSource;
 
-    var snapshots = _firestore
+    var snapshotsForRecipient = _firestore
         .collection(FirestoreUtils.kMessagesRef)
-        .where("sender", isLessThanOrEqualTo: sender)
-        .where("recipient", isLessThanOrEqualTo: recipient)
+        .where("recipient", isEqualTo: sender)
+        .where("author", isEqualTo: recipient)
+        .orderBy("created_at", descending: true)
         .snapshots(includeMetadataChanges: true);
 
-    snapshots.listen((event) {
+    var snapshotsForSender = _firestore
+        .collection(FirestoreUtils.kMessagesRef)
+        .where("author", isEqualTo: sender)
+        .where("recipient", isEqualTo: recipient)
+        .orderBy("created_at", descending: true)
+        .snapshots(includeMetadataChanges: true);
+
+    snapshotsForRecipient.listen((event) {
+      event.docs.forEach((element) async {
+        if (element.exists)
+          await _messageDao.sendMessage(Conversation.fromJson(element.data()));
+      });
+    });
+
+    snapshotsForSender.listen((event) {
       event.docs.forEach((element) async {
         if (element.exists)
           await _messageDao.sendMessage(Conversation.fromJson(element.data()));
@@ -514,5 +529,4 @@ class DataServiceImpl implements DataService {
       }
     });
   }
-
 }

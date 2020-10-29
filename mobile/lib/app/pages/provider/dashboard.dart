@@ -30,6 +30,7 @@ class _DashboardPageState extends State<DashboardPage> {
   double _kWidth, _kHeight;
   ThemeData _themeData;
   int _currentTabIndex = 0;
+  final _pageController = PageController(initialPage: 0, keepPage: true);
 
   @override
   void didChangeDependencies() {
@@ -111,6 +112,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                           ],
                                           onTabSelected: (index) {
                                             _currentTabIndex = index;
+                                            _pageController.animateToPage(
+                                              index,
+                                              curve: Curves.fastOutSlowIn,
+                                              duration: kScaleDuration,
+                                            );
                                             setState(() {});
                                           },
                                           color: _themeData.colorScheme.primary,
@@ -126,11 +132,28 @@ class _DashboardPageState extends State<DashboardPage> {
                                         builder: (_, snapshot) {
                                           if (snapshot.data.isEmpty)
                                             return _buildEmptyListView();
-                                          return _currentTabIndex == 0
-                                              ? _buildOngoingTasksWidget(
-                                                  snapshot.data)
-                                              : _buildRequestsWidget(
-                                                  snapshot.data);
+                                          return Container(
+                                            width: _kWidth,
+                                            height: _kHeight * 0.6,
+                                            child: PageView.builder(
+                                              controller: _pageController,
+                                              clipBehavior: Clip.hardEdge,
+                                              pageSnapping: true,
+                                              onPageChanged: (index) {
+                                                setState(() {
+                                                  _currentTabIndex = index;
+                                                });
+                                              },
+                                              itemCount: 2,
+                                              itemBuilder: (_, index) {
+                                                return _currentTabIndex == 0
+                                                    ? _buildOngoingTasksWidget(
+                                                        snapshot.data)
+                                                    : _buildRequestsWidget(
+                                                        snapshot.data);
+                                              },
+                                            ),
+                                          );
                                         },
                                       ),
                                     ],

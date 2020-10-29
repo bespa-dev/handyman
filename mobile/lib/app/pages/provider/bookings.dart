@@ -33,6 +33,7 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
   ThemeData _themeData;
   var markers = <Marker>[];
   int _currentTabIndex = 0;
+  final _pageController = PageController(initialPage: 0, keepPage: true);
 
   @override
   void didChangeDependencies() {
@@ -117,7 +118,8 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                           zoomControlsEnabled: false,
                           zoomGesturesEnabled: true,
                           onMapCreated: (controller) async {
-                            debugPrint("Light mode for map => ${provider.isLightTheme}");
+                            debugPrint(
+                                "Light mode for map => ${provider.isLightTheme}");
                             final mapStyle = await getMapStyle(
                                 isLightTheme: provider.isLightTheme);
                             controller.setMapStyle(mapStyle);
@@ -193,7 +195,8 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                             SizedBox(
                                 height:
                                     getProportionateScreenHeight(kSpacingX16)),
-                            buildProfileDescriptor(context,
+                            buildProfileDescriptor(
+                              context,
                               themeData: _themeData,
                               title: "Description",
                               isEditable: false,
@@ -216,6 +219,11 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                                 ],
                                 onTabSelected: (index) {
                                   _currentTabIndex = index;
+                                  _pageController.animateToPage(
+                                    index,
+                                    curve: Curves.fastOutSlowIn,
+                                    duration: kSheetDuration,
+                                  );
                                   setState(() {});
                                 },
                                 color: _themeData.colorScheme.primary,
@@ -225,7 +233,25 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                             SizedBox(
                                 height:
                                     getProportionateScreenHeight(kSpacingX16)),
-                            buildFunctionalityNotAvailablePanel(context),
+                            Container(
+                              height:
+                                  getProportionateScreenHeight(kSpacingX320),
+                              child: PageView.builder(
+                                controller: _pageController,
+                                clipBehavior: Clip.hardEdge,
+                                pageSnapping: true,
+                                onPageChanged: (index) {
+                                  setState(() {
+                                    _currentTabIndex = index;
+                                  });
+                                },
+                                itemCount: 3,
+                                itemBuilder: (_, index) {
+                                  return buildFunctionalityNotAvailablePanel(
+                                      context);
+                                },
+                              ),
+                            ),
                           ],
                         ),
                       ),

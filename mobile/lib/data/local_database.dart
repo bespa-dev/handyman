@@ -1,6 +1,8 @@
+import 'dart:async' show Future, Stream;
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:async/async.dart' show StreamGroup;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:handyman/data/entities/artisan_model.dart';
 import 'package:handyman/data/entities/conversation.dart';
@@ -223,17 +225,29 @@ class MessageDao extends DatabaseAccessor<LocalDatabase>
   }
 
   Stream<List<Conversation>> conversationWithRecipient(
-          {@required String sender, String recipient}) =>
-      (select(message)
-            ..where((item) => item.author.isSmallerOrEqualValue(sender))
-            ..where((item) => item.recipient.isSmallerOrEqualValue(recipient))
-            ..orderBy(
-              [
-                (u) => OrderingTerm(
-                    expression: u.createdAt, mode: OrderingMode.desc),
-              ],
-            ))
-          .watch();
+      {@required String sender, String recipient}) {
+    var streamSender = (select(message)
+          ..where((item) => item.author.equals(sender))
+          ..where((item) => item.recipient.equals(recipient))
+          ..orderBy(
+            [
+              (u) => OrderingTerm(
+                  expression: u.createdAt, mode: OrderingMode.desc),
+            ],
+          ))
+        .watch();
+    var streamRecipient = (select(message)
+          ..where((item) => item.author.equals(recipient))
+          ..where((item) => item.recipient.equals(sender))
+          ..orderBy(
+            [
+              (u) => OrderingTerm(
+                  expression: u.createdAt, mode: OrderingMode.desc),
+            ],
+          ))
+        .watch();
+    return StreamGroup.merge([streamSender, streamRecipient]);
+  }
 }
 
 @UseDao(
@@ -253,8 +267,8 @@ class UserDao extends DatabaseAccessor<LocalDatabase> with _$UserDaoMixin {
   Future<int> addCustomer(BaseUser item) =>
       into(user).insert(item.user, mode: InsertMode.insertOrReplace);
 
-  Future addProviders(List<BaseUser> providers) async =>
-      providers.forEach((person) async => await saveProvider(ArtisanModel(artisan: person.user)));
+  Future addProviders(List<BaseUser> providers) async => providers.forEach(
+      (person) async => await saveProvider(ArtisanModel(artisan: person.user)));
 
   Future<int> saveProvider(BaseUser artisan) => into(serviceProvider)
       .insert(artisan.user, mode: InsertMode.insertOrReplace);

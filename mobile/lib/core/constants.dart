@@ -48,7 +48,7 @@ void showNotAvailableDialog(BuildContext context) => showDialog(
     );
 
 Widget buildFunctionalityNotAvailablePanel(BuildContext context) => Container(
-      height: kSpacingX320,
+      height: getProportionateScreenHeight(kSpacingX320),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
