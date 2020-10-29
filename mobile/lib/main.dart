@@ -22,7 +22,7 @@ void main() async {
   await registerServiceLocator();
 
   final preferences = await sl.getAsync<SharedPreferences>();
-  final isLightTheme = preferences.getBool(PrefsUtils.THEME_MODE) ?? false;
+  final isLightTheme = preferences.getBool(PrefsUtils.THEME_MODE) ?? true;
 
   // Set orientation
   if (defaultTargetPlatform == TargetPlatform.android ||

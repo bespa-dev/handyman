@@ -254,7 +254,7 @@ class UserDao extends DatabaseAccessor<LocalDatabase> with _$UserDaoMixin {
       into(user).insert(item.user, mode: InsertMode.insertOrReplace);
 
   Future addProviders(List<BaseUser> providers) async =>
-      providers.forEach((person) async => await saveProvider(person.user));
+      providers.forEach((person) async => await saveProvider(ArtisanModel(artisan: person.user)));
 
   Future<int> saveProvider(BaseUser artisan) => into(serviceProvider)
       .insert(artisan.user, mode: InsertMode.insertOrReplace);
