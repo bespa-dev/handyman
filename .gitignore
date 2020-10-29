@@ -157,8 +157,8 @@ testem.log
 .DS_Store
 Thumbs.db
 *.ipa
-**/google-services.json
+# **/google-services.json
 **/package-lock.json
-**/GoogleService-Info.plist
+# **/GoogleService-Info.plist
 application/mobile_app/ios/Flutter/.last_build_id
 application/mobile_app/ios/Flutter/.last_build_id

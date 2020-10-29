@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +30,7 @@ class _HandyManAppState extends State<HandyManApp> {
 
     // Enable developer mode to relax fetch throttling
     remoteConfig.setConfigSettings(RemoteConfigSettings(debugMode: true));
+    // TODO: Configure remote config
     remoteConfig.setDefaults(<String, dynamic>{
       'welcome': 'default welcome',
       'hello': 'default hello',
