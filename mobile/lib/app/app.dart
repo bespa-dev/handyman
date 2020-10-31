@@ -62,7 +62,7 @@ class _HandyManAppState extends State<HandyManApp> {
       ],
       child: Consumer<PrefsProvider>(
         builder: (_, prefs, __) => MaterialApp(
-          debugShowCheckedModeBanner: !kReleaseMode,
+          debugShowCheckedModeBanner: false,
           theme: themeData(context),
           darkTheme: darkThemeData(context),
           themeMode: prefs.isLightTheme ? ThemeMode.light : ThemeMode.dark,
