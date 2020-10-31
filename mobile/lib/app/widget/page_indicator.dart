@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
-import 'package:meta/meta.dart';
 
 /// Page indicator
 class PageIndicator extends StatefulWidget {
