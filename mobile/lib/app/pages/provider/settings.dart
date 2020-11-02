@@ -129,7 +129,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
 
   @override
   void dispose() {
-    Focus.of(context).unfocus();
+    // Focus.of(context).unfocus();
     _calendarController?.dispose();
     _dataService.updateUser(ArtisanModel(artisan: _currentUser), sync: true);
     _businessNameController.dispose();

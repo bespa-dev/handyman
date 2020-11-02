@@ -81,93 +81,87 @@ class _DashboardPageState extends State<DashboardPage> {
                                         ),
                                       )
                                     : SizedBox.shrink(),
-                                SafeArea(
-                                  child: Container(
-                                    height: _kHeight,
-                                    width: _kWidth,
-                                    child: ListView(
-                                      physics: kScrollPhysics,
-                                      children: [
-                                        _buildAppBar(provider, artisan),
-                                        SizedBox(
-                                          height: getProportionateScreenHeight(
-                                              kSpacingX16),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal:
-                                                  getProportionateScreenWidth(
-                                                      kSpacingX24)),
-                                          child: BadgeableTabBar(
-                                            tabs: <BadgeableTabBarItem>[
-                                              BadgeableTabBarItem(
-                                                title: "Ongoing Tasks",
-                                                badgeCount: artisan
-                                                        ?.ongoingBookingsCount ??
-                                                    0,
-                                              ),
-                                              BadgeableTabBarItem(
-                                                title: "New Requests",
-                                                badgeCount:
-                                                    artisan?.requestsCount ?? 0,
-                                              ),
-                                            ],
-                                            onTabSelected: (index) {
-                                              _pageController.animateToPage(
-                                                index,
-                                                curve: Curves.fastOutSlowIn,
-                                                duration: kScaleDuration,
-                                              );
-                                              setState(() {});
-                                            },
-                                            color:
-                                                _themeData.colorScheme.primary,
-                                            activeIndex: _currentTabIndex,
+                                _buildAppBar(provider, artisan),
+                                Positioned(
+                                  top: _kHeight * 0.25,
+                                  child: SafeArea(
+                                    child: Container(
+                                      height: _kHeight,
+                                      width: _kWidth,
+                                      child: ListView(
+                                        // physics: kScrollPhysics,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal:
+                                                    getProportionateScreenWidth(
+                                                        kSpacingX24)),
+                                            child: BadgeableTabBar(
+                                              tabs: <BadgeableTabBarItem>[
+                                                BadgeableTabBarItem(
+                                                  title: "Ongoing Tasks",
+                                                  badgeCount: artisan
+                                                          ?.ongoingBookingsCount ??
+                                                      0,
+                                                ),
+                                                BadgeableTabBarItem(
+                                                  title: "New Requests",
+                                                  badgeCount:
+                                                      artisan?.requestsCount ??
+                                                          0,
+                                                ),
+                                              ],
+                                              onTabSelected: (index) {
+                                                _pageController.animateToPage(
+                                                  index,
+                                                  curve: Curves.fastOutSlowIn,
+                                                  duration: kScaleDuration,
+                                                );
+                                                setState(() {});
+                                              },
+                                              color: _themeData
+                                                  .colorScheme.primary,
+                                              activeIndex: _currentTabIndex,
+                                            ),
                                           ),
-                                        ),
-                                        _buildSearchBar(margin: kSpacingX24),
-                                        StreamBuilder<List<Booking>>(
-                                          stream:
-                                              dataService.getBookingsForArtisan(
-                                                  artisan?.id),
-                                          initialData: [],
-                                          builder: (_, snapshot) {
-                                            return Container(
-                                              width: _kWidth,
-                                              height: _kHeight * 0.6,
-                                              child: snapshot.data.isEmpty
-                                                  ? Container()
-                                                  : PageView.builder(
-                                                      controller:
-                                                          _pageController,
-                                                      clipBehavior:
-                                                          Clip.hardEdge,
-                                                      onPageChanged: (index) {
-                                                        _currentTabIndex =
-                                                            index;
-                                                        setState(() {});
-                                                      },
-                                                      itemCount: 2,
-                                                      itemBuilder: (_, index) {
-                                                        return _currentTabIndex ==
-                                                                0
-                                                            ? _buildOngoingTasksWidget(
-                                                                snapshot.data)
-                                                            : _buildRequestsWidget(
-                                                                snapshot.data);
-                                                      },
-                                                    ),
-                                            );
-                                          },
-                                        ),
-                                      ],
+                                          _buildSearchBar(margin: kSpacingX24),
+                                          StreamBuilder<List<Booking>>(
+                                            stream: dataService
+                                                .getBookingsForArtisan(
+                                                    artisan?.id),
+                                            initialData: [],
+                                            builder: (_, snapshot) {
+                                              return Container(
+                                                width: _kWidth,
+                                                height: _kHeight * 0.6,
+                                                child: PageView.builder(
+                                                  controller: _pageController,
+                                                  clipBehavior: Clip.hardEdge,
+                                                  onPageChanged: (index) {
+                                                    _currentTabIndex = index;
+                                                    setState(() {});
+                                                  },
+                                                  itemCount: 2,
+                                                  itemBuilder: (_, index) {
+                                                    return _currentTabIndex == 0
+                                                        ? _buildOngoingTasksWidget(
+                                                            snapshot.data)
+                                                        : _buildRequestsWidget(
+                                                            snapshot.data);
+                                                  },
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          endDrawer: _buildSideBar(artisan, authService),
+                          drawer: _buildSideBar(artisan, authService),
                         );
                 },
               ),
@@ -176,174 +170,180 @@ class _DashboardPageState extends State<DashboardPage> {
         ),
       );
 
-  Widget _buildAppBar(PrefsProvider provider, Artisan artisan) => Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: getProportionateScreenWidth(kSpacingX16),
-          vertical: getProportionateScreenHeight(kSpacingX16),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: _kWidth,
-              padding: EdgeInsets.only(
-                right: getProportionateScreenWidth(kSpacingX12),
+  Widget _buildAppBar(PrefsProvider provider, Artisan artisan) => SafeArea(
+        child: Container(
+          height: _kHeight * 0.25,
+          padding: EdgeInsets.symmetric(
+            horizontal: getProportionateScreenWidth(kSpacingX16),
+            vertical: getProportionateScreenHeight(kSpacingX16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: _kWidth,
+                padding: EdgeInsets.only(
+                  right: getProportionateScreenWidth(kSpacingX12),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Tooltip(
+                      message: "Open drawer",
+                      child: MenuIcon(
+                        onTap: () => _scaffoldKey.currentState.openDrawer(),
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: "Toggle theme",
+                      icon: Icon(
+                        provider.isLightTheme ? Feather.moon : Feather.sun,
+                      ),
+                      onPressed: () => provider.toggleTheme(),
+                    ),
+                  ],
+                ),
               ),
-              child: Row(
+              SizedBox(
+                height: getProportionateScreenHeight(kSpacingX12),
+              ),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                    tooltip: "Toggle theme",
-                    icon: Icon(
-                      provider.isLightTheme ? Feather.moon : Feather.sun,
+                  InkWell(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(kSpacingX8),
                     ),
-                    onPressed: () => provider.toggleTheme(),
+                    onTap: () => context.navigator.push(
+                      Routes.providerSettingsPage,
+                      arguments: ProviderSettingsPageArguments(
+                        activeTabIndex: 0,
+                      ),
+                    ),
+                    child: SizedBox(
+                      width: _kWidth * 0.65,
+                      child: Card(
+                        clipBehavior: Clip.hardEdge,
+                        elevation: kSpacingX2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(kSpacingX8),
+                          ),
+                        ),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: getProportionateScreenHeight(kSpacingX16),
+                            horizontal:
+                                getProportionateScreenWidth(kSpacingX12),
+                          ),
+                          decoration: BoxDecoration(
+                            color: _themeData.colorScheme.secondary
+                                .withOpacity(kOpacityX70),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                FlutterIcons.calendar_outline_mco,
+                                size: getProportionateScreenHeight(kSpacingX36),
+                                color: _themeData.colorScheme.onBackground,
+                              ),
+                              SizedBox(
+                                height:
+                                    getProportionateScreenHeight(kSpacingX8),
+                              ),
+                              Text(
+                                "Calendar",
+                                style: _themeData.textTheme.headline6.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: _themeData.colorScheme.onBackground,
+                                ),
+                              ),
+                              SizedBox(
+                                height:
+                                    getProportionateScreenHeight(kSpacingX4),
+                              ),
+                              Text(
+                                "${artisan?.ongoingBookingsCount ?? "No"} active tasks this week",
+                                style: _themeData.textTheme.caption.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: _themeData.colorScheme.onBackground
+                                      .withOpacity(kEmphasisMedium),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                  Tooltip(
-                    message: "Open drawer",
-                    child: RotatedBox(
-                      quarterTurns: 2,
-                      child: MenuIcon(
-                        onTap: () => _scaffoldKey.currentState.openEndDrawer(),
+                  InkWell(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(kSpacingX8),
+                    ),
+                    onTap: () => context.navigator.push(
+                      Routes.providerSettingsPage,
+                      arguments: ProviderSettingsPageArguments(
+                        activeTabIndex: 2,
+                      ),
+                    ),
+                    child: SizedBox(
+                      width: _kWidth * 0.25,
+                      child: Card(
+                        clipBehavior: Clip.hardEdge,
+                        elevation: kSpacingX2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(kSpacingX8),
+                          ),
+                        ),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: getProportionateScreenHeight(kSpacingX16),
+                            horizontal:
+                                getProportionateScreenWidth(kSpacingX12),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                FlutterIcons.history_mco,
+                                size: getProportionateScreenHeight(kSpacingX36),
+                                color: _themeData.colorScheme.onBackground,
+                              ),
+                              SizedBox(
+                                height:
+                                    getProportionateScreenHeight(kSpacingX8),
+                              ),
+                              Text(
+                                "History",
+                                style: _themeData.textTheme.headline6.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(
+                                height:
+                                    getProportionateScreenHeight(kSpacingX4),
+                              ),
+                              Text(
+                                "${artisan?.completedBookingsCount ?? "No"} projects",
+                                style: _themeData.textTheme.caption.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-            ),
-            SizedBox(
-              height: getProportionateScreenHeight(kSpacingX12),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(kSpacingX8),
-                  ),
-                  onTap: () => context.navigator.push(
-                    Routes.providerSettingsPage,
-                    arguments: ProviderSettingsPageArguments(
-                      activeTabIndex: 0,
-                    ),
-                  ),
-                  child: SizedBox(
-                    width: _kWidth * 0.65,
-                    child: Card(
-                      clipBehavior: Clip.hardEdge,
-                      elevation: kSpacingX2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(kSpacingX8),
-                        ),
-                      ),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: getProportionateScreenHeight(kSpacingX16),
-                          horizontal: getProportionateScreenWidth(kSpacingX12),
-                        ),
-                        decoration: BoxDecoration(
-                          color: _themeData.colorScheme.secondary
-                              .withOpacity(kOpacityX70),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              FlutterIcons.calendar_outline_mco,
-                              size: getProportionateScreenHeight(kSpacingX36),
-                              color: _themeData.colorScheme.onBackground,
-                            ),
-                            SizedBox(
-                              height: getProportionateScreenHeight(kSpacingX8),
-                            ),
-                            Text(
-                              "Calendar",
-                              style: _themeData.textTheme.headline6.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: _themeData.colorScheme.onBackground,
-                              ),
-                            ),
-                            SizedBox(
-                              height: getProportionateScreenHeight(kSpacingX4),
-                            ),
-                            Text(
-                              "${artisan?.ongoingBookingsCount ?? "No"} active tasks this week",
-                              style: _themeData.textTheme.caption.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: _themeData.colorScheme.onBackground
-                                    .withOpacity(kEmphasisMedium),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(kSpacingX8),
-                  ),
-                  onTap: () => context.navigator.push(
-                    Routes.providerSettingsPage,
-                    arguments: ProviderSettingsPageArguments(
-                      activeTabIndex: 2,
-                    ),
-                  ),
-                  child: SizedBox(
-                    width: _kWidth * 0.25,
-                    child: Card(
-                      clipBehavior: Clip.hardEdge,
-                      elevation: kSpacingX2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(kSpacingX8),
-                        ),
-                      ),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: getProportionateScreenHeight(kSpacingX16),
-                          horizontal: getProportionateScreenWidth(kSpacingX12),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              FlutterIcons.history_mco,
-                              size: getProportionateScreenHeight(kSpacingX36),
-                              color: _themeData.colorScheme.onBackground,
-                            ),
-                            SizedBox(
-                              height: getProportionateScreenHeight(kSpacingX8),
-                            ),
-                            Text(
-                              "History",
-                              style: _themeData.textTheme.headline6.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(
-                              height: getProportionateScreenHeight(kSpacingX4),
-                            ),
-                            Text(
-                              "${artisan?.completedBookingsCount ?? "No"} projects",
-                              style: _themeData.textTheme.caption.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       );
 
@@ -385,35 +385,37 @@ class _DashboardPageState extends State<DashboardPage> {
       );
 
   /// Get ongoing [Booking]s
-  Widget _buildOngoingTasksWidget(List<Booking> bookings) => Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: getProportionateScreenWidth(kSpacingX24),
-        ),
-        child: AnimationLimiter(
-          child: AnimationConfiguration.synchronized(
-            duration: kScaleDuration,
-            child: Column(
-              children: [
-                ...bookings
-                    .where((element) =>
-                        element.dueDate >=
-                        DateTime.now().millisecondsSinceEpoch)
-                    .map(
-                      (item) => BookingCardItem(
-                        booking: item,
-                        bookingType: BookingType.ONGOING,
-                        onTap: () => context.navigator.push(
-                          Routes.bookingsDetailsPage,
-                          arguments:
-                              BookingsDetailsPageArguments(booking: item),
+  Widget _buildOngoingTasksWidget(List<Booking> bookings) => bookings.isEmpty
+      ? _buildEmptyListView()
+      : Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: getProportionateScreenWidth(kSpacingX24),
+          ),
+          child: AnimationLimiter(
+            child: AnimationConfiguration.synchronized(
+              duration: kScaleDuration,
+              child: Column(
+                children: [
+                  ...bookings
+                      .where((element) =>
+                          element.dueDate >=
+                          DateTime.now().millisecondsSinceEpoch)
+                      .map(
+                        (item) => BookingCardItem(
+                          booking: item,
+                          bookingType: BookingType.ONGOING,
+                          onTap: () => context.navigator.push(
+                            Routes.bookingsDetailsPage,
+                            arguments:
+                                BookingsDetailsPageArguments(booking: item),
+                          ),
                         ),
                       ),
-                    ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      );
+        );
 
   /// Get newly requested [Booking]s
   Widget _buildRequestsWidget(List<Booking> bookings) {

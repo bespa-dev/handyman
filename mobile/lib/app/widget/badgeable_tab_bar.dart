@@ -31,7 +31,8 @@ class BadgeableTabBar extends StatelessWidget {
         children: [
           ...tabs
               .map(
-                (tabItem) => GestureDetector(
+                (tabItem) => InkWell(
+                  splashColor: themeData.splashColor,
                   onTap: () => onTabSelected(tabs.indexOf(tabItem)),
                   child: tabItem
                     ..tabIndicatorWidth = tabs.indexOf(tabItem) == activeIndex
