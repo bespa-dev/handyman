@@ -121,7 +121,7 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                             debugPrint(
                                 "Light mode for map => ${provider.isLightTheme}");
                             final mapStyle = await getMapStyle(
-                                isLightTheme: provider.isLightTheme);
+                                isLightTheme: provider.isLightTheme ?? false);
                             controller.setMapStyle(mapStyle);
                             setState(() {});
                           },

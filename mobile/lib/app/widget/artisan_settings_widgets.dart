@@ -94,7 +94,7 @@ Widget buildMapPreviewForBusinessLocation(
                                     zoomGesturesEnabled: false,
                                     onMapCreated: (controller) async {
                                       final mapStyle = await getMapStyle(
-                                          isLightTheme: isLightTheme);
+                                          isLightTheme: isLightTheme ?? false);
                                       controller.setMapStyle(mapStyle);
                                     },
                                   ),
@@ -334,7 +334,7 @@ Widget buildProfileDescriptor(
   bool isEditable = true,
   String hint = "Say something...",
   bool isEditing = false,
-  TextInputAction inputAction = TextInputAction.send,
+  TextInputAction inputAction = TextInputAction.done,
   IconData iconData = Feather.edit_2,
 }) =>
     AnimatedContainer(
@@ -362,7 +362,9 @@ Widget buildProfileDescriptor(
               isEditable
                   ? IconButton(
                       icon: Icon(iconData),
-                      onPressed: () => onTap(),
+                      onPressed: isEditing
+                          ? () => onEditComplete(controller.text)
+                          : onTap,
                     )
                   : SizedBox(height: getProportionateScreenHeight(kSpacingX36)),
             ],
@@ -373,7 +375,7 @@ Widget buildProfileDescriptor(
           isEditing
               ? Container(
                   child: TextFormField(
-                    focusNode: focusNode ?? FocusNode(),
+                    focusNode: focusNode ??= FocusNode(),
                     autofocus: false,
                     minLines: 5,
                     maxLines: 8,

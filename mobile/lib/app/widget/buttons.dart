@@ -29,6 +29,7 @@ class ButtonOutlined extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      splashColor: themeData.splashColor,
       onTap: enabled ? onTap : null,
       borderRadius:
           BorderRadius.circular(getProportionateScreenWidth(kSpacingX36)),
@@ -103,6 +104,7 @@ class ButtonIconOnly extends StatelessWidget {
     final themeData = Theme.of(context);
 
     return InkWell(
+      splashColor: themeData.splashColor,
       onTap: onPressed,
       borderRadius: BorderRadius.circular(kToolbarHeight),
       child: Container(
@@ -148,6 +150,7 @@ class ButtonPrimary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      splashColor: themeData.splashColor,
       borderRadius:
           BorderRadius.circular(getProportionateScreenWidth(kSpacingX36)),
       onTap: enabled ? onTap : null,

@@ -47,7 +47,8 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   double _kWidth;
   ThemeData _themeData;
-  Artisan _currentUser;
+
+  // Artisan _currentUser;
   bool _shouldDismissEarnPointsSheet = true,
       _isEditingAboutMe = false,
       _isEditingPhone = false,
@@ -131,7 +132,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   void dispose() {
     // Focus.of(context).unfocus();
     _calendarController?.dispose();
-    _dataService.updateUser(ArtisanModel(artisan: _currentUser), sync: true);
+    // _dataService.updateUser(ArtisanModel(artisan: _currentUser), sync: true);
     _businessNameController.dispose();
     _aboutController.dispose();
     _phoneController.dispose();
@@ -145,7 +146,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
         return StreamBuilder<BaseUser>(
             stream: service.currentUser(),
             builder: (context, snapshot) {
-              _currentUser = snapshot.data?.user;
+              final user = snapshot.data?.user;
 
               return Scaffold(
                 key: _scaffoldKey,
@@ -195,12 +196,11 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                                   builder: (ctx) =>
                                                       _showPickerDialog(ctx),
                                                 ),
-                                                url: _currentUser?.avatar,
+                                                url: user?.avatar,
                                                 radius: kSpacingX72,
                                                 isCircular: true,
                                                 ringColor:
-                                                    _currentUser?.isAvailable ??
-                                                            false
+                                                    user?.isAvailable ?? false
                                                         ? kGreenColor
                                                         : _themeData
                                                             .colorScheme.error,
@@ -254,8 +254,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              _currentUser?.name ??
-                                                  "No name set",
+                                              user?.name ?? "No name set",
                                               style: _themeData
                                                   .textTheme.headline6,
                                             ),
@@ -264,10 +263,10 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                                   getProportionateScreenHeight(
                                                       kSpacingX8),
                                             ),
-                                            _currentUser?.business == null
+                                            user?.business == null
                                                 ? SizedBox.shrink()
                                                 : Text(
-                                                    _currentUser?.business,
+                                                    user?.business,
                                                     style: _themeData
                                                         .textTheme.bodyText2,
                                                   ),
@@ -276,8 +275,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                                     getProportionateScreenHeight(
                                                         kSpacingX4)),
                                             RatingBarIndicator(
-                                              rating:
-                                                  _currentUser?.rating ?? 2.00,
+                                              rating: user?.rating ?? 2.00,
                                               direction: Axis.horizontal,
                                               itemCount: 5,
                                               itemSize: kSpacingX12,
@@ -295,7 +293,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                       width: _kWidth * 0.25,
                                       themeData: _themeData,
                                       color: _themeData.colorScheme.error,
-                                      enabled: _currentUser != null,
+                                      enabled: user != null,
                                       textColor: _themeData.colorScheme.onError,
                                       onTap: () => showDialog(
                                         context: context,
@@ -345,10 +343,10 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                               ),
                               Expanded(
                                 child: _activeTabIndex == 0
-                                    ? _buildCalendarSection()
+                                    ? _buildCalendarSection(user)
                                     : _activeTabIndex == 1
-                                        ? _buildProfileSection()
-                                        : _buildHistorySection(),
+                                        ? _buildProfileSection(user)
+                                        : _buildHistorySection(user),
                               ),
                             ],
                           ),
@@ -356,7 +354,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                         Positioned(
                           width: _kWidth,
                           bottom: kSpacingNone,
-                          child: _buildBottomBar(),
+                          child: _buildBottomBar(user),
                         ),
                       ],
                     ),
@@ -426,7 +424,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
         ),
       );
 
-  Widget _buildBottomBar() => _isEditingBusinessName ||
+  Widget _buildBottomBar(Artisan user) => _isEditingBusinessName ||
           _isEditingAboutMe ||
           _isEditingPhone
       ? SizedBox.shrink()
@@ -630,12 +628,12 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                         ),
                         Switch.adaptive(
                           activeColor: _themeData.colorScheme.primary,
-                          value: _currentUser?.isAvailable ?? false,
+                          value: user?.isAvailable ?? false,
                           onChanged: (visibility) async {
                             await _dataService.updateUser(
                                 ArtisanModel(
-                                  artisan: _currentUser.copyWith(
-                                      isAvailable: visibility),
+                                  artisan:
+                                      user.copyWith(isAvailable: visibility),
                                 ),
                                 sync: false);
                           },
@@ -681,20 +679,19 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
         ),
       );
 
-  Widget _buildHistorySection() => ListView(
+  Widget _buildHistorySection(Artisan user) => ListView(
         children: [
           buildFunctionalityNotAvailablePanel(context),
         ],
       );
 
-  Widget _buildCalendarSection() => ListView(
+  Widget _buildCalendarSection(Artisan user) => ListView(
         children: [
-          buildCalendarTable(
-              _themeData, context, _currentUser, _calendarController),
+          buildCalendarTable(_themeData, context, user, _calendarController),
         ],
       );
 
-  Widget _buildProfileSection() => ListView(
+  Widget _buildProfileSection(Artisan user) => ListView(
         padding: EdgeInsets.only(
           bottom: getProportionateScreenHeight(
               _shouldDismissEarnPointsSheet ? kSpacingX160 : kSpacingX250),
@@ -703,7 +700,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
           buildArtisanMetadataBar(
             context,
             _themeData,
-            artisan: _currentUser,
+            artisan: user,
           ),
           FutureBuilder<geo.Position>(
             future: _getUserLocation(),
@@ -727,27 +724,22 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
               isEditing: _isEditingAboutMe,
               iconData: _isEditingAboutMe ? Feather.check : Feather.edit_2,
               title: "About Me",
-              content: _currentUser?.aboutMe ??
+              content: user?.aboutMe ??
                   "Brand yourself to your prospective customers",
               onTap: () async {
                 _isEditingAboutMe = !_isEditingAboutMe;
-                _aboutController.text = _currentUser?.aboutMe;
                 setState(() {});
-                if (_isEditingAboutMe)
-                  await _dataService.updateUser(ArtisanModel(
-                      artisan: _currentUser.copyWith(
-                          aboutMe: _aboutController.text)));
               },
               inputAction: TextInputAction.done,
               controller: _aboutController,
               hint: "Tell us about yourself...",
               onEditComplete: (content) {
+                if (content.isEmpty) return;
                 _isEditingAboutMe = !_isEditingAboutMe;
+                _aboutController.text = content;
                 setState(() {});
-                if (_isEditingAboutMe)
-                  _dataService.updateUser(ArtisanModel(
-                      artisan: _currentUser.copyWith(
-                          aboutMe: _aboutController.text)));
+                _dataService.updateUser(ArtisanModel(
+                    artisan: user.copyWith(aboutMe: _aboutController.text)));
               },
             ),
           ),
@@ -761,17 +753,12 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
               context,
               themeData: _themeData,
               title: "Phone Number",
-              content: _currentUser?.phone ?? "Create one...",
+              content: user?.phone ?? "Create one...",
               isEditing: _isEditingPhone,
               iconData: _isEditingPhone ? Feather.check : Feather.edit_2,
-              onTap: () async {
+              onTap: () {
                 _isEditingPhone = !_isEditingPhone;
-                _phoneController.text = _currentUser?.phone;
                 setState(() {});
-                if (_isEditingPhone)
-                  _dataService.updateUser(ArtisanModel(
-                      artisan:
-                          _currentUser.copyWith(phone: _phoneController.text)));
               },
               inputAction: TextInputAction.done,
               controller: _phoneController,
@@ -781,10 +768,8 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                 _isEditingPhone = !_isEditingPhone;
                 _phoneController.text = content;
                 setState(() {});
-                if (_isEditingPhone)
-                  _dataService.updateUser(ArtisanModel(
-                      artisan:
-                          _currentUser.copyWith(phone: _phoneController.text)));
+                _dataService.updateUser(ArtisanModel(
+                    artisan: user.copyWith(phone: _phoneController.text)));
               },
             ),
           ),
@@ -798,29 +783,24 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
               context,
               themeData: _themeData,
               title: "Business Name",
-              content: _currentUser?.business ?? "Create one...",
+              content: user?.business ?? "Create one...",
               isEditing: _isEditingBusinessName,
               iconData: _isEditingBusinessName ? Feather.check : Feather.edit_2,
-              onTap: () async {
+              onTap: () {
                 _isEditingBusinessName = !_isEditingBusinessName;
-                _businessNameController.text = _currentUser?.business;
                 setState(() {});
-                if (_isEditingBusinessName)
-                  _dataService.updateUser(ArtisanModel(
-                      artisan: _currentUser.copyWith(
-                          business: _businessNameController.text)));
               },
               inputAction: TextInputAction.done,
               controller: _businessNameController,
               hint: "What\'s your business name?",
               onEditComplete: (content) {
+                if (content.isEmpty) return;
                 _isEditingBusinessName = !_isEditingBusinessName;
                 _businessNameController.text = content;
                 setState(() {});
-                if (_isEditingBusinessName)
-                  _dataService.updateUser(ArtisanModel(
-                      artisan: _currentUser.copyWith(
-                          business: _businessNameController.text)));
+                _dataService.updateUser(ArtisanModel(
+                    artisan:
+                        user.copyWith(business: _businessNameController.text)));
               },
             ),
           ),

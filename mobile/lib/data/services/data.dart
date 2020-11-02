@@ -412,6 +412,7 @@ class DataServiceImpl implements DataService {
   Future<void> updateUser(BaseUser user, {bool sync = true}) async {
     final token = await sl.get<FirebaseMessaging>().getToken();
     debugPrint("Token => $token");
+
     if (user.isCustomer) {
       user = CustomerModel(customer: user.user.copyWith(token: token));
       await _userDao.addCustomer(user);
@@ -419,6 +420,7 @@ class DataServiceImpl implements DataService {
       user = ArtisanModel(artisan: user.user.copyWith(token: token));
       await _userDao.saveProvider(user);
     }
+
     if (sync)
       await _firestore
           .collection(

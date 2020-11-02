@@ -353,7 +353,7 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
             _controller = controller;
             var preferences = await sl.getAsync<SharedPreferences>();
             var isLightTheme = preferences.getBool(PrefsUtils.THEME_MODE);
-            final mapStyle = await getMapStyle(isLightTheme: isLightTheme);
+            final mapStyle = await getMapStyle(isLightTheme: isLightTheme ?? false);
             _controller.setMapStyle(mapStyle);
             setState(() {});
           },
