@@ -113,7 +113,6 @@ class _DashboardPageState extends State<DashboardPage> {
                                               ),
                                             ],
                                             onTabSelected: (index) {
-                                              _currentTabIndex = index;
                                               _pageController.animateToPage(
                                                 index,
                                                 curve: Curves.fastOutSlowIn,
@@ -133,29 +132,31 @@ class _DashboardPageState extends State<DashboardPage> {
                                                   artisan?.id),
                                           initialData: [],
                                           builder: (_, snapshot) {
-                                            if (snapshot.data.isEmpty)
-                                              return _buildEmptyListView();
                                             return Container(
                                               width: _kWidth,
                                               height: _kHeight * 0.6,
-                                              child: PageView.builder(
-                                                controller: _pageController,
-                                                clipBehavior: Clip.hardEdge,
-                                                pageSnapping: true,
-                                                onPageChanged: (index) {
-                                                  setState(() {
-                                                    _currentTabIndex = index;
-                                                  });
-                                                },
-                                                itemCount: 2,
-                                                itemBuilder: (_, index) {
-                                                  return _currentTabIndex == 0
-                                                      ? _buildOngoingTasksWidget(
-                                                          snapshot.data)
-                                                      : _buildRequestsWidget(
-                                                          snapshot.data);
-                                                },
-                                              ),
+                                              child: snapshot.data.isEmpty
+                                                  ? Container()
+                                                  : PageView.builder(
+                                                      controller:
+                                                          _pageController,
+                                                      clipBehavior:
+                                                          Clip.hardEdge,
+                                                      onPageChanged: (index) {
+                                                        _currentTabIndex =
+                                                            index;
+                                                        setState(() {});
+                                                      },
+                                                      itemCount: 2,
+                                                      itemBuilder: (_, index) {
+                                                        return _currentTabIndex ==
+                                                                0
+                                                            ? _buildOngoingTasksWidget(
+                                                                snapshot.data)
+                                                            : _buildRequestsWidget(
+                                                                snapshot.data);
+                                                      },
+                                                    ),
                                             );
                                           },
                                         ),
