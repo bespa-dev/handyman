@@ -129,7 +129,7 @@ const kSignOutText =
     "Signing out will set you offline until you sign in again. You may not be able to send/receive requests. Do you wish to continue?";
 const kArtisanString = "Artisan";
 const kFunctionalityUnavailable =
-    "Functionality currently not available. Grab a beverage and check back later!";
+    "Functionality is currently unavailable. Try again after the next update. Thank you";
 const kCustomerString = "Customer";
 const kLogoAsset = "assets/logo/logo_colored.svg";
 const kLogoDarkAsset = "assets/logo/logo_dark.svg";
@@ -146,6 +146,7 @@ const kAlgoliaKey = "604022a17d65f30d23e80a38f285be57";
 
 /// Durations
 const kScaleDuration = const Duration(milliseconds: 350);
+const kTestDuration = const Duration(milliseconds: 2500);
 const kSheetDuration = const Duration(milliseconds: 850);
 
 /// Others

@@ -83,9 +83,6 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildAppbar(PrefsProvider provider) => Container(
         height: double.infinity,
         width: _kWidth,
-        decoration: BoxDecoration(
-          color: _themeData.scaffoldBackgroundColor,
-        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,

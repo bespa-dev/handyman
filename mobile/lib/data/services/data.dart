@@ -54,10 +54,6 @@ class DataServiceImpl implements DataService {
         .toList();
     models.forEach((element) {
       _userDao.saveProvider(element);
-      _firestore
-          .collection(FirestoreUtils.kArtisanRef)
-          .doc(element.user.id)
-          .set(element.user.toJson(), SetOptions(merge: true));
     });
 
     final localSource = _userDao
@@ -202,8 +198,10 @@ class DataServiceImpl implements DataService {
     _categoryDao
         .addItems(categories.map((e) => ServiceCategory.fromJson(e)).toList());
 
-    final localSource =
-        _categoryDao.categoryByGroup(categoryGroup.index).watch();
+    final localSource = _categoryDao
+        .categoryByGroup(categoryGroup.index)
+        .watch()
+        .asBroadcastStream();
     yield* localSource;
 
     var snapshots = _firestore
@@ -349,7 +347,8 @@ class DataServiceImpl implements DataService {
 
   /// Save [CustomerReview] in database
   @override
-  Future<void> sendReview({String message, String reviewer,String artisan}) async {
+  Future<void> sendReview(
+      {String message, String reviewer, String artisan}) async {
     final review = CustomerReview(
       id: Uuid().v4(),
       review: message,
@@ -532,16 +531,13 @@ class DataServiceImpl implements DataService {
       await storageService.uploadFile(image, path: id);
       storageService.onStorageUploadResponse.listen((event) async {
         if (!event.isInComplete) {
-          await _firestore
-              .collection(FirestoreUtils.kGalleryRef)
-              .doc(id)
-              .set(
-                  Gallery(
-                    id: id,
-                    userId: userId,
-                    imageUrl: event.url,
-                  ).toJson(),
-                  SetOptions(merge: true));
+          await _firestore.collection(FirestoreUtils.kGalleryRef).doc(id).set(
+              Gallery(
+                id: id,
+                userId: userId,
+                imageUrl: event.url,
+              ).toJson(),
+              SetOptions(merge: true));
         }
       });
     });

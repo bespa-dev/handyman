@@ -99,6 +99,7 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                     Consumer<DataService>(
                       builder: (_, service, __) => StreamBuilder<
                               List<BaseUser>>(
+                          initialData: [],
                           stream:
                               service.getArtisans(category: widget.category.id),
                           builder: (context, snapshot) {

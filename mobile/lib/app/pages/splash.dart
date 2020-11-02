@@ -51,7 +51,13 @@ class _SplashPageState extends State<SplashPage> {
       });
 
       _authService.onAuthStateChanged.listen((user) {
-        debugPrint(user.toString());
+        if (user != null) {
+          ScaffoldMessenger.of(context).removeCurrentSnackBar();
+          context.navigator.pushAndRemoveUntil(
+            Routes.onboardingPage,
+                (route) => false,
+          );
+        }
       });
     }
   }
@@ -155,8 +161,40 @@ class _SplashPageState extends State<SplashPage> {
                         : ButtonOutlined(
                             width: kWidth * 0.7,
                             themeData: themeData,
-                            onTap: () async =>
-                                await _authService.signInWithGoogle(),
+                            onTap: () => showDialog(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                title: Text("Continue as..."),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ListTile(
+                                      title: Text("Artisan"),
+                                      onTap: () {
+                                        ctx.navigator.pop();
+                                        _authService.signInWithGoogle(
+                                            isCustomer: false);
+                                      },
+                                    ),
+                                    ListTile(
+                                      title: Text("Customer"),
+                                      onTap: () {
+                                        ctx.navigator.pop();
+                                        _authService.signInWithGoogle(
+                                            isCustomer: true);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                actions: [
+                                  ButtonClear(
+                                    text: "Cancel",
+                                    onPressed: () => ctx.navigator.pop(),
+                                    themeData: themeData,
+                                  ),
+                                ],
+                              ),
+                            ),
                             gravity: ButtonIconGravity.START,
                             icon: AntDesign.google,
                             enabled: !_isLoading,

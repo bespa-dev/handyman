@@ -9,7 +9,7 @@ enum AuthState { NONE, AUTHENTICATING, ERROR, SUCCESS }
 abstract class AuthService {
   Stream<BaseUser> currentUser();
 
-  Future<BaseUser> signInWithGoogle();
+  Future<BaseUser> signInWithGoogle({@required bool isCustomer});
 
   Future<BaseUser> signInWithEmailAndPassword({
     @required String email,

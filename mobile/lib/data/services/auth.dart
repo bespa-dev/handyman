@@ -63,6 +63,11 @@ class FirebaseAuthService implements AuthService {
 
       final model = CustomerModel(customer: customer);
       await _database.userDao.addCustomer(model);
+      final preferences = await sl.getAsync<SharedPreferences>();
+      await preferences.setString(PrefsUtils.USER_ID, user.uid);
+      await preferences.setString(PrefsUtils.USER_TYPE, kCustomerString);
+      _userId = user.uid;
+      _userType = kCustomerString;
       _onProcessingStateChanged.sink.add(successState);
       _onAuthStateChanged.sink.add(model);
       return model;
@@ -91,6 +96,11 @@ class FirebaseAuthService implements AuthService {
 
       final model = ArtisanModel(artisan: artisan);
       await _database.userDao.saveProvider(model);
+      final preferences = await sl.getAsync<SharedPreferences>();
+      await preferences.setString(PrefsUtils.USER_ID, user.uid);
+      await preferences.setString(PrefsUtils.USER_TYPE, kArtisanString);
+      _userId = user.uid;
+      _userType = kCustomerString;
       _onProcessingStateChanged.sink.add(successState);
       _onAuthStateChanged.sink.add(model);
       return model;
@@ -112,6 +122,11 @@ class FirebaseAuthService implements AuthService {
           final model =
               CustomerModel(customer: customer.copyWith(token: token));
           await _database.userDao.addCustomer(model);
+          final preferences = await sl.getAsync<SharedPreferences>();
+          await preferences.setString(PrefsUtils.USER_ID, user.uid);
+          await preferences.setString(PrefsUtils.USER_TYPE, kCustomerString);
+          _userId = user.uid;
+          _userType = kCustomerString;
           _onProcessingStateChanged.sink.add(successState);
           _onAuthStateChanged.sink.add(model);
           return model;
@@ -189,6 +204,7 @@ class FirebaseAuthService implements AuthService {
 
   @override
   Stream<BaseUser> currentUser() async* {
+    debugPrint("FirebaseAuthService.currentUser => $_userType : $_userId");
     if (_userType == kCustomerString) {
       var localSource = _database.userDao
           .customerById(_userId)
@@ -264,7 +280,7 @@ class FirebaseAuthService implements AuthService {
   }
 
   @override
-  Future<BaseUser> signInWithGoogle() async {
+  Future<BaseUser> signInWithGoogle({bool isCustomer = true}) async {
     _onProcessingStateChanged.sink.add(loadingState);
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -280,7 +296,7 @@ class FirebaseAuthService implements AuthService {
               GoogleAuthProvider.credential(
                   idToken: googleAuth.idToken,
                   accessToken: googleAuth.accessToken));
-          return _userFromFirebase(userCredential.user);
+          return _userFromFirebase(userCredential.user, isCustomer: isCustomer);
         } else {
           throw PlatformException(
               code: "ERROR_ABORTED_BY_USER",

@@ -45,7 +45,7 @@ class ProviderSettingsPage extends StatefulWidget {
 
 class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  double _kWidth, _kHeight;
+  double _kWidth;
   ThemeData _themeData;
   Artisan _currentUser;
   bool _shouldDismissEarnPointsSheet = true,
@@ -125,7 +125,6 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
     _themeData = Theme.of(context);
     final size = MediaQuery.of(context).size;
     _kWidth = size.width;
-    _kHeight = size.height;
   }
 
   @override
@@ -147,6 +146,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
             stream: service.currentUser(),
             builder: (context, snapshot) {
               _currentUser = snapshot.data?.user;
+
               return Scaffold(
                 key: _scaffoldKey,
                 extendBody: true,
@@ -254,7 +254,8 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              _currentUser?.name ?? "",
+                                              _currentUser?.name ??
+                                                  "No name set",
                                               style: _themeData
                                                   .textTheme.headline6,
                                             ),
@@ -276,7 +277,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                                         kSpacingX4)),
                                             RatingBarIndicator(
                                               rating:
-                                                  _currentUser?.rating ?? 0.00,
+                                                  _currentUser?.rating ?? 2.00,
                                               direction: Axis.horizontal,
                                               itemCount: 5,
                                               itemSize: kSpacingX12,
@@ -650,7 +651,8 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
 
   // Gets user's current location and finds the name of that address
   Future<geo.Position> _getUserLocation() async =>
-      await geo.Geolocator.getCurrentPosition(desiredAccuracy: geo.LocationAccuracy.high);
+      await geo.Geolocator.getCurrentPosition(
+          desiredAccuracy: geo.LocationAccuracy.high);
 
   Widget _buildTabBar() => Container(
         margin: EdgeInsets.symmetric(
@@ -775,6 +777,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
               controller: _phoneController,
               hint: "Create one...",
               onEditComplete: (content) {
+                if (content.isEmpty) return;
                 _isEditingPhone = !_isEditingPhone;
                 _phoneController.text = content;
                 setState(() {});

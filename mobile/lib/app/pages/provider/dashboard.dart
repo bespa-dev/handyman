@@ -8,6 +8,7 @@ import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/badgeable_tab_bar.dart';
 import 'package:handyman/app/widget/booking_card_item.dart';
 import 'package:handyman/app/widget/buttons.dart';
+import 'package:handyman/app/widget/emergency_ping_button.dart';
 import 'package:handyman/app/widget/menu_icon.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
@@ -61,106 +62,109 @@ class _DashboardPageState extends State<DashboardPage> {
                 builder: (_, snapshot) {
                   final artisan = snapshot.data?.user;
 
-                  return snapshot.data?.isCustomer ?? true
+                  return snapshot.data?.isCustomer ?? false
                       ? Container()
                       : Scaffold(
                           key: _scaffoldKey,
                           extendBody: true,
-                          body: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              provider.isLightTheme
-                                  ? Container(
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: AssetImage(kBackgroundAsset),
-                                          fit: BoxFit.cover,
+                          body: EmergencyPingButton(
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                provider.isLightTheme
+                                    ? Container(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: AssetImage(kBackgroundAsset),
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                  : SizedBox.shrink(),
-                              SafeArea(
-                                child: Container(
-                                  height: _kHeight,
-                                  width: _kWidth,
-                                  child: ListView(
-                                    physics: kScrollPhysics,
-                                    children: [
-                                      _buildAppBar(provider, artisan),
-                                      SizedBox(
-                                        height: getProportionateScreenHeight(
-                                            kSpacingX16),
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal:
-                                                getProportionateScreenWidth(
-                                                    kSpacingX24)),
-                                        child: BadgeableTabBar(
-                                          tabs: <BadgeableTabBarItem>[
-                                            BadgeableTabBarItem(
-                                              title: "Ongoing Tasks",
-                                              badgeCount: artisan
-                                                      ?.ongoingBookingsCount ??
-                                                  0,
-                                            ),
-                                            BadgeableTabBarItem(
-                                              title: "New Requests",
-                                              badgeCount:
-                                                  artisan?.requestsCount ?? 0,
-                                            ),
-                                          ],
-                                          onTabSelected: (index) {
-                                            _currentTabIndex = index;
-                                            _pageController.animateToPage(
-                                              index,
-                                              curve: Curves.fastOutSlowIn,
-                                              duration: kScaleDuration,
+                                      )
+                                    : SizedBox.shrink(),
+                                SafeArea(
+                                  child: Container(
+                                    height: _kHeight,
+                                    width: _kWidth,
+                                    child: ListView(
+                                      physics: kScrollPhysics,
+                                      children: [
+                                        _buildAppBar(provider, artisan),
+                                        SizedBox(
+                                          height: getProportionateScreenHeight(
+                                              kSpacingX16),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal:
+                                                  getProportionateScreenWidth(
+                                                      kSpacingX24)),
+                                          child: BadgeableTabBar(
+                                            tabs: <BadgeableTabBarItem>[
+                                              BadgeableTabBarItem(
+                                                title: "Ongoing Tasks",
+                                                badgeCount: artisan
+                                                        ?.ongoingBookingsCount ??
+                                                    0,
+                                              ),
+                                              BadgeableTabBarItem(
+                                                title: "New Requests",
+                                                badgeCount:
+                                                    artisan?.requestsCount ?? 0,
+                                              ),
+                                            ],
+                                            onTabSelected: (index) {
+                                              _currentTabIndex = index;
+                                              _pageController.animateToPage(
+                                                index,
+                                                curve: Curves.fastOutSlowIn,
+                                                duration: kScaleDuration,
+                                              );
+                                              setState(() {});
+                                            },
+                                            color:
+                                                _themeData.colorScheme.primary,
+                                            activeIndex: _currentTabIndex,
+                                          ),
+                                        ),
+                                        _buildSearchBar(margin: kSpacingX24),
+                                        StreamBuilder<List<Booking>>(
+                                          stream:
+                                              dataService.getBookingsForArtisan(
+                                                  artisan?.id),
+                                          initialData: [],
+                                          builder: (_, snapshot) {
+                                            if (snapshot.data.isEmpty)
+                                              return _buildEmptyListView();
+                                            return Container(
+                                              width: _kWidth,
+                                              height: _kHeight * 0.6,
+                                              child: PageView.builder(
+                                                controller: _pageController,
+                                                clipBehavior: Clip.hardEdge,
+                                                pageSnapping: true,
+                                                onPageChanged: (index) {
+                                                  setState(() {
+                                                    _currentTabIndex = index;
+                                                  });
+                                                },
+                                                itemCount: 2,
+                                                itemBuilder: (_, index) {
+                                                  return _currentTabIndex == 0
+                                                      ? _buildOngoingTasksWidget(
+                                                          snapshot.data)
+                                                      : _buildRequestsWidget(
+                                                          snapshot.data);
+                                                },
+                                              ),
                                             );
-                                            setState(() {});
                                           },
-                                          color: _themeData.colorScheme.primary,
-                                          activeIndex: _currentTabIndex,
                                         ),
-                                      ),
-                                      _buildSearchBar(margin: kSpacingX24),
-                                      StreamBuilder<List<Booking>>(
-                                        stream:
-                                            dataService.getBookingsForArtisan(
-                                                artisan?.id),
-                                        initialData: [],
-                                        builder: (_, snapshot) {
-                                          if (snapshot.data.isEmpty)
-                                            return _buildEmptyListView();
-                                          return Container(
-                                            width: _kWidth,
-                                            height: _kHeight * 0.6,
-                                            child: PageView.builder(
-                                              controller: _pageController,
-                                              clipBehavior: Clip.hardEdge,
-                                              pageSnapping: true,
-                                              onPageChanged: (index) {
-                                                setState(() {
-                                                  _currentTabIndex = index;
-                                                });
-                                              },
-                                              itemCount: 2,
-                                              itemBuilder: (_, index) {
-                                                return _currentTabIndex == 0
-                                                    ? _buildOngoingTasksWidget(
-                                                        snapshot.data)
-                                                    : _buildRequestsWidget(
-                                                        snapshot.data);
-                                              },
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                           endDrawer: _buildSideBar(artisan, authService),
                         );

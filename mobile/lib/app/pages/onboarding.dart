@@ -144,11 +144,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   bottomLeft:
                       Radius.circular(getProportionateScreenWidth(kSpacingX24)),
                 ),
-                onTap: () => context.navigator.pushAndRemoveUntil(
+                onTap: () => context.navigator.popAndPush(
                   provider.userType == kCustomerString
                       ? Routes.homePage
                       : Routes.dashboardPage,
-                  (route) => false,
                 ),
                 child: Container(
                   height: kToolbarHeight,

@@ -238,52 +238,21 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                             )
-                          : Container(
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    clipBehavior: Clip.hardEdge,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Image.file(
-                                      _avatar,
-                                      fit: BoxFit.cover,
-                                      height: getProportionateScreenHeight(
-                                          kSpacingX120),
-                                      width: getProportionateScreenHeight(
-                                          kSpacingX120),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    bottom: getProportionateScreenHeight(
-                                        kSpacingX16),
-                                    right: getProportionateScreenWidth(
-                                        kSpacingNone),
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(kSpacingX56)),
-                                      onTap: () async => await _getImage(),
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        height: getProportionateScreenHeight(
-                                            kSpacingX56),
-                                        width: getProportionateScreenWidth(
-                                            kSpacingX56),
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: _themeData.colorScheme.primary,
-                                        ),
-                                        child: Icon(
-                                          Feather.image,
-                                          size: kSpacingX24,
-                                          color:
-                                              _themeData.colorScheme.onPrimary,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                          : InkWell(
+                              onTap: () async => await _getImage(),
+                              child: Container(
+                                clipBehavior: Clip.hardEdge,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Image.file(
+                                  _avatar,
+                                  fit: BoxFit.cover,
+                                  height: getProportionateScreenHeight(
+                                      kSpacingX120),
+                                  width: getProportionateScreenHeight(
+                                      kSpacingX120),
+                                ),
                               ),
                             ),
                       SizedBox(
@@ -437,14 +406,14 @@ class _ProfilePageState extends State<ProfilePage> {
                             Icon(
                               Entypo.bucket,
                               size: getProportionateScreenHeight(kSpacingX96),
-                              color: Theme.of(context).colorScheme.onBackground,
+                              color: _themeData.colorScheme.onBackground,
                             ),
                             SizedBox(
                                 height:
                                     getProportionateScreenHeight(kSpacingX24)),
                             Text(
                               "No bookings",
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: _themeData.textTheme.subtitle1,
                               textAlign: TextAlign.center,
                             ),
                             SizedBox(
@@ -452,12 +421,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                     getProportionateScreenHeight(kSpacingX8)),
                             Text(
                               "You do not have any bookings yet",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2
-                                  .copyWith(
-                                    color: Theme.of(context).disabledColor,
-                                  ),
+                              style: _themeData.textTheme.bodyText2.copyWith(
+                                color: _themeData.disabledColor,
+                              ),
                               textAlign: TextAlign.center,
                             ),
                           ],

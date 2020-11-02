@@ -98,7 +98,7 @@ class MockAuthService implements AuthService {
   }
 
   @override
-  Future<BaseUser> signInWithGoogle() async {
+  Future<BaseUser> signInWithGoogle({bool isCustomer}) async {
     await Future.delayed(startupTime);
     _onAuthStateChanged.sink.add(customerModel);
     await Future.delayed(responseTime);
@@ -116,5 +116,4 @@ class MockAuthService implements AuthService {
   @override
   Stream<AuthState> get onProcessingStateChanged =>
       Stream.value(AuthState.NONE);
-
 }
