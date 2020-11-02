@@ -47,6 +47,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   double _kWidth;
   ThemeData _themeData;
+  bool _isLoading = false;
 
   // Artisan _currentUser;
   bool _shouldDismissEarnPointsSheet = true,
@@ -626,18 +627,27 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                             ),
                           ],
                         ),
-                        Switch.adaptive(
-                          activeColor: _themeData.colorScheme.primary,
-                          value: user?.isAvailable ?? false,
-                          onChanged: (visibility) async {
-                            await _dataService.updateUser(
-                                ArtisanModel(
-                                  artisan:
-                                      user.copyWith(isAvailable: visibility),
-                                ),
-                                sync: false);
-                          },
-                        ),
+                        _isLoading
+                            ? CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation(
+                                    _themeData.colorScheme.secondary),
+                              )
+                            : Switch.adaptive(
+                                activeColor: _themeData.colorScheme.primary,
+                                value: user?.isAvailable ?? false,
+                                onChanged: (visibility) async {
+                                  setState(() {
+                                    _isLoading = !_isLoading;
+                                  });
+                                  await _dataService.updateUser(ArtisanModel(
+                                    artisan:
+                                        user.copyWith(isAvailable: visibility),
+                                  ));
+                                  setState(() {
+                                    _isLoading = !_isLoading;
+                                  });
+                                },
+                              ),
                       ],
                     ),
                   ),

@@ -4,7 +4,9 @@ import 'dart:io';
 
 import 'package:algolia/algolia.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:handyman/core/constants.dart';
@@ -409,27 +411,35 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<void> updateUser(BaseUser user, {bool sync = true}) async {
-    final token = await sl.get<FirebaseMessaging>().getToken();
-    debugPrint("Token => $token");
+  Future<void> updateUser(BaseUser user, {bool sync = true}) =>
+      compute(createUpdateUserCompute, user);
 
-    if (user.isCustomer) {
-      user = CustomerModel(customer: user.user.copyWith(token: token));
-      await _userDao.addCustomer(user);
-    } else {
-      user = ArtisanModel(artisan: user.user.copyWith(token: token));
-      await _userDao.saveProvider(user);
-    }
+  static Future<void> createUpdateUserCompute(BaseUser user) async {
+    try {
+      // WidgetsFlutterBinding.ensureInitialized();
+      await Firebase.initializeApp();
+      final token = await sl.get<FirebaseMessaging>().getToken();
+      debugPrint("Token => $token");
 
-    if (sync)
-      await _firestore
-          .collection(
-            user.isCustomer
-                ? FirestoreUtils.kCustomerRef
-                : FirestoreUtils.kArtisanRef,
-          )
+      if (user.isCustomer) {
+        user = CustomerModel(customer: user.user.copyWith(token: token));
+        // await _userDao.addCustomer(user);
+      } else {
+        user = ArtisanModel(artisan: user.user.copyWith(token: token));
+        // await _userDao.saveProvider(user);
+      }
+
+      return sl
+          .get<FirebaseFirestore>()
+          .collection(user.isCustomer
+              ? FirestoreUtils.kCustomerRef
+              : FirestoreUtils.kArtisanRef)
           .doc(user.user.id)
           .set(user.user.toJson(), SetOptions(merge: true));
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
   @override
