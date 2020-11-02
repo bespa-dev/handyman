@@ -250,7 +250,7 @@ class _SearchPageState extends State<SearchPage> {
           future: provider.userType == kCustomerString
               ? _dataService.searchFor(
                   value: _searchController.text.toLowerCase().trim())
-              : _dataService.getBookingsForProvider(provider.userId).single,
+              : _dataService.getBookingsForArtisan(provider.userId).single,
           builder: (ctx, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(

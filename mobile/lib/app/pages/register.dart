@@ -27,7 +27,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _emailController = TextEditingController(),
       _passwordController = TextEditingController(),
-      _nameController = TextEditingController();
+      _firstNameController = TextEditingController(),
+      _lastNameController = TextEditingController();
   AuthService _authService = FirebaseAuthService.create();
   PrefsProvider _prefsProvider;
 
@@ -35,7 +36,8 @@ class _RegisterPageState extends State<RegisterPage> {
   void _performRegister() async {
     _formKey.currentState.save();
     if (_formKey.currentState.validate()) {
-      final username = _nameController.text.trim();
+      final username =
+          "${_firstNameController.text.trim()} ${_lastNameController.text.trim()}";
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
@@ -187,14 +189,26 @@ class _RegisterPageState extends State<RegisterPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 TextFormInput(
-                                  controller: _nameController,
-                                  labelText: "Full Name",
+                                  controller: _firstNameController,
+                                  labelText: "First name",
                                   color: themeData.textTheme.bodyText1.color,
                                   textInputAction: TextInputAction.next,
                                   enabled: !_isLoading,
                                   validator: (input) =>
-                                      input == null || input.length < 6
-                                          ? "Enter your full name"
+                                      input == null || input.length < 3
+                                          ? "Enter your first name"
+                                          : null,
+                                  keyboardType: TextInputType.name,
+                                ),
+                                TextFormInput(
+                                  controller: _lastNameController,
+                                  labelText: "Last Name",
+                                  color: themeData.textTheme.bodyText1.color,
+                                  textInputAction: TextInputAction.next,
+                                  enabled: !_isLoading,
+                                  validator: (input) =>
+                                      input == null || input.length < 3
+                                          ? "Enter your last name"
                                           : null,
                                   keyboardType: TextInputType.name,
                                 ),

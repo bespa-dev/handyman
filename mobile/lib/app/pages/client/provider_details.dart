@@ -39,8 +39,6 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
     final kHeight = MediaQuery.of(context).size.height;
     final kWidth = MediaQuery.of(context).size.width;
 
-    debugPrint(widget.artisan.id);
-
     return Consumer<DataService>(
       builder: (_, service, __) {
         _apiService = service;
@@ -125,83 +123,38 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                                         Positioned(
                                           right: getProportionateScreenWidth(
                                               kSpacingNone),
-                                          top: kHeight * 0.1,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              InkWell(
-                                                onTap: () =>
-                                                    context.navigator.push(
-                                                  Routes.requestBookingPage,
-                                                  arguments:
-                                                      RequestBookingPageArguments(
-                                                    artisan: artisan,
-                                                  ),
-                                                ),
-                                                child: Container(
-                                                  alignment: Alignment.center,
-                                                  height: kToolbarHeight,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      topLeft: Radius.circular(
+                                          top: kHeight * 0.3,
+                                          child: InkWell(
+                                            onTap: () =>
+                                                context.navigator.push(
+                                              Routes.requestBookingPage,
+                                              arguments:
+                                                  RequestBookingPageArguments(
+                                                artisan: artisan,
+                                              ),
+                                            ),
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              height: kToolbarHeight,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.only(
+                                                  topLeft: Radius.circular(
+                                                      kSpacingX16),
+                                                  bottomLeft:
+                                                      Radius.circular(
                                                           kSpacingX16),
-                                                      bottomLeft:
-                                                          Radius.circular(
-                                                              kSpacingX16),
-                                                    ),
-                                                    color:
-                                                        _themeData.colorScheme.primary,
-                                                  ),
-                                                  width: kWidth * 0.25,
-                                                  child: Text(
-                                                    "Book now".toUpperCase(),
-                                                    style: _themeData
-                                                        .textTheme.button,
-                                                  ),
                                                 ),
+                                                color:
+                                                    _themeData.colorScheme.primary,
                                               ),
-                                              SizedBox(
-                                                  height:
-                                                      getProportionateScreenHeight(
-                                                          kSpacingX12)),
-                                              Container(
-                                                alignment: Alignment.center,
-                                                height:
-                                                    getProportionateScreenHeight(
-                                                        kSpacingX48),
-                                                width:
-                                                    getProportionateScreenWidth(
-                                                        kSpacingX72),
-                                                decoration: BoxDecoration(
-                                                  color: _themeData
-                                                      .scaffoldBackgroundColor
-                                                      .withOpacity(kOpacityX70),
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                    topLeft: Radius.circular(
-                                                        kSpacingX16),
-                                                    bottomLeft: Radius.circular(
-                                                        kSpacingX16),
-                                                  ),
-                                                ),
-                                                child: IconButton(
-                                                  icon: Icon(Entypo.chat),
-                                                  color: _themeData
-                                                      .iconTheme.color,
-                                                  onPressed: () =>
-                                                      context.navigator.push(
-                                                    Routes.conversationPage,
-                                                    arguments:
-                                                        ConversationPageArguments(
-                                                      isCustomer: false,
-                                                      recipient: artisan?.id,
-                                                    ),
-                                                  ),
-                                                ),
+                                              width: kWidth * 0.25,
+                                              child: Text(
+                                                "Book now".toUpperCase(),
+                                                style: _themeData
+                                                    .textTheme.button,
                                               ),
-                                            ],
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -270,7 +223,6 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                                       keyboardShown: false,
                                       focusNode: _focusNode,
                                       onSubmit: (text) {
-                                        debugPrint(text);
                                         _textController.clear();
                                         _apiService.sendReview(
                                           message: text,
@@ -313,7 +265,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
           color: _themeData.cardColor,
         ),
         child: StreamBuilder<List<Gallery>>(
-            stream: _apiService.getPhotosForUser(userId),
+            stream: _apiService.getPhotosForArtisan(userId),
             initialData: [],
             builder: (context, snapshot) {
               if (snapshot.hasError || snapshot.data.isEmpty)
@@ -370,7 +322,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
   Widget _buildReviewTab(Artisan artisan, String userId) =>
       Consumer<PrefsProvider>(
         builder: (_, prefs, __) => StreamBuilder<List<CustomerReview>>(
-            stream: _apiService.getReviewsForProvider(artisan?.id),
+            stream: _apiService.getReviewsForArtisan(artisan?.id),
             initialData: [],
             builder: (context, snapshot) {
               return snapshot.hasError || snapshot.data.isEmpty

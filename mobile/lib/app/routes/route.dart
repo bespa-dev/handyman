@@ -20,6 +20,7 @@ import 'package:handyman/app/pages/splash.dart';
 import 'guard.dart';
 
 /// Router paths and guards registration
+/// generate routes using => flutter packages pub run build_runner watch --delete-conflicting-outputs
 @MaterialAutoRouter(
   routes: [
     AdaptiveRoute(page: OnboardingPage, initial: true),

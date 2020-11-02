@@ -1,110 +1,86 @@
 [
   {
     "id": "bb7c0d03-add2-49cb-bdd5-9a55f67adb30",
-    "name": "Home Cleaning",
+    "name": "Exterminator",
     "avatar": "https://images.unsplash.com/photo-1489274495757-95c7c837b101?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "groupName": 10
   },
   {
     "id": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "Bathroom Remodeling",
+    "name": "Mechanics",
     "avatar": "https://images.unsplash.com/photo-1521783593447-5702b9bfd267?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "groupName": 11
   },
   {
     "id": "781ec80c-63c6-4e9f-89a7-54b85f0c1666",
-    "name": "Kitchen Remodeling",
+    "name": "Welder",
     "avatar": "https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "groupName": 12
   },
   {
     "id": "5f0301dd-b8e8-4f76-9d41-f8392656ac61",
-    "name": "Fence Installation",
+    "name": "Painter",
     "avatar": "https://images.unsplash.com/photo-1597502999344-5a3e933dc108?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "groupName": 13
   },
   {
     "id": "e177c9ba-bedb-498c-93b5-3598cbd2e37e",
-    "name": "Exterior Painting",
+    "name": "Florist",
     "avatar": "https://images.unsplash.com/photo-1584661156681-540e80a161d3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "groupName": 14
   },
   {
     "id": "bbe8a179-7797-4d87-b388-cf93125f490e",
-    "name": "General",
+    "name": "Plumber",
     "avatar": "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "groupName": 15
   },
   {
     "id": "4dcd2140-7ab5-43d3-8e17-68abce8c6dc6",
-    "name": "Beauty & Spa",
+    "name": "Electrician",
     "avatar": "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "groupName": 0
   },
   {
     "id": "c1feed13-302f-4dd3-ba1b-67d1c7dfd71f",
-    "name": "Appliance Repair",
+    "name": "Interior Designer",
     "avatar": "https://images.unsplash.com/photo-1578520670514-9450bc4edcbd?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "groupName": 0
   },
   {
     "id": "8552bfd4-1a1e-420f-9f1e-feba454bb62d",
-    "name": "Travel",
+    "name": "Barber",
     "avatar": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "groupName": 0
   },
   {
     "id": "7dc91e3e-e0bf-48ad-8e78-c4bc7f88695d",
-    "name": "Weddings & Events",
+    "name": "Home cleaners",
     "avatar": "https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "groupName": 0
   },
   {
     "id": "e982775e-9b85-4ea4-a11d-d1e02c9d40cd",
-    "name": "Pest Control",
+    "name": "Gardeners",
     "avatar": "https://images.unsplash.com/photo-1572731561221-96d988d74dc9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "groupName": 0
   },
   {
     "id": "701ab0cb-9cfe-48d4-ab65-9060c85b2804",
-    "name": "Real Estate",
+    "name": "Upholstery",
     "avatar": "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "groupName": 0
   },
   {
     "id": "9dfa0b95-d288-4efa-afea-37f838c7fe49",
-    "name": "Business Services",
+    "name": "Car sprayer",
     "avatar": "https://images.unsplash.com/photo-1556740758-90de374c12ad?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "groupName": 0
   },
   {
     "id": "eaa057ad-6160-48aa-bad3-8b614443063b",
-    "name": "Hobbies",
+    "name": "Car electrician",
     "avatar": "https://images.unsplash.com/photo-1589682396782-a6d66dd93240?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
-    "groupName": 0
-  },
-  {
-    "id": "8e357ae9-d856-4a3b-82c3-7a05d0928a7f",
-    "name": "Health Care",
-    "avatar": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
-    "groupName": 0
-  },
-  {
-    "id": "caacc885-d7ea-4c22-8a93-139a60502e2f",
-    "name": "Job",
-    "avatar": "https://images.unsplash.com/photo-1568598035424-7070b67317d2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
-    "groupName": 0
-  },
-  {
-    "id": "598d67f5-b84b-4572-9058-57f36463aeac",
-    "name": "Rent & Hire",
-    "avatar": "https://images.unsplash.com/photo-1590986201364-ce95ab280ca2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
-    "groupName": 0
-  },
-  {
-    "id": "598d67f5-b84b-4572-9058-57f36463quab",
-    "name": "Photography",
-    "avatar": "https://images.unsplash.com/photo-1520390138845-fd2d229dd553?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "groupName": 0
   }
 ]

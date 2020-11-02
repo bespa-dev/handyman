@@ -126,7 +126,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                       _buildSearchBar(margin: kSpacingX24),
                                       StreamBuilder<List<Booking>>(
                                         stream:
-                                            dataService.getBookingsForProvider(
+                                            dataService.getBookingsForArtisan(
                                                 artisan?.id),
                                         initialData: [],
                                         builder: (_, snapshot) {

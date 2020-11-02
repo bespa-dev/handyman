@@ -6,7 +6,7 @@
     "business": "Tom Cobbley Inc.",
     "price": 12.99,
     "avatar": "https://images.unsplash.com/photo-1563122870-6b0b48a0af09?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
-    "category": "caacc885-d7ea-4c22-8a93-139a60502e2f",
+    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "phone": "+23355123456"
   },
   {
@@ -16,7 +16,7 @@
     "business": "Joe Bloggs Inc.",
     "price": 23.99,
     "avatar": "https://images.unsplash.com/photo-1507038732509-8b1a9623223a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
-    "category": "8e357ae9-d856-4a3b-82c3-7a05d0928a7f",
+    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "phone": "+23355123456",
     "certified": true
   },
@@ -27,7 +27,7 @@
     "business": "Fred Nerks Inc.",
     "price": 120.99,
     "avatar": "https://images.unsplash.com/photo-1535026406642-530e01750ad7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
-    "category": "8e357ae9-d856-4a3b-82c3-7a05d0928a7f",
+    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "phone": "+23355123456"
   },
   {
@@ -37,7 +37,7 @@
     "business": "Auchterturra Inc.",
     "price": 122.99,
     "avatar": "https://images.unsplash.com/photo-1515201899114-98ba64d41df7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
-    "category": "598d67f5-b84b-4572-9058-57f36463aeac",
+    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "phone": "+23355123456"
   },
   {
@@ -78,7 +78,7 @@
     "business": "Louie Lucy Enterprise",
     "price": 134.99,
     "avatar": "https://images.unsplash.com/photo-1574981370294-edbbf06bb159?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
-    "category": "598d67f5-b84b-4572-9058-57f36463aeac",
+    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "phone": "+23355123456",
     "certified": true
   },
@@ -89,7 +89,7 @@
     "business": "Caleb Carillo Inc.",
     "price": 19.99,
     "avatar": "https://images.unsplash.com/photo-1556940114-7e0900e48a86?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
-    "category": "598d67f5-b84b-4572-9058-57f36463aeac",
+    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "phone": "+23355123456"
   },
   {
@@ -99,7 +99,7 @@
     "business": "Eugenia Hartford Inc.",
     "price": 67.99,
     "avatar": "https://images.unsplash.com/photo-1597248374161-426f0d6d2fc9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
-    "category": "598d67f5-b84b-4572-9058-57f36463aeac",
+    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "phone": "+23355123456"
   },
   {
@@ -109,7 +109,7 @@
     "business": "Jovita Dehart Inc.",
     "price": 11.99,
     "avatar": "https://images.unsplash.com/photo-1536766768598-e09213fdcf22?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
-    "category": "598d67f5-b84b-4572-9058-57f36463aeac",
+    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "phone": "+23355123456"
   },
   {
@@ -119,7 +119,7 @@
     "business": "Rosalind Greenwell Inc.",
     "price": 8.49,
     "avatar": "https://images.unsplash.com/photo-1552162864-987ac51d1177?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
-    "category": "598d67f5-b84b-4572-9058-57f36463aeac",
+    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "phone": "+23355123456",
     "certified": true
   }

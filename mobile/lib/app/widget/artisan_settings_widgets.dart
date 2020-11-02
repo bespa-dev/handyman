@@ -480,7 +480,7 @@ Future<void> _showBottomSheetForDay(
                   StreamBuilder<List<Booking>>(
                       stream: sl
                           .get<DataService>()
-                          .getBookingsForProvider(artisan.id),
+                          .getBookingsForArtisan(artisan.id),
                       initialData: [],
                       builder: (context, snapshot) {
                         return snapshot.hasError ||

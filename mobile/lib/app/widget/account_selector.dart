@@ -31,13 +31,8 @@ class _UserAccountSelectorState extends State<UserAccountSelector> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          "Account:",
-          style: themeData.textTheme.headline6,
-        ),
-        SizedBox(width: getProportionateScreenWidth(kSpacingX8)),
         Container(
-          width: kWidth * 0.6,
+          width: kWidth * 0.85,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: widget.enabled
@@ -46,7 +41,7 @@ class _UserAccountSelectorState extends State<UserAccountSelector> {
             borderRadius: BorderRadius.circular(kSpacingX16),
           ),
           padding: EdgeInsets.symmetric(
-              vertical: getProportionateScreenHeight(kSpacingX8)),
+              vertical: getProportionateScreenHeight(kSpacingX4)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [

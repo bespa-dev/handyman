@@ -110,35 +110,13 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                                         onPressed: () =>
                                             context.navigator.pop(),
                                       ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          IconButton(
-                                            tooltip: "Chat",
-                                            icon: Icon(Entypo.chat),
-                                            onPressed: () => context.navigator
-                                                .popAndPush(
-                                                    Routes.conversationPage,
-                                                    arguments:
-                                                        ConversationPageArguments(
-                                                      isCustomer:
-                                                          provider.userType ==
-                                                              kArtisanString,
-                                                      recipient:
-                                                          widget.artisan.id,
-                                                    )),
-                                          ),
-                                          IconButton(
-                                            tooltip: "Toggle theme",
-                                            icon: Icon(provider.isLightTheme
-                                                ? Feather.moon
-                                                : Feather.sun),
-                                            onPressed: () =>
-                                                provider.toggleTheme(),
-                                          ),
-                                        ],
+                                      IconButton(
+                                        tooltip: "Toggle theme",
+                                        icon: Icon(provider.isLightTheme
+                                            ? Feather.moon
+                                            : Feather.sun),
+                                        onPressed: () =>
+                                            provider.toggleTheme(),
                                       )
                                     ],
                                   ),
@@ -265,6 +243,7 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                   labelText: "Phone number (optional)",
                   color: _themeData.colorScheme.onBackground,
                   controller: _phoneController..text = user?.phone,
+                  keyboardType: TextInputType.phone,
                   textInputAction: TextInputAction.done,
                 ),
               ],

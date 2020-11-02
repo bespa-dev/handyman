@@ -54,6 +54,10 @@ class DataServiceImpl implements DataService {
         .toList();
     models.forEach((element) {
       _userDao.saveProvider(element);
+      _firestore
+          .collection(FirestoreUtils.kArtisanRef)
+          .doc(element.user.id)
+          .set(element.user.toJson(), SetOptions(merge: true));
     });
 
     final localSource = _userDao
@@ -217,7 +221,7 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Stream<List<CustomerReview>> getReviewsForProvider(String id) async* {
+  Stream<List<CustomerReview>> getReviewsForArtisan(String id) async* {
     final localSource = _reviewDao.reviewsForProvider(id).watch();
     yield* localSource;
 
@@ -235,7 +239,7 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Stream<List<Booking>> getBookingsForProvider(String id) async* {
+  Stream<List<Booking>> getBookingsForArtisan(String id) async* {
     // Decode bookings from json array
     final bookingsData =
         await rootBundle.loadString("assets/sample_bookings.json");
@@ -293,7 +297,7 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Stream<List<Booking>> bookingsForCustomerAndProvider(
+  Stream<List<Booking>> bookingsForCustomerAndArtisan(
       String customerId, String providerId) async* {
     final localSource = _bookingDao
         .bookingsForCustomerAndProvider(customerId, providerId)
@@ -315,7 +319,7 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Stream<List<Gallery>> getPhotosForUser(String userId) async* {
+  Stream<List<Gallery>> getPhotosForArtisan(String userId) async* {
     // Sample data
     final data = await rootBundle.loadString("assets/sample_photos.json");
     var decodedData = json.decode(data);
@@ -345,7 +349,7 @@ class DataServiceImpl implements DataService {
 
   /// Save [CustomerReview] in database
   @override
-  Future<void> sendReview({String message, String reviewer, artisan}) async {
+  Future<void> sendReview({String message, String reviewer,String artisan}) async {
     final review = CustomerReview(
       id: Uuid().v4(),
       review: message,
@@ -403,16 +407,6 @@ class DataServiceImpl implements DataService {
     } on Exception {
       return Future.value(<BaseUser>[]);
     }
-    /*// Sample data
-    final data = await rootBundle.loadString("assets/sample_artisan.json");
-    var decodedData = json.decode(data);
-
-    List<dynamic> artisans = decodedData ??= [];
-
-    List<BaseUser> models = artisans
-        .map((e) => ArtisanModel(artisan: Artisan.fromJson(e)))
-        .toList();
-    return models;*/
   }
 
   @override
@@ -527,6 +521,29 @@ class DataServiceImpl implements DataService {
             .doc(booking.id)
             .set(booking.toJson(), SetOptions(merge: true));
       }
+    });
+  }
+
+  @override
+  Future<void> uploadBusinessPhotos(String userId, List<File> images) async {
+    final storageService = StorageServiceImpl.create();
+    images.forEach((image) async {
+      final id = Uuid().v4();
+      await storageService.uploadFile(image, path: id);
+      storageService.onStorageUploadResponse.listen((event) async {
+        if (!event.isInComplete) {
+          await _firestore
+              .collection(FirestoreUtils.kGalleryRef)
+              .doc(id)
+              .set(
+                  Gallery(
+                    id: id,
+                    userId: userId,
+                    imageUrl: event.url,
+                  ).toJson(),
+                  SetOptions(merge: true));
+        }
+      });
     });
   }
 }

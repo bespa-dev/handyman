@@ -48,6 +48,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
       colorScheme: ColorScheme.light(
         secondary: kSecondaryLightColor,
         surface: kWhiteColor,
+        primary: kPrimaryColor,
       ),
       backgroundColor: /*Colors.white*/ kBackgroundLightColor,
       iconTheme: IconThemeData(color: kPrimaryIconLightColor),
@@ -131,10 +132,10 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(
+        border: /*OutlineInputBorder(
           borderRadius: BorderRadius.circular(kSpacingX24),
           gapPadding: kSpacingX2,
-        ),
+        )*/ UnderlineInputBorder(),
       ),
       visualDensity: VisualDensity.adaptivePlatformDensity,
       primaryColor: kPrimaryColorDark,
@@ -143,6 +144,7 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
       colorScheme: ColorScheme.dark(
         secondary: kSecondaryDarkColor,
         surface: kSurfaceDarkColor,
+        primary: kPrimaryColorDark,
       ),
       backgroundColor: kBackgroundDarkColor,
       iconTheme: IconThemeData(color: kPrimaryIconDarkColor),

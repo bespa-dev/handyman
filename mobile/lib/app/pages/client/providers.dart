@@ -23,7 +23,7 @@ class CategoryProvidersPage extends StatefulWidget {
 
 class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _preferGridFormat = false;
+  bool _preferGridFormat = true;
 
   @override
   Widget build(BuildContext context) {
