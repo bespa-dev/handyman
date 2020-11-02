@@ -64,6 +64,9 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Must be called on initial page
+    SizeConfig().init(context);
+
     ThemeData themeData = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final kWidth = size.width;
@@ -130,7 +133,7 @@ class _SplashPageState extends State<SplashPage> {
                     ),
                     SizedBox(height: getProportionateScreenHeight(kSpacingX96)),
                     ButtonPrimary(
-                      width: kWidth * 0.9,
+                      width: kWidth * 0.7,
                       themeData: themeData,
                       onTap: () => context.navigator.popAndPush(
                         provider.isLoggedIn
@@ -150,7 +153,7 @@ class _SplashPageState extends State<SplashPage> {
                     provider.isLoggedIn
                         ? SizedBox.shrink()
                         : ButtonOutlined(
-                            width: kWidth * 0.9,
+                            width: kWidth * 0.7,
                             themeData: themeData,
                             onTap: () async =>
                                 await _authService.signInWithGoogle(),

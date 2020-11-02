@@ -101,45 +101,49 @@ class FirebaseAuthService implements AuthService {
       {bool isCustomer = true}) async {
     _onProcessingStateChanged.sink.add(loadingState);
     final token = await _firebaseMessaging.getToken();
-    if (isCustomer) {
-      final snapshot = await _firestore
-          .collection(FirestoreUtils.kCustomerRef)
-          .doc(user.uid)
-          .get();
-      if (snapshot.exists) {
-        final customer = Customer.fromJson(snapshot.data());
-        final model = CustomerModel(customer: customer.copyWith(token: token));
-        await _database.userDao.addCustomer(model);
-        _onProcessingStateChanged.sink.add(successState);
-        _onAuthStateChanged.sink.add(model);
-        return model;
+    if (await _userExists(user.email, isCustomer: isCustomer)) {
+      if (isCustomer) {
+        final snapshot = await _firestore
+            .collection(FirestoreUtils.kCustomerRef)
+            .doc(user.uid)
+            .get();
+        if (snapshot.exists) {
+          final customer = Customer.fromJson(snapshot.data());
+          final model =
+              CustomerModel(customer: customer.copyWith(token: token));
+          await _database.userDao.addCustomer(model);
+          _onProcessingStateChanged.sink.add(successState);
+          _onAuthStateChanged.sink.add(model);
+          return model;
+        } else {
+          _onProcessingStateChanged.sink.add(errorState);
+          return null;
+        }
       } else {
-        _onProcessingStateChanged.sink.add(errorState);
-        return null;
-      }
-    } else {
-      final snapshot = await _firestore
-          .collection(FirestoreUtils.kArtisanRef)
-          .doc(user.uid)
-          .get();
-      if (snapshot.exists) {
-        final artisan = Artisan.fromJson(snapshot.data());
+        final snapshot = await _firestore
+            .collection(FirestoreUtils.kArtisanRef)
+            .doc(user.uid)
+            .get();
+        if (snapshot.exists) {
+          final artisan = Artisan.fromJson(snapshot.data());
 
-        _onProcessingStateChanged.sink.add(successState);
-        final model = ArtisanModel(
-            artisan: artisan.copyWith(
-          business: artisan.business ?? "",
-          token: token,
-        ));
-        await _database.userDao.saveProvider(model);
-        _onAuthStateChanged.sink.add(model);
-        return model;
-      } else {
-        _onAuthStateChanged.sink.add(null);
-        _onProcessingStateChanged.sink.add(errorState);
-        return null;
+          _onProcessingStateChanged.sink.add(successState);
+          final model = ArtisanModel(
+              artisan: artisan.copyWith(
+            business: artisan.business ?? "",
+            token: token,
+          ));
+          await _database.userDao.saveProvider(model);
+          _onAuthStateChanged.sink.add(model);
+          return model;
+        } else {
+          _onAuthStateChanged.sink.add(null);
+          _onProcessingStateChanged.sink.add(errorState);
+          return null;
+        }
       }
-    }
+    } else
+      return _createUserInstance(user, user.displayName, isCustomer);
   }
 
   Future<bool> _userExists(String email, {bool isCustomer = true}) async {
@@ -303,6 +307,8 @@ class FirebaseAuthService implements AuthService {
       final preferences = await sl.getAsync<SharedPreferences>();
       await preferences.setString(PrefsUtils.USER_ID, null);
       await preferences.setString(PrefsUtils.USER_TYPE, null);
+      _userId = null;
+      _userType = null;
 
       _onProcessingStateChanged?.sink?.add(successState);
       _onAuthStateChanged?.sink?.add(null);

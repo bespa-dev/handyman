@@ -37,8 +37,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Must be called on initial page
-    SizeConfig().init(context);
     final themeData = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final kWidth = size.width;
@@ -146,12 +144,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   bottomLeft:
                       Radius.circular(getProportionateScreenWidth(kSpacingX24)),
                 ),
-                onTap: () => context.navigator.popAndPush(
-                  provider.shouldShowSplash || !provider.isLoggedIn
-                      ? Routes.splashPage
-                      : provider.userType == kCustomerString
-                          ? Routes.homePage
-                          : Routes.dashboardPage,
+                onTap: () => context.navigator.pushAndRemoveUntil(
+                  provider.userType == kCustomerString
+                      ? Routes.homePage
+                      : Routes.dashboardPage,
+                  (route) => false,
                 ),
                 child: Container(
                   height: kToolbarHeight,
