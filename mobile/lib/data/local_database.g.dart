@@ -26,7 +26,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
   final int endWorkingHours;
   final String avatar;
   final String aboutMe;
-  final double price;
+  final double startPrice;
+  final double endPrice;
   final double rating;
   final int createdAt;
   Artisan(
@@ -48,7 +49,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       this.endWorkingHours,
       this.avatar,
       this.aboutMe,
-      @required this.price,
+      @required this.startPrice,
+      @required this.endPrice,
       @required this.rating,
       this.createdAt});
   factory Artisan.fromData(Map<String, dynamic> data, GeneratedDatabase db,
@@ -93,8 +95,10 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}avatar']),
       aboutMe: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}about_me']),
-      price:
-          doubleType.mapFromDatabaseResponse(data['${effectivePrefix}price']),
+      startPrice: doubleType
+          .mapFromDatabaseResponse(data['${effectivePrefix}start_price']),
+      endPrice: doubleType
+          .mapFromDatabaseResponse(data['${effectivePrefix}end_price']),
       rating:
           doubleType.mapFromDatabaseResponse(data['${effectivePrefix}rating']),
       createdAt:
@@ -158,8 +162,11 @@ class Artisan extends DataClass implements Insertable<Artisan> {
     if (!nullToAbsent || aboutMe != null) {
       map['about_me'] = Variable<String>(aboutMe);
     }
-    if (!nullToAbsent || price != null) {
-      map['price'] = Variable<double>(price);
+    if (!nullToAbsent || startPrice != null) {
+      map['start_price'] = Variable<double>(startPrice);
+    }
+    if (!nullToAbsent || endPrice != null) {
+      map['end_price'] = Variable<double>(endPrice);
     }
     if (!nullToAbsent || rating != null) {
       map['rating'] = Variable<double>(rating);
@@ -218,8 +225,12 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       aboutMe: aboutMe == null && nullToAbsent
           ? const Value.absent()
           : Value(aboutMe),
-      price:
-          price == null && nullToAbsent ? const Value.absent() : Value(price),
+      startPrice: startPrice == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startPrice),
+      endPrice: endPrice == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endPrice),
       rating:
           rating == null && nullToAbsent ? const Value.absent() : Value(rating),
       createdAt: createdAt == null && nullToAbsent
@@ -253,7 +264,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       endWorkingHours: serializer.fromJson<int>(json['end_working_hours']),
       avatar: serializer.fromJson<String>(json['avatar']),
       aboutMe: serializer.fromJson<String>(json['about_me']),
-      price: serializer.fromJson<double>(json['price']),
+      startPrice: serializer.fromJson<double>(json['start_price']),
+      endPrice: serializer.fromJson<double>(json['end_price']),
       rating: serializer.fromJson<double>(json['rating']),
       createdAt: serializer.fromJson<int>(json['created_at']),
     );
@@ -282,7 +294,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       'end_working_hours': serializer.toJson<int>(endWorkingHours),
       'avatar': serializer.toJson<String>(avatar),
       'about_me': serializer.toJson<String>(aboutMe),
-      'price': serializer.toJson<double>(price),
+      'start_price': serializer.toJson<double>(startPrice),
+      'end_price': serializer.toJson<double>(endPrice),
       'rating': serializer.toJson<double>(rating),
       'created_at': serializer.toJson<int>(createdAt),
     };
@@ -307,7 +320,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           int endWorkingHours,
           String avatar,
           String aboutMe,
-          double price,
+          double startPrice,
+          double endPrice,
           double rating,
           int createdAt}) =>
       Artisan(
@@ -331,7 +345,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
         endWorkingHours: endWorkingHours ?? this.endWorkingHours,
         avatar: avatar ?? this.avatar,
         aboutMe: aboutMe ?? this.aboutMe,
-        price: price ?? this.price,
+        startPrice: startPrice ?? this.startPrice,
+        endPrice: endPrice ?? this.endPrice,
         rating: rating ?? this.rating,
         createdAt: createdAt ?? this.createdAt,
       );
@@ -356,7 +371,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           ..write('endWorkingHours: $endWorkingHours, ')
           ..write('avatar: $avatar, ')
           ..write('aboutMe: $aboutMe, ')
-          ..write('price: $price, ')
+          ..write('startPrice: $startPrice, ')
+          ..write('endPrice: $endPrice, ')
           ..write('rating: $rating, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -407,8 +423,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
                                                                           aboutMe
                                                                               .hashCode,
                                                                           $mrjc(
-                                                                              price.hashCode,
-                                                                              $mrjc(rating.hashCode, createdAt.hashCode)))))))))))))))))))));
+                                                                              startPrice.hashCode,
+                                                                              $mrjc(endPrice.hashCode, $mrjc(rating.hashCode, createdAt.hashCode))))))))))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -431,7 +447,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           other.endWorkingHours == this.endWorkingHours &&
           other.avatar == this.avatar &&
           other.aboutMe == this.aboutMe &&
-          other.price == this.price &&
+          other.startPrice == this.startPrice &&
+          other.endPrice == this.endPrice &&
           other.rating == this.rating &&
           other.createdAt == this.createdAt);
 }
@@ -455,7 +472,8 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
   final Value<int> endWorkingHours;
   final Value<String> avatar;
   final Value<String> aboutMe;
-  final Value<double> price;
+  final Value<double> startPrice;
+  final Value<double> endPrice;
   final Value<double> rating;
   final Value<int> createdAt;
   const ServiceProviderCompanion({
@@ -477,7 +495,8 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     this.endWorkingHours = const Value.absent(),
     this.avatar = const Value.absent(),
     this.aboutMe = const Value.absent(),
-    this.price = const Value.absent(),
+    this.startPrice = const Value.absent(),
+    this.endPrice = const Value.absent(),
     this.rating = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
@@ -500,7 +519,8 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     this.endWorkingHours = const Value.absent(),
     this.avatar = const Value.absent(),
     this.aboutMe = const Value.absent(),
-    this.price = const Value.absent(),
+    this.startPrice = const Value.absent(),
+    this.endPrice = const Value.absent(),
     this.rating = const Value.absent(),
     this.createdAt = const Value.absent(),
   })  : id = Value(id),
@@ -525,7 +545,8 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     Expression<int> endWorkingHours,
     Expression<String> avatar,
     Expression<String> aboutMe,
-    Expression<double> price,
+    Expression<double> startPrice,
+    Expression<double> endPrice,
     Expression<double> rating,
     Expression<int> createdAt,
   }) {
@@ -551,7 +572,8 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       if (endWorkingHours != null) 'end_working_hours': endWorkingHours,
       if (avatar != null) 'avatar': avatar,
       if (aboutMe != null) 'about_me': aboutMe,
-      if (price != null) 'price': price,
+      if (startPrice != null) 'start_price': startPrice,
+      if (endPrice != null) 'end_price': endPrice,
       if (rating != null) 'rating': rating,
       if (createdAt != null) 'created_at': createdAt,
     });
@@ -576,7 +598,8 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       Value<int> endWorkingHours,
       Value<String> avatar,
       Value<String> aboutMe,
-      Value<double> price,
+      Value<double> startPrice,
+      Value<double> endPrice,
       Value<double> rating,
       Value<int> createdAt}) {
     return ServiceProviderCompanion(
@@ -600,7 +623,8 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       endWorkingHours: endWorkingHours ?? this.endWorkingHours,
       avatar: avatar ?? this.avatar,
       aboutMe: aboutMe ?? this.aboutMe,
-      price: price ?? this.price,
+      startPrice: startPrice ?? this.startPrice,
+      endPrice: endPrice ?? this.endPrice,
       rating: rating ?? this.rating,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -665,8 +689,11 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     if (aboutMe.present) {
       map['about_me'] = Variable<String>(aboutMe.value);
     }
-    if (price.present) {
-      map['price'] = Variable<double>(price.value);
+    if (startPrice.present) {
+      map['start_price'] = Variable<double>(startPrice.value);
+    }
+    if (endPrice.present) {
+      map['end_price'] = Variable<double>(endPrice.value);
     }
     if (rating.present) {
       map['rating'] = Variable<double>(rating.value);
@@ -698,7 +725,8 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
           ..write('endWorkingHours: $endWorkingHours, ')
           ..write('avatar: $avatar, ')
           ..write('aboutMe: $aboutMe, ')
-          ..write('price: $price, ')
+          ..write('startPrice: $startPrice, ')
+          ..write('endPrice: $endPrice, ')
           ..write('rating: $rating, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -912,13 +940,22 @@ class $ServiceProviderTable extends ServiceProvider
         maxTextLength: 5000);
   }
 
-  final VerificationMeta _priceMeta = const VerificationMeta('price');
-  GeneratedRealColumn _price;
+  final VerificationMeta _startPriceMeta = const VerificationMeta('startPrice');
+  GeneratedRealColumn _startPrice;
   @override
-  GeneratedRealColumn get price => _price ??= _constructPrice();
-  GeneratedRealColumn _constructPrice() {
-    return GeneratedRealColumn('price', $tableName, false,
-        defaultValue: Constant(20.99));
+  GeneratedRealColumn get startPrice => _startPrice ??= _constructStartPrice();
+  GeneratedRealColumn _constructStartPrice() {
+    return GeneratedRealColumn('start_price', $tableName, false,
+        defaultValue: Constant(19.99));
+  }
+
+  final VerificationMeta _endPriceMeta = const VerificationMeta('endPrice');
+  GeneratedRealColumn _endPrice;
+  @override
+  GeneratedRealColumn get endPrice => _endPrice ??= _constructEndPrice();
+  GeneratedRealColumn _constructEndPrice() {
+    return GeneratedRealColumn('end_price', $tableName, false,
+        defaultValue: Constant(119.99));
   }
 
   final VerificationMeta _ratingMeta = const VerificationMeta('rating');
@@ -959,7 +996,8 @@ class $ServiceProviderTable extends ServiceProvider
         endWorkingHours,
         avatar,
         aboutMe,
-        price,
+        startPrice,
+        endPrice,
         rating,
         createdAt
       ];
@@ -1069,9 +1107,15 @@ class $ServiceProviderTable extends ServiceProvider
       context.handle(_aboutMeMeta,
           aboutMe.isAcceptableOrUnknown(data['about_me'], _aboutMeMeta));
     }
-    if (data.containsKey('price')) {
+    if (data.containsKey('start_price')) {
       context.handle(
-          _priceMeta, price.isAcceptableOrUnknown(data['price'], _priceMeta));
+          _startPriceMeta,
+          startPrice.isAcceptableOrUnknown(
+              data['start_price'], _startPriceMeta));
+    }
+    if (data.containsKey('end_price')) {
+      context.handle(_endPriceMeta,
+          endPrice.isAcceptableOrUnknown(data['end_price'], _endPriceMeta));
     }
     if (data.containsKey('rating')) {
       context.handle(_ratingMeta,
@@ -3249,7 +3293,7 @@ class Conversation extends DataClass implements Insertable<Conversation> {
       @required this.author,
       @required this.recipient,
       @required this.content,
-      @required this.createdAt,
+      this.createdAt,
       this.image});
   factory Conversation.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
@@ -3406,13 +3450,12 @@ class MessageCompanion extends UpdateCompanion<Conversation> {
     @required String author,
     @required String recipient,
     @required String content,
-    @required String createdAt,
+    this.createdAt = const Value.absent(),
     this.image = const Value.absent(),
   })  : id = Value(id),
         author = Value(author),
         recipient = Value(recipient),
-        content = Value(content),
-        createdAt = Value(createdAt);
+        content = Value(content);
   static Insertable<Conversation> custom({
     Expression<String> id,
     Expression<String> author,
@@ -3544,11 +3587,9 @@ class $MessageTable extends Message
   @override
   GeneratedTextColumn get createdAt => _createdAt ??= _constructCreatedAt();
   GeneratedTextColumn _constructCreatedAt() {
-    return GeneratedTextColumn(
-      'created_at',
-      $tableName,
-      false,
-    );
+    return GeneratedTextColumn('created_at', $tableName, true,
+        defaultValue:
+            Constant(DateTime.now().millisecondsSinceEpoch.toString()));
   }
 
   final VerificationMeta _imageMeta = const VerificationMeta('image');
@@ -3603,8 +3644,6 @@ class $MessageTable extends Message
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at'], _createdAtMeta));
-    } else if (isInserting) {
-      context.missing(_createdAtMeta);
     }
     if (data.containsKey('image')) {
       context.handle(
@@ -3812,7 +3851,8 @@ mixin _$UserDaoMixin on DatabaseAccessor<LocalDatabase> {
         endWorkingHours: row.readInt('end_working_hours'),
         avatar: row.readString('avatar'),
         aboutMe: row.readString('about_me'),
-        price: row.readDouble('price'),
+        startPrice: row.readDouble('start_price'),
+        endPrice: row.readDouble('end_price'),
         rating: row.readDouble('rating'),
         createdAt: row.readInt('created_at'),
         id1: row.readString('id'),
@@ -3846,7 +3886,8 @@ class SearchForResult {
   final int endWorkingHours;
   final String avatar;
   final String aboutMe;
-  final double price;
+  final double startPrice;
+  final double endPrice;
   final double rating;
   final int createdAt;
   final String id1;
@@ -3875,7 +3916,8 @@ class SearchForResult {
     this.endWorkingHours,
     this.avatar,
     this.aboutMe,
-    this.price,
+    this.startPrice,
+    this.endPrice,
     this.rating,
     this.createdAt,
     this.id1,

@@ -412,11 +412,10 @@ class DataServiceImpl implements DataService {
 
   @override
   Future<void> updateUser(BaseUser user, {bool sync = true}) =>
-      compute(createUpdateUserCompute, user);
+      compute(_createUpdateUserCompute, user);
 
-  static Future<void> createUpdateUserCompute(BaseUser user) async {
+  static Future<void> _createUpdateUserCompute(BaseUser user) async {
     try {
-      // WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       final token = await sl.get<FirebaseMessaging>().getToken();
       debugPrint("Token => $token");
@@ -519,7 +518,7 @@ class DataServiceImpl implements DataService {
       providerId: artisan?.id,
       category: category,
       reason: description,
-      value: artisan?.price,
+      value: artisan?.startPrice,
       progress: 0.0,
     );
     final storageService = StorageServiceImpl.create();

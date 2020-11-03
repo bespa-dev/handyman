@@ -75,18 +75,19 @@ class FirebaseAuthService implements AuthService {
       final artisan = Artisan(
         id: user.uid,
         name: username,
-        business: "",
+        business: "None available",
         email: user.email,
         isCertified: false,
-        isAvailable: false,
+        isAvailable: true,
         category: kGeneralCategory,
         startWorkingHours: DateTime.now().millisecondsSinceEpoch,
         completedBookingsCount: 0,
         ongoingBookingsCount: 0,
         cancelledBookingsCount: 0,
         endWorkingHours: DateTime.now().millisecondsSinceEpoch + 43200000,
-        price: 0.00,
         rating: 2.5,
+        startPrice: 19.99,
+        endPrice: 119.99,
         requestsCount: 0,
       );
       await _firestore

@@ -12,6 +12,7 @@ import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/artisan_settings_widgets.dart';
 import 'package:handyman/app/widget/badgeable_tab_bar.dart';
 import 'package:handyman/app/widget/buttons.dart';
+import 'package:handyman/app/widget/loaders.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
@@ -628,10 +629,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                           ],
                         ),
                         _isLoading
-                            ? CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation(
-                                    _themeData.colorScheme.secondary),
-                              )
+                            ? Loading()
                             : Switch.adaptive(
                                 activeColor: _themeData.colorScheme.primary,
                                 value: user?.isAvailable ?? false,
@@ -658,9 +656,9 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
         );
 
   // Gets user's current location and finds the name of that address
-  Future<geo.Position> _getUserLocation() async =>
-      await geo.Geolocator.getCurrentPosition(
-          desiredAccuracy: geo.LocationAccuracy.high);
+  Stream<geo.Position> _getUserLocation() => geo.Geolocator.getCurrentPosition(
+          desiredAccuracy: geo.LocationAccuracy.high)
+      .asStream();
 
   Widget _buildTabBar() => Container(
         margin: EdgeInsets.symmetric(
@@ -711,16 +709,6 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
             context,
             _themeData,
             artisan: user,
-          ),
-          FutureBuilder<geo.Position>(
-            future: _getUserLocation(),
-            builder: (_, locationSnapshot) {
-              return locationSnapshot.hasError
-                  ? SizedBox.shrink()
-                  : buildMapPreviewForBusinessLocation(
-                      position: locationSnapshot.data,
-                    );
-            },
           ),
           Container(
             margin: EdgeInsets.only(
@@ -814,6 +802,84 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
               },
             ),
           ),
+          _buildPriceRange(user),
+          StreamBuilder<geo.Position>(
+            stream: _getUserLocation(),
+            builder: (_, locationSnapshot) {
+              return AnimatedContainer(
+                duration: kSheetDuration,
+                padding: EdgeInsets.symmetric(
+                  vertical: locationSnapshot.hasError ||
+                          locationSnapshot.connectionState ==
+                              ConnectionState.waiting
+                      ? getProportionateScreenHeight(kSpacingX24)
+                      : kSpacingNone,
+                ),
+                child: locationSnapshot.hasError ||
+                        locationSnapshot.connectionState ==
+                            ConnectionState.waiting
+                    ? Loading()
+                    : buildMapPreviewForBusinessLocation(
+                        position: locationSnapshot.data,
+                      ),
+              );
+            },
+          ),
         ],
       );
+
+  Widget _buildPriceRange(Artisan user) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(
+        getProportionateScreenWidth(kSpacingX16),
+        getProportionateScreenHeight(kSpacingX8),
+        getProportionateScreenWidth(kSpacingX16),
+        getProportionateScreenHeight(kSpacingX16),
+      ),
+      margin: EdgeInsets.only(
+        left: getProportionateScreenWidth(kSpacingX24),
+        right: getProportionateScreenWidth(kSpacingX24),
+        bottom: getProportionateScreenHeight(kSpacingX16),
+      ),
+      decoration: BoxDecoration(
+        color: _themeData.scaffoldBackgroundColor.withOpacity(kEmphasisLow),
+        borderRadius: BorderRadius.circular(kSpacingX16),
+        border: Border.all(
+            color: _themeData.disabledColor.withOpacity(kEmphasisLow)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Service price range", style: _themeData.textTheme.headline6),
+          SizedBox(
+            height: getProportionateScreenHeight(kSpacingX12),
+          ),
+          Row(
+            children: [
+              Text("\₵10"),
+              Expanded(
+                child: RangeSlider(
+                  labels: RangeLabels(
+                      user.startPrice.toString(), user.endPrice.toString()),
+                  divisions: 10,
+                  min: 9.99,
+                  max: 199.99,
+                  values: RangeValues(user.startPrice, user.endPrice),
+                  onChanged: (newValue) {
+                    print("New value => $newValue");
+                    _dataService.updateUser(ArtisanModel(
+                        artisan: user.copyWith(
+                            startPrice: newValue.start,
+                            endPrice: newValue.end)));
+                  },
+                ),
+              ),
+              Text("\₵200"),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }

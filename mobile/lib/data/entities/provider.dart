@@ -57,7 +57,11 @@ class ServiceProvider extends Table {
   @JsonKey("about_me")
   TextColumn get aboutMe => text().nullable().withLength(max: 5000)();
 
-  RealColumn get price => real().withDefault(Constant(20.99))();
+  @JsonKey("start_price")
+  RealColumn get startPrice => real().withDefault(Constant(19.99))();
+
+  @JsonKey("end_price")
+  RealColumn get endPrice => real().withDefault(Constant(119.99))();
 
   RealColumn get rating => real().withDefault(Constant(3.5))();
 
