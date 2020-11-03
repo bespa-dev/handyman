@@ -102,7 +102,6 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
             ),
           );
         },
-        physics: kScrollPhysics,
       ),
     );
   }
@@ -123,7 +122,6 @@ class _ListCategoryCardItemState extends State<ListCategoryCardItem> {
     final themeData = Theme.of(context);
     return AnimationLimiter(
       child: ListView.builder(
-        physics: kScrollPhysics,
         itemBuilder: (_, index) {
           final category = widget.categories[index];
           return AnimationConfiguration.staggeredList(

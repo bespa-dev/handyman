@@ -188,7 +188,6 @@ class _SearchPageState extends State<SearchPage> {
                                     height: getProportionateScreenHeight(
                                         kSpacingX48),
                                     child: ListView.separated(
-                                      physics: kScrollPhysics,
                                       scrollDirection: Axis.horizontal,
                                       itemBuilder: (_, index) {
                                         final category = snapshot.data[index];
@@ -301,7 +300,6 @@ class _SearchPageState extends State<SearchPage> {
                               mainAxisSpacing:
                                   getProportionateScreenHeight(kSpacingX4),
                             ),
-                            physics: kScrollPhysics,
                             itemBuilder: (_, index) {
                               final item = snapshot.data[index];
                               return AnimationConfiguration.staggeredList(
@@ -318,7 +316,6 @@ class _SearchPageState extends State<SearchPage> {
                             itemCount: snapshot.data.length,
                           )
                         : ListView.separated(
-                            physics: kScrollPhysics,
                             itemBuilder: (_, index) {
                               final item = snapshot.data[index];
                               return AnimationConfiguration.staggeredList(

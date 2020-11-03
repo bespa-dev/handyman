@@ -314,7 +314,6 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                     );
                   },
                   itemCount: snapshot.data.length,
-                  physics: kScrollPhysics,
                 );
             }),
       );

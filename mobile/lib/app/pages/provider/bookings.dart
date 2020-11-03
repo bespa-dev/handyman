@@ -147,7 +147,6 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                         height: _kHeight,
                         width: _kWidth,
                         child: ListView(
-                          physics: kScrollPhysics,
                           padding: EdgeInsets.symmetric(
                             horizontal:
                                 getProportionateScreenWidth(kSpacingX24),

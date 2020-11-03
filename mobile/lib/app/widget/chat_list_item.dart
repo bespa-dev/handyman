@@ -148,7 +148,6 @@ class _ChatMessagesState extends State<ChatMessages> {
                       bottom: getProportionateScreenHeight(kSpacingX8)),
                   scrollDirection: Axis.vertical,
                   reverse: true,
-                  physics: kScrollPhysics,
                   clipBehavior: Clip.hardEdge,
                   separatorBuilder: (_, __) => SizedBox(
                       height: getProportionateScreenHeight(kSpacingX8)),

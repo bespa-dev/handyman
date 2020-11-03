@@ -689,7 +689,42 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
 
   Widget _buildHistorySection(Artisan user) => ListView(
         children: [
-          buildFunctionalityNotAvailablePanel(context),
+          // buildFunctionalityNotAvailablePanel(context),
+          Container(
+            height: kSpacingX320,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Entypo.bucket,
+                  size: getProportionateScreenHeight(kSpacingX96),
+                  color: _themeData.colorScheme.onBackground,
+                ),
+                SizedBox(
+                  height: getProportionateScreenHeight(kSpacingX16),
+                ),
+                Text(
+                  "Your recent activities will appear here",
+                  style: _themeData.textTheme.bodyText2.copyWith(
+                    color: _themeData.colorScheme.onBackground,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: getProportionateScreenHeight(kSpacingX24),
+                ),
+                ButtonOutlined(
+                  width: _kWidth * 0.6,
+                  themeData: _themeData,
+                  gravity: ButtonIconGravity.END,
+                  icon: Icons.arrow_right_alt_outlined,
+                  onTap: () => showNotAvailableDialog(context),
+                  label: "Earn Skills Badge",
+                ),
+              ],
+            ),
+          ),
         ],
       );
 
@@ -851,7 +886,16 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Service price range", style: _themeData.textTheme.headline6),
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(text: "Service price range"),
+                TextSpan(
+                    text: " (in GHC)", style: _themeData.textTheme.bodyText1),
+              ],
+              style: _themeData.textTheme.headline6,
+            ),
+          ),
           SizedBox(
             height: getProportionateScreenHeight(kSpacingX12),
           ),

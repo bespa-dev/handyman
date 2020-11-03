@@ -62,7 +62,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
             Positioned.fill(
               child: PageView.builder(
                 itemCount: _titles.length,
-                physics: kScrollPhysics,
                 controller: _pageController,
                 onPageChanged: (newIndex) {
                   setState(() {

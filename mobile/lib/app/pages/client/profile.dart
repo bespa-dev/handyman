@@ -449,7 +449,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           Expanded(
                             child: ListView.builder(
-                              physics: kScrollPhysics,
                               itemCount: snapshot.data.length,
                               itemBuilder: (_, index) =>
                                   AnimationConfiguration.staggeredList(

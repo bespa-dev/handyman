@@ -159,7 +159,6 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                                               getProportionateScreenHeight(
                                                   kSpacingX4),
                                         ),
-                                        physics: kScrollPhysics,
                                         itemBuilder: (_, index) =>
                                             AnimationConfiguration
                                                 .staggeredGrid(
@@ -179,7 +178,6 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                                     )
                                   : ListView.separated(
                                       clipBehavior: Clip.hardEdge,
-                                      physics: kScrollPhysics,
                                       itemBuilder: (_, index) =>
                                           AnimationConfiguration.staggeredList(
                                         position: index,

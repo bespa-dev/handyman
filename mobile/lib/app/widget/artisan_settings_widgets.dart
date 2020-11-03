@@ -475,7 +475,6 @@ Future<void> _showBottomSheetForDay(
                 vertical: getProportionateScreenHeight(kSpacingX16),
                 horizontal: getProportionateScreenWidth(kSpacingX16),
               ),
-              physics: kScrollPhysics,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
