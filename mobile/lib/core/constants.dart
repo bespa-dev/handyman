@@ -127,6 +127,8 @@ const kPasswordHint =
     "Your password must be 8 or more characters long & must container a mix of upper & lower case letters, numbers & symbols";
 const kSignOutText =
     "Signing out will set you offline until you sign in again. You may not be able to send/receive requests. Do you wish to continue?";
+const kAccountCompletionHelperText =
+    "In order to complete your mobile registration process, kindly setup your profile information and upload a business document. You will be notified within the next 72 hours. Thank you!";
 const kArtisanString = "Artisan";
 const kFunctionalityUnavailable =
     "Functionality is currently unavailable. Try again after the next update. Thank you";

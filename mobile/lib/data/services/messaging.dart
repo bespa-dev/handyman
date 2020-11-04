@@ -4,24 +4,27 @@ import 'package:auto_route/auto_route.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/utils.dart';
+import 'package:handyman/domain/services/auth.dart';
+import 'package:handyman/domain/services/data.dart';
 import 'package:handyman/domain/services/messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MessagingServiceImpl implements MessagingService {
-  final _firebaseMessaging = sl.get<FirebaseMessaging>();
-  FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
+  static FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  MessagingServiceImpl._();
+  MessagingServiceImpl._() {
+    _initPlugins();
+  }
 
   // Creates an instance of the class and initializes plugins
-  factory MessagingServiceImpl.create() =>
-      MessagingServiceImpl._().._initPlugins();
+  factory MessagingServiceImpl.create() => MessagingServiceImpl._();
 
-  void _initPlugins() async {
+  static void _initPlugins() async {
     // initialise the plugin. `logo_colored` needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid =
         AndroidInitializationSettings('logo_colored');
@@ -32,26 +35,40 @@ class MessagingServiceImpl implements MessagingService {
         onDidReceiveLocalNotification: _onDidReceiveLocalNotification);
     var initializationSettings = InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
-    await _flutterLocalNotificationsPlugin.initialize(initializationSettings,
+    await FlutterLocalNotificationsPlugin().initialize(initializationSettings,
         onSelectNotification: _selectNotification);
 
     // Request notification permissions
-    _firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(
-            sound: true, badge: true, alert: true, provisional: true));
-    _firebaseMessaging.onIosSettingsRegistered
+    final msgService = sl.get<FirebaseMessaging>();
+    msgService.requestNotificationPermissions(const IosNotificationSettings(
+        sound: true, badge: true, alert: true, provisional: true));
+    msgService.onIosSettingsRegistered
         .listen((IosNotificationSettings settings) {
       debugPrint("Settings registered: $settings");
     });
-    final token = await _firebaseMessaging.getToken();
+    final token = await msgService.getToken();
     debugPrint("MessagingServiceImpl._initPlugins: Token => $token");
+
+    var prefsProvider = PrefsProvider.create();
+    debugPrint("User id => ${prefsProvider.userId}");
+    var authService = sl.get<AuthService>();
+    var currentUser = await authService.currentUser().first;
+    debugPrint("User => ${currentUser.user}");
+    if (currentUser != null) {
+      var dataService = sl.get<DataService>();
+
+      // Update user token
+      var updatedUser = currentUser.user.copyWith(token: token);
+      debugPrint("MessagingServiceImpl._initPlugins: Updated user => $updatedUser");
+      await dataService.updateUser(currentUser);
+    }
 
     // FIXME: Failed to push notification when sent from console
     // Configure messaging
-    _firebaseMessaging.configure(
-      onBackgroundMessage: (Map<String, dynamic> message) async {
-        debugPrint("onBackgroundMessage: $message");
-      },
+    msgService.configure(
+      // onBackgroundMessage: (Map<String, dynamic> message) async {
+      //   debugPrint("onBackgroundMessage: $message");
+      // },
       onMessage: (Map<String, dynamic> message) async {
         // final notification = message["notification"];
         debugPrint("onMessage: $message");
@@ -112,7 +129,7 @@ class MessagingServiceImpl implements MessagingService {
     }
   }
 
-  Future _selectNotification(String payload) async {
+  static Future _selectNotification(String payload) async {
     if (payload != null) {
       debugPrint('notification payload: ' + payload);
     }
@@ -126,7 +143,7 @@ class MessagingServiceImpl implements MessagingService {
     );
   }
 
-  Future _onDidReceiveLocalNotification(
+  static Future _onDidReceiveLocalNotification(
       int id, String title, String body, String payload) async {
     debugPrint("_onDidReceiveLocalNotification => $title");
   }

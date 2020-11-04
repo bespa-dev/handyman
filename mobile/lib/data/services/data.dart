@@ -4,8 +4,6 @@ import 'dart:io';
 
 import 'package:algolia/algolia.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -411,10 +409,22 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<void> updateUser(BaseUser user, {bool sync = true}) =>
-      compute(_createUpdateUserCompute, user);
+  Future<void> updateUser(BaseUser user, {bool sync = true}) async {
+    // compute(_createUpdateUserCompute, user);
+    return _firestore
+        .collection(user.isCustomer
+            ? FirestoreUtils.kCustomerRef
+            : FirestoreUtils.kArtisanRef)
+        .doc(user.user.id)
+        .set(user.user.toJson(), SetOptions(merge: true));
+  }
 
-  static Future<void> _createUpdateUserCompute(BaseUser user) async {
+  /// FIXME: If you're running an application and need to access
+  /// the binary messenger before `runApp()` has been called
+  /// (for example, during plugin initialization), then you need
+  /// to explicitly call the `WidgetsFlutterBinding.ensureInitialized()` first.
+  // I/flutter ( 9833): If you're running a test, you can call the `TestWidgetsFlutterBinding.ensureInitialized()` as the first line in your test's `main()` method to initialize the binding.
+  /*static Future<void> _createUpdateUserCompute(BaseUser user) async {
     try {
       await Firebase.initializeApp();
       final token = await sl.get<FirebaseMessaging>().getToken();
@@ -439,7 +449,7 @@ class DataServiceImpl implements DataService {
       print(e);
       return null;
     }
-  }
+  }*/
 
   @override
   Stream<Booking> getBookingById({String id}) async* {

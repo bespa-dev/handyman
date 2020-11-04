@@ -65,18 +65,31 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
 
   // Pick business document from device storage
   Future<void> _pickBusinessDocument() async {
-    FilePickerResult result = await FilePicker.platform.pickFiles(
-      allowedExtensions: ["pdf"],
-    );
-    if (result != null) {
-      PlatformFile file = result.files.single;
-      await _storageService.uploadFile(File(file.path),
-          isImageFile: false,
-          path: "$_userId$_currentTimestamp",
-          extension: file.extension);
-    } else {
-      // User canceled the picker
-      debugPrint("User canceled file picking action");
+    try {
+      FilePickerResult result = await FilePicker.platform.pickFiles(
+        allowedExtensions: ["pdf"],
+        type: FileType.custom,
+      );
+      if (result != null) {
+        PlatformFile file = result.files.single;
+        _businessDoc = File(file.path);
+        setState(() {});
+        await _storageService.uploadFile(_businessDoc,
+            isImageFile: false,
+            path: "$_userId$_currentTimestamp",
+            extension: file.extension);
+      } else {
+        // User canceled the picker
+        debugPrint("User canceled file picking action");
+      }
+    } catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: Text("Unable to pick document at this time"),
+          behavior: SnackBarBehavior.floating,
+        ));
     }
   }
 
@@ -130,116 +143,161 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
                     Positioned.fill(
                       child: SafeArea(
                         child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                  height: getProportionateScreenHeight(
-                                      kSpacingX96)),
-                              _avatar == null
-                                  ? _buildImagePickerWidget()
-                                  : _buildAvatarWidget(),
-                              SizedBox(
-                                  height: getProportionateScreenHeight(
-                                      kSpacingX24)),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: getProportionateScreenWidth(
-                                        kSpacingX24)),
-                                child: Form(
-                                  key: _formKey,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  getProportionateScreenWidth(kSpacingX12),
+                              vertical:
+                                  getProportionateScreenHeight(kSpacingX24),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      TextFormInput(
-                                        labelText: "Full Name",
-                                        enabled: true,
-                                        controller: _businessNameController,
-                                        validator: (value) => value == null ||
-                                                value.isEmpty ||
-                                                value.length < 6
-                                            ? "Provide your business name"
-                                            : null,
-                                        color: _themeData
-                                            .textTheme.bodyText1.color,
+                                      Text(
+                                        "Almost there...",
+                                        style: _themeData.textTheme.headline4,
                                       ),
-                                      TextFormInput(
-                                        labelText: "Phone number",
-                                        enabled: !_isLoading,
-                                        keyboardType: TextInputType.phone,
-                                        textInputAction: TextInputAction.done,
-                                        validator: (value) => null,
-                                        color: _themeData
-                                            .textTheme.bodyText1.color,
-                                        controller: _phoneController
-                                          ..text =
-                                              userSnapshot.data?.user?.phone,
+                                      SizedBox(
+                                          height: getProportionateScreenHeight(
+                                              kSpacingX8)),
+                                      Text(
+                                        kAccountCompletionHelperText,
+                                        style: _themeData.textTheme.caption,
                                       ),
                                     ],
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                  height: getProportionateScreenHeight(
-                                      kSpacingX24)),
-                              GestureDetector(
-                                onTap: () async =>
-                                    await _pickBusinessDocument(),
-                                child: AnimatedContainer(
-                                  duration: kSheetDuration,
-                                  alignment: Alignment.center,
-                                  clipBehavior: Clip.hardEdge,
-                                  width: kWidth,
-                                  height: getProportionateScreenHeight(
-                                      kSpacingX230),
-                                  decoration: BoxDecoration(
-                                    color: _themeData.disabledColor
-                                        .withOpacity(kEmphasisLow),
-                                    borderRadius:
-                                        BorderRadius.circular(kSpacingX8),
-                                  ),
-                                  child: _businessDoc == null
-                                      ? Icon(
-                                          Feather.file,
-                                          size: kSpacingX48,
-                                          color: _themeData.colorScheme.primary,
-                                        )
-                                      : Icon(
-                                          Feather.check_circle,
-                                          size: kSpacingX48,
-                                          color: _themeData.colorScheme.primary,
+                                SizedBox(
+                                    height: getProportionateScreenHeight(
+                                        kSpacingX24)),
+                                _avatar == null
+                                    ? _buildImagePickerWidget()
+                                    : _buildAvatarWidget(),
+                                SizedBox(
+                                    height: getProportionateScreenHeight(
+                                        kSpacingX24)),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: getProportionateScreenWidth(
+                                          kSpacingX24)),
+                                  child: Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        TextFormInput(
+                                          labelText: "Business name",
+                                          enabled: true,
+                                          controller: _businessNameController,
+                                          validator: (value) => value == null ||
+                                                  value.isEmpty ||
+                                                  value.length < 6
+                                              ? "Provide your business name"
+                                              : null,
+                                          color: _themeData
+                                              .textTheme.bodyText1.color,
                                         ),
+                                        TextFormInput(
+                                          labelText: "Phone number",
+                                          enabled: !_isLoading,
+                                          keyboardType: TextInputType.phone,
+                                          textInputAction: TextInputAction.done,
+                                          validator: (value) => null,
+                                          color: _themeData
+                                              .textTheme.bodyText1.color,
+                                          controller: _phoneController
+                                            ..text =
+                                                userSnapshot.data?.user?.phone,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                  height: getProportionateScreenHeight(
-                                      kSpacingX24)),
-                              Consumer<DataService>(
-                                builder: (_, dataService, __) => ButtonOutlined(
-                                  width:
-                                      getProportionateScreenWidth(kSpacingX200),
-                                  themeData: _themeData,
-                                  onTap: () async {
-                                    _formKey.currentState.save();
-                                    if (_formKey.currentState.validate()) {
-                                      debugPrint("Validated form successfully");
-                                      await dataService
-                                          .updateUser(userSnapshot.data);
-                                      context.navigator.popAndPush(
-                                        userSnapshot.data?.isCustomer ?? false
-                                            ? Routes.homePage
-                                            : Routes.dashboardPage,
-                                      );
-                                    }
-                                  },
-                                  enabled: true,
-                                  label: "Save",
+                                SizedBox(
+                                    height: getProportionateScreenHeight(
+                                        kSpacingX24)),
+                                GestureDetector(
+                                  onTap: () async =>
+                                      await _pickBusinessDocument(),
+                                  child: AnimatedContainer(
+                                      duration: kSheetDuration,
+                                      alignment: Alignment.center,
+                                      clipBehavior: Clip.hardEdge,
+                                      width: kWidth,
+                                      height: getProportionateScreenHeight(
+                                          kSpacingX120),
+                                      decoration: BoxDecoration(
+                                        color: _themeData.disabledColor
+                                            .withOpacity(kEmphasisLow),
+                                        borderRadius:
+                                            BorderRadius.circular(kSpacingX8),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          _businessDoc == null
+                                              ? Icon(
+                                                  Feather.file,
+                                                  size: kSpacingX48,
+                                                  color: _themeData
+                                                      .colorScheme.primary,
+                                                )
+                                              : Icon(
+                                                  Feather.check_circle,
+                                                  size: kSpacingX48,
+                                                  color: _themeData
+                                                      .colorScheme.primary,
+                                                ),
+                                          SizedBox(
+                                            height:
+                                                getProportionateScreenHeight(
+                                                    kSpacingX16),
+                                          ),
+                                        ],
+                                      )),
                                 ),
-                              ),
-                              // SizedBox(height: getProportionateScreenHeight(kSpacingX24)),
-                            ],
+                                SizedBox(
+                                    height: getProportionateScreenHeight(
+                                        kSpacingX24)),
+                                Consumer<DataService>(
+                                  builder: (_, dataService, __) =>
+                                      ButtonOutlined(
+                                    width: getProportionateScreenWidth(
+                                        kSpacingX200),
+                                    themeData: _themeData,
+                                    onTap: () async {
+                                      _formKey.currentState.save();
+                                      if (_formKey.currentState.validate()) {
+                                        debugPrint(
+                                            "Validated form successfully");
+                                        await dataService
+                                            .updateUser(userSnapshot.data);
+                                        context.navigator.popAndPush(
+                                          userSnapshot.data?.isCustomer ?? false
+                                              ? Routes.homePage
+                                              : Routes.dashboardPage,
+                                        );
+                                      }
+                                    },
+                                    enabled: _businessDoc != null &&
+                                        _avatar != null &&
+                                        _businessNameController.text.isNotEmpty,
+                                    label: "Save",
+                                  ),
+                                ),
+                                // SizedBox(height: getProportionateScreenHeight(kSpacingX24)),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -247,7 +305,7 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
                     prefs.userType == kArtisanString
                         ? SizedBox.shrink()
                         : Positioned(
-                            top: getProportionateScreenHeight(kSpacingX64),
+                            top: getProportionateScreenHeight(kSpacingX56),
                             right: kSpacingNone,
                             child: InkWell(
                               borderRadius: BorderRadius.only(
