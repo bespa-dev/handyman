@@ -263,6 +263,11 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
                                                 getProportionateScreenHeight(
                                                     kSpacingX16),
                                           ),
+                                          Text(
+                                            _businessDoc == null
+                                                ? "Add business document"
+                                                : "Document added",
+                                          ),
                                         ],
                                       )),
                                 ),
