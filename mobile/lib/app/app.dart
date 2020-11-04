@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/guard.dart';
@@ -10,9 +9,11 @@ import 'package:handyman/app/routes/route.gr.dart' as gr;
 import 'package:handyman/core/theme.dart';
 import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/data/services/data.dart';
+import 'package:handyman/data/services/messaging.dart';
 import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
+import 'package:handyman/domain/services/messaging.dart';
 import 'package:handyman/domain/services/storage.dart';
 import 'package:provider/provider.dart';
 
@@ -58,6 +59,9 @@ class _HandyManAppState extends State<HandyManApp> {
         ),
         Provider<StorageService>.value(
           value: StorageServiceImpl.create(),
+        ),
+        Provider<MessagingService>.value(
+          value: MessagingServiceImpl.create(),
         ),
       ],
       child: Consumer<PrefsProvider>(

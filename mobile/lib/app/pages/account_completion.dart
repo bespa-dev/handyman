@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
@@ -16,6 +18,11 @@ import 'package:handyman/domain/services/data.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+/// Account completion page for new artisans
+/// 1. Provide full details
+/// 2. Upload business document
+/// 3. Select business category and provide additional business details
+/// 4. Add phone number
 class AccountCompletionPage extends StatefulWidget {
   @override
   _AccountCompletionPageState createState() => _AccountCompletionPageState();
@@ -27,13 +34,16 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
   // region Form
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _emailController = TextEditingController(),
-      _nameController = TextEditingController();
+  final _businessNameController = TextEditingController(),
+      _phoneController = TextEditingController();
+  bool _isLoading = false;
 
   // endregion
 
   // region Image Picker
   File _avatar;
+  File _businessDoc;
+  final _currentTimestamp = DateTime.now().millisecondsSinceEpoch;
   String _userId;
   final picker = ImagePicker();
 
@@ -51,6 +61,23 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
     }
     setState(() {});
     await _storageService.uploadFile(_avatar, path: _userId);
+  }
+
+  // Pick business document from device storage
+  Future<void> _pickBusinessDocument() async {
+    FilePickerResult result = await FilePicker.platform.pickFiles(
+      allowedExtensions: ["pdf"],
+    );
+    if (result != null) {
+      PlatformFile file = result.files.single;
+      await _storageService.uploadFile(File(file.path),
+          isImageFile: false,
+          path: "$_userId$_currentTimestamp",
+          extension: file.extension);
+    } else {
+      // User canceled the picker
+      debugPrint("User canceled file picking action");
+    }
   }
 
   @override
@@ -129,27 +156,61 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
                                       TextFormInput(
                                         labelText: "Full Name",
                                         enabled: true,
-                                        controller: _nameController,
+                                        controller: _businessNameController,
                                         validator: (value) => value == null ||
                                                 value.isEmpty ||
                                                 value.length < 6
-                                            ? "Provide your full name"
+                                            ? "Provide your business name"
                                             : null,
                                         color: _themeData
                                             .textTheme.bodyText1.color,
                                       ),
                                       TextFormInput(
-                                        labelText: "Email Address",
-                                        enabled: false,
+                                        labelText: "Phone number",
+                                        enabled: !_isLoading,
+                                        keyboardType: TextInputType.phone,
+                                        textInputAction: TextInputAction.done,
                                         validator: (value) => null,
                                         color: _themeData
                                             .textTheme.bodyText1.color,
-                                        controller: _emailController
+                                        controller: _phoneController
                                           ..text =
-                                              userSnapshot.data?.user?.email,
+                                              userSnapshot.data?.user?.phone,
                                       ),
                                     ],
                                   ),
+                                ),
+                              ),
+                              SizedBox(
+                                  height: getProportionateScreenHeight(
+                                      kSpacingX24)),
+                              GestureDetector(
+                                onTap: () async =>
+                                    await _pickBusinessDocument(),
+                                child: AnimatedContainer(
+                                  duration: kSheetDuration,
+                                  alignment: Alignment.center,
+                                  clipBehavior: Clip.hardEdge,
+                                  width: kWidth,
+                                  height: getProportionateScreenHeight(
+                                      kSpacingX230),
+                                  decoration: BoxDecoration(
+                                    color: _themeData.disabledColor
+                                        .withOpacity(kEmphasisLow),
+                                    borderRadius:
+                                        BorderRadius.circular(kSpacingX8),
+                                  ),
+                                  child: _businessDoc == null
+                                      ? Icon(
+                                          Feather.file,
+                                          size: kSpacingX48,
+                                          color: _themeData.colorScheme.primary,
+                                        )
+                                      : Icon(
+                                          Feather.check_circle,
+                                          size: kSpacingX48,
+                                          color: _themeData.colorScheme.primary,
+                                        ),
                                 ),
                               ),
                               SizedBox(

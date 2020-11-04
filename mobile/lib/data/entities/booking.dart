@@ -22,6 +22,10 @@ class Bookings extends Table {
 
   TextColumn get reason => text()();
 
+  @JsonKey("is_accepted")
+  BoolColumn get isAccepted =>
+      boolean().withDefault(Constant(false)).nullable()();
+
   @JsonKey("lat")
   RealColumn get locationLat =>
       real().nullable().named("lat").withDefault(Constant(5.5329650))();

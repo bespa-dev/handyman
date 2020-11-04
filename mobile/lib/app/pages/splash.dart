@@ -55,7 +55,7 @@ class _SplashPageState extends State<SplashPage> {
           ScaffoldMessenger.of(context).removeCurrentSnackBar();
           context.navigator.pushAndRemoveUntil(
             Routes.onboardingPage,
-                (route) => false,
+            (route) => false,
           );
         }
       });
@@ -143,11 +143,9 @@ class _SplashPageState extends State<SplashPage> {
                       themeData: themeData,
                       onTap: () => context.navigator.popAndPush(
                         provider.isLoggedIn
-                            ? provider.userType == null
-                                ? Routes.accountSelectionPage
-                                : provider.userType == kCustomerString
-                                    ? Routes.homePage
-                                    : Routes.dashboardPage
+                            ? provider.userType == kCustomerString
+                                ? Routes.homePage
+                                : Routes.dashboardPage
                             : Routes.registerPage,
                       ),
                       enabled: !_isLoading,

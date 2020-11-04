@@ -10,7 +10,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/services/messaging.dart';
-import '../pages/account_selection.dart';
+import '../pages/account_completion.dart';
 import '../pages/client/checkout.dart';
 import '../pages/client/home.dart';
 import '../pages/client/profile.dart';
@@ -38,7 +38,7 @@ class Routes {
   static const String searchPage = '/search-page';
   static const String notificationPage = '/notification-page';
   static const String bookingsDetailsPage = '/bookings-details-page';
-  static const String accountSelectionPage = '/account-selection-page';
+  static const String accountCompletionPage = '/account-completion-page';
   static const String conversationPage = '/conversation-page';
   static const String homePage = '/home-page';
   static const String profilePage = '/profile-page';
@@ -56,7 +56,7 @@ class Routes {
     searchPage,
     notificationPage,
     bookingsDetailsPage,
-    accountSelectionPage,
+    accountCompletionPage,
     conversationPage,
     homePage,
     profilePage,
@@ -82,8 +82,8 @@ class Router extends RouterBase {
         page: NotificationPage, guards: [AuthGuard]),
     RouteDef(Routes.bookingsDetailsPage,
         page: BookingsDetailsPage, guards: [AuthGuard]),
-    RouteDef(Routes.accountSelectionPage,
-        page: AccountSelectionPage, guards: [AuthGuard]),
+    RouteDef(Routes.accountCompletionPage,
+        page: AccountCompletionPage, guards: [AuthGuard]),
     RouteDef(Routes.conversationPage,
         page: ConversationPage, guards: [AuthGuard]),
     RouteDef(Routes.homePage, page: HomePage, guards: [AuthGuard, ClientGuard]),
@@ -166,9 +166,9 @@ class Router extends RouterBase {
         settings: data,
       );
     },
-    AccountSelectionPage: (data) {
+    AccountCompletionPage: (data) {
       return buildAdaptivePageRoute<dynamic>(
-        builder: (context) => AccountSelectionPage(),
+        builder: (context) => AccountCompletionPage(),
         settings: data,
       );
     },

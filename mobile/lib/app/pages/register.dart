@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
+import 'package:handyman/app/pages/account_completion.dart';
 import 'package:handyman/app/pages/onboarding.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/account_selector.dart';
@@ -66,8 +67,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
           // Complete user's account
           context.navigator.pushAndRemoveUntil(
-            Routes.onboardingPage,
-            (route) => route is OnboardingPage,
+            _isCustomer ? Routes.onboardingPage : Routes.accountCompletionPage,
+            (route) => _isCustomer
+                ? route is OnboardingPage
+                : route is AccountCompletionPage,
           );
         }
       });

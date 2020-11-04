@@ -30,7 +30,7 @@ class StorageUploadResponse {
 abstract class StorageService {
   Stream<StorageUploadResponse> get onStorageUploadResponse;
 
-  Future<void> uploadFile(File file, {String path});
+  Future<void> uploadFile(File file, {String path, String extension, bool isImageFile = true});
 
   void dispose();
 }

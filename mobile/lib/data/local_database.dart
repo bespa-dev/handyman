@@ -55,7 +55,7 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -135,6 +135,8 @@ class LocalDatabase extends _$LocalDatabase {
           else if (from == 7) {
             await m.addColumn(serviceProvider, serviceProvider.startPrice);
             await m.addColumn(serviceProvider, serviceProvider.endPrice);
+          } else if(from == 9) {
+            await m.addColumn(bookings, bookings.isAccepted);
           }
 
           // switch (from) {}

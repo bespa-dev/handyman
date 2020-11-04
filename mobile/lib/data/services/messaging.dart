@@ -127,7 +127,9 @@ class MessagingServiceImpl implements MessagingService {
   }
 
   Future _onDidReceiveLocalNotification(
-      int id, String title, String body, String payload) async {}
+      int id, String title, String body, String payload) async {
+    debugPrint("_onDidReceiveLocalNotification => $title");
+  }
 
   @override
   Future<bool> getNotificationPermissions() async =>

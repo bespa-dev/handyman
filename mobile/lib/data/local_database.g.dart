@@ -1858,6 +1858,7 @@ class Booking extends DataClass implements Insertable<Booking> {
   final String imageUrl;
   final String description;
   final String reason;
+  final bool isAccepted;
   final double locationLat;
   final double locationLng;
   final double value;
@@ -1872,6 +1873,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       this.imageUrl,
       this.description,
       @required this.reason,
+      this.isAccepted,
       this.locationLat,
       this.locationLng,
       @required this.value,
@@ -1882,6 +1884,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
+    final boolType = db.typeSystem.forDartType<bool>();
     final doubleType = db.typeSystem.forDartType<double>();
     final intType = db.typeSystem.forDartType<int>();
     return Booking(
@@ -1898,6 +1901,8 @@ class Booking extends DataClass implements Insertable<Booking> {
           .mapFromDatabaseResponse(data['${effectivePrefix}description']),
       reason:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}reason']),
+      isAccepted: boolType
+          .mapFromDatabaseResponse(data['${effectivePrefix}is_accepted']),
       locationLat:
           doubleType.mapFromDatabaseResponse(data['${effectivePrefix}lat']),
       locationLng:
@@ -1935,6 +1940,9 @@ class Booking extends DataClass implements Insertable<Booking> {
     }
     if (!nullToAbsent || reason != null) {
       map['reason'] = Variable<String>(reason);
+    }
+    if (!nullToAbsent || isAccepted != null) {
+      map['is_accepted'] = Variable<bool>(isAccepted);
     }
     if (!nullToAbsent || locationLat != null) {
       map['lat'] = Variable<double>(locationLat);
@@ -1977,6 +1985,9 @@ class Booking extends DataClass implements Insertable<Booking> {
           : Value(description),
       reason:
           reason == null && nullToAbsent ? const Value.absent() : Value(reason),
+      isAccepted: isAccepted == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isAccepted),
       locationLat: locationLat == null && nullToAbsent
           ? const Value.absent()
           : Value(locationLat),
@@ -2008,6 +2019,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       imageUrl: serializer.fromJson<String>(json['image_url']),
       description: serializer.fromJson<String>(json['description']),
       reason: serializer.fromJson<String>(json['reason']),
+      isAccepted: serializer.fromJson<bool>(json['is_accepted']),
       locationLat: serializer.fromJson<double>(json['lat']),
       locationLng: serializer.fromJson<double>(json['lng']),
       value: serializer.fromJson<double>(json['value']),
@@ -2027,6 +2039,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       'image_url': serializer.toJson<String>(imageUrl),
       'description': serializer.toJson<String>(description),
       'reason': serializer.toJson<String>(reason),
+      'is_accepted': serializer.toJson<bool>(isAccepted),
       'lat': serializer.toJson<double>(locationLat),
       'lng': serializer.toJson<double>(locationLng),
       'value': serializer.toJson<double>(value),
@@ -2044,6 +2057,7 @@ class Booking extends DataClass implements Insertable<Booking> {
           String imageUrl,
           String description,
           String reason,
+          bool isAccepted,
           double locationLat,
           double locationLng,
           double value,
@@ -2058,6 +2072,7 @@ class Booking extends DataClass implements Insertable<Booking> {
         imageUrl: imageUrl ?? this.imageUrl,
         description: description ?? this.description,
         reason: reason ?? this.reason,
+        isAccepted: isAccepted ?? this.isAccepted,
         locationLat: locationLat ?? this.locationLat,
         locationLng: locationLng ?? this.locationLng,
         value: value ?? this.value,
@@ -2075,6 +2090,7 @@ class Booking extends DataClass implements Insertable<Booking> {
           ..write('imageUrl: $imageUrl, ')
           ..write('description: $description, ')
           ..write('reason: $reason, ')
+          ..write('isAccepted: $isAccepted, ')
           ..write('locationLat: $locationLat, ')
           ..write('locationLng: $locationLng, ')
           ..write('value: $value, ')
@@ -2101,15 +2117,19 @@ class Booking extends DataClass implements Insertable<Booking> {
                           $mrjc(
                               reason.hashCode,
                               $mrjc(
-                                  locationLat.hashCode,
+                                  isAccepted.hashCode,
                                   $mrjc(
-                                      locationLng.hashCode,
+                                      locationLat.hashCode,
                                       $mrjc(
-                                          value.hashCode,
+                                          locationLng.hashCode,
                                           $mrjc(
-                                              progress.hashCode,
-                                              $mrjc(createdAt.hashCode,
-                                                  dueDate.hashCode)))))))))))));
+                                              value.hashCode,
+                                              $mrjc(
+                                                  progress.hashCode,
+                                                  $mrjc(
+                                                      createdAt.hashCode,
+                                                      dueDate
+                                                          .hashCode))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -2121,6 +2141,7 @@ class Booking extends DataClass implements Insertable<Booking> {
           other.imageUrl == this.imageUrl &&
           other.description == this.description &&
           other.reason == this.reason &&
+          other.isAccepted == this.isAccepted &&
           other.locationLat == this.locationLat &&
           other.locationLng == this.locationLng &&
           other.value == this.value &&
@@ -2137,6 +2158,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
   final Value<String> imageUrl;
   final Value<String> description;
   final Value<String> reason;
+  final Value<bool> isAccepted;
   final Value<double> locationLat;
   final Value<double> locationLng;
   final Value<double> value;
@@ -2151,6 +2173,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     this.imageUrl = const Value.absent(),
     this.description = const Value.absent(),
     this.reason = const Value.absent(),
+    this.isAccepted = const Value.absent(),
     this.locationLat = const Value.absent(),
     this.locationLng = const Value.absent(),
     this.value = const Value.absent(),
@@ -2166,6 +2189,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     this.imageUrl = const Value.absent(),
     this.description = const Value.absent(),
     @required String reason,
+    this.isAccepted = const Value.absent(),
     this.locationLat = const Value.absent(),
     this.locationLng = const Value.absent(),
     this.value = const Value.absent(),
@@ -2185,6 +2209,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     Expression<String> imageUrl,
     Expression<String> description,
     Expression<String> reason,
+    Expression<bool> isAccepted,
     Expression<double> locationLat,
     Expression<double> locationLng,
     Expression<double> value,
@@ -2200,6 +2225,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
       if (imageUrl != null) 'image_url': imageUrl,
       if (description != null) 'description': description,
       if (reason != null) 'reason': reason,
+      if (isAccepted != null) 'is_accepted': isAccepted,
       if (locationLat != null) 'lat': locationLat,
       if (locationLng != null) 'lng': locationLng,
       if (value != null) 'value': value,
@@ -2217,6 +2243,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
       Value<String> imageUrl,
       Value<String> description,
       Value<String> reason,
+      Value<bool> isAccepted,
       Value<double> locationLat,
       Value<double> locationLng,
       Value<double> value,
@@ -2231,6 +2258,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
       imageUrl: imageUrl ?? this.imageUrl,
       description: description ?? this.description,
       reason: reason ?? this.reason,
+      isAccepted: isAccepted ?? this.isAccepted,
       locationLat: locationLat ?? this.locationLat,
       locationLng: locationLng ?? this.locationLng,
       value: value ?? this.value,
@@ -2264,6 +2292,9 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     if (reason.present) {
       map['reason'] = Variable<String>(reason.value);
     }
+    if (isAccepted.present) {
+      map['is_accepted'] = Variable<bool>(isAccepted.value);
+    }
     if (locationLat.present) {
       map['lat'] = Variable<double>(locationLat.value);
     }
@@ -2295,6 +2326,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
           ..write('imageUrl: $imageUrl, ')
           ..write('description: $description, ')
           ..write('reason: $reason, ')
+          ..write('isAccepted: $isAccepted, ')
           ..write('locationLat: $locationLat, ')
           ..write('locationLng: $locationLng, ')
           ..write('value: $value, ')
@@ -2395,6 +2427,15 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
     );
   }
 
+  final VerificationMeta _isAcceptedMeta = const VerificationMeta('isAccepted');
+  GeneratedBoolColumn _isAccepted;
+  @override
+  GeneratedBoolColumn get isAccepted => _isAccepted ??= _constructIsAccepted();
+  GeneratedBoolColumn _constructIsAccepted() {
+    return GeneratedBoolColumn('is_accepted', $tableName, true,
+        defaultValue: Constant(false));
+  }
+
   final VerificationMeta _locationLatMeta =
       const VerificationMeta('locationLat');
   GeneratedRealColumn _locationLat;
@@ -2463,6 +2504,7 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
         imageUrl,
         description,
         reason,
+        isAccepted,
         locationLat,
         locationLng,
         value,
@@ -2523,6 +2565,12 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
           reason.isAcceptableOrUnknown(data['reason'], _reasonMeta));
     } else if (isInserting) {
       context.missing(_reasonMeta);
+    }
+    if (data.containsKey('is_accepted')) {
+      context.handle(
+          _isAcceptedMeta,
+          isAccepted.isAcceptableOrUnknown(
+              data['is_accepted'], _isAcceptedMeta));
     }
     if (data.containsKey('lat')) {
       context.handle(_locationLatMeta,

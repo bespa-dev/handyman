@@ -41,6 +41,11 @@ class _DashboardPageState extends State<DashboardPage> {
     final size = MediaQuery.of(context).size;
     _kWidth = size.width;
     _kHeight = size.height;
+
+    // Get current user instance
+
+
+    // Get business details and
   }
 
   @override

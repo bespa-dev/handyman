@@ -22,7 +22,7 @@ class NotificationPayload {
 }
 
 /// For payload types of a notification
-enum PayloadType { BOOKING, CONVERSATION }
+enum PayloadType { BOOKING, CONVERSATION, TOKEN_UPDATE }
 
 /// Base messaging service
 abstract class MessagingService {

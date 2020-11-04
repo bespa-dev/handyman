@@ -28,7 +28,8 @@ class StorageServiceImpl implements StorageService {
       StreamController.broadcast();
 
   @override
-  Future<void> uploadFile(File file, {String path}) async {
+  Future<void> uploadFile(File file,
+      {String path, String extension = ".pdf", bool isImageFile = true}) async {
     if (file == null) {
       _onStorageUploadResponse.sink.add(
         StorageUploadResponse(url: null, state: UploadProgressState.FAILED),
@@ -37,20 +38,24 @@ class StorageServiceImpl implements StorageService {
     }
     path = path ??= Uuid().v4();
     final dir = await path_provider.getTemporaryDirectory();
-    final targetPath = dir.absolute.path + "/$path.jpg";
+
+    final targetPath =
+        dir.absolute.path + "/$path${isImageFile ? ".jpg" : ".$extension"}";
     final filePath = file.absolute.path;
     print("File path => $filePath");
     print("Target path => $targetPath");
-    final result = await FlutterImageCompress.compressAndGetFile(
-      filePath,
-      targetPath,
-      quality: 80, // Compress to 80% image quality
-      minHeight: 512,
-      minWidth: 512,
-      format: filePath.endsWith("jpg") || filePath.endsWith("jpeg")
-          ? CompressFormat.jpeg
-          : CompressFormat.png,
-    );
+    final result = isImageFile
+        ? await FlutterImageCompress.compressAndGetFile(
+            filePath,
+            targetPath,
+            quality: 80, // Compress to 80% image quality
+            minHeight: 512,
+            minWidth: 512,
+            format: filePath.endsWith("jpg") || filePath.endsWith("jpeg")
+                ? CompressFormat.jpeg
+                : CompressFormat.png,
+          )
+        : file;
 
     // Upload to storage bucket
     var events = _bucket.child(path).putFile(result).events;
