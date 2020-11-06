@@ -15,9 +15,11 @@ class PrefsProvider extends ChangeNotifier {
   final StreamController<bool> _themeController = StreamController.broadcast();
 
   // Constructor
-  PrefsProvider._();
+  PrefsProvider._(){
+    _init();
+  }
 
-  static PrefsProvider get instance => PrefsProvider._().._init();
+  static PrefsProvider get instance => PrefsProvider._();
 
   String get userId => _userId;
 

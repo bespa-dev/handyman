@@ -37,7 +37,13 @@ class _HomePageState extends State<HomePage> {
     CategoryGroup.POPULAR: "Popular",
     CategoryGroup.RECOMMENDED: "Recommended",
   });
-  String _categoryFilter = "Featured";
+  String _categoryFilter;
+
+  @override
+  void initState() {
+    _categoryFilter = _categoryFilterMenu.values.first;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

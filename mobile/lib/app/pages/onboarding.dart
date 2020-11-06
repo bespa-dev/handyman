@@ -42,6 +42,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     final kWidth = size.width;
     final kHeight = size.height;
 
+
     return Scaffold(
       key: _scaffoldKey,
       extendBody: true,
@@ -144,9 +145,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       Radius.circular(getProportionateScreenWidth(kSpacingX24)),
                 ),
                 onTap: () => context.navigator.popAndPush(
-                  provider.userType == kCustomerString
-                      ? Routes.homePage
-                      : Routes.dashboardPage,
+                  provider.userType == kArtisanString || null
+                      ? Routes.dashboardPage
+                      : Routes.homePage,
                 ),
                 child: Container(
                   height: kToolbarHeight,

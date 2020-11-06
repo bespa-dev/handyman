@@ -152,7 +152,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                                 StreamBuilder<List<Booking>>(
                                                     stream: dataService
                                                         .getBookingsForCustomer(
-                                                            user.id),
+                                                            user?.id),
                                                     initialData: [],
                                                     builder:
                                                         (context, snapshot) {
@@ -186,7 +186,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                                 StreamBuilder<List<CustomerReview>>(
                                                     stream: dataService
                                                         .getReviewsByCustomer(
-                                                        user.id),
+                                                        user?.id),
                                                     initialData: [],
                                                     builder:
                                                         (context, snapshot) {

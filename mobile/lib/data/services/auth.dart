@@ -32,7 +32,13 @@ class FirebaseAuthService implements AuthService {
   FirebaseAuthService._();
 
   // Singleton
-  static AuthService get instance => FirebaseAuthService._();
+  static AuthService get instance => FirebaseAuthService._().._init();
+
+  void _init() async {
+    final uid = _auth.currentUser?.uid;
+    _prefsProvider.saveUserId(uid);
+    debugPrint("User id => $uid");
+  }
 
   final StreamController<BaseUser> _onAuthStateChanged =
       StreamController.broadcast();
@@ -111,7 +117,6 @@ class FirebaseAuthService implements AuthService {
           await _database.userDao.addCustomer(model);
           _prefsProvider.saveUserId(user.uid);
           _prefsProvider.saveUserType(kCustomerString);
-          await _database.userDao.addCustomer(model);
           _onProcessingStateChanged.sink.add(successState);
           _onAuthStateChanged.sink.add(model);
           return model;
@@ -133,9 +138,9 @@ class FirebaseAuthService implements AuthService {
             business: artisan.business ?? "",
             token: token,
           ));
+          await _database.userDao.saveProvider(model);
           _prefsProvider.saveUserId(user.uid);
           _prefsProvider.saveUserType(kArtisanString);
-          await _database.userDao.saveProvider(model);
           _onAuthStateChanged.sink.add(model);
           return model;
         } else {

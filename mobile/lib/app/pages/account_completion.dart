@@ -11,6 +11,7 @@ import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
+import 'package:handyman/data/entities/artisan_model.dart';
 import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
@@ -280,13 +281,23 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
                                     width: getProportionateScreenWidth(
                                         kSpacingX200),
                                     themeData: _themeData,
-                                    onTap: () async {
+                                    onTap: () {
                                       _formKey.currentState.save();
                                       if (_formKey.currentState.validate()) {
                                         debugPrint(
                                             "Validated form successfully");
-                                        await dataService
-                                            .updateUser(userSnapshot.data);
+                                        dataService.updateUser(
+                                          ArtisanModel(
+                                            artisan:
+                                                userSnapshot.data.user.copyWith(
+                                              business: _businessNameController
+                                                  .text
+                                                  .toString(),
+                                              phone: _phoneController.text
+                                                  .toString(),
+                                            ),
+                                          ),
+                                        );
                                         context.navigator.popAndPush(
                                           userSnapshot.data?.isCustomer ?? false
                                               ? Routes.homePage

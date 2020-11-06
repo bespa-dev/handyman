@@ -916,7 +916,8 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
           ),
           Row(
             children: [
-              Text("\₵10"),
+              // ₵
+              Text("GHC10"),
               Expanded(
                 child: RangeSlider(
                   labels: RangeLabels(
@@ -928,14 +929,18 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                       user?.endPrice?.roundToDouble() ?? 20),
                   onChanged: (newValue) {
                     print("New value => $newValue");
-                    _dataService.updateUser(ArtisanModel(
+                    _dataService.updateUser(
+                      ArtisanModel(
                         artisan: user.copyWith(
-                            startPrice: newValue.start,
-                            endPrice: newValue.end)));
+                          startPrice: newValue.start,
+                          endPrice: newValue.end,
+                        ),
+                      ),
+                    );
                   },
                 ),
               ),
-              Text("\₵200"),
+              Text("GHC200"),
             ],
           ),
         ],

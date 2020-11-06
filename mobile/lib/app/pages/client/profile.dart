@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -140,13 +141,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                         children: [
                                           ListTile(
                                             title: Text("Email"),
-                                            subtitle: Text(user.email),
+                                            subtitle: Text(user?.email ?? "Syncing..."),
                                             leading: Icon(Feather.mail),
                                             enabled: false,
                                           ),
                                           ListTile(
                                             title: Text("Username"),
-                                            subtitle: Text(user.name),
+                                            subtitle: Text(user?.name ?? "Syncing..."),
                                             leading: Icon(Feather.user),
                                             trailing: IconButton(
                                               icon: Icon(
@@ -159,7 +160,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           ),
                                           ListTile(
                                             title: Text("Phone"),
-                                            subtitle: Text(user.phone ??
+                                            subtitle: Text(user?.phone ??
                                                 "Add your phone number"),
                                             leading: Icon(Feather.phone),
                                             trailing: IconButton(
@@ -403,9 +404,9 @@ class _ProfilePageState extends State<ProfilePage> {
   // Build user image
   Widget _buildProfileImage(user) => _avatar == null
       ? UserAvatar(
-          url: user?.avatar,
+          url: user?.avatar ?? "",
           radius: kSpacingX140,
-          isCircular: false,
+          isCircular: true,
           ringColor:
               _themeData.colorScheme.onBackground.withOpacity(kEmphasisLow),
           onTap: () => showDialog(
@@ -506,7 +507,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Consumer<AuthService>(
                 builder: (_, authService, __) => ButtonClear(
                   text: "Yes",
-                  onPressed: () async {
+                  onPressed: () {
                     ctx.navigator.pop();
                     authService.signOut();
                     context.navigator.pushAndRemoveUntil(
