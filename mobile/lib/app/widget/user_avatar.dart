@@ -42,8 +42,8 @@ class UserAvatar extends StatelessWidget {
           decoration: BoxDecoration(
             shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
             color: themeData.scaffoldBackgroundColor,
-            border: Border.all(color: ringColor, width: kSpacingX4),
-            borderRadius: isCircular ? null : BorderRadius.circular(radius / 4),
+            border: Border.all(color: ringColor, width: isCircular ? kSpacingX4 : kSpacingX2),
+            borderRadius: isCircular ? null : BorderRadius.circular(radius / 8),
           ),
           child: url != null && url.isNotEmpty
               ? Container(
@@ -51,7 +51,7 @@ class UserAvatar extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
                     borderRadius:
-                        isCircular ? null : BorderRadius.circular(radius / 4),
+                        isCircular ? null : BorderRadius.circular(radius / 8),
                   ),
                   child: CachedNetworkImage(
                     imageUrl: url ?? "",
@@ -63,7 +63,7 @@ class UserAvatar extends StatelessWidget {
                             isCircular ? BoxShape.circle : BoxShape.rectangle,
                         borderRadius: isCircular
                             ? null
-                            : BorderRadius.circular(radius / 4),
+                            : BorderRadius.circular(radius / 8),
                       ),
                     ),
                     fit: BoxFit.cover,
@@ -80,7 +80,7 @@ class UserAvatar extends StatelessWidget {
                             .withOpacity(kOpacityX14),
                         borderRadius: isCircular
                             ? null
-                            : BorderRadius.circular(radius / 4),
+                            : BorderRadius.circular(radius / 8),
                         shape:
                             isCircular ? BoxShape.circle : BoxShape.rectangle,
                       ),
@@ -96,7 +96,7 @@ class UserAvatar extends StatelessWidget {
                     color: themeData.colorScheme.onBackground
                         .withOpacity(kOpacityX14),
                     borderRadius:
-                        isCircular ? null : BorderRadius.circular(radius / 4),
+                        isCircular ? null : BorderRadius.circular(radius / 8),
                     shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
                   ),
                   child: Icon(

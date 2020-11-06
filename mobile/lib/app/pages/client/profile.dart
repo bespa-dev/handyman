@@ -3,12 +3,10 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/pages/login.dart';
 import 'package:handyman/app/routes/route.gr.dart';
-import 'package:handyman/app/widget/booking_card_item.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
@@ -31,7 +29,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
+  final _fieldController = TextEditingController();
   double _kWidth, _kHeight;
   ThemeData _themeData;
   final _dataService = DataServiceImpl.instance;
@@ -100,144 +98,118 @@ class _ProfilePageState extends State<ProfilePage> {
                       : SizedBox.shrink(),
                   Positioned(
                     top: getProportionateScreenHeight(kToolbarHeight),
-                    child: AnimatedContainer(
-                      duration: kSheetDuration,
-                      height: _kHeight,
-                      width: _kWidth,
-                      child: provider.useStandardViewType
-                          ? Stack(
-                              children: [
-                                Positioned(
-                                  top: getProportionateScreenHeight(
-                                      kToolbarHeight * 2),
-                                  bottom: kSpacingNone,
-                                  width: _kWidth,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: _themeData.cardColor,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(kSpacingX16),
-                                        topRight: Radius.circular(kSpacingX16),
-                                      )
-                                    ),
-                                    padding: EdgeInsets.only(
-                                      top: getProportionateScreenHeight(kSpacingX64),
-                                      bottom: getProportionateScreenHeight(kSpacingX36)
+                    child: Consumer<AuthService>(
+                      builder: (_, authService, __) => StreamBuilder<BaseUser>(
+                          stream: authService.currentUser(),
+                          builder: (context, snapshot) {
+                            final Customer user = snapshot.data?.user;
+                            return AnimatedContainer(
+                              duration: kSheetDuration,
+                              height: _kHeight,
+                              width: _kWidth,
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                    top: getProportionateScreenHeight(
+                                        kToolbarHeight * 2),
+                                    bottom: kSpacingNone,
+                                    width: _kWidth,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: _themeData.cardColor,
+                                          borderRadius: BorderRadius.only(
+                                            topLeft:
+                                                Radius.circular(kSpacingX16),
+                                            topRight:
+                                                Radius.circular(kSpacingX16),
+                                          )),
+                                      padding: EdgeInsets.only(
+                                          left: getProportionateScreenWidth(
+                                              kSpacingX16),
+                                          right: getProportionateScreenWidth(
+                                              kSpacingX16),
+                                          top: getProportionateScreenHeight(
+                                              kSpacingX96),
+                                          bottom: getProportionateScreenHeight(
+                                              kSpacingX36)),
+                                      child: Column(
+                                        children: [
+                                          ListTile(
+                                            title: Text("Email"),
+                                            subtitle: Text(user.email),
+                                            leading: Icon(Feather.mail),
+                                            enabled: false,
+                                          ),
+                                          ListTile(
+                                            title: Text("Username"),
+                                            subtitle: Text(user.name),
+                                            leading: Icon(Feather.user),
+                                            trailing: IconButton(
+                                              icon: Icon(
+                                                Feather.edit_2,
+                                                size: kSpacingX16,
+                                              ),
+                                              onPressed: () =>
+                                                  _editProfileInfo(user),
+                                            ),
+                                          ),
+                                          ListTile(
+                                            title: Text("Phone"),
+                                            subtitle: Text(user.phone ??
+                                                "Add your phone number"),
+                                            leading: Icon(Feather.phone),
+                                            trailing: IconButton(
+                                              icon: Icon(
+                                                Feather.edit_2,
+                                                size: kSpacingX16,
+                                              ),
+                                              onPressed: () => _editProfileInfo(
+                                                user,
+                                                "Phone number",
+                                                EditType.PHONE,
+                                              ),
+                                            ),
+                                          ),
+                                          Divider(),
+                                          ListTile(
+                                            onTap: () => null,
+                                            title: Text("Emergency Contact"),
+                                            subtitle: Text(provider
+                                                    .emergencyContactNumber ??
+                                                "Select an emergency contact"),
+                                            leading: Icon(Feather.users),
+                                            trailing: IconButton(
+                                              icon: Icon(
+                                                Feather.user_plus,
+                                                size: kSpacingX16,
+                                              ),
+                                              onPressed: () => null,
+                                            ),
+                                          ),
+                                          Divider(),
+                                          SizedBox(
+                                            height:
+                                                getProportionateScreenHeight(
+                                                    kSpacingX8),
+                                          ),
+                                          _buildLogoutButton(authService),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Positioned(
-                                  top: getProportionateScreenHeight(
-                                      kToolbarHeight),
-                                  width: _kWidth,
-                                  child: Consumer<AuthService>(
-                                    builder: (_, authService, __) =>
-                                        StreamBuilder<BaseUser>(
-                                            stream: authService.currentUser(),
-                                            builder: (context, snapshot) {
-                                              final user = snapshot.data?.user;
-                                              return Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  _avatar == null
-                                                      ? UserAvatar(
-                                                          url: user?.avatar,
-                                                          radius: kSpacingX140,
-                                                          isCircular: false,
-                                                          ringColor: _themeData
-                                                              .colorScheme.onBackground
-                                                              .withOpacity(
-                                                                  kEmphasisLow),
-                                                          onTap: () =>
-                                                              showDialog(
-                                                            context: context,
-                                                            builder: (ctx) =>
-                                                                AlertDialog(
-                                                              title: Text(
-                                                                  "Select an option"),
-                                                              content: Column(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .min,
-                                                                children: [
-                                                                  ListTile(
-                                                                    title: Text(
-                                                                        "View"),
-                                                                    leading: Icon(
-                                                                        Feather
-                                                                            .eye),
-                                                                    onTap: () {
-                                                                      ctx.navigator
-                                                                          .pop();
-                                                                      showNotAvailableDialog(
-                                                                          ctx);
-                                                                    },
-                                                                  ),
-                                                                  ListTile(
-                                                                    title: Text(
-                                                                        "Change avatar"),
-                                                                    leading: Icon(
-                                                                        Feather
-                                                                            .user),
-                                                                    onTap:
-                                                                        () async {
-                                                                      ctx.navigator
-                                                                          .pop();
-                                                                      await _getImage();
-                                                                    },
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              actions: [
-                                                                ButtonClear(
-                                                                  text:
-                                                                      "Dismiss",
-                                                                  onPressed:
-                                                                      () => ctx
-                                                                          .navigator
-                                                                          .pop(),
-                                                                  themeData:
-                                                                      _themeData,
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        )
-                                                      : InkWell(
-                                                          onTap: () async =>
-                                                              await _getImage(),
-                                                          child: Container(
-                                                            clipBehavior:
-                                                                Clip.hardEdge,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              shape: BoxShape
-                                                                  .circle,
-                                                            ),
-                                                            child: Image.file(
-                                                              _avatar,
-                                                              fit: BoxFit.cover,
-                                                              height: getProportionateScreenHeight(
-                                                                  kSpacingX120),
-                                                              width: getProportionateScreenHeight(
-                                                                  kSpacingX120),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                ],
-                                              );
-                                            }),
+                                  Positioned(
+                                    top: getProportionateScreenHeight(
+                                        kToolbarHeight),
+                                    width: _kWidth,
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      child: _buildProfileImage(user),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            )
-                          : ListView(
-                              children: [
-                                _buildProfileHeader(provider),
-                                _buildProfileContent(provider),
-                              ],
-                            ),
+                                ],
+                              ),
+                            );
+                          }),
                     ),
                   ),
                   Positioned(
@@ -311,310 +283,18 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       );
 
-  Widget _buildProfileHeader(PrefsProvider provider) => Container(
-        width: _kWidth,
-        padding: EdgeInsets.symmetric(
-          vertical: getProportionateScreenHeight(kSpacingX16),
-        ),
-        decoration: BoxDecoration(
-          color: _themeData.cardColor,
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(kSpacingX36),
-            bottomRight: Radius.circular(kSpacingX36),
-          ),
-        ),
-        child: Consumer<AuthService>(
-          builder: (_, authService, __) => StreamBuilder<BaseUser>(
-              stream: authService.currentUser(),
-              builder: (context, snapshot) {
-                final user = snapshot.data?.user;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _avatar == null
-                        ? UserAvatar(
-                            url: user?.avatar,
-                            radius: kSpacingX120,
-                            ringColor: _themeData.scaffoldBackgroundColor
-                                .withOpacity(kEmphasisLow),
-                            onTap: () => showDialog(
-                              context: context,
-                              builder: (ctx) => AlertDialog(
-                                title: Text("Select an option"),
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ListTile(
-                                      title: Text("View"),
-                                      leading: Icon(Feather.eye),
-                                      onTap: () {
-                                        ctx.navigator.pop();
-                                        showNotAvailableDialog(ctx);
-                                      },
-                                    ),
-                                    ListTile(
-                                      title: Text("Change avatar"),
-                                      leading: Icon(Feather.user),
-                                      onTap: () async {
-                                        ctx.navigator.pop();
-                                        await _getImage();
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                actions: [
-                                  ButtonClear(
-                                    text: "Dismiss",
-                                    onPressed: () => ctx.navigator.pop(),
-                                    themeData: _themeData,
-                                  )
-                                ],
-                              ),
-                            ),
-                          )
-                        : InkWell(
-                            onTap: () async => await _getImage(),
-                            child: Container(
-                              clipBehavior: Clip.hardEdge,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: Image.file(
-                                _avatar,
-                                fit: BoxFit.cover,
-                                height:
-                                    getProportionateScreenHeight(kSpacingX120),
-                                width:
-                                    getProportionateScreenHeight(kSpacingX120),
-                              ),
-                            ),
-                          ),
-                    SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          user?.name ?? "",
-                          style: _themeData.textTheme.headline5.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(Feather.edit_2),
-                          onPressed: () async => await _editProfileInfo(user),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
-                    Text(
-                      user?.email ?? "",
-                      style: _themeData.textTheme.bodyText2,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: _themeData.cardColor.withOpacity(kEmphasisLow),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        vertical: getProportionateScreenHeight(kSpacingX16),
-                        horizontal: getProportionateScreenWidth(kSpacingX8),
-                      ),
-                      margin: EdgeInsets.symmetric(
-                        vertical: getProportionateScreenHeight(kSpacingX16),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Column(
-                            children: [
-                              Text("Reviews"),
-                              SizedBox(
-                                height:
-                                    getProportionateScreenHeight(kSpacingX8),
-                              ),
-                              StreamBuilder<List<CustomerReview>>(
-                                  stream: _dataService
-                                      .getReviewsByCustomer(provider.userId),
-                                  initialData: [],
-                                  builder: (context, snapshot) {
-                                    return Text(
-                                      "${snapshot.data.length}",
-                                      style: _themeData.textTheme.headline6,
-                                    );
-                                  }),
-                            ],
-                          ),
-                          Container(
-                            height: getProportionateScreenHeight(kSpacingX8),
-                            width: getProportionateScreenWidth(kSpacingX8),
-                            decoration: BoxDecoration(
-                              color: _themeData.primaryColor,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          Column(
-                            children: [
-                              Text("Bookings"),
-                              SizedBox(
-                                height:
-                                    getProportionateScreenHeight(kSpacingX8),
-                              ),
-                              StreamBuilder<List<Booking>>(
-                                  stream: _dataService
-                                      .getBookingsForCustomer(provider.userId),
-                                  initialData: [],
-                                  builder: (context, snapshot) {
-                                    return Text(
-                                      "${snapshot.data.length}",
-                                      style: _themeData.textTheme.headline6,
-                                    );
-                                  }),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    ButtonPrimary(
-                      width: _kWidth * 0.4,
-                      themeData: _themeData,
-                      color: _themeData.colorScheme.error,
-                      enabled: user != null,
-                      textColor: _themeData.colorScheme.onError,
-                      onTap: () => showDialog(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          title: Text("Leaving already?"),
-                          content: Text(
-                            kSignOutText,
-                          ),
-                          actions: [
-                            ButtonClear(
-                              text: "No",
-                              onPressed: () => ctx.navigator.pop(),
-                              themeData: _themeData,
-                            ),
-                            ButtonClear(
-                              text: "Yes",
-                              onPressed: () async {
-                                ctx.navigator.pop();
-                                await authService.signOut();
-                                context.navigator.pushAndRemoveUntil(
-                                  Routes.loginPage,
-                                  (route) => route is LoginPage,
-                                );
-                              },
-                              themeData: _themeData,
-                            ),
-                          ],
-                        ),
-                      ),
-                      label: "Sign out",
-                    ),
-                  ],
-                );
-              }),
-        ),
-      );
-
-  Widget _buildProfileContent(PrefsProvider provider) => Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: getProportionateScreenWidth(kSpacingX24),
-        ),
-        width: _kWidth,
-        child: StreamBuilder<List<Booking>>(
-            stream: _dataService.getBookingsForCustomer(provider.userId),
-            initialData: [],
-            builder: (context, snapshot) {
-              return AnimationLimiter(
-                child: snapshot.data.isEmpty
-                    ? Container(
-                        height: kSpacingX320,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Entypo.bucket,
-                              size: getProportionateScreenHeight(kSpacingX96),
-                              color: _themeData.colorScheme.onBackground,
-                            ),
-                            SizedBox(
-                                height:
-                                    getProportionateScreenHeight(kSpacingX24)),
-                            Text(
-                              "No bookings",
-                              style: _themeData.textTheme.subtitle1,
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(
-                                height:
-                                    getProportionateScreenHeight(kSpacingX8)),
-                            Text(
-                              "You do not have any bookings yet",
-                              style: _themeData.textTheme.bodyText2.copyWith(
-                                color: _themeData.disabledColor,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      )
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: _kWidth,
-                            decoration: BoxDecoration(),
-                            padding: EdgeInsets.symmetric(
-                              vertical:
-                                  getProportionateScreenHeight(kSpacingX24),
-                              horizontal:
-                                  getProportionateScreenWidth(kSpacingX16),
-                            ),
-                            child: Text(
-                              "My Recent Bookings",
-                              textAlign: TextAlign.start,
-                              style: _themeData.textTheme.headline6,
-                            ),
-                          ),
-                          Expanded(
-                            child: ListView.builder(
-                              itemCount: snapshot.data.length,
-                              itemBuilder: (_, index) =>
-                                  AnimationConfiguration.staggeredList(
-                                position: index,
-                                duration: kScaleDuration,
-                                child: SlideAnimation(
-                                  verticalOffset: kSlideOffset,
-                                  child: FadeInAnimation(
-                                    child: BookingCardItem(
-                                      booking: snapshot.data[index],
-                                      onTap: () => context.navigator.push(
-                                        Routes.bookingsDetailsPage,
-                                        arguments: BookingsDetailsPageArguments(
-                                          booking: snapshot.data[index],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-              );
-            }),
-      );
-
-  Future<void> _editProfileInfo(Customer user) async =>
+  Future<void> _editProfileInfo(
+    Customer user, [
+    String label = "Full Name",
+    EditType editType = EditType.NAME,
+  ]) async =>
       await showSlidingBottomSheet(context,
           builder: (context) => SlidingSheetDialog(
                 elevation: kSpacingX8,
                 controller: _sheetController,
                 dismissOnBackdropTap: false,
                 addTopViewPaddingOnFullscreen: true,
-                headerBuilder: (_, __) => Material(
+                headerBuilder: (ctx, __) => Material(
                   type: MaterialType.card,
                   clipBehavior: Clip.hardEdge,
                   child: Container(
@@ -634,7 +314,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             Feather.chevron_down,
                           ),
                           color: _themeData.colorScheme.onBackground,
-                          onPressed: () => context.navigator.pop(),
+                          onPressed: () => ctx.navigator.pop(),
                         ),
                       ],
                     ),
@@ -644,26 +324,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   type: MaterialType.card,
                   clipBehavior: Clip.hardEdge,
                   child: InkWell(
-                    onTap: () async {
-                      if (_formKey.currentState.validate()) {
-                        /// Fix for setState in a non-stateful widget child
-                        /// https://stackoverflow.com/questions/52414629/how-to-update-state-of-a-modalbottomsheet-in-flutter
-                        _sheetController.rebuild();
-                        setState(() {
-                          _isSaving = true;
-                        });
-                        await _dataService.updateUser(
-                          CustomerModel(
-                            customer: user.copyWith(
-                              name: _nameController.text.trim(),
-                            ),
-                          ),
-                        );
-                        setState(() {
-                          _isSaving = false;
-                        });
-                        ctx.navigator.pop();
-                      }
+                    onTap: () {
+                      _saveUserInfo(user, editType);
+                      ctx.navigator.pop();
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -713,20 +376,16 @@ class _ProfilePageState extends State<ProfilePage> {
                           Form(
                             key: _formKey,
                             child: TextFormInput(
-                              labelText: "Full Name",
-                              controller: _nameController..text = user.name,
-                              onFieldSubmitted: (username) async {
-                                setState(() {
-                                  _isSaving = !_isSaving;
-                                });
-                                await _dataService.updateUser(
-                                  CustomerModel(
-                                    customer: user.copyWith(name: username),
-                                  ),
-                                );
-                                setState(() {
-                                  _isSaving = !_isSaving;
-                                });
+                              labelText: label,
+                              keyboardType: editType == EditType.PHONE
+                                  ? TextInputType.phone
+                                  : TextInputType.text,
+                              controller: _fieldController
+                                ..text = editType == EditType.PHONE
+                                    ? user.phone
+                                    : user.name,
+                              onFieldSubmitted: (username) {
+                                _saveUserInfo(user, editType);
                                 context.navigator.pop();
                               },
                               validator: (input) => input.isNotEmpty
@@ -741,4 +400,149 @@ class _ProfilePageState extends State<ProfilePage> {
                   );
                 },
               ));
+
+  // Build user image
+  Widget _buildProfileImage(user) => _avatar == null
+      ? UserAvatar(
+          url: user?.avatar,
+          radius: kSpacingX140,
+          isCircular: false,
+          ringColor:
+              _themeData.colorScheme.onBackground.withOpacity(kEmphasisLow),
+          onTap: () => showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: Text("Select an option"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: Text("View"),
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(Feather.eye),
+                    onTap: () {
+                      ctx.navigator.pop();
+                      showNotAvailableDialog(ctx);
+                    },
+                  ),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text("Change avatar"),
+                    leading: Icon(Feather.user),
+                    onTap: () async {
+                      ctx.navigator.pop();
+                      await _getImage();
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                ButtonClear(
+                  text: "Dismiss",
+                  onPressed: () => ctx.navigator.pop(),
+                  themeData: _themeData,
+                )
+              ],
+            ),
+          ),
+        )
+      : InkWell(
+          onTap: () async => await _getImage(),
+          child: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+            ),
+            child: Image.file(
+              _avatar,
+              fit: BoxFit.cover,
+              height: getProportionateScreenHeight(kSpacingX120),
+              width: getProportionateScreenHeight(kSpacingX120),
+            ),
+          ),
+        );
+
+  void _saveUserInfo(Customer user, EditType type) async {
+    if (_formKey.currentState.validate()) {
+      /// Fix for setState in a non-stateful widget child
+      /// https://stackoverflow.com/questions/52414629/how-to-update-state-of-a-modalbottomsheet-in-flutter
+      _sheetController.rebuild();
+      setState(() {
+        _isSaving = true;
+      });
+      switch (type) {
+        case EditType.NAME:
+          user = user.copyWith(
+            name: _fieldController.text.trim(),
+          );
+          break;
+        case EditType.PHONE:
+          user = user.copyWith(
+            phone: _fieldController.text.trim(),
+          );
+          break;
+      }
+      await _dataService.updateUser(CustomerModel(customer: user));
+      setState(() {
+        _isSaving = false;
+      });
+    }
+  }
+
+  // Sign out button
+  Widget _buildLogoutButton(AuthService authService) => InkWell(
+        onTap: () => showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text("Leaving already?"),
+            content: Text(
+              kSignOutText,
+            ),
+            actions: [
+              ButtonClear(
+                text: "No",
+                onPressed: () => ctx.navigator.pop(),
+                themeData: _themeData,
+              ),
+              Consumer<AuthService>(
+                builder: (_, authService, __) => ButtonClear(
+                  text: "Yes",
+                  onPressed: () async {
+                    ctx.navigator.pop();
+                    await authService.signOut();
+                    context.navigator.pushAndRemoveUntil(
+                      Routes.loginPage,
+                      (route) => route is LoginPage,
+                    );
+                  },
+                  themeData: _themeData,
+                ),
+              ),
+            ],
+          ),
+        ),
+        splashColor: _themeData.splashColor,
+        child: Container(
+          alignment: Alignment.center,
+          height: getProportionateScreenHeight(kToolbarHeight),
+          width: _kWidth * 0.5,
+          decoration: BoxDecoration(
+            color: _themeData.colorScheme.error,
+            borderRadius: BorderRadius.circular(kSpacingX36),
+          ),
+          child: _isSaving
+              ? CircularProgressIndicator(
+                  valueColor:
+                      AlwaysStoppedAnimation(_themeData.colorScheme.onError),
+                )
+              : Text(
+                  "Sign out".toUpperCase(),
+                  style: _themeData.textTheme.button.copyWith(
+                    color: _themeData.colorScheme.onError,
+                  ),
+                ),
+        ),
+      );
 }
+
+enum EditType { PHONE, NAME }

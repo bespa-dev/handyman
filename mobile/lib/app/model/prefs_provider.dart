@@ -11,7 +11,7 @@ class PrefsProvider extends ChangeNotifier {
       _isLightTheme = true,
       _useStandardViewType = true,
       _shouldShowSplash = true;
-  String _userId, _userType;
+  String _userId, _userType, _emergencyContactNumber;
   final StreamController<bool> _themeController = StreamController.broadcast();
 
   // Constructor
@@ -22,6 +22,8 @@ class PrefsProvider extends ChangeNotifier {
   String get userId => _userId;
 
   String get userType => _userType;
+
+  String get emergencyContactNumber => _emergencyContactNumber;
 
   bool get isLoggedIn => _isLoggedIn;
 
@@ -39,6 +41,8 @@ class PrefsProvider extends ChangeNotifier {
     _prefs = await sl.getAsync<SharedPreferences>();
     _userId = _prefs.getString(PrefsUtils.USER_ID) ?? null;
     _userType = _prefs.getString(PrefsUtils.USER_TYPE) ?? null;
+    _emergencyContactNumber =
+        _prefs.getString(PrefsUtils.EMERGENCY_CONTACT) ?? null;
     _useStandardViewType =
         _prefs.getBool(PrefsUtils.USER_STANDARD_PROFILE_VIEW_TYPE) ?? true;
     _isLightTheme = _prefs.getBool(PrefsUtils.THEME_MODE) ?? false;
@@ -48,16 +52,22 @@ class PrefsProvider extends ChangeNotifier {
     toggleTheme(_isLightTheme);
   }
 
-  void saveUserId(String value) async {
+  void saveUserId([String value]) async {
     await _prefs.setString(PrefsUtils.USER_ID, value);
     _userId = value;
     _isLoggedIn = value != null && value.isNotEmpty;
     notifyListeners();
   }
 
-  void saveUserType(String value) async {
+  void saveUserType([String value]) async {
     await _prefs.setString(PrefsUtils.USER_TYPE, value);
     _userType = value;
+    notifyListeners();
+  }
+
+  void updateEmergencyContact([String value]) async {
+    await _prefs.setString(PrefsUtils.EMERGENCY_CONTACT, value);
+    _emergencyContactNumber = value;
     notifyListeners();
   }
 
@@ -76,7 +86,8 @@ class PrefsProvider extends ChangeNotifier {
 
   void toggleStandardProfileView([bool value]) async {
     _useStandardViewType = value ??= !_useStandardViewType;
-    await _prefs.setBool(PrefsUtils.USER_STANDARD_PROFILE_VIEW_TYPE, _useStandardViewType);
+    await _prefs.setBool(
+        PrefsUtils.USER_STANDARD_PROFILE_VIEW_TYPE, _useStandardViewType);
     notifyListeners();
   }
 
