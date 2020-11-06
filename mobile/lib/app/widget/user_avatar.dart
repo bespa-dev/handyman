@@ -15,6 +15,7 @@ class UserAvatar extends StatelessWidget {
   final double radius;
   final Color ringColor;
   final bool isCircular;
+  final IconData errorIcon;
 
   const UserAvatar({
     Key key,
@@ -23,6 +24,7 @@ class UserAvatar extends StatelessWidget {
     this.onTap,
     this.radius = kSpacingX48,
     this.isCircular = true,
+    this.errorIcon = Feather.user,
   }) : super(key: key);
 
   @override
@@ -89,12 +91,19 @@ class UserAvatar extends StatelessWidget {
                 )
               : Container(
                   clipBehavior: Clip.hardEdge,
+                  alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: themeData.colorScheme.onBackground
                         .withOpacity(kOpacityX14),
                     borderRadius:
                         isCircular ? null : BorderRadius.circular(radius / 4),
                     shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
+                  ),
+                  child: Icon(
+                    errorIcon,
+                    size: radius / 3,
+                    color: themeData.colorScheme.onBackground
+                        .withOpacity(kOpacityX35),
                   ),
                 ),
         ),

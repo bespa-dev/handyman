@@ -83,38 +83,36 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) => Consumer<PrefsProvider>(
         builder: (_, provider, __) {
           _userId = provider.userId;
-          return StreamBuilder(
-            builder: (_, snapshot) => Scaffold(
-              key: _scaffoldKey,
-              extendBodyBehindAppBar: true,
-              extendBody: true,
-              body: SafeArea(
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    provider.isLightTheme
-                        ? Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(kBackgroundAsset),
-                                fit: BoxFit.cover,
-                              ),
+          return Scaffold(
+            key: _scaffoldKey,
+            extendBodyBehindAppBar: true,
+            extendBody: true,
+            body: SafeArea(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  provider.isLightTheme
+                      ? Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(kBackgroundAsset),
+                              fit: BoxFit.cover,
                             ),
-                          )
-                        : SizedBox.shrink(),
-                    Container(
-                      height: _kHeight,
-                      width: _kWidth,
-                      child: Column(
-                        children: [
-                          _buildAppbar(provider),
-                          Flexible(child: _buildProfileHeader(provider)),
-                          Expanded(child: _buildProfileContent(provider)),
-                        ],
-                      ),
+                          ),
+                        )
+                      : SizedBox.shrink(),
+                  Container(
+                    height: _kHeight,
+                    width: _kWidth,
+                    child: Column(
+                      children: [
+                        _buildAppbar(provider),
+                        Flexible(child: _buildProfileHeader(provider)),
+                        Expanded(child: _buildProfileContent(provider)),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );
@@ -147,7 +145,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   onPressed: () => provider.toggleTheme(),
                 ),
                 IconButton(
-                  icon: Icon(Entypo.info_with_circle),
+                  icon: Icon(Entypo.info),
                   onPressed: () => showAboutDialog(
                     context: context,
                     applicationVersion: kAppVersion,
