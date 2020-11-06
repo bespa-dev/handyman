@@ -83,7 +83,6 @@ class _ProfilePageState extends State<ProfilePage> {
         builder: (_, provider, __) {
           _userId = provider.userId;
           return Scaffold(
-            extendBodyBehindAppBar: true,
             extendBody: true,
             body: SafeArea(
               child: Stack(
@@ -101,15 +100,144 @@ class _ProfilePageState extends State<ProfilePage> {
                       : SizedBox.shrink(),
                   Positioned(
                     top: getProportionateScreenHeight(kToolbarHeight),
-                    child: Container(
+                    child: AnimatedContainer(
+                      duration: kSheetDuration,
                       height: _kHeight,
                       width: _kWidth,
-                      child: ListView(
-                        children: [
-                          _buildProfileHeader(provider),
-                          _buildProfileContent(provider),
-                        ],
-                      ),
+                      child: provider.useStandardViewType
+                          ? Stack(
+                              children: [
+                                Positioned(
+                                  top: getProportionateScreenHeight(
+                                      kToolbarHeight * 2),
+                                  bottom: kSpacingNone,
+                                  width: _kWidth,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: _themeData.cardColor,
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(kSpacingX16),
+                                        topRight: Radius.circular(kSpacingX16),
+                                      )
+                                    ),
+                                    padding: EdgeInsets.only(
+                                      top: getProportionateScreenHeight(kSpacingX64),
+                                      bottom: getProportionateScreenHeight(kSpacingX36)
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: getProportionateScreenHeight(
+                                      kToolbarHeight),
+                                  width: _kWidth,
+                                  child: Consumer<AuthService>(
+                                    builder: (_, authService, __) =>
+                                        StreamBuilder<BaseUser>(
+                                            stream: authService.currentUser(),
+                                            builder: (context, snapshot) {
+                                              final user = snapshot.data?.user;
+                                              return Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  _avatar == null
+                                                      ? UserAvatar(
+                                                          url: user?.avatar,
+                                                          radius: kSpacingX140,
+                                                          isCircular: false,
+                                                          ringColor: _themeData
+                                                              .colorScheme.onBackground
+                                                              .withOpacity(
+                                                                  kEmphasisLow),
+                                                          onTap: () =>
+                                                              showDialog(
+                                                            context: context,
+                                                            builder: (ctx) =>
+                                                                AlertDialog(
+                                                              title: Text(
+                                                                  "Select an option"),
+                                                              content: Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  ListTile(
+                                                                    title: Text(
+                                                                        "View"),
+                                                                    leading: Icon(
+                                                                        Feather
+                                                                            .eye),
+                                                                    onTap: () {
+                                                                      ctx.navigator
+                                                                          .pop();
+                                                                      showNotAvailableDialog(
+                                                                          ctx);
+                                                                    },
+                                                                  ),
+                                                                  ListTile(
+                                                                    title: Text(
+                                                                        "Change avatar"),
+                                                                    leading: Icon(
+                                                                        Feather
+                                                                            .user),
+                                                                    onTap:
+                                                                        () async {
+                                                                      ctx.navigator
+                                                                          .pop();
+                                                                      await _getImage();
+                                                                    },
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              actions: [
+                                                                ButtonClear(
+                                                                  text:
+                                                                      "Dismiss",
+                                                                  onPressed:
+                                                                      () => ctx
+                                                                          .navigator
+                                                                          .pop(),
+                                                                  themeData:
+                                                                      _themeData,
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : InkWell(
+                                                          onTap: () async =>
+                                                              await _getImage(),
+                                                          child: Container(
+                                                            clipBehavior:
+                                                                Clip.hardEdge,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                            ),
+                                                            child: Image.file(
+                                                              _avatar,
+                                                              fit: BoxFit.cover,
+                                                              height: getProportionateScreenHeight(
+                                                                  kSpacingX120),
+                                                              width: getProportionateScreenHeight(
+                                                                  kSpacingX120),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                ],
+                                              );
+                                            }),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : ListView(
+                              children: [
+                                _buildProfileHeader(provider),
+                                _buildProfileContent(provider),
+                              ],
+                            ),
                     ),
                   ),
                   Positioned(
@@ -127,7 +255,7 @@ class _ProfilePageState extends State<ProfilePage> {
         width: _kWidth,
         height: getProportionateScreenHeight(kToolbarHeight),
         decoration: BoxDecoration(
-          color: _themeData.scaffoldBackgroundColor,
+          color: _themeData.scaffoldBackgroundColor.withOpacity(kOpacityX14),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,6 +276,15 @@ class _ProfilePageState extends State<ProfilePage> {
                     provider.isLightTheme ? Feather.moon : Feather.sun,
                   ),
                   onPressed: () => provider.toggleTheme(),
+                ),
+                IconButton(
+                  tooltip: "Toggle profile view",
+                  icon: Icon(
+                    provider.useStandardViewType
+                        ? MaterialIcons.dashboard
+                        : Feather.list,
+                  ),
+                  onPressed: () => provider.toggleStandardProfileView(),
                 ),
                 IconButton(
                   icon: Icon(Entypo.info),

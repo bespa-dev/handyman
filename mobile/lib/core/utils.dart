@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PrefsUtils {
   static const USER_ID = "user_id";
   static const USER_TYPE = "user_type";
+  static const USER_STANDARD_PROFILE_VIEW_TYPE = "user_standard_profile_view_type";
   static const THEME_MODE = "theme_mode";
   static const SHOW_SPLASH_SCREEN = "show_splash_screen";
 }
