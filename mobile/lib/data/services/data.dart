@@ -421,7 +421,8 @@ class DataServiceImpl implements DataService {
         .set(user.user.copyWith(token: token).toJson(), SetOptions(merge: true));
   }
 
-  /// FIXME: If you're running an application and need to access
+  /// FIXME:
+  /// If you're running an application and need to access
   /// the binary messenger before `runApp()` has been called
   /// (for example, during plugin initialization), then you need
   /// to explicitly call the `WidgetsFlutterBinding.ensureInitialized()` first.

@@ -99,16 +99,22 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         )
                       : SizedBox.shrink(),
-                  Container(
-                    height: _kHeight,
-                    width: _kWidth,
-                    child: Column(
-                      children: [
-                        _buildAppbar(provider),
-                        Flexible(child: _buildProfileHeader(provider)),
-                        Expanded(child: _buildProfileContent(provider)),
-                      ],
+                  Positioned(
+                    top: getProportionateScreenHeight(kToolbarHeight),
+                    child: Container(
+                      height: _kHeight,
+                      width: _kWidth,
+                      child: ListView(
+                        children: [
+                          _buildProfileHeader(provider),
+                          _buildProfileContent(provider),
+                        ],
+                      ),
                     ),
+                  ),
+                  Positioned(
+                    top: kSpacingNone,
+                    child: _buildAppbar(provider),
                   ),
                 ],
               ),
@@ -119,6 +125,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildAppbar(PrefsProvider provider) => Container(
         width: _kWidth,
+        height: getProportionateScreenHeight(kToolbarHeight),
         decoration: BoxDecoration(
           color: _themeData.scaffoldBackgroundColor,
         ),
@@ -168,10 +175,9 @@ class _ProfilePageState extends State<ProfilePage> {
       );
 
   Widget _buildProfileHeader(PrefsProvider provider) => Container(
-        // height: getProportionateScreenHeight(_kHeight * 0.5),
         width: _kWidth,
-        padding: EdgeInsets.only(
-          top: getProportionateScreenHeight(kSpacingX16),
+        padding: EdgeInsets.symmetric(
+          vertical: getProportionateScreenHeight(kSpacingX16),
         ),
         decoration: BoxDecoration(
           color: _themeData.cardColor,
@@ -185,7 +191,6 @@ class _ProfilePageState extends State<ProfilePage> {
               stream: authService.currentUser(),
               builder: (context, snapshot) {
                 final user = snapshot.data?.user;
-                _nameController.text = user?.name;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -572,7 +577,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             key: _formKey,
                             child: TextFormInput(
                               labelText: "Full Name",
-                              controller: _nameController,
+                              controller: _nameController..text = user.name,
                               onFieldSubmitted: (username) async {
                                 setState(() {
                                   _isSaving = !_isSaving;

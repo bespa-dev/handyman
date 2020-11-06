@@ -37,7 +37,7 @@ class PrefsProvider extends ChangeNotifier {
     _isLightTheme = _prefs.getBool(PrefsUtils.THEME_MODE) ?? false;
     _shouldShowSplash = _prefs.getBool(PrefsUtils.SHOW_SPLASH_SCREEN) ?? true;
     _isLoggedIn = _userId != null && _userId.isNotEmpty;
-    debugPrint("Light mode state -> $isLightTheme");
+    notifyListeners();
     toggleTheme(_isLightTheme);
   }
 

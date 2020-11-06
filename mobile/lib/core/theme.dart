@@ -71,11 +71,11 @@ ThemeData themeData(BuildContext context) => ThemeData(
         headline4: TextStyle(
             fontFamily: _kTitleFontFamily,
             color: kTitleTextColorLight,
-            fontWeight: FontWeight.w500),
+            fontWeight: FontWeight.w600),
         headline5: TextStyle(
             color: kTitleTextColorLight,
             fontFamily: _kBodyFontFamily,
-            fontWeight: FontWeight.w500),
+            fontWeight: FontWeight.w600),
         headline6: TextStyle(
             color: kTitleTextColorLight,
             fontFamily: _kBodyFontFamily,
@@ -171,11 +171,11 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
         headline4: TextStyle(
             color: kTitleTextColorDark,
             fontFamily: _kTitleFontFamily,
-            fontWeight: FontWeight.w500),
+            fontWeight: FontWeight.w600),
         headline5: TextStyle(
             color: kTitleTextColorDark,
             fontFamily: _kBodyFontFamily,
-            fontWeight: FontWeight.w500),
+            fontWeight: FontWeight.w600),
         headline6: TextStyle(
             color: kTitleTextColorDark,
             fontFamily: _kBodyFontFamily,
