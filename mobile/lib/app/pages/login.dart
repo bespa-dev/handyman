@@ -125,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                     : SizedBox.shrink(),
                 Positioned(
                   bottom: kSpacingNone,
-                  top: kSpacingX120,
+                  top: getProportionateScreenHeight(kSpacingX120),
                   width: MediaQuery.of(context).size.width,
                   child: SingleChildScrollView(
                     child: Column(

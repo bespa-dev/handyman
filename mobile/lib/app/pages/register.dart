@@ -136,8 +136,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       )
                     : SizedBox.shrink(),
                 Positioned(
-                  bottom: kSpacingNone,
-                  top: kSpacingX64,
+                  bottom: getProportionateScreenHeight(kSpacingX24),
+                  top: getProportionateScreenHeight(kSpacingX64),
                   width: kWidth,
                   child: SingleChildScrollView(
                     child: Column(

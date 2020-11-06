@@ -19,8 +19,11 @@ import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:contact_picker/contact_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
+
+enum EditType { PHONE, NAME }
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -28,6 +31,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final ContactPicker _contactPicker = ContactPicker();
   final _formKey = GlobalKey<FormState>();
   final _fieldController = TextEditingController();
   double _kWidth, _kHeight;
@@ -183,7 +187,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 Feather.user_plus,
                                                 size: kSpacingX16,
                                               ),
-                                              onPressed: () => null,
+                                              onPressed: () async {
+                                                Contact contact = await _contactPicker.selectContact();
+                                                provider.updateEmergencyContact(contact.phoneNumber.number);
+                                                setState(() {});
+                                              },
                                             ),
                                           ),
                                           Divider(),
@@ -248,15 +256,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     provider.isLightTheme ? Feather.moon : Feather.sun,
                   ),
                   onPressed: () => provider.toggleTheme(),
-                ),
-                IconButton(
-                  tooltip: "Toggle profile view",
-                  icon: Icon(
-                    provider.useStandardViewType
-                        ? MaterialIcons.dashboard
-                        : Feather.list,
-                  ),
-                  onPressed: () => provider.toggleStandardProfileView(),
                 ),
                 IconButton(
                   icon: Icon(Entypo.info),
@@ -509,7 +508,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   text: "Yes",
                   onPressed: () async {
                     ctx.navigator.pop();
-                    await authService.signOut();
+                    authService.signOut();
                     context.navigator.pushAndRemoveUntil(
                       Routes.loginPage,
                       (route) => route is LoginPage,
@@ -545,4 +544,4 @@ class _ProfilePageState extends State<ProfilePage> {
       );
 }
 
-enum EditType { PHONE, NAME }
+

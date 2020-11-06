@@ -124,7 +124,7 @@ const kAppSloganDesc = "Find your service & book easily with $kAppName";
 const kArtisanReviewHelpDialogContent =
     "Sensitive data (like email addresses, phone numbers, user ids etc) will not be made public to customers on this platform.\nYour ratings are also based on the accumulated reviews by customers you have served over the last 6 months";
 const kPasswordHint =
-    "Your password must be 8 or more characters long & must container a mix of upper & lower case letters, numbers & symbols";
+    "Your password must be 8 or more characters long & must contain a mix of upper & lower case letters,a number & a symbol";
 const kSignOutText =
     "Signing out will set you offline until you sign in again. You may not be able to send/receive requests. Do you wish to continue?";
 const kAccountCompletionHelperText =
