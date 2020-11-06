@@ -40,15 +40,6 @@ class _HomePageState extends State<HomePage> {
   String _categoryFilter = "Featured";
 
   @override
-  void initState() {
-    super.initState();
-
-    /// FIXME: User data not loaded when page is first viewed
-    if (mounted)
-      Future.delayed(kScaleDuration).then((value) => setState(() => {}));
-  }
-
-  @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     return Scaffold(

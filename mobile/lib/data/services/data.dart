@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:algolia/algolia.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -410,13 +411,14 @@ class DataServiceImpl implements DataService {
 
   @override
   Future<void> updateUser(BaseUser user, {bool sync = true}) async {
+    final token = await sl.get<FirebaseMessaging>().getToken();
     // compute(_createUpdateUserCompute, user);
     return _firestore
         .collection(user.isCustomer
             ? FirestoreUtils.kCustomerRef
             : FirestoreUtils.kArtisanRef)
         .doc(user.user.id)
-        .set(user.user.toJson(), SetOptions(merge: true));
+        .set(user.user.copyWith(token: token).toJson(), SetOptions(merge: true));
   }
 
   /// FIXME: If you're running an application and need to access

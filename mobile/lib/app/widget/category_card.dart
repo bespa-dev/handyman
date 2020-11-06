@@ -78,19 +78,23 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
                           ),
                         ),
                         Positioned(
-                          top: kSpacingX160,
+                          top: getProportionateScreenHeight(kSpacingX250) / 2,
                           right: kSpacingNone,
                           left: kSpacingNone,
                           bottom: kSpacingNone,
                           child: Container(
                             decoration: BoxDecoration(
                               color: themeData.scaffoldBackgroundColor
-                                  .withOpacity(kOpacityX90),
+                                  .withOpacity(kOpacityX70),
                             ),
                             alignment: Alignment.center,
                             child: Text(
                               category.name,
-                              style: themeData.textTheme.bodyText1,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: themeData.textTheme.button.copyWith(
+                                color: themeData.textTheme.bodyText1.color,
+                              ),
                             ),
                           ),
                         ),

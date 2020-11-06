@@ -121,7 +121,7 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                       SizedBox(
                           height: getProportionateScreenHeight(kSpacingX8)),
                       Text(
-                        "\$${widget.artisan?.user?.price}",
+                        "\₵${widget.artisan?.user?.startPrice}",
                         style: themeData.textTheme.headline6.copyWith(
                           color: themeData.colorScheme.primary,
                         ),
@@ -201,7 +201,7 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
                 ),
                 Spacer(),
                 Text(
-                  "\$${widget.artisan.user?.price}",
+                  "\₵${widget.artisan.user?.startPrice}",
                   style: themeData.textTheme.headline6.copyWith(
                     color: themeData.colorScheme.primary,
                   ),

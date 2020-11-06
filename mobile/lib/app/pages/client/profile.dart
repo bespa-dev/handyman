@@ -102,19 +102,17 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           )
                         : SizedBox.shrink(),
-                    Positioned(
-                        top: getProportionateScreenHeight(_kHeight * 0.5),
-                        bottom: kSpacingNone,
-                        width: _kWidth,
-                        child: _buildProfileContent(provider)),
-                    Positioned(
-                        top: getProportionateScreenHeight(kToolbarHeight),
-                        width: _kWidth,
-                        child: _buildProfileHeader(provider)),
-                    Positioned(
-                        height: getProportionateScreenHeight(kToolbarHeight),
-                        width: _kWidth,
-                        child: _buildAppbar(provider)),
+                    Container(
+                      height: _kHeight,
+                      width: _kWidth,
+                      child: Column(
+                        children: [
+                          _buildAppbar(provider),
+                          Flexible(child: _buildProfileHeader(provider)),
+                          Expanded(child: _buildProfileContent(provider)),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -124,7 +122,6 @@ class _ProfilePageState extends State<ProfilePage> {
       );
 
   Widget _buildAppbar(PrefsProvider provider) => Container(
-        height: double.infinity,
         width: _kWidth,
         decoration: BoxDecoration(
           color: _themeData.scaffoldBackgroundColor,
@@ -174,214 +171,210 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       );
 
-  Widget _buildProfileHeader(PrefsProvider provider) => SafeArea(
-        child: Container(
-          height: getProportionateScreenHeight(_kHeight * 0.45),
-          width: _kWidth,
-          padding: EdgeInsets.only(
-            top: getProportionateScreenHeight(kSpacingX16),
+  Widget _buildProfileHeader(PrefsProvider provider) => Container(
+        // height: getProportionateScreenHeight(_kHeight * 0.5),
+        width: _kWidth,
+        padding: EdgeInsets.only(
+          top: getProportionateScreenHeight(kSpacingX16),
+        ),
+        decoration: BoxDecoration(
+          color: _themeData.cardColor,
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(kSpacingX36),
+            bottomRight: Radius.circular(kSpacingX36),
           ),
-          decoration: BoxDecoration(
-            color: _themeData.cardColor,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(kSpacingX36),
-              bottomRight: Radius.circular(kSpacingX36),
-            ),
-          ),
-          child: Consumer<AuthService>(
-            builder: (_, authService, __) => StreamBuilder<BaseUser>(
-                stream: authService.currentUser(),
-                builder: (context, snapshot) {
-                  final user = snapshot.data?.user;
-                  _nameController.text = user?.name;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      _avatar == null
-                          ? UserAvatar(
-                              url: user?.avatar,
-                              radius: kSpacingX120,
-                              ringColor: _themeData.scaffoldBackgroundColor
-                                  .withOpacity(kEmphasisLow),
-                              onTap: () => showDialog(
-                                context: context,
-                                builder: (ctx) => AlertDialog(
-                                  title: Text("Select an option"),
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      ListTile(
-                                        title: Text("View"),
-                                        leading: Icon(Feather.eye),
-                                        onTap: () {
-                                          ctx.navigator.pop();
-                                          showNotAvailableDialog(ctx);
-                                        },
-                                      ),
-                                      ListTile(
-                                        title: Text("Change avatar"),
-                                        leading: Icon(Feather.user),
-                                        onTap: () async {
-                                          ctx.navigator.pop();
-                                          await _getImage();
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                  actions: [
-                                    ButtonClear(
-                                      text: "Dismiss",
-                                      onPressed: () => ctx.navigator.pop(),
-                                      themeData: _themeData,
-                                    )
+        ),
+        child: Consumer<AuthService>(
+          builder: (_, authService, __) => StreamBuilder<BaseUser>(
+              stream: authService.currentUser(),
+              builder: (context, snapshot) {
+                final user = snapshot.data?.user;
+                _nameController.text = user?.name;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    _avatar == null
+                        ? UserAvatar(
+                            url: user?.avatar,
+                            radius: kSpacingX120,
+                            ringColor: _themeData.scaffoldBackgroundColor
+                                .withOpacity(kEmphasisLow),
+                            onTap: () => showDialog(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                title: Text("Select an option"),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ListTile(
+                                      title: Text("View"),
+                                      leading: Icon(Feather.eye),
+                                      onTap: () {
+                                        ctx.navigator.pop();
+                                        showNotAvailableDialog(ctx);
+                                      },
+                                    ),
+                                    ListTile(
+                                      title: Text("Change avatar"),
+                                      leading: Icon(Feather.user),
+                                      onTap: () async {
+                                        ctx.navigator.pop();
+                                        await _getImage();
+                                      },
+                                    ),
                                   ],
                                 ),
-                              ),
-                            )
-                          : InkWell(
-                              onTap: () async => await _getImage(),
-                              child: Container(
-                                clipBehavior: Clip.hardEdge,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Image.file(
-                                  _avatar,
-                                  fit: BoxFit.cover,
-                                  height: getProportionateScreenHeight(
-                                      kSpacingX120),
-                                  width: getProportionateScreenHeight(
-                                      kSpacingX120),
-                                ),
+                                actions: [
+                                  ButtonClear(
+                                    text: "Dismiss",
+                                    onPressed: () => ctx.navigator.pop(),
+                                    themeData: _themeData,
+                                  )
+                                ],
                               ),
                             ),
-                      SizedBox(
-                          height: getProportionateScreenHeight(kSpacingX16)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            user?.name ?? "",
-                            style: _themeData.textTheme.headline5.copyWith(
-                              fontWeight: FontWeight.bold,
+                          )
+                        : InkWell(
+                            onTap: () async => await _getImage(),
+                            child: Container(
+                              clipBehavior: Clip.hardEdge,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: Image.file(
+                                _avatar,
+                                fit: BoxFit.cover,
+                                height:
+                                    getProportionateScreenHeight(kSpacingX120),
+                                width:
+                                    getProportionateScreenHeight(kSpacingX120),
+                              ),
                             ),
                           ),
-                          IconButton(
-                            icon: Icon(Feather.edit_2),
-                            onPressed: () async => await _editProfileInfo(user),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          user?.name ?? "",
+                          style: _themeData.textTheme.headline5.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Feather.edit_2),
+                          onPressed: () async => await _editProfileInfo(user),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
+                    Text(
+                      user?.email ?? "",
+                      style: _themeData.textTheme.bodyText2,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: _themeData.cardColor.withOpacity(kEmphasisLow),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: getProportionateScreenHeight(kSpacingX16),
+                        horizontal: getProportionateScreenWidth(kSpacingX8),
+                      ),
+                      margin: EdgeInsets.symmetric(
+                        vertical: getProportionateScreenHeight(kSpacingX16),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            children: [
+                              Text("Reviews"),
+                              SizedBox(
+                                height:
+                                    getProportionateScreenHeight(kSpacingX8),
+                              ),
+                              StreamBuilder<List<CustomerReview>>(
+                                  stream: _dataService
+                                      .getReviewsByCustomer(provider.userId),
+                                  initialData: [],
+                                  builder: (context, snapshot) {
+                                    return Text(
+                                      "${snapshot.data.length}",
+                                      style: _themeData.textTheme.headline6,
+                                    );
+                                  }),
+                            ],
+                          ),
+                          Container(
+                            height: getProportionateScreenHeight(kSpacingX8),
+                            width: getProportionateScreenWidth(kSpacingX8),
+                            decoration: BoxDecoration(
+                              color: _themeData.primaryColor,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          Column(
+                            children: [
+                              Text("Bookings"),
+                              SizedBox(
+                                height:
+                                    getProportionateScreenHeight(kSpacingX8),
+                              ),
+                              StreamBuilder<List<Booking>>(
+                                  stream: _dataService
+                                      .getBookingsForCustomer(provider.userId),
+                                  initialData: [],
+                                  builder: (context, snapshot) {
+                                    return Text(
+                                      "${snapshot.data.length}",
+                                      style: _themeData.textTheme.headline6,
+                                    );
+                                  }),
+                            ],
                           ),
                         ],
                       ),
-                      SizedBox(
-                          height: getProportionateScreenHeight(kSpacingX8)),
-                      Text(
-                        user?.email ?? "",
-                        style: _themeData.textTheme.bodyText2,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: _themeData.cardColor.withOpacity(kEmphasisLow),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          vertical: getProportionateScreenHeight(kSpacingX16),
-                          horizontal: getProportionateScreenWidth(kSpacingX8),
-                        ),
-                        margin: EdgeInsets.symmetric(
-                          vertical: getProportionateScreenHeight(kSpacingX16),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Column(
-                              children: [
-                                Text("Reviews"),
-                                SizedBox(
-                                  height:
-                                      getProportionateScreenHeight(kSpacingX8),
-                                ),
-                                StreamBuilder<List<CustomerReview>>(
-                                    stream: _dataService
-                                        .getReviewsByCustomer(provider.userId),
-                                    initialData: [],
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        "${snapshot.data.length}",
-                                        style: _themeData.textTheme.headline6,
-                                      );
-                                    }),
-                              ],
+                    ),
+                    ButtonPrimary(
+                      width: _kWidth * 0.4,
+                      themeData: _themeData,
+                      color: _themeData.colorScheme.error,
+                      enabled: user != null,
+                      textColor: _themeData.colorScheme.onError,
+                      onTap: () => showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: Text("Leaving already?"),
+                          content: Text(
+                            kSignOutText,
+                          ),
+                          actions: [
+                            ButtonClear(
+                              text: "No",
+                              onPressed: () => ctx.navigator.pop(),
+                              themeData: _themeData,
                             ),
-                            Container(
-                              height: getProportionateScreenHeight(kSpacingX8),
-                              width: getProportionateScreenWidth(kSpacingX8),
-                              decoration: BoxDecoration(
-                                color: _themeData.primaryColor,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                            Column(
-                              children: [
-                                Text("Bookings"),
-                                SizedBox(
-                                  height:
-                                      getProportionateScreenHeight(kSpacingX8),
-                                ),
-                                StreamBuilder<List<Booking>>(
-                                    stream: _dataService.getBookingsForCustomer(
-                                        provider.userId),
-                                    initialData: [],
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        "${snapshot.data.length}",
-                                        style: _themeData.textTheme.headline6,
-                                      );
-                                    }),
-                              ],
+                            ButtonClear(
+                              text: "Yes",
+                              onPressed: () async {
+                                ctx.navigator.pop();
+                                await authService.signOut();
+                                context.navigator.pushAndRemoveUntil(
+                                  Routes.loginPage,
+                                  (route) => route is LoginPage,
+                                );
+                              },
+                              themeData: _themeData,
                             ),
                           ],
                         ),
                       ),
-                      ButtonPrimary(
-                        width: _kWidth * 0.4,
-                        themeData: _themeData,
-                        color: _themeData.colorScheme.error,
-                        enabled: user != null,
-                        textColor: _themeData.colorScheme.onError,
-                        onTap: () => showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                            title: Text("Leaving already?"),
-                            content: Text(
-                              kSignOutText,
-                            ),
-                            actions: [
-                              ButtonClear(
-                                text: "No",
-                                onPressed: () => ctx.navigator.pop(),
-                                themeData: _themeData,
-                              ),
-                              ButtonClear(
-                                text: "Yes",
-                                onPressed: () async {
-                                  ctx.navigator.pop();
-                                  await authService.signOut();
-                                  context.navigator.pushAndRemoveUntil(
-                                    Routes.loginPage,
-                                    (route) => route is LoginPage,
-                                  );
-                                },
-                                themeData: _themeData,
-                              ),
-                            ],
-                          ),
-                        ),
-                        label: "Sign out",
-                      ),
-                    ],
-                  );
-                }),
-          ),
+                      label: "Sign out",
+                    ),
+                  ],
+                );
+              }),
         ),
       );
 
@@ -390,7 +383,6 @@ class _ProfilePageState extends State<ProfilePage> {
           horizontal: getProportionateScreenWidth(kSpacingX24),
         ),
         width: _kWidth,
-        decoration: BoxDecoration(),
         child: StreamBuilder<List<Booking>>(
             stream: _dataService.getBookingsForCustomer(provider.userId),
             initialData: [],

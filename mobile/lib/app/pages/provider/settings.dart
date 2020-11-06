@@ -12,6 +12,7 @@ import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/artisan_settings_widgets.dart';
 import 'package:handyman/app/widget/badgeable_tab_bar.dart';
 import 'package:handyman/app/widget/buttons.dart';
+import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/app/widget/loaders.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
@@ -57,6 +58,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
       _isEditingBusinessName = false;
   int _activeTabIndex;
   TextEditingController _businessNameController = TextEditingController(),
+      _nameController = TextEditingController(),
       _aboutController = TextEditingController(),
       _phoneController = TextEditingController();
 
@@ -255,10 +257,22 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              user?.name ?? "No name set",
-                                              style: _themeData
-                                                  .textTheme.headline6,
+                                            GestureDetector(
+                                              onTap: () =>
+                                                  _showEditUsernameDialog(user),
+                                              child: ConstrainedBox(
+                                                constraints:
+                                                    BoxConstraints.tightFor(
+                                                  width: _kWidth * 0.4,
+                                                ),
+                                                child: Text(
+                                                  user?.name ?? "No name set",
+                                                  maxLines: 2,
+                                                  overflow: TextOverflow.fade,
+                                                  style: _themeData
+                                                      .textTheme.headline6,
+                                                ),
+                                              ),
                                             ),
                                             SizedBox(
                                               height:
@@ -268,7 +282,8 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                             user?.business == null
                                                 ? SizedBox.shrink()
                                                 : Text(
-                                                    user?.business,
+                                                    user?.business ??
+                                                        "None available",
                                                     style: _themeData
                                                         .textTheme.bodyText2,
                                                   ),
@@ -531,7 +546,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                   // Allow prospective customers to book your services. Turning this off will make you invisible
                                   ConstrainedBox(
                                     constraints: BoxConstraints.tightFor(
-                                      width: _kWidth * 0.7,
+                                      width: _kWidth * 0.6,
                                     ),
                                     child: RichText(
                                       textAlign: TextAlign.left,
@@ -605,7 +620,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Toggle Visibility",
+                              "Receive Job Alerts",
                               style: _themeData.textTheme.headline6,
                             ),
                             SizedBox(
@@ -905,11 +920,12 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
               Expanded(
                 child: RangeSlider(
                   labels: RangeLabels(
-                      user.startPrice.toString(), user.endPrice.toString()),
+                      user?.startPrice.toString(), user?.endPrice.toString()),
                   divisions: 10,
                   min: 9.99,
                   max: 199.99,
-                  values: RangeValues(user.startPrice, user.endPrice),
+                  values: RangeValues(user?.startPrice?.roundToDouble() ?? 10,
+                      user?.endPrice?.roundToDouble() ?? 20),
                   onChanged: (newValue) {
                     print("New value => $newValue");
                     _dataService.updateUser(ArtisanModel(
@@ -921,6 +937,43 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
               ),
               Text("\₵200"),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditUsernameDialog(Artisan user) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text("Edit username"),
+        content: Form(
+          child: TextFormInput(
+            labelText: "What's your name?",
+            controller: _nameController..text = user?.name,
+            validator: (_) => _.isEmpty ? "Enter a username" : null,
+            onFieldSubmitted: (_) async {
+              var artisan = user.copyWith(name: _nameController.text);
+              ctx.navigator.pop();
+              await _dataService.updateUser(ArtisanModel(artisan: artisan));
+            },
+          ),
+        ),
+        actions: [
+          ButtonClear(
+            text: "Cancel",
+            onPressed: () {
+              ctx.navigator.pop();
+            },
+            themeData: _themeData,
+          ),
+          ButtonClear(
+            text: "Save",
+            onPressed: () {
+              ctx.navigator.pop();
+            },
+            themeData: _themeData,
           ),
         ],
       ),
