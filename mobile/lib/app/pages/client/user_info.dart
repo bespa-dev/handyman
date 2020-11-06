@@ -1,12 +1,15 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
+import 'package:handyman/app/routes/route.gr.dart';
+import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
-import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
+import 'package:handyman/data/entities/customer_model.dart';
 import 'package:handyman/data/local_database.dart';
+import 'package:handyman/domain/models/user.dart';
+import 'package:handyman/domain/services/data.dart';
 import 'package:meta/meta.dart';
 import 'package:provider/provider.dart';
 
@@ -33,8 +36,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
     // Update current user state
     if (mounted) {
-      _isCurrentUser =
-          PrefsProvider.create().userId == widget.customer.id;
+      final provider = PrefsProvider.instance;
+      _isCurrentUser = provider.userId == widget.customer.id;
+      debugPrint("Current user => ${widget.customer.id} : ${provider.userId}");
       setState(() {});
     }
   }
@@ -67,57 +71,85 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     ),
                   )
                 : SizedBox.shrink(),
+            Consumer<DataService>(
+              builder: (_, dataService, __) => StreamBuilder<BaseUser>(
+                  stream: dataService.getCustomerById(id: widget.customer.id),
+                  initialData: CustomerModel(customer: widget.customer),
+                  builder: (context, snapshot) {
+                    return Column(
+                      children: [
+                        Spacer(),
+                        /*_isCurrentUser
+                            ?*/ _buildCompleteProfileBar(provider)
+                            // : SizedBox.shrink(),
+                      ],
+                    );
+                  }),
+            ),
+            Positioned(
+              top: kSpacingNone,
+              width: _kWidth,
+              child: _buildAppbar(provider),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildAppbar(PrefsProvider provider) => Container(
+  // Builds top appbar
+  Widget _buildAppbar(PrefsProvider provider) => SafeArea(
+        child: Container(
+          width: _kWidth,
+          decoration: BoxDecoration(
+            color: _themeData.scaffoldBackgroundColor,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              IconButton(
+                tooltip: "Go back",
+                icon: Icon(Feather.x),
+                onPressed: () => context.navigator.pop(),
+              ),
+              IconButton(
+                tooltip: "Toggle theme",
+                icon: Icon(
+                  provider.isLightTheme ? Feather.moon : Feather.sun,
+                ),
+                onPressed: () => provider.toggleTheme(),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  // Complete profile bar
+  Widget _buildCompleteProfileBar(PrefsProvider provider) => Container(
         width: _kWidth,
         decoration: BoxDecoration(
-          color: _themeData.scaffoldBackgroundColor,
+          color: _themeData.colorScheme.secondary,
         ),
+        padding: EdgeInsets.symmetric(
+          horizontal: getProportionateScreenWidth(kSpacingX36),
+          vertical: getProportionateScreenHeight(kSpacingX24),
+        ),
+        clipBehavior: Clip.hardEdge,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            IconButton(
-              tooltip: "Go back",
-              icon: Icon(Feather.x),
-              onPressed: () => context.navigator.pop(),
-            ),
-            Row(
+            Column(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                IconButton(
-                  tooltip: "Toggle theme",
-                  icon: Icon(
-                    provider.isLightTheme ? Feather.moon : Feather.sun,
-                  ),
-                  onPressed: () => provider.toggleTheme(),
-                ),
-                IconButton(
-                  icon: Icon(Entypo.info),
-                  onPressed: () => showAboutDialog(
-                    context: context,
-                    applicationVersion: kAppVersion,
-                    applicationName: kAppName,
-                    applicationLegalese: kAppSloganDesc,
-                    applicationIcon: Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: getProportionateScreenHeight(kSpacingX16),
-                      ),
-                      child: Image(
-                        image: Svg(kLogoAsset),
-                        height: getProportionateScreenHeight(kSpacingX48),
-                        width: getProportionateScreenHeight(kSpacingX48),
-                      ),
-                    ),
-                  ),
-                ),
+                Text("Complete profile"),
               ],
+            ),
+            ButtonIconOnly(
+              icon: Icons.arrow_right_alt_outlined,
+              onPressed: () => context.navigator.popAndPush(
+                Routes.profilePage,
+              ),
             ),
           ],
         ),

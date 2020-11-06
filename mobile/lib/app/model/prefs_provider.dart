@@ -11,6 +11,11 @@ class PrefsProvider extends ChangeNotifier {
   String _userId, _userType;
   final StreamController<bool> _themeController = StreamController.broadcast();
 
+  // Constructor
+  PrefsProvider._();
+
+  static PrefsProvider get instance => PrefsProvider._().._init();
+
   String get userId => _userId;
 
   String get userType => _userType;
@@ -25,17 +30,12 @@ class PrefsProvider extends ChangeNotifier {
 
   SharedPreferences _prefs;
 
-  // Constructor
-  PrefsProvider._();
-
-  factory PrefsProvider.create() => PrefsProvider._().._init();
-
   void _init() async {
     _prefs = await sl.getAsync<SharedPreferences>();
-    _isLightTheme = _prefs.getBool(PrefsUtils.THEME_MODE) ?? false;
-    _shouldShowSplash = _prefs.getBool(PrefsUtils.SHOW_SPLASH_SCREEN) ?? true;
     _userId = _prefs.getString(PrefsUtils.USER_ID) ?? null;
     _userType = _prefs.getString(PrefsUtils.USER_TYPE) ?? null;
+    _isLightTheme = _prefs.getBool(PrefsUtils.THEME_MODE) ?? false;
+    _shouldShowSplash = _prefs.getBool(PrefsUtils.SHOW_SPLASH_SCREEN) ?? true;
     _isLoggedIn = _userId != null && _userId.isNotEmpty;
     debugPrint("Light mode state -> $isLightTheme");
     toggleTheme(_isLightTheme);
@@ -65,6 +65,13 @@ class PrefsProvider extends ChangeNotifier {
     await _prefs.setBool(PrefsUtils.SHOW_SPLASH_SCREEN, value);
     _shouldShowSplash = value ??= !_shouldShowSplash;
     notifyListeners();
+  }
+
+  void clearUserData() async {
+    _userId = null;
+    _userType = null;
+    await _prefs.setString(PrefsUtils.USER_ID, null);
+    await _prefs.setString(PrefsUtils.USER_TYPE, null);
   }
 
   @override

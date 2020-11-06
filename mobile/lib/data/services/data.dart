@@ -39,7 +39,7 @@ class DataServiceImpl implements DataService {
   DataServiceImpl._();
 
   // Singleton
-  factory DataServiceImpl.create() => DataServiceImpl._();
+  static DataServiceImpl get instance => DataServiceImpl._();
 
   /// Get all [Artisan]s from data source
   @override
@@ -533,7 +533,7 @@ class DataServiceImpl implements DataService {
       value: artisan?.startPrice,
       progress: 0.0,
     );
-    final storageService = StorageServiceImpl.create();
+    final storageService = StorageServiceImpl.instance;
     await storageService.uploadFile(image, path: booking.id);
     storageService.onStorageUploadResponse.listen((event) async {
       if (!event.isInComplete) {
@@ -548,7 +548,7 @@ class DataServiceImpl implements DataService {
 
   @override
   Future<void> uploadBusinessPhotos(String userId, List<File> images) async {
-    final storageService = StorageServiceImpl.create();
+    final storageService = StorageServiceImpl.instance;
     images.forEach((image) async {
       final id = Uuid().v4();
       await storageService.uploadFile(image, path: id);

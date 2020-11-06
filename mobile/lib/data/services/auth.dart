@@ -6,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/utils.dart';
@@ -18,29 +19,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 /// [AuthService] implementation for production use
 class FirebaseAuthService implements AuthService {
-  final FirebaseAuth _auth = sl.get<FirebaseAuth>();
-  final FirebaseFirestore _firestore = sl.get<FirebaseFirestore>();
-  final FirebaseMessaging _firebaseMessaging = sl.get<FirebaseMessaging>();
-  final LocalDatabase _database = sl.get<LocalDatabase>();
+  final _auth = sl.get<FirebaseAuth>();
+  final _firestore = sl.get<FirebaseFirestore>();
+  final _firebaseMessaging = sl.get<FirebaseMessaging>();
+  final _database = sl.get<LocalDatabase>();
+  final _prefsProvider = PrefsProvider.instance;
   final successState = AuthState.SUCCESS;
   final errorState = AuthState.ERROR;
   final loadingState = AuthState.AUTHENTICATING;
   final initialState = AuthState.NONE;
-  String _userId, _userType;
 
   // Private constructor
   FirebaseAuthService._();
 
   // Singleton
-  static AuthService get instance => FirebaseAuthService._().._init();
-
-  factory FirebaseAuthService.create() => FirebaseAuthService._().._init();
-
-  void _init() async {
-    var preferences = await sl.getAsync<SharedPreferences>();
-    _userId = preferences.getString(PrefsUtils.USER_ID);
-    _userType = preferences.getString(PrefsUtils.USER_TYPE);
-  }
+  static AuthService get instance => FirebaseAuthService._();
 
   final StreamController<BaseUser> _onAuthStateChanged =
       StreamController.broadcast();
@@ -63,11 +56,8 @@ class FirebaseAuthService implements AuthService {
 
       final model = CustomerModel(customer: customer);
       await _database.userDao.addCustomer(model);
-      final preferences = await sl.getAsync<SharedPreferences>();
-      await preferences.setString(PrefsUtils.USER_ID, user.uid);
-      await preferences.setString(PrefsUtils.USER_TYPE, kCustomerString);
-      _userId = user.uid;
-      _userType = kCustomerString;
+      _prefsProvider.saveUserId(user.uid);
+      _prefsProvider.saveUserType(kCustomerString);
       _onProcessingStateChanged.sink.add(successState);
       _onAuthStateChanged.sink.add(model);
       return model;
@@ -97,11 +87,8 @@ class FirebaseAuthService implements AuthService {
 
       final model = ArtisanModel(artisan: artisan);
       await _database.userDao.saveProvider(model);
-      final preferences = await sl.getAsync<SharedPreferences>();
-      await preferences.setString(PrefsUtils.USER_ID, user.uid);
-      await preferences.setString(PrefsUtils.USER_TYPE, kArtisanString);
-      _userId = user.uid;
-      _userType = kCustomerString;
+      _prefsProvider.saveUserId(user.uid);
+      _prefsProvider.saveUserType(kArtisanString);
       _onProcessingStateChanged.sink.add(successState);
       _onAuthStateChanged.sink.add(model);
       return model;
@@ -123,11 +110,9 @@ class FirebaseAuthService implements AuthService {
           final model =
               CustomerModel(customer: customer.copyWith(token: token));
           await _database.userDao.addCustomer(model);
-          final preferences = await sl.getAsync<SharedPreferences>();
-          await preferences.setString(PrefsUtils.USER_ID, user.uid);
-          await preferences.setString(PrefsUtils.USER_TYPE, kCustomerString);
-          _userId = user.uid;
-          _userType = kCustomerString;
+          _prefsProvider.saveUserId(user.uid);
+          _prefsProvider.saveUserType(kCustomerString);
+          await _database.userDao.addCustomer(model);
           _onProcessingStateChanged.sink.add(successState);
           _onAuthStateChanged.sink.add(model);
           return model;
@@ -149,6 +134,8 @@ class FirebaseAuthService implements AuthService {
             business: artisan.business ?? "",
             token: token,
           ));
+          _prefsProvider.saveUserId(user.uid);
+          _prefsProvider.saveUserType(kArtisanString);
           await _database.userDao.saveProvider(model);
           _onAuthStateChanged.sink.add(model);
           return model;
@@ -205,17 +192,17 @@ class FirebaseAuthService implements AuthService {
 
   @override
   Stream<BaseUser> currentUser() async* {
-    debugPrint("FirebaseAuthService.currentUser => $_userType : $_userId");
-    if (_userType == kCustomerString) {
+    debugPrint("FirebaseAuthService.currentUser => ${_prefsProvider.userType} : ${_prefsProvider.userId}");
+    if (_prefsProvider.userType == kCustomerString) {
       var localSource = _database.userDao
-          .customerById(_userId)
+          .customerById(_prefsProvider.userId)
           .watchSingle()
           .map((customer) => CustomerModel(customer: customer));
       yield* localSource;
 
       var customerSnapshot = _firestore
           .collection(FirestoreUtils.kCustomerRef)
-          .doc(_userId)
+          .doc(_prefsProvider.userId)
           .snapshots(includeMetadataChanges: true);
       customerSnapshot.listen((event) async {
         if (event.exists) {
@@ -224,16 +211,16 @@ class FirebaseAuthService implements AuthService {
           await _database.userDao.addCustomer(model);
         }
       });
-    } else if (_userType == kArtisanString) {
+    } else if (_prefsProvider.userType == kArtisanString) {
       var localSource = _database.userDao
-          .artisanById(_userId)
+          .artisanById(_prefsProvider.userId)
           .watchSingle()
           .map((event) => ArtisanModel(artisan: event));
       yield* localSource;
 
       final snapshot = _firestore
           .collection(FirestoreUtils.kArtisanRef)
-          .doc(_userId)
+          .doc(_prefsProvider.userId)
           .snapshots(includeMetadataChanges: true);
       snapshot.listen((event) async {
         if (event.exists) {
@@ -321,11 +308,7 @@ class FirebaseAuthService implements AuthService {
       if (googleSignIn.currentUser != null) await googleSignIn.signOut();
 
       // Clear prefs
-      final preferences = await sl.getAsync<SharedPreferences>();
-      await preferences.setString(PrefsUtils.USER_ID, null);
-      await preferences.setString(PrefsUtils.USER_TYPE, null);
-      _userId = null;
-      _userType = null;
+      _prefsProvider.clearUserData();
 
       _onProcessingStateChanged?.sink?.add(successState);
       _onAuthStateChanged?.sink?.add(null);

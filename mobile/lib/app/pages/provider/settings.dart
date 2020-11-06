@@ -63,8 +63,8 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
       _phoneController = TextEditingController();
 
   CalendarController _calendarController;
-  DataService _dataService = DataServiceImpl.create();
-  final _storageService = StorageServiceImpl.create();
+  DataService _dataService = DataServiceImpl.instance;
+  final _storageService = StorageServiceImpl.instance;
 
   File _avatar;
   String _userId;

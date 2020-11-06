@@ -29,7 +29,7 @@ class AccountCompletionPage extends StatefulWidget {
 }
 
 class _AccountCompletionPageState extends State<AccountCompletionPage> {
-  final _storageService = StorageServiceImpl.create();
+  final _storageService = StorageServiceImpl.instance;
 
   // region Form
   final _formKey = GlobalKey<FormState>();

@@ -26,7 +26,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _preferGridFormat = true;
-  DataService _apiService = DataServiceImpl.create();
+  DataService _apiService = DataServiceImpl.instance;
   Stream<List<ServiceCategory>> _categoriesStream =
       sl.get<DataService>().getCategories();
 

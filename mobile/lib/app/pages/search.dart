@@ -18,7 +18,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final _dataService = DataServiceImpl.create();
+  final _dataService = DataServiceImpl.instance;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   double _kWidth, _kHeight;
   ThemeData _themeData;

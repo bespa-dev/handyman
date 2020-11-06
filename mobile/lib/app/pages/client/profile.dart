@@ -34,8 +34,8 @@ class _ProfilePageState extends State<ProfilePage> {
   final _nameController = TextEditingController();
   double _kWidth, _kHeight;
   ThemeData _themeData;
-  final _dataService = DataServiceImpl.create();
-  final _storageService = StorageServiceImpl.create();
+  final _dataService = DataServiceImpl.instance;
+  final _storageService = StorageServiceImpl.instance;
   bool _isSaving = false;
   SheetController _sheetController = SheetController();
 

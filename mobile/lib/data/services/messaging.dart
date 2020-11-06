@@ -22,7 +22,7 @@ class MessagingServiceImpl implements MessagingService {
   }
 
   // Creates an instance of the class and initializes plugins
-  factory MessagingServiceImpl.create() => MessagingServiceImpl._();
+  static MessagingServiceImpl get instance => MessagingServiceImpl._();
 
   static void _initPlugins() async {
     // initialise the plugin. `logo_colored` needs to be a added as a drawable resource to the Android head project
@@ -49,7 +49,7 @@ class MessagingServiceImpl implements MessagingService {
     final token = await msgService.getToken();
     debugPrint("MessagingServiceImpl._initPlugins: Token => $token");
 
-    var prefsProvider = PrefsProvider.create();
+    var prefsProvider = PrefsProvider.instance;
     debugPrint("User id => ${prefsProvider.userId}");
     var authService = sl.get<AuthService>();
     var currentUser = await authService.currentUser().first;
