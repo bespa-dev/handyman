@@ -30,7 +30,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   double _kWidth, _kHeight;
@@ -84,7 +83,6 @@ class _ProfilePageState extends State<ProfilePage> {
         builder: (_, provider, __) {
           _userId = provider.userId;
           return Scaffold(
-            key: _scaffoldKey,
             extendBodyBehindAppBar: true,
             extendBody: true,
             body: SafeArea(

@@ -129,8 +129,13 @@ class _HomePageState extends State<HomePage> {
                                             url:
                                                 userSnapshot.data?.user?.avatar,
                                             radius: kSpacingX36,
-                                            onTap: () => context.navigator
-                                                .push(Routes.profilePage),
+                                            onTap: () => context.navigator.push(
+                                              Routes.userInfoPage,
+                                              arguments: UserInfoPageArguments(
+                                                customer:
+                                                    userSnapshot.data?.user,
+                                              ),
+                                            ),
                                             ringColor: RandomColor(1)
                                                 .randomColor(
                                                     colorBrightness:

@@ -59,7 +59,7 @@ class _SearchPageState extends State<SearchPage> {
               Positioned.fill(
                   top: getProportionateScreenHeight(
                       provider.userType == kCustomerString
-                          ? _kHeight * 0.22
+                          ? _kHeight * 0.25
                           : kSpacingX160),
                   left: kSpacingNone,
                   right: kSpacingNone,
@@ -103,7 +103,7 @@ class _SearchPageState extends State<SearchPage> {
             Container(
               width: double.infinity,
               height: provider.userType == kCustomerString
-                  ? getProportionateScreenHeight(_kHeight * 0.12)
+                  ? getProportionateScreenHeight(_kHeight * 0.15)
                   : getProportionateScreenHeight(kSpacingX56),
               padding: EdgeInsets.symmetric(
                 horizontal: getProportionateScreenWidth(kSpacingX16),

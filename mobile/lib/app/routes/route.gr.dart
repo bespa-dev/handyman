@@ -17,6 +17,7 @@ import '../pages/client/profile.dart';
 import '../pages/client/provider_details.dart';
 import '../pages/client/providers.dart';
 import '../pages/client/request_booking.dart';
+import '../pages/client/user_info.dart';
 import '../pages/conversation.dart';
 import '../pages/login.dart';
 import '../pages/notification.dart';
@@ -40,6 +41,7 @@ class Routes {
   static const String bookingsDetailsPage = '/bookings-details-page';
   static const String accountCompletionPage = '/account-completion-page';
   static const String conversationPage = '/conversation-page';
+  static const String userInfoPage = '/user-info-page';
   static const String homePage = '/home-page';
   static const String profilePage = '/profile-page';
   static const String requestBookingPage = '/request-booking-page';
@@ -58,6 +60,7 @@ class Routes {
     bookingsDetailsPage,
     accountCompletionPage,
     conversationPage,
+    userInfoPage,
     homePage,
     profilePage,
     requestBookingPage,
@@ -86,6 +89,7 @@ class Router extends RouterBase {
         page: AccountCompletionPage, guards: [AuthGuard]),
     RouteDef(Routes.conversationPage,
         page: ConversationPage, guards: [AuthGuard]),
+    RouteDef(Routes.userInfoPage, page: UserInfoPage, guards: [AuthGuard]),
     RouteDef(Routes.homePage, page: HomePage, guards: [AuthGuard, ClientGuard]),
     RouteDef(Routes.profilePage,
         page: ProfilePage, guards: [AuthGuard, ClientGuard]),
@@ -181,6 +185,16 @@ class Router extends RouterBase {
           key: args.key,
           recipient: args.recipient,
           isCustomer: args.isCustomer,
+        ),
+        settings: data,
+      );
+    },
+    UserInfoPage: (data) {
+      final args = data.getArgs<UserInfoPageArguments>(nullOk: false);
+      return buildAdaptivePageRoute<dynamic>(
+        builder: (context) => UserInfoPage(
+          key: args.key,
+          customer: args.customer,
         ),
         settings: data,
       );
@@ -287,6 +301,13 @@ class ConversationPageArguments {
   final String recipient;
   final bool isCustomer;
   ConversationPageArguments({this.key, this.recipient, this.isCustomer});
+}
+
+/// UserInfoPage arguments holder class
+class UserInfoPageArguments {
+  final Key key;
+  final dynamic customer;
+  UserInfoPageArguments({this.key, @required this.customer});
 }
 
 /// RequestBookingPage arguments holder class
