@@ -46,9 +46,6 @@ Future<void> registerServiceLocator() async {
   // Local database
   sl.registerSingleton<LocalDatabase>(LocalDatabase.instance);
 
-  // Preferences
-  sl.registerSingletonAsync<PrefsProvider>(() => PrefsProvider.get());
-
   // Services
   sl.registerLazySingleton<DataService>(() => DataServiceImpl.instance);
   sl.registerLazySingleton<AuthService>(() => FirebaseAuthService.instance);

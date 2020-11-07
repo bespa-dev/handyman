@@ -15,17 +15,9 @@ class PrefsProvider extends ChangeNotifier {
   final StreamController<bool> _themeController = StreamController.broadcast();
 
   // Constructor
-  PrefsProvider._() {
-    _init();
-  }
+  PrefsProvider._();
 
-  static Future<PrefsProvider> get() async {
-    final prefs = PrefsProvider.instance;
-    await prefs._init();
-    return prefs;
-  }
-
-  static PrefsProvider get instance => PrefsProvider._();
+  static PrefsProvider get instance => PrefsProvider._().._init();
 
   String get userId => _userId;
 
@@ -61,6 +53,7 @@ class PrefsProvider extends ChangeNotifier {
   }
 
   void saveUserId([String value]) async {
+    await _init();
     await _prefs.setString(PrefsUtils.USER_ID, value);
     _userId = value;
     _isLoggedIn = value != null && value.isNotEmpty;
@@ -68,6 +61,7 @@ class PrefsProvider extends ChangeNotifier {
   }
 
   void saveUserType([String value]) async {
+    await _init();
     await _prefs.setString(PrefsUtils.USER_TYPE, value);
     _userType = value;
     notifyListeners();
