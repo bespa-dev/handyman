@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/data/services/data.dart';
@@ -44,6 +45,9 @@ Future<void> registerServiceLocator() async {
 
   // Local database
   sl.registerSingleton<LocalDatabase>(LocalDatabase.instance);
+
+  // Preferences
+  sl.registerSingletonAsync<PrefsProvider>(() => PrefsProvider.get());
 
   // Services
   sl.registerLazySingleton<DataService>(() => DataServiceImpl.instance);

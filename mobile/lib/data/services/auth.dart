@@ -312,7 +312,7 @@ class FirebaseAuthService implements AuthService {
       if (googleSignIn.currentUser != null) await googleSignIn.signOut();
 
       // Clear prefs
-      _prefsProvider.clearUserData();
+      await _prefsProvider.clearUserData();
 
       _onProcessingStateChanged?.sink?.add(successState);
       _onAuthStateChanged?.sink?.add(null);

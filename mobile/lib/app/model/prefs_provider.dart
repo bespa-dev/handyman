@@ -15,8 +15,14 @@ class PrefsProvider extends ChangeNotifier {
   final StreamController<bool> _themeController = StreamController.broadcast();
 
   // Constructor
-  PrefsProvider._(){
+  PrefsProvider._() {
     _init();
+  }
+
+  static Future<PrefsProvider> get() async {
+    final prefs = PrefsProvider.instance;
+    await prefs._init();
+    return prefs;
   }
 
   static PrefsProvider get instance => PrefsProvider._();
@@ -39,8 +45,8 @@ class PrefsProvider extends ChangeNotifier {
 
   SharedPreferences _prefs;
 
-  void _init() async {
-    _prefs = await sl.getAsync<SharedPreferences>();
+  Future<void> _init() async {
+    _prefs = await SharedPreferences.getInstance();
     _userId = _prefs.getString(PrefsUtils.USER_ID) ?? null;
     _userType = _prefs.getString(PrefsUtils.USER_TYPE) ?? null;
     _emergencyContactNumber =
@@ -93,7 +99,7 @@ class PrefsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clearUserData() async {
+  Future<void> clearUserData() async {
     _userId = null;
     _userType = null;
     await _prefs.setString(PrefsUtils.USER_ID, null);
