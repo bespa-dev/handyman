@@ -6,9 +6,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
+import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/utils.dart';
-import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:handyman/domain/services/messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -51,15 +51,17 @@ class MessagingServiceImpl implements MessagingService {
 
     var prefsProvider = PrefsProvider.instance;
     debugPrint("User id => ${prefsProvider.userId}");
-    var authService = sl.get<AuthService>();
-    var currentUser = await authService.currentUser().first;
-    debugPrint("User => ${currentUser.user}");
+    var dataService = sl.get<DataService>();
+    var currentUser = prefsProvider.userType == kCustomerString
+        ? await dataService.getCustomerById(id: prefsProvider.userId)?.first
+        : await dataService.getArtisanById(id: prefsProvider.userId)?.first;
     if (currentUser != null) {
-      var dataService = sl.get<DataService>();
+      debugPrint("User => ${currentUser?.user}");
 
       // Update user token
       var updatedUser = currentUser.user.copyWith(token: token);
-      debugPrint("MessagingServiceImpl._initPlugins: Updated user => $updatedUser");
+      debugPrint(
+          "MessagingServiceImpl._initPlugins: Updated user => $updatedUser");
       await dataService.updateUser(currentUser);
     }
 

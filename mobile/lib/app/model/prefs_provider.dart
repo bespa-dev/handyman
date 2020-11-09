@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,10 +34,8 @@ class PrefsProvider extends ChangeNotifier {
 
   Stream<bool> get onThemeChanged => _themeController.stream;
 
-  SharedPreferences _prefs;
-
   Future<void> _init() async {
-    _prefs = await SharedPreferences.getInstance();
+    final _prefs = await SharedPreferences.getInstance();
     _userId = _prefs.getString(PrefsUtils.USER_ID) ?? null;
     _userType = _prefs.getString(PrefsUtils.USER_TYPE) ?? null;
     _emergencyContactNumber =
@@ -53,7 +50,7 @@ class PrefsProvider extends ChangeNotifier {
   }
 
   void saveUserId([String value]) async {
-    await _init();
+    final _prefs = await SharedPreferences.getInstance();
     await _prefs.setString(PrefsUtils.USER_ID, value);
     _userId = value;
     _isLoggedIn = value != null && value.isNotEmpty;
@@ -61,13 +58,14 @@ class PrefsProvider extends ChangeNotifier {
   }
 
   void saveUserType([String value]) async {
-    await _init();
+    final _prefs = await SharedPreferences.getInstance();
     await _prefs.setString(PrefsUtils.USER_TYPE, value);
     _userType = value;
     notifyListeners();
   }
 
   void updateEmergencyContact([String value]) async {
+    final _prefs = await SharedPreferences.getInstance();
     await _prefs.setString(PrefsUtils.EMERGENCY_CONTACT, value);
     _emergencyContactNumber = value;
     notifyListeners();
@@ -75,18 +73,21 @@ class PrefsProvider extends ChangeNotifier {
 
   void toggleTheme([bool isLightMode]) async {
     _isLightTheme = isLightMode ??= !_isLightTheme;
+    final _prefs = await SharedPreferences.getInstance();
     await _prefs.setBool(PrefsUtils.THEME_MODE, _isLightTheme);
     _themeController.sink.add(_isLightTheme);
     notifyListeners();
   }
 
   void toggleShowSplash({bool value}) async {
+    final _prefs = await SharedPreferences.getInstance();
     await _prefs.setBool(PrefsUtils.SHOW_SPLASH_SCREEN, value);
     _shouldShowSplash = value ??= !_shouldShowSplash;
     notifyListeners();
   }
 
   void toggleStandardProfileView([bool value]) async {
+    final _prefs = await SharedPreferences.getInstance();
     _useStandardViewType = value ??= !_useStandardViewType;
     await _prefs.setBool(
         PrefsUtils.USER_STANDARD_PROFILE_VIEW_TYPE, _useStandardViewType);
@@ -96,6 +97,7 @@ class PrefsProvider extends ChangeNotifier {
   Future<void> clearUserData() async {
     _userId = null;
     _userType = null;
+    final _prefs = await SharedPreferences.getInstance();
     await _prefs.setString(PrefsUtils.USER_ID, null);
     await _prefs.setString(PrefsUtils.USER_TYPE, null);
   }
