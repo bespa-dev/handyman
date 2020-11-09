@@ -14,7 +14,7 @@ void main() async {
     prefsProvider.saveUserId(uid);
     expect(uid, prefsProvider.userId);
 
-    await Future.delayed(kSheetDuration);
+    await Future.delayed(kTestDuration);
     await prefsProvider.clearUserData();
     expect(null, prefsProvider.userId);
   });
