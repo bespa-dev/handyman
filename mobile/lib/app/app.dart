@@ -48,11 +48,11 @@ class _HandyManAppState extends State<HandyManApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<PrefsProvider>(
-          create: (_) => PrefsProvider.instance,
+        ChangeNotifierProvider<PrefsProvider>.value(
+          value: PrefsProvider.create(),
         ),
         Provider<AuthService>.value(
-          value: FirebaseAuthService.instance,
+          value: FirebaseAuthService.create(),
         ),
         Provider<DataService>.value(
           value: DataServiceImpl.instance,

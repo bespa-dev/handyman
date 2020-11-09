@@ -49,7 +49,7 @@ class MessagingServiceImpl implements MessagingService {
     final token = await msgService.getToken();
     debugPrint("MessagingServiceImpl._initPlugins: Token => $token");
 
-    var prefsProvider = PrefsProvider.instance;
+    var prefsProvider = PrefsProvider.create();
     debugPrint("User id => ${prefsProvider.userId}");
     var dataService = sl.get<DataService>();
     var currentUser = prefsProvider.userType == kCustomerString
@@ -59,10 +59,10 @@ class MessagingServiceImpl implements MessagingService {
       debugPrint("User => ${currentUser?.user}");
 
       // Update user token
-      var updatedUser = currentUser.user.copyWith(token: token);
+      var updatedUser = currentUser.user?.copyWith(token: token);
       debugPrint(
           "MessagingServiceImpl._initPlugins: Updated user => $updatedUser");
-      await dataService.updateUser(currentUser);
+      if (updatedUser != null) await dataService.updateUser(currentUser);
     }
 
     // FIXME: Failed to push notification when sent from console

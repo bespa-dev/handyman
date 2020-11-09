@@ -10,7 +10,6 @@ import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
-import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _emailController = TextEditingController(),
       _passwordController = TextEditingController();
-  AuthService _authService = FirebaseAuthService.instance;
+  AuthService _authService;
   PrefsProvider _prefsProvider;
 
   // Perform login
@@ -50,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     if (mounted) {
+      _authService = Provider.of<AuthService>(context, listen: false);
       // Monitor user auth state change
       _authService.onAuthStateChanged.listen((user) {
         if (user != null) {

@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:handyman/core/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// [SharedPreferences] helper class
-class PrefsProvider extends ChangeNotifier {
+class PrefsProvider with ChangeNotifier {
   bool _isLoggedIn = false,
       _isLightTheme = true,
       _useStandardViewType = true,
@@ -13,10 +13,26 @@ class PrefsProvider extends ChangeNotifier {
   String _userId, _userType, _emergencyContactNumber;
   final StreamController<bool> _themeController = StreamController.broadcast();
 
-  // Constructor
-  PrefsProvider._();
+  SharedPreferences _prefs;
 
-  static PrefsProvider get instance => PrefsProvider._().._init();
+  PrefsProvider._() {
+    SharedPreferences.getInstance().then((value) async {
+      _prefs = value;
+      _userId = _prefs.getString(PrefsUtils.USER_ID) ?? null;
+      _userType = _prefs.getString(PrefsUtils.USER_TYPE) ?? null;
+      _emergencyContactNumber =
+          _prefs.getString(PrefsUtils.EMERGENCY_CONTACT) ?? null;
+      _useStandardViewType =
+          _prefs.getBool(PrefsUtils.USER_STANDARD_PROFILE_VIEW_TYPE) ?? true;
+      _isLightTheme = _prefs.getBool(PrefsUtils.THEME_MODE) ?? false;
+      _shouldShowSplash = _prefs.getBool(PrefsUtils.SHOW_SPLASH_SCREEN) ?? true;
+      _isLoggedIn = _userId != null && _userId.isNotEmpty;
+      notifyListeners();
+      toggleTheme(_isLightTheme);
+    });
+  }
+
+  static PrefsProvider create() => PrefsProvider._();
 
   String get userId => _userId;
 
@@ -33,21 +49,6 @@ class PrefsProvider extends ChangeNotifier {
   bool get isLightTheme => _isLightTheme;
 
   Stream<bool> get onThemeChanged => _themeController.stream;
-
-  Future<void> _init() async {
-    final _prefs = await SharedPreferences.getInstance();
-    _userId = _prefs.getString(PrefsUtils.USER_ID) ?? null;
-    _userType = _prefs.getString(PrefsUtils.USER_TYPE) ?? null;
-    _emergencyContactNumber =
-        _prefs.getString(PrefsUtils.EMERGENCY_CONTACT) ?? null;
-    _useStandardViewType =
-        _prefs.getBool(PrefsUtils.USER_STANDARD_PROFILE_VIEW_TYPE) ?? true;
-    _isLightTheme = _prefs.getBool(PrefsUtils.THEME_MODE) ?? false;
-    _shouldShowSplash = _prefs.getBool(PrefsUtils.SHOW_SPLASH_SCREEN) ?? true;
-    _isLoggedIn = _userId != null && _userId.isNotEmpty;
-    notifyListeners();
-    toggleTheme(_isLightTheme);
-  }
 
   void saveUserId([String value]) async {
     final _prefs = await SharedPreferences.getInstance();

@@ -12,7 +12,6 @@ import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
-import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:provider/provider.dart';
 
@@ -31,7 +30,7 @@ class _RegisterPageState extends State<RegisterPage> {
       _passwordController = TextEditingController(),
       _firstNameController = TextEditingController(),
       _lastNameController = TextEditingController();
-  AuthService _authService = FirebaseAuthService.instance;
+  AuthService _authService;
   PrefsProvider _prefsProvider;
 
   // Perform registration
@@ -57,6 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
   void initState() {
     super.initState();
     if (mounted) {
+      _authService = Provider.of<AuthService>(context, listen: false);
       // Monitor user auth state change
       _authService.onAuthStateChanged.listen((user) {
         if (user != null) {

@@ -9,7 +9,7 @@ void main() async {
 
   test("Test prefs provider", () async {
     SharedPreferences.setMockInitialValues({});
-    final prefsProvider = PrefsProvider.instance;
+    final prefsProvider = await PrefsProvider.create();
     final uid = Uuid().v4();
     prefsProvider.saveUserId(uid);
     expect(uid, prefsProvider.userId);

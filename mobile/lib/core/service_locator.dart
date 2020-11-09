@@ -4,13 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/data/local_database.dart';
-import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/data/services/data.dart';
 import 'package:handyman/data/services/messaging.dart';
 import 'package:handyman/data/services/storage.dart';
-import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:handyman/domain/services/messaging.dart';
 import 'package:handyman/domain/services/storage.dart';
@@ -48,7 +45,6 @@ Future<void> registerServiceLocator() async {
 
   // Services
   sl.registerLazySingleton<DataService>(() => DataServiceImpl.instance);
-  sl.registerLazySingleton<AuthService>(() => FirebaseAuthService.instance);
   sl.registerLazySingleton<StorageService>(() => StorageServiceImpl.instance);
   sl.registerLazySingleton<MessagingService>(
       () => MessagingServiceImpl.instance);

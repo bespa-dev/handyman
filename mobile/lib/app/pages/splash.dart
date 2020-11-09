@@ -7,7 +7,6 @@ import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
-import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +17,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   bool _isLoading = false;
-  AuthService _authService = FirebaseAuthService.instance;
+  AuthService _authService;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -26,6 +25,7 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
 
     if (mounted) {
+      _authService = Provider.of<AuthService>(context, listen: false);
       _authService.onProcessingStateChanged.listen((state) {
         _isLoading = state == AuthState.AUTHENTICATING;
         setState(() {});

@@ -18,27 +18,31 @@ import 'package:handyman/domain/services/auth.dart';
 
 /// [AuthService] implementation for production use
 class FirebaseAuthService implements AuthService {
+  // Firebase SDKs
   final _auth = sl.get<FirebaseAuth>();
   final _firestore = sl.get<FirebaseFirestore>();
   final _firebaseMessaging = sl.get<FirebaseMessaging>();
   final _database = sl.get<LocalDatabase>();
-  final _prefsProvider = PrefsProvider.instance;
+
+  // Preferences
+  PrefsProvider _prefsProvider;
+
+  // Authentication states
   final successState = AuthState.SUCCESS;
   final errorState = AuthState.ERROR;
   final loadingState = AuthState.AUTHENTICATING;
   final initialState = AuthState.NONE;
 
   // Private constructor
-  FirebaseAuthService._();
-
-  // Singleton
-  static AuthService get instance => FirebaseAuthService._().._init();
-
-  void _init() async {
+  FirebaseAuthService._() {
+    _prefsProvider = PrefsProvider.create();
     final uid = _auth.currentUser?.uid;
     _prefsProvider.saveUserId(uid);
     debugPrint("User id => $uid");
   }
+
+  // Singleton
+  static AuthService create() => FirebaseAuthService._();
 
   final StreamController<BaseUser> _onAuthStateChanged =
       StreamController.broadcast();
@@ -196,7 +200,8 @@ class FirebaseAuthService implements AuthService {
 
   @override
   Stream<BaseUser> currentUser() async* {
-    debugPrint("FirebaseAuthService.currentUser => ${_prefsProvider.userType} : ${_prefsProvider.userId}");
+    debugPrint(
+        "FirebaseAuthService.currentUser => ${_prefsProvider.userType} : ${_prefsProvider.userId}");
     if (_prefsProvider.userType == kCustomerString) {
       var localSource = _database.userDao
           .customerById(_prefsProvider.userId)
