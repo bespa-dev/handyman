@@ -17,6 +17,11 @@ import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:provider/provider.dart';
 
+/// Shows details of an Artisan
+/// 1. Personal profile
+/// 2. Business profile
+/// 3. Photos
+/// 4. Reviews
 class ServiceProviderDetails extends StatefulWidget {
   final Artisan artisan;
 
@@ -36,8 +41,6 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
   @override
   Widget build(BuildContext context) {
     _themeData = Theme.of(context);
-    final kHeight = MediaQuery.of(context).size.height;
-    final kWidth = MediaQuery.of(context).size.width;
 
     return Consumer<DataService>(
       builder: (_, service, __) {
@@ -47,14 +50,18 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
               stream: _apiService.getArtisanById(id: widget.artisan.id),
               initialData: ArtisanModel(artisan: widget.artisan),
               builder: (context, snapshot) {
-                final artisan = snapshot.data.user;
+                final Artisan artisan = snapshot.data.user;
+                final avatar =
+                    artisan?.avatar != null && artisan.avatar.isNotEmpty
+                        ? artisan?.avatar
+                        : "";
 
                 return Scaffold(
                   key: _scaffoldKey,
                   body: artisan == null
                       ? Container(
-                    width: double.infinity,
-                        child: Column(
+                          width: double.infinity,
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.max,
@@ -65,7 +72,8 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                                 color: _themeData.colorScheme.onBackground,
                               ),
                               SizedBox(
-                                height: getProportionateScreenHeight(kSpacingX16),
+                                height:
+                                    getProportionateScreenHeight(kSpacingX16),
                               ),
                               Text(
                                 "No artisans found matching this information",
@@ -75,17 +83,19 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                                 textAlign: TextAlign.center,
                               ),
                               SizedBox(
-                                height: getProportionateScreenHeight(kSpacingX64),
+                                height:
+                                    getProportionateScreenHeight(kSpacingX64),
                               ),
                               ButtonPrimary(
-                                width: getProportionateScreenWidth(kSpacingX120),
+                                width:
+                                    getProportionateScreenWidth(kSpacingX120),
                                 label: "Go back",
                                 onTap: () => context.navigator.pop(),
                                 themeData: _themeData,
                               ),
                             ],
                           ),
-                      )
+                        )
                       : Stack(
                           fit: StackFit.expand,
                           children: [
@@ -102,8 +112,8 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                             SafeArea(
                               child: AnimatedContainer(
                                 duration: kScaleDuration,
-                                height: kHeight,
-                                width: kWidth,
+                                height: SizeConfig.screenHeight,
+                                width: SizeConfig.screenWidth,
                                 child: ListView(
                                   //physics: kScrollPhysics,
                                   padding: EdgeInsets.only(
@@ -113,20 +123,19 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                                     Stack(
                                       children: [
                                         Container(
-                                          height: kHeight * 0.4,
-                                          width: kWidth,
+                                          height: SizeConfig.screenHeight * 0.4,
+                                          width: SizeConfig.screenWidth,
                                           child: CachedNetworkImage(
-                                            imageUrl: artisan?.avatar ?? "",
+                                            imageUrl: avatar,
                                             fit: BoxFit.cover,
                                           ),
                                         ),
                                         Positioned(
                                           right: getProportionateScreenWidth(
                                               kSpacingNone),
-                                          top: kHeight * 0.3,
+                                          top: SizeConfig.screenHeight * 0.3,
                                           child: InkWell(
-                                            onTap: () =>
-                                                context.navigator.push(
+                                            onTap: () => context.navigator.push(
                                               Routes.requestBookingPage,
                                               arguments:
                                                   RequestBookingPageArguments(
@@ -137,22 +146,21 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                                               alignment: Alignment.center,
                                               height: kToolbarHeight,
                                               decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.only(
+                                                borderRadius: BorderRadius.only(
                                                   topLeft: Radius.circular(
                                                       kSpacingX16),
-                                                  bottomLeft:
-                                                      Radius.circular(
-                                                          kSpacingX16),
+                                                  bottomLeft: Radius.circular(
+                                                      kSpacingX16),
                                                 ),
-                                                color:
-                                                    _themeData.colorScheme.primary,
+                                                color: _themeData
+                                                    .colorScheme.primary,
                                               ),
-                                              width: kWidth * 0.25,
+                                              width:
+                                                  SizeConfig.screenWidth * 0.25,
                                               child: Text(
                                                 "Book now".toUpperCase(),
-                                                style: _themeData
-                                                    .textTheme.button,
+                                                style:
+                                                    _themeData.textTheme.button,
                                               ),
                                             ),
                                           ),
@@ -168,10 +176,10 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                             ),
                             Positioned(
                               top: kSpacingNone,
-                              width: kWidth,
+                              width: SizeConfig.screenWidth,
                               child: SafeArea(
                                 child: Container(
-                                  width: kWidth,
+                                  width: SizeConfig.screenWidth,
                                   height: kToolbarHeight,
                                   color: _themeData.scaffoldBackgroundColor
                                       .withOpacity(kOpacityX90),
@@ -211,7 +219,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                               ),
                             ),
                             Positioned(
-                              width: kWidth,
+                              width: SizeConfig.screenWidth,
                               bottom: kSpacingNone,
                               child: Container(
                                 color: _themeData.scaffoldBackgroundColor,
@@ -255,7 +263,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
 
   Widget _buildPhotoTab(userId) => Container(
         clipBehavior: Clip.hardEdge,
-        width: MediaQuery.of(context).size.width,
+        width: SizeConfig.screenWidth,
         height: getProportionateScreenHeight(kSpacingX320),
         padding: EdgeInsets.symmetric(
           vertical: getProportionateScreenHeight(kSpacingX24),
@@ -270,7 +278,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
             builder: (context, snapshot) {
               if (snapshot.hasError || snapshot.data.isEmpty)
                 return Container(
-                  width: double.infinity,
+                  width: SizeConfig.screenWidth,
                   height: getProportionateScreenHeight(kSpacingX320),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -301,7 +309,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
 
                     return Container(
                       clipBehavior: Clip.hardEdge,
-                      width: MediaQuery.of(context).size.width * 0.25,
+                      width: SizeConfig.screenWidth * 0.2,
                       height: getProportionateScreenHeight(kSpacingX160),
                       decoration: BoxDecoration(
                         color: _themeData.errorColor,
@@ -319,51 +327,49 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
       );
 
   Widget _buildReviewTab(Artisan artisan, String userId) =>
-      Consumer<PrefsProvider>(
-        builder: (_, prefs, __) => StreamBuilder<List<CustomerReview>>(
-            stream: _apiService.getReviewsForArtisan(artisan?.id),
-            initialData: [],
-            builder: (context, snapshot) {
-              return snapshot.hasError || snapshot.data.isEmpty
-                  ? SizedBox.shrink()
-                  : AnimationLimiter(
-                      child: AnimationConfiguration.synchronized(
-                        duration: kScaleDuration,
-                        child: Column(
-                          children: [
-                            Container(
-                              width: double.infinity,
-                              color: _themeData.scaffoldBackgroundColor
-                                  .withOpacity(kOpacityX35),
-                              padding: EdgeInsets.symmetric(
-                                vertical:
-                                    getProportionateScreenHeight(kSpacingX16),
-                                horizontal:
-                                    getProportionateScreenWidth(kSpacingX24),
-                              ),
-                              child: Text(
-                                "Reviews",
-                                style: _themeData.textTheme.headline5,
-                                textAlign: TextAlign.start,
-                              ),
-                            ),
-                            ...snapshot.data.map(
-                              (data) => SlideAnimation(
-                                verticalOffset: kSlideOffset,
-                                child: FadeInAnimation(
-                                  child: CustomerReviewCard(
-                                    review: data,
-                                    apiService: _apiService,
-                                    userId: userId,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+      StreamBuilder<List<CustomerReview>>(
+        stream: _apiService.getReviewsForArtisan(artisan?.id),
+        initialData: [],
+        builder: (context, snapshot) {
+          return snapshot.hasError || snapshot.data.isEmpty
+              ? SizedBox.shrink()
+              : AnimationLimiter(
+                  child: AnimationConfiguration.synchronized(
+                    duration: kScaleDuration,
+                    child: Column(
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          color: _themeData.scaffoldBackgroundColor
+                              .withOpacity(kOpacityX35),
+                          padding: EdgeInsets.symmetric(
+                            vertical: getProportionateScreenHeight(kSpacingX16),
+                            horizontal:
+                                getProportionateScreenWidth(kSpacingX24),
+                          ),
+                          child: Text(
+                            "Reviews",
+                            style: _themeData.textTheme.headline5,
+                            textAlign: TextAlign.start,
+                          ),
                         ),
-                      ),
-                    );
-            }),
+                        ...snapshot.data.map(
+                          (data) => SlideAnimation(
+                            verticalOffset: kSlideOffset,
+                            child: FadeInAnimation(
+                              child: CustomerReviewCard(
+                                review: data,
+                                apiService: _apiService,
+                                userId: userId,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+        },
       );
 
   Widget _buildProfileTab(Artisan artisan) =>

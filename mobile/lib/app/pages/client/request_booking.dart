@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
-import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/artisan_hours.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/fields.dart';
@@ -20,6 +19,7 @@ import 'package:handyman/domain/services/data.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+/// Request an Artisan's service
 class RequestBookingPage extends StatefulWidget {
   final Artisan artisan;
 
@@ -31,7 +31,6 @@ class RequestBookingPage extends StatefulWidget {
 
 class _RequestBookingPageState extends State<RequestBookingPage> {
   DataService _dataService;
-  double _kWidth, _kHeight;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController(),
@@ -48,9 +47,6 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
     super.didChangeDependencies();
 
     _themeData = Theme.of(context);
-    final size = MediaQuery.of(context).size;
-    _kWidth = size.width;
-    _kHeight = size.height;
   }
 
   @override
@@ -63,8 +59,8 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                 key: _scaffoldKey,
                 body: SafeArea(
                   child: Container(
-                    height: _kHeight,
-                    width: _kWidth,
+                    height: SizeConfig.screenHeight,
+                    width: SizeConfig.screenWidth,
                     child: StreamBuilder<BaseUser>(
                         stream: authService.currentUser(),
                         builder: (context, snapshot) {
@@ -73,14 +69,17 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                             children: [
                               Positioned(
                                 left: getProportionateScreenWidth(kSpacingNone),
-                                right: getProportionateScreenWidth(kSpacingNone),
+                                right:
+                                    getProportionateScreenWidth(kSpacingNone),
                                 bottom: kSpacingNone,
                                 top: getProportionateScreenHeight(
                                     kToolbarHeight),
                                 child: ListView(
                                   padding: EdgeInsets.only(
-                                    left: getProportionateScreenWidth(kSpacingX24),
-                                    right: getProportionateScreenWidth(kSpacingX24),
+                                    left: getProportionateScreenWidth(
+                                        kSpacingX24),
+                                    right: getProportionateScreenWidth(
+                                        kSpacingX24),
                                     bottom: getProportionateScreenHeight(
                                         kSpacingX24),
                                   ),
@@ -94,9 +93,9 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                               ),
                               Positioned(
                                 top: 0,
-                                width: _kWidth,
+                                width: SizeConfig.screenWidth,
                                 child: Container(
-                                  width: _kWidth,
+                                  width: SizeConfig.screenWidth,
                                   height: getProportionateScreenHeight(
                                       kToolbarHeight),
                                   color: _themeData.scaffoldBackgroundColor
@@ -115,8 +114,7 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                                         icon: Icon(provider.isLightTheme
                                             ? Feather.moon
                                             : Feather.sun),
-                                        onPressed: () =>
-                                            provider.toggleTheme(),
+                                        onPressed: () => provider.toggleTheme(),
                                       )
                                     ],
                                   ),
@@ -166,7 +164,7 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
             child: Container(
               alignment: Alignment.center,
               clipBehavior: Clip.hardEdge,
-              width: _kWidth,
+              width: SizeConfig.screenWidth,
               height: getProportionateScreenHeight(kSpacingX230),
               decoration: BoxDecoration(
                 color: _themeData.disabledColor.withOpacity(kEmphasisLow),
@@ -180,7 +178,7 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                     )
                   : Image.file(
                       _imageFile,
-                      width: _kWidth,
+                      width: SizeConfig.screenWidth,
                       fit: BoxFit.cover,
                       height: getProportionateScreenHeight(kSpacingX230),
                     ),
@@ -190,7 +188,7 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
           Container(
             alignment: Alignment.center,
             child: ButtonOutlined(
-              width: _kWidth * 0.7,
+              width: SizeConfig.screenWidth * 0.7,
               themeData: _themeData,
               enabled: widget.artisan.isAvailable,
               onTap: () {
@@ -318,9 +316,10 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                         ),
                         Container(
                           alignment: Alignment.center,
-                          width: _kWidth * 0.45,
+                          width: SizeConfig.screenWidth * 0.45,
                           decoration: BoxDecoration(
-                            color: _themeData.scaffoldBackgroundColor.withOpacity(kEmphasisMedium),
+                            color: _themeData.scaffoldBackgroundColor
+                                .withOpacity(kEmphasisMedium),
                             borderRadius: BorderRadius.circular(kSpacingX8),
                           ),
                           padding: EdgeInsets.symmetric(

@@ -51,7 +51,6 @@ class PrefsProvider with ChangeNotifier {
   Stream<bool> get onThemeChanged => _themeController.stream;
 
   void saveUserId([String value]) async {
-    final _prefs = await SharedPreferences.getInstance();
     await _prefs.setString(PrefsUtils.USER_ID, value);
     _userId = value;
     _isLoggedIn = value != null && value.isNotEmpty;
@@ -59,14 +58,12 @@ class PrefsProvider with ChangeNotifier {
   }
 
   void saveUserType([String value]) async {
-    final _prefs = await SharedPreferences.getInstance();
     await _prefs.setString(PrefsUtils.USER_TYPE, value);
     _userType = value;
     notifyListeners();
   }
 
   void updateEmergencyContact([String value]) async {
-    final _prefs = await SharedPreferences.getInstance();
     await _prefs.setString(PrefsUtils.EMERGENCY_CONTACT, value);
     _emergencyContactNumber = value;
     notifyListeners();
@@ -74,21 +71,18 @@ class PrefsProvider with ChangeNotifier {
 
   void toggleTheme([bool isLightMode]) async {
     _isLightTheme = isLightMode ??= !_isLightTheme;
-    final _prefs = await SharedPreferences.getInstance();
     await _prefs.setBool(PrefsUtils.THEME_MODE, _isLightTheme);
     _themeController.sink.add(_isLightTheme);
     notifyListeners();
   }
 
   void toggleShowSplash({bool value}) async {
-    final _prefs = await SharedPreferences.getInstance();
     await _prefs.setBool(PrefsUtils.SHOW_SPLASH_SCREEN, value);
     _shouldShowSplash = value ??= !_shouldShowSplash;
     notifyListeners();
   }
 
   void toggleStandardProfileView([bool value]) async {
-    final _prefs = await SharedPreferences.getInstance();
     _useStandardViewType = value ??= !_useStandardViewType;
     await _prefs.setBool(
         PrefsUtils.USER_STANDARD_PROFILE_VIEW_TYPE, _useStandardViewType);
@@ -98,7 +92,6 @@ class PrefsProvider with ChangeNotifier {
   Future<void> clearUserData() async {
     _userId = null;
     _userType = null;
-    final _prefs = await SharedPreferences.getInstance();
     await _prefs.setString(PrefsUtils.USER_ID, null);
     await _prefs.setString(PrefsUtils.USER_TYPE, null);
   }
