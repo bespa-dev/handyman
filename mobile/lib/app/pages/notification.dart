@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:handyman/domain/services/messaging.dart';
 
+/// Notifications Page: Shows notifications of
+/// 1. Bookings
+/// 2. Conversations
+/// 3. and more
 class NotificationPage extends StatefulWidget {
   final NotificationPayload payload;
 
