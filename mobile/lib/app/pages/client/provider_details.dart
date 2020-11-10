@@ -60,7 +60,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                   key: _scaffoldKey,
                   body: artisan == null
                       ? Container(
-                          width: double.infinity,
+                          width: SizeConfig.screenWidth,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
