@@ -261,69 +261,90 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
     );
   }
 
-  Widget _buildPhotoTab(userId) => Container(
-        clipBehavior: Clip.hardEdge,
-        width: SizeConfig.screenWidth,
-        height: getProportionateScreenHeight(kSpacingX320),
-        padding: EdgeInsets.symmetric(
-          vertical: getProportionateScreenHeight(kSpacingX24),
-          horizontal: getProportionateScreenWidth(kSpacingX8),
-        ),
-        decoration: BoxDecoration(
-          color: _themeData.cardColor,
-        ),
-        child: StreamBuilder<List<Gallery>>(
-            stream: _apiService.getPhotosForArtisan(userId),
-            initialData: [],
-            builder: (context, snapshot) {
-              if (snapshot.hasError || snapshot.data.isEmpty)
-                return Container(
-                  width: SizeConfig.screenWidth,
-                  height: getProportionateScreenHeight(kSpacingX320),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Entypo.images,
-                        size: getProportionateScreenHeight(kSpacingX72),
-                      ),
-                      SizedBox(
-                          height: getProportionateScreenHeight(kSpacingX16)),
-                      Text(
-                        "No photos found",
-                        style: _themeData.textTheme.bodyText2.copyWith(),
-                      ),
-                    ],
-                  ),
-                );
-              else
-                return GridView.builder(
-                  scrollDirection: Axis.horizontal,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    mainAxisSpacing: getProportionateScreenHeight(kSpacingX12),
-                    crossAxisSpacing: getProportionateScreenWidth(kSpacingX8),
-                  ),
-                  itemBuilder: (_, index) {
-                    final photo = snapshot.data[index];
-
+  Widget _buildPhotoTab(userId) => Column(
+        children: [
+          Container(
+            width: SizeConfig.screenWidth,
+            alignment: Alignment.centerLeft,
+            color: _themeData.scaffoldBackgroundColor.withOpacity(kOpacityX35),
+            height: getProportionateScreenHeight(kToolbarHeight),
+            padding: EdgeInsets.symmetric(
+              horizontal: getProportionateScreenWidth(kSpacingX24),
+            ),
+            child: Text(
+              "Gallery",
+              style: _themeData.textTheme.headline6,
+              textAlign: TextAlign.start,
+            ),
+          ),
+          Container(
+            clipBehavior: Clip.hardEdge,
+            width: SizeConfig.screenWidth,
+            height: getProportionateScreenHeight(kSpacingX320),
+            padding: EdgeInsets.symmetric(
+              vertical: getProportionateScreenHeight(kSpacingX24),
+              horizontal: getProportionateScreenWidth(kSpacingX8),
+            ),
+            decoration: BoxDecoration(
+              color: _themeData.cardColor,
+            ),
+            child: StreamBuilder<List<Gallery>>(
+                stream: _apiService.getPhotosForArtisan(userId),
+                initialData: [],
+                builder: (context, snapshot) {
+                  if (snapshot.hasError || snapshot.data.isEmpty)
                     return Container(
-                      clipBehavior: Clip.hardEdge,
-                      width: SizeConfig.screenWidth * 0.2,
-                      height: getProportionateScreenHeight(kSpacingX160),
-                      decoration: BoxDecoration(
-                        color: _themeData.errorColor,
-                        borderRadius: BorderRadius.circular(kSpacingX16),
-                      ),
-                      child: CachedNetworkImage(
-                        imageUrl: photo.imageUrl,
-                        fit: BoxFit.cover,
+                      width: SizeConfig.screenWidth,
+                      height: getProportionateScreenHeight(kSpacingX320),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Entypo.images,
+                            size: getProportionateScreenHeight(kSpacingX72),
+                          ),
+                          SizedBox(
+                              height:
+                                  getProportionateScreenHeight(kSpacingX16)),
+                          Text(
+                            "No photos found",
+                            style: _themeData.textTheme.bodyText2.copyWith(),
+                          ),
+                        ],
                       ),
                     );
-                  },
-                  itemCount: snapshot.data.length,
-                );
-            }),
+                  else
+                    return GridView.builder(
+                      scrollDirection: Axis.horizontal,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 1,
+                        mainAxisSpacing:
+                            getProportionateScreenHeight(kSpacingX12),
+                        crossAxisSpacing:
+                            getProportionateScreenWidth(kSpacingX8),
+                      ),
+                      itemBuilder: (_, index) {
+                        final photo = snapshot.data[index];
+
+                        return Container(
+                          clipBehavior: Clip.hardEdge,
+                          width: SizeConfig.screenWidth * 0.2,
+                          height: getProportionateScreenHeight(kSpacingX160),
+                          decoration: BoxDecoration(
+                            color: _themeData.errorColor,
+                            borderRadius: BorderRadius.circular(kSpacingX16),
+                          ),
+                          child: CachedNetworkImage(
+                            imageUrl: photo.imageUrl,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      },
+                      itemCount: snapshot.data.length,
+                    );
+                }),
+          ),
+        ],
       );
 
   Widget _buildReviewTab(Artisan artisan, String userId) =>
@@ -340,16 +361,17 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                       children: [
                         Container(
                           width: SizeConfig.screenWidth,
+                          alignment: Alignment.centerLeft,
                           color: _themeData.scaffoldBackgroundColor
                               .withOpacity(kOpacityX35),
+                          height: getProportionateScreenHeight(kToolbarHeight),
                           padding: EdgeInsets.symmetric(
-                            vertical: getProportionateScreenHeight(kSpacingX16),
                             horizontal:
                                 getProportionateScreenWidth(kSpacingX24),
                           ),
                           child: Text(
                             "Reviews",
-                            style: _themeData.textTheme.headline5,
+                            style: _themeData.textTheme.headline6,
                             textAlign: TextAlign.start,
                           ),
                         ),
@@ -375,6 +397,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
         },
       );
 
+  // Personal profile tab
   Widget _buildProfileTab(Artisan artisan) =>
       ArtisanProfileInfo(artisan: artisan, apiService: _apiService);
 }

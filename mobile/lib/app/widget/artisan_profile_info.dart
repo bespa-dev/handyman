@@ -21,7 +21,7 @@ class ArtisanProfileInfo extends StatelessWidget {
 
     return Material(
       type: MaterialType.card,
-      elevation: 2,
+      elevation: _themeData.appBarTheme.elevation,
       clipBehavior: Clip.hardEdge,
       child: Column(
         children: [
@@ -110,86 +110,6 @@ class ArtisanProfileInfo extends StatelessWidget {
                           itemCount: 5,
                           itemSize: kSpacingX16,
                           direction: Axis.horizontal,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
-                Divider(height: kSpacingX12, endIndent: kSpacingX24),
-                SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
-                // SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          artisan?.completedBookingsCount?.toString() ?? "",
-                          style: _themeData.textTheme.headline5.copyWith(
-                            color: _themeData.primaryColor,
-                          ),
-                        ),
-                        SizedBox(
-                          height: getProportionateScreenHeight(kSpacingX4),
-                        ),
-                        Text(
-                          "Ongoing",
-                          style: _themeData.textTheme.bodyText2,
-                        ),
-                      ],
-                    ),
-                    Container(
-                      height: getProportionateScreenHeight(kSpacingX8),
-                      width: getProportionateScreenWidth(kSpacingX8),
-                      decoration: BoxDecoration(
-                        color: _themeData.primaryColor,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          artisan?.ongoingBookingsCount?.toString() ?? "",
-                          style: _themeData.textTheme.headline5
-                              .copyWith(color: kGreenColor),
-                        ),
-                        SizedBox(
-                          height: getProportionateScreenHeight(kSpacingX4),
-                        ),
-                        Text(
-                          "Completed",
-                          style: _themeData.textTheme.bodyText2,
-                        ),
-                      ],
-                    ),
-                    Container(
-                      height: getProportionateScreenHeight(kSpacingX8),
-                      width: getProportionateScreenWidth(kSpacingX8),
-                      decoration: BoxDecoration(
-                        color: _themeData.primaryColor,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          artisan?.cancelledBookingsCount?.toString() ?? "",
-                          style: _themeData.textTheme.headline5.copyWith(
-                            color:
-                                _themeData.errorColor.withOpacity(kOpacityX70),
-                          ),
-                        ),
-                        SizedBox(
-                          height: getProportionateScreenHeight(kSpacingX4),
-                        ),
-                        Text(
-                          "Cancelled",
-                          style: _themeData.textTheme.bodyText2,
                         ),
                       ],
                     ),

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -82,7 +83,9 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
                             text: TextSpan(
                                 text:
                                     "@${customer?.name?.toString()?.toLowerCase()?.replaceAll(" ", "_")}",
-                                style: themeData.textTheme.caption,
+                                style: themeData.textTheme.caption.copyWith(
+                                  color: themeData.colorScheme.secondary,
+                                ),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     context.navigator.push(Routes.userInfoPage,
@@ -127,6 +130,7 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
         Provider.of<PrefsProvider>(context, listen: false).userId;
     await showSlidingBottomSheet(context,
         builder: (_) => SlidingSheetDialog(
+              duration: kSheetDuration,
               headerBuilder: (_, __) => Material(
                 elevation: themeData.appBarTheme.elevation,
                 child: Container(
@@ -161,15 +165,17 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        ListTile(
-                          leading: Icon(Entypo.heart_outlined),
-                          title: Text("Like"),
-                          subtitle: Text("React to this review"),
-                          onTap: () {
-                            _.navigator.pop();
-                            showNotAvailableDialog(context);
-                          },
-                        ),
+                        kReleaseMode
+                            ? SizedBox.shrink()
+                            : ListTile(
+                                leading: Icon(Entypo.heart_outlined),
+                                title: Text("Like"),
+                                subtitle: Text("React to this review"),
+                                onTap: () {
+                                  _.navigator.pop();
+                                  showNotAvailableDialog(context);
+                                },
+                              ),
                         ListTile(
                           leading: Icon(Entypo.share),
                           title: Text("Share"),
