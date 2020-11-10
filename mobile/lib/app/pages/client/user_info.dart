@@ -170,7 +170,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                             // Reviews
                                             Column(
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                                  CrossAxisAlignment.center,
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 Text(
@@ -180,13 +180,14 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                                 ),
                                                 SizedBox(
                                                   height:
-                                                  getProportionateScreenHeight(
-                                                      kSpacingX8),
+                                                      getProportionateScreenHeight(
+                                                          kSpacingX8),
                                                 ),
-                                                StreamBuilder<List<CustomerReview>>(
+                                                StreamBuilder<
+                                                        List<CustomerReview>>(
                                                     stream: dataService
                                                         .getReviewsByCustomer(
-                                                        user?.id),
+                                                            user?.id),
                                                     initialData: [],
                                                     builder:
                                                         (context, snapshot) {
@@ -304,25 +305,27 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 ],
               ),
             ),
-            ButtonIconOnly(
-              icon: Icons.arrow_right_alt_outlined,
-              color: _themeData.colorScheme.onSecondary,
-              iconColor: _themeData.colorScheme.onSecondary,
-              onPressed: () => context.navigator.popAndPush(
-                Routes.profilePage,
-              ),
-            ),
+            widget.customer.id == provider.userId
+                ? ButtonIconOnly(
+                    icon: Icons.arrow_right_alt_outlined,
+                    color: _themeData.colorScheme.onSecondary,
+                    iconColor: _themeData.colorScheme.onSecondary,
+                    onPressed: () => context.navigator.popAndPush(
+                      Routes.profilePage,
+                    ),
+                  )
+                : SizedBox.shrink(),
           ],
         ),
       );
 
   // Dot icon
   Widget _buildDotSeparator() => Container(
-    height: getProportionateScreenHeight(kSpacingX8),
-    width: getProportionateScreenWidth(kSpacingX8),
-    decoration: BoxDecoration(
-      color: _themeData.primaryColor,
-      shape: BoxShape.circle,
-    ),
-  );
+        height: getProportionateScreenHeight(kSpacingX8),
+        width: getProportionateScreenWidth(kSpacingX8),
+        decoration: BoxDecoration(
+          color: _themeData.primaryColor,
+          shape: BoxShape.circle,
+        ),
+      );
 }

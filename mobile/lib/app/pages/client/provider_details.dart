@@ -339,7 +339,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                     child: Column(
                       children: [
                         Container(
-                          width: double.infinity,
+                          width: SizeConfig.screenWidth,
                           color: _themeData.scaffoldBackgroundColor
                               .withOpacity(kOpacityX35),
                           padding: EdgeInsets.symmetric(
@@ -364,6 +364,9 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                               ),
                             ),
                           ),
+                        ),
+                        SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX16),
                         ),
                       ],
                     ),
