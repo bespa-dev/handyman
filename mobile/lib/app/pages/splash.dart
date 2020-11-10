@@ -8,6 +8,8 @@ import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/domain/services/auth.dart';
+import 'package:handyman/domain/services/data.dart';
+import 'package:handyman/domain/services/messaging.dart';
 import 'package:provider/provider.dart';
 
 class SplashPage extends StatefulWidget {
@@ -18,6 +20,7 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   bool _isLoading = false;
   AuthService _authService;
+  DataService _dataService;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -25,6 +28,7 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
 
     if (mounted) {
+      _dataService = Provider.of<DataService>(context, listen: false);
       _authService = Provider.of<AuthService>(context, listen: false);
       _authService.onProcessingStateChanged.listen((state) {
         _isLoading = state == AuthState.AUTHENTICATING;
@@ -135,12 +139,21 @@ class _SplashPageState extends State<SplashPage> {
                     ButtonPrimary(
                       width: kWidth * 0.7,
                       themeData: themeData,
-                      onTap: () => context.navigator.popAndPush(
+                      onTap: () async => context.navigator.popAndPush(
                         provider.isLoggedIn
                             ? provider.userType == kCustomerString
                                 ? Routes.homePage
-                                : Routes.dashboardPage
+                                : (await _dataService
+                                            .getArtisanById(id: provider.userId)
+                                            .first)
+                                        .user
+                                        .isApproved
+                                    ? Routes.dashboardPage
+                                    : Routes.notificationPage
                             : Routes.registerPage,
+                        arguments: NotificationPageArguments(
+                          payload: NotificationPayload.empty(),
+                        ),
                       ),
                       enabled: !_isLoading,
                       label: provider.isLoggedIn

@@ -40,6 +40,18 @@ exports.onArtisanWrite = functions.firestore
   .onWrite(async (change, _context) => {
     let clientIndex = client.initIndex("artisans");
 
+    if (change.after.data()) {
+      let data = change.after.data();
+      data.objectID = change.after.id;
+      await clientIndex.saveObject(data);
+      console.log("artisan updated");
+    } else if (!change.after.exists) {
+      let data = change.before.data();
+      data.objectID = change.before.id;
+      await clientIndex.deleteObject(data.objectID);
+      console.log("artisan deleted");
+    }
+
     if (change.before.exists) {
       var isTokenUpdated =
         change.before.data().token != change.after.data().token;
@@ -59,18 +71,6 @@ exports.onArtisanWrite = functions.firestore
         await admin.messaging().send(message);
         console.log("Successfully sent message:", response);
       }
-    }
-
-    if (change.after.data()) {
-      let data = change.after.data();
-      data.objectID = change.after.id;
-      await clientIndex.saveObject(data);
-      console.log("artisan updated");
-    } else if (!change.after.exists) {
-      let data = change.before.data();
-      data.objectID = change.before.id;
-      await clientIndex.deleteObject(data.objectID);
-      console.log("artisan deleted");
     }
 
     return Promise.resolve();

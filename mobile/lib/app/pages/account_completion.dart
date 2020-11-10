@@ -12,10 +12,12 @@ import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/entities/artisan_model.dart';
+import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
+import 'package:handyman/domain/services/messaging.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -38,6 +40,8 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
   final _businessNameController = TextEditingController(),
       _phoneController = TextEditingController();
   bool _isLoading = false;
+  String _categoryFilter = "Plumber";
+  String _categoryFilterId;
 
   // endregion
 
@@ -135,141 +139,220 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
                         : SizedBox.shrink(),
                     Positioned.fill(
                       child: SafeArea(
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal:
-                                  getProportionateScreenWidth(kSpacingX12),
-                              vertical:
-                                  getProportionateScreenHeight(kSpacingX24),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        "Almost there...",
-                                        style: _themeData.textTheme.headline4,
-                                      ),
-                                      SizedBox(
-                                          height: getProportionateScreenHeight(
-                                              kSpacingX8)),
-                                      Text(
-                                        kAccountCompletionHelperText,
-                                        style: _themeData.textTheme.caption,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                    height: getProportionateScreenHeight(
-                                        kSpacingX24)),
-                                _avatar == null
-                                    ? _buildImagePickerWidget()
-                                    : _buildAvatarWidget(),
-                                SizedBox(
-                                    height: getProportionateScreenHeight(
-                                        kSpacingX24)),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: getProportionateScreenWidth(
-                                          kSpacingX24)),
-                                  child: Form(
-                                    key: _formKey,
+                        child: Consumer<DataService>(
+                          builder: (_, dataService, __) =>
+                              SingleChildScrollView(
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                getProportionateScreenWidth(kSpacingX12),
+                                getProportionateScreenHeight(kSpacingX72),
+                                getProportionateScreenWidth(kSpacingX24),
+                                getProportionateScreenHeight(kSpacingX24),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        TextFormInput(
-                                          labelText: "Business name",
-                                          enabled: true,
-                                          controller: _businessNameController,
-                                          validator: (value) => value == null ||
-                                                  value.isEmpty ||
-                                                  value.length < 6
-                                              ? "Provide your business name"
-                                              : null,
-                                          color: _themeData
-                                              .textTheme.bodyText1.color,
+                                        Text(
+                                          "Almost there...",
+                                          style: _themeData.textTheme.headline4,
                                         ),
-                                        TextFormInput(
-                                          labelText: "Phone number",
-                                          enabled: !_isLoading,
-                                          keyboardType: TextInputType.phone,
-                                          textInputAction: TextInputAction.done,
-                                          validator: (value) => null,
-                                          color: _themeData
-                                              .textTheme.bodyText1.color,
-                                          controller: _phoneController
-                                            ..text =
-                                                userSnapshot.data?.user?.phone,
+                                        SizedBox(
+                                            height:
+                                                getProportionateScreenHeight(
+                                                    kSpacingX8)),
+                                        Text(
+                                          kAccountCompletionHelperText,
+                                          style: _themeData.textTheme.caption,
                                         ),
                                       ],
                                     ),
                                   ),
-                                ),
-                                SizedBox(
-                                    height: getProportionateScreenHeight(
-                                        kSpacingX24)),
-                                GestureDetector(
-                                  onTap: () async =>
-                                      await _pickBusinessDocument(),
-                                  child: AnimatedContainer(
-                                      duration: kSheetDuration,
-                                      alignment: Alignment.center,
-                                      clipBehavior: Clip.hardEdge,
-                                      width: kWidth,
+                                  SizedBox(
                                       height: getProportionateScreenHeight(
-                                          kSpacingX120),
-                                      decoration: BoxDecoration(
-                                        color: _themeData.disabledColor
-                                            .withOpacity(kEmphasisLow),
-                                        borderRadius:
-                                            BorderRadius.circular(kSpacingX8),
-                                      ),
+                                          kSpacingX24)),
+                                  _avatar == null
+                                      ? _buildImagePickerWidget()
+                                      : _buildAvatarWidget(),
+                                  SizedBox(
+                                      height: getProportionateScreenHeight(
+                                          kSpacingX24)),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: getProportionateScreenWidth(
+                                            kSpacingX24)),
+                                    child: Form(
+                                      key: _formKey,
                                       child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
-                                          _businessDoc == null
-                                              ? Icon(
-                                                  Feather.file,
-                                                  size: kSpacingX48,
-                                                  color: _themeData
-                                                      .colorScheme.primary,
-                                                )
-                                              : Icon(
-                                                  Feather.check_circle,
-                                                  size: kSpacingX48,
-                                                  color: _themeData
-                                                      .colorScheme.primary,
-                                                ),
-                                          SizedBox(
-                                            height:
-                                                getProportionateScreenHeight(
-                                                    kSpacingX16),
+                                          TextFormInput(
+                                            labelText: "Business name",
+                                            enabled: true,
+                                            controller: _businessNameController,
+                                            validator: (value) => value ==
+                                                        null ||
+                                                    value.isEmpty ||
+                                                    value.length < 6
+                                                ? "Provide your business name"
+                                                : null,
+                                            color: _themeData
+                                                .textTheme.bodyText1.color,
                                           ),
-                                          Text(
-                                            _businessDoc == null
-                                                ? "Add business document"
-                                                : "Document added",
+                                          TextFormInput(
+                                            labelText: "Phone number",
+                                            enabled: !_isLoading,
+                                            keyboardType: TextInputType.phone,
+                                            textInputAction:
+                                                TextInputAction.done,
+                                            validator: (value) => null,
+                                            color: _themeData
+                                                .textTheme.bodyText1.color,
+                                            controller: _phoneController
+                                              ..text = userSnapshot
+                                                  .data?.user?.phone,
                                           ),
                                         ],
-                                      )),
-                                ),
-                                SizedBox(
-                                    height: getProportionateScreenHeight(
-                                        kSpacingX24)),
-                                Consumer<DataService>(
-                                  builder: (_, dataService, __) =>
-                                      ButtonOutlined(
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height: getProportionateScreenHeight(
+                                          kSpacingX12)),
+                                  StreamBuilder<List<ServiceCategory>>(
+                                      stream: dataService.getCategories(),
+                                      builder: (context, snapshot) {
+                                        return Container(
+                                          alignment: Alignment.centerLeft,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal:
+                                                  getProportionateScreenWidth(
+                                                      kSpacingX24)),
+                                          child: snapshot.hasError
+                                              ? SizedBox.shrink()
+                                              : Row(
+                                                  children: [
+                                                    Text("Select a category: "),
+                                                    SizedBox(
+                                                      width:
+                                                          getProportionateScreenWidth(
+                                                              kSpacingX16),
+                                                    ),
+                                                    DropdownButton(
+                                                      value: _categoryFilter,
+                                                      items: snapshot.data ==
+                                                              null
+                                                          ? <
+                                                              DropdownMenuItem<
+                                                                  String>>[]
+                                                          : snapshot.data
+                                                              .map<
+                                                                  DropdownMenuItem<
+                                                                      String>>(
+                                                                (value) =>
+                                                                    DropdownMenuItem<
+                                                                        String>(
+                                                                  value: value
+                                                                      .name,
+                                                                  child: Text(
+                                                                      value.name ??
+                                                                          ""),
+                                                                ),
+                                                              )
+                                                              .toList(),
+                                                      onChanged:
+                                                          (String newItem) {
+                                                        _categoryFilter =
+                                                            newItem;
+                                                        _categoryFilterId =
+                                                            snapshot
+                                                                .data
+                                                                .where((element) =>
+                                                                    element
+                                                                        .name ==
+                                                                    newItem)
+                                                                .first
+                                                                .id;
+                                                        setState(() {});
+                                                      },
+                                                      icon: Icon(
+                                                          Feather.chevron_down),
+                                                      underline: Container(
+                                                        color: kTransparent,
+                                                        height: 2,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                        );
+                                      }),
+                                  SizedBox(
+                                      height: getProportionateScreenHeight(
+                                          kSpacingX24)),
+                                  GestureDetector(
+                                    onTap: () async =>
+                                        await _pickBusinessDocument(),
+                                    child: AnimatedContainer(
+                                        duration: kSheetDuration,
+                                        alignment: Alignment.center,
+                                        clipBehavior: Clip.hardEdge,
+                                        width: kWidth,
+                                        margin: EdgeInsets.symmetric(
+                                          horizontal:
+                                              getProportionateScreenWidth(
+                                                  kSpacingX24),
+                                        ),
+                                        height: getProportionateScreenHeight(
+                                            kSpacingX120),
+                                        decoration: BoxDecoration(
+                                          color: _themeData.disabledColor
+                                              .withOpacity(kEmphasisLow),
+                                          borderRadius:
+                                              BorderRadius.circular(kSpacingX8),
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            _businessDoc == null
+                                                ? Icon(
+                                                    Feather.file,
+                                                    size: kSpacingX48,
+                                                    color: _themeData
+                                                        .colorScheme.primary,
+                                                  )
+                                                : Icon(
+                                                    Feather.check_circle,
+                                                    size: kSpacingX48,
+                                                    color: _themeData
+                                                        .colorScheme.primary,
+                                                  ),
+                                            SizedBox(
+                                              height:
+                                                  getProportionateScreenHeight(
+                                                      kSpacingX16),
+                                            ),
+                                            Text(
+                                              _businessDoc == null
+                                                  ? "Add business document"
+                                                  : "Document added",
+                                            ),
+                                          ],
+                                        )),
+                                  ),
+                                  SizedBox(
+                                      height: getProportionateScreenHeight(
+                                          kSpacingX24)),
+
+                                  ButtonOutlined(
                                     width: getProportionateScreenWidth(
                                         kSpacingX200),
                                     themeData: _themeData,
@@ -287,13 +370,22 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
                                                   .toString(),
                                               phone: _phoneController.text
                                                   .toString(),
+                                              category: _categoryFilterId,
+                                              isApproved: false,
                                             ),
                                           ),
                                         );
                                         context.navigator.popAndPush(
-                                          userSnapshot.data?.isCustomer ?? false
+                                          userSnapshot.data.isCustomer
                                               ? Routes.homePage
-                                              : Routes.dashboardPage,
+                                              : userSnapshot
+                                                      .data.user.isApproved
+                                                  ? Routes.dashboardPage
+                                                  : Routes.notificationPage,
+                                          arguments: NotificationPageArguments(
+                                            payload:
+                                                NotificationPayload.empty(),
+                                          ),
                                         );
                                       }
                                     },
@@ -302,9 +394,9 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
                                         _businessNameController.text.isNotEmpty,
                                     label: "Save",
                                   ),
-                                ),
-                                // SizedBox(height: getProportionateScreenHeight(kSpacingX24)),
-                              ],
+                                  // SizedBox(height: getProportionateScreenHeight(kSpacingX24)),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -366,26 +458,28 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
         child: Container(
           clipBehavior: Clip.hardEdge,
           alignment: Alignment.center,
-          height: getProportionateScreenHeight(kSpacingX200),
-          width: getProportionateScreenWidth(kSpacingX200),
+          height: getProportionateScreenHeight(kSpacingX160),
+          width: getProportionateScreenWidth(kSpacingX160),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: _themeData.disabledColor.withOpacity(kEmphasisLow),
             border: Border.all(
               color:
-                  _themeData.colorScheme.onBackground.withOpacity(kOpacityX70),
+                  _themeData.colorScheme.onBackground.withOpacity(kOpacityX50),
               width: kSpacingX2,
             ),
           ),
           child: Icon(
             Feather.image,
             size: kSpacingX64,
-            color: _themeData.colorScheme.onBackground.withOpacity(kOpacityX70),
+            color: _themeData.colorScheme.onBackground.withOpacity(kOpacityX50),
           ),
         ),
       );
 
   Widget _buildAvatarWidget() => Container(
+        width: SizeConfig.screenWidth,
+        alignment: Alignment.center,
         child: Stack(
           children: [
             Container(
@@ -396,23 +490,28 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
               child: Image.file(
                 _avatar,
                 fit: BoxFit.cover,
-                height: getProportionateScreenHeight(kSpacingX200),
-                width: getProportionateScreenWidth(kSpacingX200),
+                height: getProportionateScreenHeight(kSpacingX160),
+                width: getProportionateScreenWidth(kSpacingX160),
               ),
             ),
             Positioned(
-              bottom: getProportionateScreenHeight(kSpacingX16),
-              right: getProportionateScreenWidth(kSpacingNone),
+              height: getProportionateScreenHeight(kSpacingX160),
+              width: getProportionateScreenWidth(kSpacingX160),
               child: InkWell(
+                splashColor: _themeData.splashColor,
                 borderRadius: BorderRadius.all(Radius.circular(kSpacingX56)),
                 onTap: () async => await _getImage(),
                 child: Container(
+                  clipBehavior: Clip.hardEdge,
                   alignment: Alignment.center,
                   height: getProportionateScreenHeight(kSpacingX56),
                   width: getProportionateScreenWidth(kSpacingX56),
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _themeData.colorScheme.primary,
+                    // shape: BoxShape.circle,
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(kSpacingX56)),
+                    color: _themeData.scaffoldBackgroundColor
+                        .withOpacity(kOpacityX14),
                   ),
                   child: Icon(
                     Feather.image,

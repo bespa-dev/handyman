@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
@@ -221,9 +222,8 @@ class _LoginPageState extends State<LoginPage> {
                                       kSpacingX24)),
                               _isLoading
                                   ? CircularProgressIndicator()
-                                  : ButtonOutlined(
-                                      width: getProportionateScreenWidth(
-                                          kSpacingX200),
+                                  : ButtonPrimary(
+                                      width: SizeConfig.screenWidth * 0.7,
                                       themeData: themeData,
                                       onTap: _performLogin,
                                       enabled: !_isLoading,
@@ -235,7 +235,65 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       SizedBox(
-                          height: getProportionateScreenHeight(kSpacingX64)),
+                          height: getProportionateScreenHeight(kSpacingX16)),
+                      Text(
+                        "or",
+                        style: themeData.textTheme.button.copyWith(
+                          color: themeData.colorScheme.onBackground,
+                        ),
+                      ),
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX16)),
+                      ButtonOutlined(
+                        width: SizeConfig.screenWidth * 0.7,
+                        themeData: themeData,
+                        onTap: () => showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: Text("Continue as..."),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ListTile(
+                                  title: Text("Artisan"),
+                                  onTap: () {
+                                    ctx.navigator.pop();
+                                    _authService.signInWithGoogle(
+                                        isCustomer: false);
+                                  },
+                                ),
+                                ListTile(
+                                  title: Text("Customer"),
+                                  onTap: () {
+                                    ctx.navigator.pop();
+                                    _authService.signInWithGoogle(
+                                        isCustomer: true);
+                                  },
+                                ),
+                              ],
+                            ),
+                            actions: [
+                              ButtonClear(
+                                text: "Cancel",
+                                onPressed: () => ctx.navigator.pop(),
+                                themeData: themeData,
+                              ),
+                            ],
+                          ),
+                        ),
+                        gravity: ButtonIconGravity.START,
+                        icon: AntDesign.google,
+                        enabled: !_isLoading,
+                        label: "Sign in with Google",
+                      ),
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX12)),
+                      Divider(
+                        indent: SizeConfig.screenWidth * 0.1,
+                        endIndent: SizeConfig.screenWidth * 0.1,
+                      ),
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX12)),
                       RichText(
                         textAlign: TextAlign.center,
                         text: TextSpan(

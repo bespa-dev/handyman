@@ -18,11 +18,11 @@ class NotificationPayload {
       _$NotificationPayloadFromJson(json);
 
   factory NotificationPayload.empty() =>
-      NotificationPayload(null, PayloadType.BOOKING);
+      NotificationPayload(null, PayloadType.NONE);
 }
 
 /// For payload types of a notification
-enum PayloadType { BOOKING, CONVERSATION, TOKEN_UPDATE }
+enum PayloadType { BOOKING, CONVERSATION, TOKEN_UPDATE, NONE }
 
 /// Base messaging service
 abstract class MessagingService {

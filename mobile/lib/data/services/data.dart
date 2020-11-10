@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:algolia/algolia.dart';
@@ -6,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/utils.dart';
@@ -162,6 +164,16 @@ class DataServiceImpl implements DataService {
   Stream<List<ServiceCategory>> getCategories({
     CategoryGroup categoryGroup = CategoryGroup.FEATURED,
   }) async* {
+    // Decode categories from json array
+    final categoryData = await rootBundle.loadString("assets/categories.json");
+    var decodedCategoryData = json.decode(categoryData);
+
+    List<dynamic> categories = decodedCategoryData ??= [];
+
+    // Convert each object to `ServiceCategory` object
+    _categoryDao
+        .addItems(categories.map((e) => ServiceCategory.fromJson(e)).toList());
+
     // Load from local datasource
     final localSource = _categoryDao
         .categoryByGroup(categoryGroup.index)

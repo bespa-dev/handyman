@@ -58,7 +58,7 @@ class FirebaseAuthService implements AuthService {
       User user, String username, bool isCustomer) async {
     _onProcessingStateChanged.sink.add(loadingState);
     // get device token
-    final token = await sl.get<FirebaseMessaging>().getToken();
+    final token = await _firebaseMessaging.getToken();
 
     if (isCustomer) {
       final customer = Customer(
@@ -126,6 +126,8 @@ class FirebaseAuthService implements AuthService {
   Future<BaseUser> _userFromFirebase(User user,
       {bool isCustomer = true}) async {
     _onProcessingStateChanged.sink.add(loadingState);
+
+    // get device token
     final token = await _firebaseMessaging.getToken();
     if (await _userExists(user.email, isCustomer: isCustomer)) {
       if (isCustomer) {
@@ -239,7 +241,7 @@ class FirebaseAuthService implements AuthService {
           await _database.userDao.addCustomer(model);
         }
       });
-    } else if (_prefsProvider.userType == kArtisanString) {
+    } else /*if (_prefsProvider.userType == kArtisanString)*/ {
       var localSource = _database.userDao
           .artisanById(_prefsProvider.userId)
           .watchSingle()
