@@ -933,8 +933,8 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                     _dataService.updateUser(
                       ArtisanModel(
                         artisan: user.copyWith(
-                          startPrice: newValue.start,
-                          endPrice: newValue.end,
+                          startPrice: newValue.start.roundToDouble(),
+                          endPrice: newValue.end.roundToDouble(),
                         ),
                       ),
                     );
