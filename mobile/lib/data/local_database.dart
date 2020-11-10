@@ -1,13 +1,13 @@
 import 'dart:async' show Future, Stream;
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:async/async.dart' show StreamGroup;
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/data/entities/artisan_model.dart';
 import 'package:handyman/data/entities/conversation.dart';
 import 'package:handyman/data/entities/gallery.dart';
 import 'package:handyman/domain/models/user.dart';
+import 'package:handyman/domain/services/auth.dart';
 import 'package:meta/meta.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
@@ -55,91 +55,34 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        beforeOpen: (details) async {
-          if (details.wasCreated || details.hadUpgrade) {
-            // Prepopulate the database with some sample data
-            // Decode artisans from json array
-            final data =
-                await rootBundle.loadString("assets/sample_artisan.json");
-            var decodedData = json.decode(data);
-
-            List<dynamic> artisans = decodedData ??= [];
-
-            // Save to database
-            userDao.addProviders(artisans
-                .map((e) => ArtisanModel(artisan: Artisan.fromJson(e)))
-                .toList());
-
-            // Decode categories from json array
-            final categoryData =
-                await rootBundle.loadString("assets/sample_categories.json");
-            var decodedCategoryData = json.decode(categoryData);
-
-            List<dynamic> categories = decodedCategoryData ??= [];
-
-            // Convert each object to `ServiceCategory` object
-            categoryDao.addItems(
-                categories.map((e) => ServiceCategory.fromJson(e)).toList());
-
-            // Decode bookings from json array
-            final bookingsData =
-                await rootBundle.loadString("assets/sample_bookings.json");
-            var decodedBookingsData = json.decode(bookingsData);
-
-            List<dynamic> _bookings = decodedBookingsData ??= [];
-
-            // Save to database
-            await bookingDao
-                .addItems(_bookings.map((e) => Booking.fromJson(e)).toList());
-
-            // Sample data
-            final photosData =
-                await rootBundle.loadString("assets/sample_photos.json");
-            var photosDecodedData = json.decode(photosData);
-
-            List<dynamic> photos = photosDecodedData ??= [];
-
-            List<Gallery> photosModels =
-                photos.map((e) => Gallery.fromJson(e)).toList();
-            photosModels.forEach((element) {
-              galleryDao.addPhoto(element);
-            });
-
-            // Sample data
-            final msgData =
-                await rootBundle.loadString("assets/sample_conversation.json");
-            var msgDecodedData = json.decode(msgData);
-
-            List<dynamic> msgs = msgDecodedData ??= [];
-
-            List<Conversation> conversationModels =
-                msgs.map((e) => Conversation.fromJson(e)).toList();
-            conversationModels.forEach((element) {
-              messageDao.sendMessage(element);
-            });
-
-            await customStatement('PRAGMA foreign_keys = ON');
-          }
-        },
         onUpgrade: (m, from, to) async {
-          if (from == 1) {
-            await m.addColumn(photoGallery, photoGallery.createdAt);
-          } else if (from == 4)
-            await m.addColumn(user, user.phone);
-          else if (from == 6)
-            await m.addColumn(bookings, bookings.imageUrl);
-          else if (from == 7) {
-            await m.addColumn(serviceProvider, serviceProvider.startPrice);
-            await m.addColumn(serviceProvider, serviceProvider.endPrice);
-          } else if(from == 9) {
-            await m.addColumn(bookings, bookings.isAccepted);
+          switch (from) {
+            case 1:
+              await m.addColumn(photoGallery, photoGallery.createdAt);
+              break;
+            case 4:
+              await m.addColumn(user, user.phone);
+              break;
+            case 6:
+              await m.addColumn(bookings, bookings.imageUrl);
+              break;
+            case 7:
+              await m.addColumn(serviceProvider, serviceProvider.startPrice);
+              await m.addColumn(serviceProvider, serviceProvider.endPrice);
+              break;
+            case 9:
+              await m.addColumn(bookings, bookings.isAccepted);
+              break;
+            case 10:
+              // Destructive migration
+              // Signs out any logged in user and clears user preferences
+              await sl.get<AuthService>().signOut();
+              break;
           }
-
-          // switch (from) {}
         },
         onCreate: (m) async {
           // Create all tables
