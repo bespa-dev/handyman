@@ -127,13 +127,27 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
         Provider.of<PrefsProvider>(context, listen: false).userId;
     await showSlidingBottomSheet(context,
         builder: (_) => SlidingSheetDialog(
-              headerBuilder: (_, __) => Container(
-                height: getProportionateScreenHeight(kToolbarHeight),
-                alignment: Alignment.center,
-                child: Text(
-                  "Actions for this review",
-                  style: themeData.textTheme.button.copyWith(
-                    color: themeData.colorScheme.onBackground,
+              headerBuilder: (_, __) => Material(
+                elevation: themeData.appBarTheme.elevation,
+                child: Container(
+                  height: getProportionateScreenHeight(kToolbarHeight),
+                  padding: EdgeInsets.only(
+                    left: getProportionateScreenWidth(kSpacingX16),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Actions for this review",
+                        style: themeData.textTheme.button.copyWith(
+                          color: themeData.colorScheme.onBackground,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Feather.x),
+                        onPressed: () => _.navigator.pop(),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -148,14 +162,18 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         ListTile(
+                          leading: Icon(Entypo.heart_outlined),
                           title: Text("Like"),
+                          subtitle: Text("React to this review"),
                           onTap: () {
                             _.navigator.pop();
                             showNotAvailableDialog(context);
                           },
                         ),
                         ListTile(
+                          leading: Icon(Entypo.share),
                           title: Text("Share"),
+                          subtitle: Text("Share with others"),
                           onTap: () {
                             _.navigator.pop();
                             Share.share(widget.review.review);
@@ -163,7 +181,10 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
                         ),
                         widget.userId == currentUserId
                             ? ListTile(
+                                leading: Icon(Entypo.trash),
                                 title: Text("Delete"),
+                                subtitle: Text(
+                                    "Remove this review. This cannot be undone"),
                                 onTap: () {
                                   _.navigator.pop();
                                   showDialog(
