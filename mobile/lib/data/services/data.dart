@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:algolia/algolia.dart';
@@ -7,7 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/utils.dart';
@@ -44,19 +42,7 @@ class DataServiceImpl implements DataService {
   /// Get all [Artisan]s from data source
   @override
   Stream<List<BaseUser>> getArtisans({@required String category}) async* {
-    // Sample data
-    final data = await rootBundle.loadString("assets/sample_artisan.json");
-    var decodedData = json.decode(data);
-
-    List<dynamic> artisans = decodedData ??= [];
-
-    List<BaseUser> models = artisans
-        .map((e) => ArtisanModel(artisan: Artisan.fromJson(e)))
-        .toList();
-    models.forEach((element) {
-      _userDao.saveProvider(element);
-    });
-
+    // Load from local datasource
     final localSource = _userDao
         .artisans(category)
         .watch()
@@ -113,19 +99,7 @@ class DataServiceImpl implements DataService {
   @override
   Stream<List<Conversation>> getConversation(
       {@required String sender, @required String recipient}) async* {
-    // Sample data
-    final msgData =
-        await rootBundle.loadString("assets/sample_conversation.json");
-    var msgDecodedData = json.decode(msgData);
-
-    List<dynamic> msgs = msgDecodedData ??= [];
-
-    List<Conversation> conversationModels =
-        msgs.map((e) => Conversation.fromJson(e)).toList();
-    conversationModels.forEach((element) {
-      _messageDao.sendMessage(element);
-    });
-
+    // Load from local datasource
     final localSource = _messageDao.conversationWithRecipient(
         sender: sender, recipient: recipient);
     yield* localSource;
@@ -188,17 +162,7 @@ class DataServiceImpl implements DataService {
   Stream<List<ServiceCategory>> getCategories({
     CategoryGroup categoryGroup = CategoryGroup.FEATURED,
   }) async* {
-    // Decode categories from json array
-    final categoryData =
-        await rootBundle.loadString("assets/sample_categories.json");
-    var decodedCategoryData = json.decode(categoryData);
-
-    List<dynamic> categories = decodedCategoryData ??= [];
-
-    // Convert each object to `ServiceCategory` object
-    _categoryDao
-        .addItems(categories.map((e) => ServiceCategory.fromJson(e)).toList());
-
+    // Load from local datasource
     final localSource = _categoryDao
         .categoryByGroup(categoryGroup.index)
         .watch()
@@ -239,17 +203,7 @@ class DataServiceImpl implements DataService {
 
   @override
   Stream<List<Booking>> getBookingsForArtisan(String id) async* {
-    // Decode bookings from json array
-    final bookingsData =
-        await rootBundle.loadString("assets/sample_bookings.json");
-    var decodedBookingsData = json.decode(bookingsData);
-
-    List<dynamic> _bookings = decodedBookingsData ??= [];
-
-    // Save to database
-    await _bookingDao
-        .addItems(_bookings.map((e) => Booking.fromJson(e)).toList());
-
+    // Load from local datasource
     final localSource = _bookingDao.bookingsForProvider(id).watch();
     yield* localSource;
 
@@ -268,17 +222,7 @@ class DataServiceImpl implements DataService {
 
   @override
   Stream<List<Booking>> getBookingsForCustomer(String id) async* {
-    // Decode bookings from json array
-    final bookingsData =
-        await rootBundle.loadString("assets/sample_bookings.json");
-    var decodedBookingsData = json.decode(bookingsData);
-
-    List<dynamic> _bookings = decodedBookingsData ??= [];
-
-    // Save to database
-    await _bookingDao
-        .addItems(_bookings.map((e) => Booking.fromJson(e)).toList());
-
+    // Load from local datasource
     final localSource = _bookingDao.bookingsForCustomer(id).watch();
     yield* localSource;
 
@@ -319,17 +263,7 @@ class DataServiceImpl implements DataService {
 
   @override
   Stream<List<Gallery>> getPhotosForArtisan(String userId) async* {
-    // Sample data
-    final data = await rootBundle.loadString("assets/sample_photos.json");
-    var decodedData = json.decode(data);
-
-    List<dynamic> photos = decodedData ??= [];
-
-    List<Gallery> models = photos.map((e) => Gallery.fromJson(e)).toList();
-    models.forEach((element) {
-      _galleryDao.addPhoto(element);
-    });
-
+    // Load from local datasource
     final localSource = _galleryDao.photosForUser(userId).watch();
     yield* localSource;
 
@@ -418,7 +352,8 @@ class DataServiceImpl implements DataService {
             ? FirestoreUtils.kCustomerRef
             : FirestoreUtils.kArtisanRef)
         .doc(user.user.id)
-        .set(user.user.copyWith(token: token).toJson(), SetOptions(merge: true));
+        .set(
+            user.user.copyWith(token: token).toJson(), SetOptions(merge: true));
   }
 
   /// FIXME:
