@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:contact_picker/contact_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -19,13 +19,14 @@ import 'package:handyman/data/services/data.dart';
 import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
+import 'package:handyman/domain/services/storage.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:contact_picker/contact_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
 enum EditType { PHONE, NAME }
 
+/// Profile page for [Customer]
 class ProfilePage extends StatefulWidget {
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -35,7 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final ContactPicker _contactPicker = ContactPicker();
   final _formKey = GlobalKey<FormState>();
   final _fieldController = TextEditingController();
-  double _kWidth, _kHeight;
+  double _kWidth = SizeConfig.screenWidth, _kHeight = SizeConfig.screenHeight;
   ThemeData _themeData;
   final _dataService = DataServiceImpl.instance;
   final _storageService = StorageServiceImpl.instance;
@@ -61,22 +62,25 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
+    // Get theme
     _themeData = Theme.of(context);
-    final size = MediaQuery.of(context).size;
-    _kWidth = size.width;
-    _kHeight = size.height;
   }
 
   @override
   void initState() {
     super.initState();
     if (mounted) {
-      /// FIXME: User data not loaded when page is first viewed
-      if (mounted)
-        Future.delayed(kScaleDuration).then((value) => setState(() => {}));
-      _storageService.onStorageUploadResponse.listen((event) {
+      _userId = Provider.of<PrefsProvider>(context, listen: false).userId;
+      _storageService.onStorageUploadResponse.listen((event) async {
         debugPrint(event.state.toString());
+        if (event.state == UploadProgressState.DONE) {
+          var user = await _dataService.getCustomerById(id: _userId).first;
+          _dataService.updateUser(
+            CustomerModel(
+              customer: user.user.copyWith(avatar: event.url),
+            ),
+          );
+        }
       });
     }
   }
@@ -84,7 +88,6 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) => Consumer<PrefsProvider>(
         builder: (_, provider, __) {
-          _userId = provider.userId;
           return Scaffold(
             extendBody: true,
             body: SafeArea(
@@ -141,13 +144,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                         children: [
                                           ListTile(
                                             title: Text("Email"),
-                                            subtitle: Text(user?.email ?? "Syncing..."),
+                                            subtitle: Text(
+                                                user?.email ?? "Syncing..."),
                                             leading: Icon(Feather.mail),
                                             enabled: false,
                                           ),
                                           ListTile(
                                             title: Text("Username"),
-                                            subtitle: Text(user?.name ?? "Syncing..."),
+                                            subtitle: Text(
+                                                user?.name ?? "Syncing..."),
                                             leading: Icon(Feather.user),
                                             trailing: IconButton(
                                               icon: Icon(
@@ -189,8 +194,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 size: kSpacingX16,
                                               ),
                                               onPressed: () async {
-                                                Contact contact = await _contactPicker.selectContact();
-                                                provider.updateEmergencyContact(contact.phoneNumber.number);
+                                                Contact contact =
+                                                    await _contactPicker
+                                                        .selectContact();
+                                                provider.updateEmergencyContact(
+                                                    contact.phoneNumber.number);
                                                 setState(() {});
                                               },
                                             ),
@@ -544,5 +552,3 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       );
 }
-
-

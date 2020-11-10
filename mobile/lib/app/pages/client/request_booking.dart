@@ -155,6 +155,7 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
           GestureDetector(
             onTap: () async {
               var picker = ImagePicker();
+              // TODO: Allow user to pick image source
               var pickedFile = await picker.getImage(
                 source: kReleaseMode ? ImageSource.camera : ImageSource.gallery,
               );

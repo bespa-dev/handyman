@@ -29,6 +29,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+/// Profile page for [Artisan]
 /// activeTabIndex legend:
 /// 0 => calendar
 /// 1 => profile

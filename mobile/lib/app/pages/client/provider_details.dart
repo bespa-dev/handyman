@@ -13,6 +13,7 @@ import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/entities/artisan_model.dart';
 import 'package:handyman/data/local_database.dart';
+import 'package:handyman/data/services/data.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +35,7 @@ class ServiceProviderDetails extends StatefulWidget {
 class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   ThemeData _themeData;
-  DataService _apiService;
+  DataService _apiService = DataServiceImpl.instance;
   final _textController = TextEditingController();
   final _focusNode = FocusNode();
 
@@ -44,7 +45,6 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
 
     return Consumer<DataService>(
       builder: (_, service, __) {
-        _apiService = service;
         return Consumer<PrefsProvider>(
           builder: (_, provider, __) => StreamBuilder<BaseUser>(
               stream: _apiService.getArtisanById(id: widget.artisan.id),

@@ -35,10 +35,15 @@ class FirebaseAuthService implements AuthService {
 
   // Private constructor
   FirebaseAuthService._() {
+    // Get prefs instance
     _prefsProvider = PrefsProvider.create();
+
+    // Get current user id, if any
     final uid = _auth.currentUser?.uid;
-    _prefsProvider.saveUserId(uid);
     debugPrint("User id => $uid");
+
+    // Save to prefs
+    if (uid != null && uid.isNotEmpty) _prefsProvider?.saveUserId(uid);
   }
 
   // Singleton

@@ -6,13 +6,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
-import 'package:handyman/core/utils.dart';
 import 'package:handyman/domain/services/storage.dart';
 import 'package:meta/meta.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 @immutable
@@ -36,7 +33,7 @@ class StorageServiceImpl implements StorageService {
       );
       return;
     }
-    path = path ??= Uuid().v4();
+    path = path ?? Uuid().v4();
     final dir = await path_provider.getTemporaryDirectory();
 
     final targetPath =
@@ -75,19 +72,6 @@ class StorageServiceImpl implements StorageService {
               state: UploadProgressState.DONE,
               isInComplete: false,
             ));
-            final prefs = await sl.getAsync<SharedPreferences>();
-            var userId = prefs.getString(PrefsUtils.USER_ID);
-            var userType = prefs.getString(PrefsUtils.USER_TYPE);
-
-            await _firestore
-                .collection(userType == kCustomerString
-                    ? FirestoreUtils.kCustomerRef
-                    : FirestoreUtils.kArtisanRef)
-                .doc(userId)
-                .set(
-              {"avatar": url},
-              SetOptions(merge: true),
-            );
           } on PlatformException catch (e) {
             debugPrint("Upload error -> ${e.message}");
             _onStorageUploadResponse.sink.add(StorageUploadResponse(

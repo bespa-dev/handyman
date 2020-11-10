@@ -50,14 +50,11 @@ class MessagingServiceImpl implements MessagingService {
     debugPrint("MessagingServiceImpl._initPlugins: Token => $token");
 
     var prefsProvider = PrefsProvider.create();
-    debugPrint("User id => ${prefsProvider.userId}");
     var dataService = sl.get<DataService>();
     var currentUser = prefsProvider.userType == kCustomerString
         ? await dataService.getCustomerById(id: prefsProvider.userId)?.first
         : await dataService.getArtisanById(id: prefsProvider.userId)?.first;
     if (currentUser != null) {
-      debugPrint("User => ${currentUser?.user}");
-
       // Update user token
       var updatedUser = currentUser.user?.copyWith(token: token);
       debugPrint(

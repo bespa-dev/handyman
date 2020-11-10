@@ -11,6 +11,7 @@ import 'package:handyman/domain/services/data.dart';
 import 'package:meta/meta.dart';
 import 'package:random_color/random_color.dart';
 import 'package:share/share.dart';
+import 'package:sliding_sheet/sliding_sheet.dart';
 
 class CustomerReviewCard extends StatefulWidget {
   final CustomerReview review;
@@ -70,7 +71,7 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
                       children: [
                         Text(
                           customer?.name ?? "",
-                          style: themeData.textTheme.headline6,
+                          style: themeData.textTheme.caption,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -156,5 +157,23 @@ class _CustomerReviewCardState extends State<CustomerReviewCard> {
             ),
           );
         });
+  }
+
+  /// Sliding sheet for review options
+  void showReviewOptions() async {
+    await showSlidingBottomSheet(context,
+        builder: (_) => SlidingSheetDialog(
+              builder: (_, __) {
+                return Material(
+                  child: Container(
+                    height: getProportionateScreenHeight(kSpacingX320),
+                    width: SizeConfig.screenWidth,
+                    child: Center(
+                      child: Text("Hello world"),
+                    ),
+                  ),
+                );
+              },
+            ));
   }
 }

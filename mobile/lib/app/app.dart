@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/guard.dart';
 import 'package:handyman/app/routes/route.gr.dart' as gr;
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/theme.dart';
 import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/data/services/data.dart';
@@ -27,7 +28,7 @@ class _HandyManAppState extends State<HandyManApp> {
 
   Future<void> setupRemoteConfig() async {
     // RemoteConfig
-    final RemoteConfig remoteConfig = await RemoteConfig.instance;
+    final remoteConfig = await sl.getAsync<RemoteConfig>();
 
     // Enable developer mode to relax fetch throttling
     remoteConfig.setConfigSettings(RemoteConfigSettings(debugMode: true));
