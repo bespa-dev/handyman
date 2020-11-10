@@ -63,12 +63,6 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   @override
-  void dispose() {
-    _authService.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     // Must be called on initial page
     SizeConfig().init(context);

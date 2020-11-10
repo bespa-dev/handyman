@@ -10,6 +10,7 @@ import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
+import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:provider/provider.dart';
 
@@ -26,8 +27,10 @@ class _LoginPageState extends State<LoginPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _emailController = TextEditingController(),
       _passwordController = TextEditingController();
-  AuthService _authService;
-  PrefsProvider _prefsProvider;
+
+  // FIXME: Do not directly import FirebaseAuthService
+  AuthService _authService = FirebaseAuthService.create();
+  PrefsProvider _prefsProvider = PrefsProvider.create();
 
   // Perform login
   void _performLogin() async {
@@ -49,7 +52,8 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     if (mounted) {
-      _authService = Provider.of<AuthService>(context, listen: false);
+      // _prefsProvider = Provider.of<PrefsProvider>(context, listen: false);
+      // _authService = Provider.of<AuthService>(context, listen: false);
       // Monitor user auth state change
       _authService.onAuthStateChanged.listen((user) {
         if (user != null) {
@@ -95,184 +99,173 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
-  void dispose() {
-    _authService.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
       body: Consumer<PrefsProvider>(
-        builder: (_, provider, __) {
-          _prefsProvider = provider;
-          return SafeArea(
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                provider.isLightTheme
-                    ? Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(kBackgroundAsset),
-                            fit: BoxFit.cover,
-                          ),
+        builder: (_, provider, __) => SafeArea(
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              provider.isLightTheme
+                  ? Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(kBackgroundAsset),
+                          fit: BoxFit.cover,
                         ),
-                      )
-                    : SizedBox.shrink(),
-                Positioned(
-                  bottom: kSpacingNone,
-                  top: getProportionateScreenHeight(kSpacingX120),
-                  width: MediaQuery.of(context).size.width,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
+                      ),
+                    )
+                  : SizedBox.shrink(),
+              Positioned(
+                bottom: kSpacingNone,
+                top: getProportionateScreenHeight(kSpacingX120),
+                width: MediaQuery.of(context).size.width,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            height: getProportionateScreenHeight(kSpacingX64),
+                            width: getProportionateScreenWidth(kSpacingX64),
+                            margin: EdgeInsets.symmetric(
+                              horizontal:
+                                  getProportionateScreenWidth(kSpacingX16),
+                            ),
+                            child: Image(
+                              image: Svg(kLogoAsset),
+                              fit: BoxFit.contain,
                               height: getProportionateScreenHeight(kSpacingX64),
                               width: getProportionateScreenWidth(kSpacingX64),
-                              margin: EdgeInsets.symmetric(
-                                horizontal:
-                                    getProportionateScreenWidth(kSpacingX16),
-                              ),
-                              child: Image(
-                                image: Svg(kLogoAsset),
-                                fit: BoxFit.contain,
-                                height:
-                                    getProportionateScreenHeight(kSpacingX64),
-                                width: getProportionateScreenWidth(kSpacingX64),
-                              ),
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Welcome back.",
+                                style: themeData.textTheme.headline4,
+                              ),
+                              SizedBox(
+                                  height:
+                                      getProportionateScreenHeight(kSpacingX8)),
+                              Text(
+                                "Sign in to your account",
+                                style: themeData.textTheme.bodyText1,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX48)),
+                      AnimatedContainer(
+                        duration: kScaleDuration,
+                        margin: EdgeInsets.symmetric(
+                            horizontal:
+                                getProportionateScreenWidth(kSpacingX24)),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              TextFormInput(
+                                controller: _emailController,
+                                labelText: "Email address",
+                                color: themeData.textTheme.bodyText1.color,
+                                textInputAction: TextInputAction.next,
+                                enabled: !_isLoading,
+                                validator: (input) =>
+                                    !EmailValidator.validate(input)
+                                        ? "Enter a valid email address"
+                                        : null,
+                              ),
+                              PasswordInput(
+                                controller: _passwordController,
+                                labelText: "Password",
+                                onFieldSubmitted: (_) => _performLogin(),
+                                enabled: !_isLoading,
+                                validator: (input) =>
+                                    input.isEmpty || input.length < 6
+                                        ? "Enter a valid password"
+                                        : null,
+                              ),
+                              SizedBox(
+                                  height:
+                                      getProportionateScreenHeight(kSpacingX4)),
+                              Text(
+                                kPasswordHint,
+                                textAlign: TextAlign.center,
+                                style: themeData.textTheme.caption,
+                              ),
+                              SizedBox(
+                                  height: getProportionateScreenHeight(
+                                      kSpacingX16)),
+                              UserAccountSelector(
+                                enabled: !_isLoading,
+                                accountPicker: _accountPicker,
+                                onAccountSelected: (picker) {
+                                  _accountPicker = picker;
+                                  _isCustomer = _accountPicker ==
+                                      UserAccountPicker.CUSTOMER;
+                                  setState(() {});
+                                },
+                              ),
+                              SizedBox(
+                                  height: getProportionateScreenHeight(
+                                      kSpacingX24)),
+                              _isLoading
+                                  ? CircularProgressIndicator()
+                                  : ButtonOutlined(
+                                      width: getProportionateScreenWidth(
+                                          kSpacingX200),
+                                      themeData: themeData,
+                                      onTap: _performLogin,
+                                      enabled: !_isLoading,
+                                      icon: Icons.arrow_right_alt,
+                                      label: "Sign in",
+                                    ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX64)),
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: "Are you a new user? ",
+                              style: themeData.textTheme.bodyText1,
                               children: [
-                                Text(
-                                  "Welcome back.",
-                                  style: themeData.textTheme.headline4,
-                                ),
-                                SizedBox(
-                                    height: getProportionateScreenHeight(
-                                        kSpacingX8)),
-                                Text(
-                                  "Sign in to your account",
-                                  style: themeData.textTheme.bodyText1,
+                                TextSpan(
+                                  text: "Sign Up",
+                                  style: themeData.textTheme.bodyText1.copyWith(
+                                    color: themeData.colorScheme.primary,
+                                  ),
+                                  semanticsLabel: "Create account",
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => context.navigator
+                                        .popAndPush(Routes.registerPage),
                                 ),
                               ],
                             ),
                           ],
                         ),
-                        SizedBox(
-                            height: getProportionateScreenHeight(kSpacingX48)),
-                        AnimatedContainer(
-                          duration: kScaleDuration,
-                          margin: EdgeInsets.symmetric(
-                              horizontal:
-                                  getProportionateScreenWidth(kSpacingX24)),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                TextFormInput(
-                                  controller: _emailController,
-                                  labelText: "Email address",
-                                  color: themeData.textTheme.bodyText1.color,
-                                  textInputAction: TextInputAction.next,
-                                  enabled: !_isLoading,
-                                  validator: (input) =>
-                                      !EmailValidator.validate(input)
-                                          ? "Enter a valid email address"
-                                          : null,
-                                ),
-                                PasswordInput(
-                                  controller: _passwordController,
-                                  labelText: "Password",
-                                  onFieldSubmitted: (_) => _performLogin(),
-                                  enabled: !_isLoading,
-                                  validator: (input) =>
-                                      input.isEmpty || input.length < 6
-                                          ? "Enter a valid password"
-                                          : null,
-                                ),
-                                SizedBox(
-                                    height: getProportionateScreenHeight(
-                                        kSpacingX4)),
-                                Text(
-                                  kPasswordHint,
-                                  textAlign: TextAlign.center,
-                                  style: themeData.textTheme.caption,
-                                ),
-                                SizedBox(
-                                    height: getProportionateScreenHeight(
-                                        kSpacingX16)),
-                                UserAccountSelector(
-                                  enabled: !_isLoading,
-                                  accountPicker: _accountPicker,
-                                  onAccountSelected: (picker) {
-                                    _accountPicker = picker;
-                                    _isCustomer = _accountPicker ==
-                                        UserAccountPicker.CUSTOMER;
-                                    setState(() {});
-                                  },
-                                ),
-                                SizedBox(
-                                    height: getProportionateScreenHeight(
-                                        kSpacingX24)),
-                                _isLoading
-                                    ? CircularProgressIndicator()
-                                    : ButtonOutlined(
-                                        width: getProportionateScreenWidth(
-                                            kSpacingX200),
-                                        themeData: themeData,
-                                        onTap: _performLogin,
-                                        enabled: !_isLoading,
-                                        icon: Icons.arrow_right_alt,
-                                        label: "Sign in",
-                                      ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                            height: getProportionateScreenHeight(kSpacingX64)),
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: "Are you a new user? ",
-                                style: themeData.textTheme.bodyText1,
-                                children: [
-                                  TextSpan(
-                                    text: "Sign Up",
-                                    style:
-                                        themeData.textTheme.bodyText1.copyWith(
-                                      color: themeData.primaryColor,
-                                    ),
-                                    semanticsLabel: "Create account",
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () => context.navigator
-                                          .popAndPush(Routes.registerPage),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          );
-        },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

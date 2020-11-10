@@ -28,7 +28,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  double _kWidth, _kHeight;
+  double _kWidth = SizeConfig.screenWidth, _kHeight = SizeConfig.screenHeight;
   ThemeData _themeData;
   int _currentTabIndex = 0;
   final _pageController = PageController(initialPage: 0, keepPage: true);
@@ -36,15 +36,8 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     _themeData = Theme.of(context);
-    final size = MediaQuery.of(context).size;
-    _kWidth = size.width;
-    _kHeight = size.height;
-
     // Get current user instance
-
-
     // Get business details and
   }
 

@@ -655,7 +655,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                   });
                                   await _dataService.updateUser(ArtisanModel(
                                     artisan:
-                                        user.copyWith(isAvailable: visibility),
+                                        user?.copyWith(isAvailable: visibility),
                                   ));
                                   setState(() {
                                     _isLoading = !_isLoading;
