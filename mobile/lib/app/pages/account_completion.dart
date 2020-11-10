@@ -103,17 +103,9 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
   }
 
   @override
-  void dispose() {
-    _storageService.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     _themeData = Theme.of(context);
-    final size = MediaQuery.of(context).size;
-    final kWidth = size.width;
-    final kHeight = size.height;
+    final kHeight = SizeConfig.screenHeight, kWidth = SizeConfig.screenWidth;
 
     return Consumer<AuthService>(
       builder: (_, authService, __) => StreamBuilder<BaseUser>(

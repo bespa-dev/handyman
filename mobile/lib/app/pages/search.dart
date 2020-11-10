@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/artisan_card.dart';
@@ -20,7 +21,8 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final _dataService = DataServiceImpl.instance;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  double _kWidth, _kHeight;
+  final double _kWidth = SizeConfig.screenWidth,
+      _kHeight = SizeConfig.screenHeight;
   ThemeData _themeData;
   bool _isSearching = false;
   List<dynamic> _searchResults = [];
@@ -29,11 +31,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     _themeData = Theme.of(context);
-    final size = MediaQuery.of(context).size;
-    _kWidth = size.width;
-    _kHeight = size.height;
   }
 
   @override
@@ -194,7 +192,8 @@ class _SearchPageState extends State<SearchPage> {
                                         return InkWell(
                                           onTap: () async {
                                             _isSearching = true;
-                                            _searchController.text = category.name;
+                                            _searchController.text =
+                                                category.name;
                                             setState(() {});
                                           },
                                           child: Chip(
@@ -282,67 +281,86 @@ class _SearchPageState extends State<SearchPage> {
                 );
               } else {
                 _searchResults = snapshot.data;
-                return Container(
-                  height: _kHeight,
-                  width: _kWidth,
-                  margin: EdgeInsets.symmetric(
-                    horizontal: getProportionateScreenWidth(kSpacingX24),
-                  ),
-                  decoration: BoxDecoration(),
-                  child: AnimationLimiter(
-                    child: provider.userType == kCustomerString
-                        ? GridView.builder(
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing:
-                                  getProportionateScreenWidth(kSpacingX8),
-                              mainAxisSpacing:
-                                  getProportionateScreenHeight(kSpacingX4),
-                            ),
-                            itemBuilder: (_, index) {
-                              final item = snapshot.data[index];
-                              return AnimationConfiguration.staggeredList(
-                                position: index,
-                                duration: kScaleDuration,
-                                child: ScaleAnimation(
-                                  duration: kScaleDuration,
-                                  child: FadeInAnimation(
-                                    child: GridArtisanCardItem(artisan: item),
+                return Column(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: _kHeight,
+                        width: _kWidth,
+                        margin: EdgeInsets.symmetric(
+                          horizontal: getProportionateScreenWidth(kSpacingX24),
+                        ),
+                        decoration: BoxDecoration(),
+                        child: AnimationLimiter(
+                          child: provider.userType == kCustomerString
+                              ? GridView.builder(
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing:
+                                        getProportionateScreenWidth(kSpacingX8),
+                                    mainAxisSpacing:
+                                        getProportionateScreenHeight(
+                                            kSpacingX4),
                                   ),
-                                ),
-                              );
-                            },
-                            itemCount: snapshot.data.length,
-                          )
-                        : ListView.separated(
-                            itemBuilder: (_, index) {
-                              final item = snapshot.data[index];
-                              return AnimationConfiguration.staggeredList(
-                                position: index,
-                                duration: kScaleDuration,
-                                child: ScaleAnimation(
-                                  duration: kScaleDuration,
-                                  child: FadeInAnimation(
-                                    child: BookingCardItem(
-                                      booking: item,
-                                      onTap: () => context.navigator.push(
-                                        Routes.bookingsDetailsPage,
-                                        arguments: BookingsDetailsPageArguments(
-                                          booking: item,
+                                  itemBuilder: (_, index) {
+                                    final item = snapshot.data[index];
+                                    return AnimationConfiguration.staggeredList(
+                                      position: index,
+                                      duration: kScaleDuration,
+                                      child: ScaleAnimation(
+                                        duration: kScaleDuration,
+                                        child: FadeInAnimation(
+                                          child: GridArtisanCardItem(
+                                              artisan: item),
                                         ),
                                       ),
-                                    ),
+                                    );
+                                  },
+                                  itemCount: snapshot.data.length,
+                                )
+                              : ListView.separated(
+                                  itemBuilder: (_, index) {
+                                    final item = snapshot.data[index];
+                                    return AnimationConfiguration.staggeredList(
+                                      position: index,
+                                      duration: kScaleDuration,
+                                      child: ScaleAnimation(
+                                        duration: kScaleDuration,
+                                        child: FadeInAnimation(
+                                          child: BookingCardItem(
+                                            booking: item,
+                                            onTap: () => context.navigator.push(
+                                              Routes.bookingsDetailsPage,
+                                              arguments:
+                                                  BookingsDetailsPageArguments(
+                                                booking: item,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  separatorBuilder: (_, __) => SizedBox(
+                                    height: getProportionateScreenHeight(
+                                        kSpacingX8),
                                   ),
+                                  itemCount: snapshot.data.length,
                                 ),
-                              );
-                            },
-                            separatorBuilder: (_, __) => SizedBox(
-                              height: getProportionateScreenHeight(kSpacingX8),
-                            ),
-                            itemCount: snapshot.data.length,
-                          ),
-                  ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: kToolbarHeight,
+                      width: _kWidth,
+                      alignment: Alignment.center,
+                      child: Image(
+                        image: Svg(kAlgoliaSvgAsset),
+                        height: kToolbarHeight,
+                      ),
+                    ),
+                  ],
                 );
               }
             }

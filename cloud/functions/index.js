@@ -37,7 +37,7 @@ admin.initializeApp();
 // invoked when an artisan is created, updated or deleted
 exports.onArtisanWrite = functions.firestore
   .document("artisans/{id}")
-  .onWrite(async (change, context) => {
+  .onWrite(async (change, _context) => {
     let clientIndex = client.initIndex("artisans");
 
     if (change.before.exists) {
@@ -79,8 +79,8 @@ exports.onArtisanWrite = functions.firestore
 // invoked when a booking record is created, updated or deleted
 exports.onBookingRequestWrite = functions.firestore
   .document("requests/{id}")
-  .onWrite(async (change, context) => {
-    let clientIndex = client.initIndex("requests");
+  .onWrite(async (change, _context) => {
+    let clientIndex = client.initIndex("bookings");
     if (change.after.data()) {
       let data = change.after.data();
       data.objectID = change.after.id;

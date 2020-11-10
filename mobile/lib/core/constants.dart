@@ -138,6 +138,7 @@ const kLogoDarkAsset = "assets/logo/logo_dark.svg";
 const kTimeSvgAsset = "assets/svg/time.svg";
 const kPeopleSvgAsset = "assets/svg/people.svg";
 const kBookingSvgAsset = "assets/svg/booking.svg";
+const kAlgoliaSvgAsset = "assets/svg/algolia_blue_mark.svg";
 const kBackgroundAsset = "assets/bg/bg.webp";
 const kLoremText =
     "Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cursus sit amet dictum sit amet. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique";

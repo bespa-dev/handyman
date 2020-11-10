@@ -16,6 +16,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
   final String token;
   final bool isCertified;
   final bool isAvailable;
+  final bool isApproved;
   final String category;
   final int startWorkingHours;
   final int completedBookingsCount;
@@ -39,6 +40,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       this.token,
       this.isCertified,
       this.isAvailable,
+      this.isApproved,
       @required this.category,
       this.startWorkingHours,
       this.completedBookingsCount,
@@ -75,6 +77,8 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           boolType.mapFromDatabaseResponse(data['${effectivePrefix}certified']),
       isAvailable:
           boolType.mapFromDatabaseResponse(data['${effectivePrefix}available']),
+      isApproved:
+          boolType.mapFromDatabaseResponse(data['${effectivePrefix}approved']),
       category: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}category']),
       startWorkingHours: intType.mapFromDatabaseResponse(
@@ -131,6 +135,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
     }
     if (!nullToAbsent || isAvailable != null) {
       map['available'] = Variable<bool>(isAvailable);
+    }
+    if (!nullToAbsent || isApproved != null) {
+      map['approved'] = Variable<bool>(isApproved);
     }
     if (!nullToAbsent || category != null) {
       map['category'] = Variable<String>(category);
@@ -196,6 +203,9 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       isAvailable: isAvailable == null && nullToAbsent
           ? const Value.absent()
           : Value(isAvailable),
+      isApproved: isApproved == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isApproved),
       category: category == null && nullToAbsent
           ? const Value.absent()
           : Value(category),
@@ -251,6 +261,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       token: serializer.fromJson<String>(json['token']),
       isCertified: serializer.fromJson<bool>(json['certified']),
       isAvailable: serializer.fromJson<bool>(json['available']),
+      isApproved: serializer.fromJson<bool>(json['approved']),
       category: serializer.fromJson<String>(json['category']),
       startWorkingHours: serializer.fromJson<int>(json['start_working_hours']),
       completedBookingsCount:
@@ -282,6 +293,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
       'token': serializer.toJson<String>(token),
       'certified': serializer.toJson<bool>(isCertified),
       'available': serializer.toJson<bool>(isAvailable),
+      'approved': serializer.toJson<bool>(isApproved),
       'category': serializer.toJson<String>(category),
       'start_working_hours': serializer.toJson<int>(startWorkingHours),
       'completed_bookings_count':
@@ -310,6 +322,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           String token,
           bool isCertified,
           bool isAvailable,
+          bool isApproved,
           String category,
           int startWorkingHours,
           int completedBookingsCount,
@@ -333,6 +346,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
         token: token ?? this.token,
         isCertified: isCertified ?? this.isCertified,
         isAvailable: isAvailable ?? this.isAvailable,
+        isApproved: isApproved ?? this.isApproved,
         category: category ?? this.category,
         startWorkingHours: startWorkingHours ?? this.startWorkingHours,
         completedBookingsCount:
@@ -361,6 +375,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           ..write('token: $token, ')
           ..write('isCertified: $isCertified, ')
           ..write('isAvailable: $isAvailable, ')
+          ..write('isApproved: $isApproved, ')
           ..write('category: $category, ')
           ..write('startWorkingHours: $startWorkingHours, ')
           ..write('completedBookingsCount: $completedBookingsCount, ')
@@ -397,34 +412,35 @@ class Artisan extends DataClass implements Insertable<Artisan> {
                               $mrjc(
                                   isAvailable.hashCode,
                                   $mrjc(
-                                      category.hashCode,
+                                      isApproved.hashCode,
                                       $mrjc(
-                                          startWorkingHours.hashCode,
+                                          category.hashCode,
                                           $mrjc(
-                                              completedBookingsCount.hashCode,
+                                              startWorkingHours.hashCode,
                                               $mrjc(
-                                                  ongoingBookingsCount.hashCode,
+                                                  completedBookingsCount
+                                                      .hashCode,
                                                   $mrjc(
-                                                      cancelledBookingsCount
+                                                      ongoingBookingsCount
                                                           .hashCode,
                                                       $mrjc(
-                                                          requestsCount
+                                                          cancelledBookingsCount
                                                               .hashCode,
                                                           $mrjc(
-                                                              reportsCount
+                                                              requestsCount
                                                                   .hashCode,
                                                               $mrjc(
-                                                                  endWorkingHours
+                                                                  reportsCount
                                                                       .hashCode,
                                                                   $mrjc(
-                                                                      avatar
+                                                                      endWorkingHours
                                                                           .hashCode,
                                                                       $mrjc(
-                                                                          aboutMe
+                                                                          avatar
                                                                               .hashCode,
                                                                           $mrjc(
-                                                                              startPrice.hashCode,
-                                                                              $mrjc(endPrice.hashCode, $mrjc(rating.hashCode, createdAt.hashCode))))))))))))))))))))));
+                                                                              aboutMe.hashCode,
+                                                                              $mrjc(startPrice.hashCode, $mrjc(endPrice.hashCode, $mrjc(rating.hashCode, createdAt.hashCode)))))))))))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -437,6 +453,7 @@ class Artisan extends DataClass implements Insertable<Artisan> {
           other.token == this.token &&
           other.isCertified == this.isCertified &&
           other.isAvailable == this.isAvailable &&
+          other.isApproved == this.isApproved &&
           other.category == this.category &&
           other.startWorkingHours == this.startWorkingHours &&
           other.completedBookingsCount == this.completedBookingsCount &&
@@ -462,6 +479,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
   final Value<String> token;
   final Value<bool> isCertified;
   final Value<bool> isAvailable;
+  final Value<bool> isApproved;
   final Value<String> category;
   final Value<int> startWorkingHours;
   final Value<int> completedBookingsCount;
@@ -485,6 +503,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     this.token = const Value.absent(),
     this.isCertified = const Value.absent(),
     this.isAvailable = const Value.absent(),
+    this.isApproved = const Value.absent(),
     this.category = const Value.absent(),
     this.startWorkingHours = const Value.absent(),
     this.completedBookingsCount = const Value.absent(),
@@ -509,6 +528,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     this.token = const Value.absent(),
     this.isCertified = const Value.absent(),
     this.isAvailable = const Value.absent(),
+    this.isApproved = const Value.absent(),
     this.category = const Value.absent(),
     this.startWorkingHours = const Value.absent(),
     this.completedBookingsCount = const Value.absent(),
@@ -535,6 +555,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     Expression<String> token,
     Expression<bool> isCertified,
     Expression<bool> isAvailable,
+    Expression<bool> isApproved,
     Expression<String> category,
     Expression<int> startWorkingHours,
     Expression<int> completedBookingsCount,
@@ -559,6 +580,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       if (token != null) 'token': token,
       if (isCertified != null) 'certified': isCertified,
       if (isAvailable != null) 'available': isAvailable,
+      if (isApproved != null) 'approved': isApproved,
       if (category != null) 'category': category,
       if (startWorkingHours != null) 'start_working_hours': startWorkingHours,
       if (completedBookingsCount != null)
@@ -588,6 +610,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       Value<String> token,
       Value<bool> isCertified,
       Value<bool> isAvailable,
+      Value<bool> isApproved,
       Value<String> category,
       Value<int> startWorkingHours,
       Value<int> completedBookingsCount,
@@ -611,6 +634,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
       token: token ?? this.token,
       isCertified: isCertified ?? this.isCertified,
       isAvailable: isAvailable ?? this.isAvailable,
+      isApproved: isApproved ?? this.isApproved,
       category: category ?? this.category,
       startWorkingHours: startWorkingHours ?? this.startWorkingHours,
       completedBookingsCount:
@@ -656,6 +680,9 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
     }
     if (isAvailable.present) {
       map['available'] = Variable<bool>(isAvailable.value);
+    }
+    if (isApproved.present) {
+      map['approved'] = Variable<bool>(isApproved.value);
     }
     if (category.present) {
       map['category'] = Variable<String>(category.value);
@@ -715,6 +742,7 @@ class ServiceProviderCompanion extends UpdateCompanion<Artisan> {
           ..write('token: $token, ')
           ..write('isCertified: $isCertified, ')
           ..write('isAvailable: $isAvailable, ')
+          ..write('isApproved: $isApproved, ')
           ..write('category: $category, ')
           ..write('startWorkingHours: $startWorkingHours, ')
           ..write('completedBookingsCount: $completedBookingsCount, ')
@@ -830,6 +858,15 @@ class $ServiceProviderTable extends ServiceProvider
       _isAvailable ??= _constructIsAvailable();
   GeneratedBoolColumn _constructIsAvailable() {
     return GeneratedBoolColumn('available', $tableName, true,
+        defaultValue: Constant(false));
+  }
+
+  final VerificationMeta _isApprovedMeta = const VerificationMeta('isApproved');
+  GeneratedBoolColumn _isApproved;
+  @override
+  GeneratedBoolColumn get isApproved => _isApproved ??= _constructIsApproved();
+  GeneratedBoolColumn _constructIsApproved() {
+    return GeneratedBoolColumn('approved', $tableName, true,
         defaultValue: Constant(false));
   }
 
@@ -986,6 +1023,7 @@ class $ServiceProviderTable extends ServiceProvider
         token,
         isCertified,
         isAvailable,
+        isApproved,
         category,
         startWorkingHours,
         completedBookingsCount,
@@ -1052,6 +1090,10 @@ class $ServiceProviderTable extends ServiceProvider
           _isAvailableMeta,
           isAvailable.isAcceptableOrUnknown(
               data['available'], _isAvailableMeta));
+    }
+    if (data.containsKey('approved')) {
+      context.handle(_isApprovedMeta,
+          isApproved.isAcceptableOrUnknown(data['approved'], _isApprovedMeta));
     }
     if (data.containsKey('category')) {
       context.handle(_categoryMeta,
@@ -3889,6 +3931,7 @@ mixin _$UserDaoMixin on DatabaseAccessor<LocalDatabase> {
         token: row.readString('token'),
         certified: row.readBool('certified'),
         available: row.readBool('available'),
+        approved: row.readBool('approved'),
         category: row.readString('category'),
         startWorkingHours: row.readInt('start_working_hours'),
         completedBookingsCount: row.readInt('completed_bookings_count'),
@@ -3924,6 +3967,7 @@ class SearchForResult {
   final String token;
   final bool certified;
   final bool available;
+  final bool approved;
   final String category;
   final int startWorkingHours;
   final int completedBookingsCount;
@@ -3954,6 +3998,7 @@ class SearchForResult {
     this.token,
     this.certified,
     this.available,
+    this.approved,
     this.category,
     this.startWorkingHours,
     this.completedBookingsCount,

@@ -305,16 +305,14 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 ],
               ),
             ),
-            widget.customer.id == provider.userId
-                ? ButtonIconOnly(
-                    icon: Icons.arrow_right_alt_outlined,
-                    color: _themeData.colorScheme.onSecondary,
-                    iconColor: _themeData.colorScheme.onSecondary,
-                    onPressed: () => context.navigator.popAndPush(
-                      Routes.profilePage,
-                    ),
-                  )
-                : SizedBox.shrink(),
+            ButtonIconOnly(
+              icon: Icons.arrow_right_alt_outlined,
+              color: _themeData.colorScheme.onSecondary,
+              iconColor: _themeData.colorScheme.onSecondary,
+              onPressed: () => context.navigator.popAndPush(
+                Routes.profilePage,
+              ),
+            ),
           ],
         ),
       );

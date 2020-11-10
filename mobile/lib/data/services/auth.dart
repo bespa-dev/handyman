@@ -57,11 +57,18 @@ class FirebaseAuthService implements AuthService {
   Future<BaseUser> _createUserInstance(
       User user, String username, bool isCustomer) async {
     _onProcessingStateChanged.sink.add(loadingState);
+    // get device token
+    final token = await sl.get<FirebaseMessaging>().getToken();
+
     if (isCustomer) {
       final customer = Customer(
         id: user.uid,
         name: username,
         email: user.email,
+        avatar: user.photoURL,
+        phone: user.phoneNumber,
+        token: token,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
       );
       await _firestore
           .collection(FirestoreUtils.kCustomerRef)
@@ -81,10 +88,16 @@ class FirebaseAuthService implements AuthService {
         name: username,
         business: "None available",
         email: user.email,
+        avatar: user.photoURL,
+        phone: user.phoneNumber,
+        token: token,
         isCertified: false,
         isAvailable: true,
+        isApproved: false,
+        aboutMe: "Hello there, I am using $kAppName!",
         category: kGeneralCategory,
         startWorkingHours: DateTime.now().millisecondsSinceEpoch,
+        reportsCount: 0,
         completedBookingsCount: 0,
         ongoingBookingsCount: 0,
         cancelledBookingsCount: 0,
@@ -93,6 +106,7 @@ class FirebaseAuthService implements AuthService {
         startPrice: 19.99,
         endPrice: 119.99,
         requestsCount: 0,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
       );
       await _firestore
           .collection(FirestoreUtils.kArtisanRef)

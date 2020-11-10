@@ -55,7 +55,7 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -81,6 +81,11 @@ class LocalDatabase extends _$LocalDatabase {
               // Destructive migration
               // Signs out any logged in user and clears user preferences
               await sl.get<AuthService>().signOut();
+              break;
+              case 11:
+              // Destructive migration
+              // Signs out any logged in user and clears user preferences
+              await m.addColumn(serviceProvider, serviceProvider.isApproved);
               break;
           }
         },

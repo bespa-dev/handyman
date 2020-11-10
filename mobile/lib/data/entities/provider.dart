@@ -22,6 +22,10 @@ class ServiceProvider extends Table {
   BoolColumn get isAvailable =>
       boolean().nullable().named("available").withDefault(Constant(false))();
 
+  @JsonKey("approved")
+  BoolColumn get isApproved =>
+      boolean().nullable().named("approved").withDefault(Constant(false))();
+
   TextColumn get category =>
       text().withDefault(Constant("598d67f5-b84b-4572-9058-57f36463aeac"))();
 
