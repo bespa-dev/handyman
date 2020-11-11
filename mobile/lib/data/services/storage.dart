@@ -37,7 +37,7 @@ class StorageServiceImpl implements StorageService {
     final dir = await path_provider.getTemporaryDirectory();
 
     final targetPath =
-        dir.absolute.path + "/$path${isImageFile ? ".jpg" : ".$extension"}";
+        dir.absolute.path + "/$path.$extension";
     final filePath = file.absolute.path;
     print("File path => $filePath");
     print("Target path => $targetPath");

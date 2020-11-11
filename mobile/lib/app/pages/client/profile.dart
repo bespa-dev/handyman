@@ -52,7 +52,13 @@ class _ProfilePageState extends State<ProfilePage> {
     if (pickedFile != null) {
       debugPrint("Image picked as -> ${pickedFile.path}");
       _avatar = File(pickedFile.path);
-      await _storageService.uploadFile(_avatar, path: _userId);
+      await _storageService.uploadFile(
+        _avatar,
+        path: _userId,
+        extension: pickedFile.path.substring(
+          pickedFile.path.lastIndexOf("."),
+        ),
+      );
     } else {
       debugPrint('No image selected.');
     }

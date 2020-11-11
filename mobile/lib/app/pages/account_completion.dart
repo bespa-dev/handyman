@@ -10,14 +10,17 @@ import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/core/constants.dart';
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/entities/artisan_model.dart';
 import 'package:handyman/data/local_database.dart';
+import 'package:handyman/data/services/data.dart';
 import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:handyman/domain/services/messaging.dart';
+import 'package:handyman/domain/services/storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -45,6 +48,9 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
 
   // endregion
 
+  // Data service
+  final _dataService = DataServiceImpl.instance;
+
   // region Image Picker
   File _avatar;
   File _businessDoc;
@@ -65,7 +71,14 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
       debugPrint('No image selected.');
     }
     setState(() {});
-    await _storageService.uploadFile(_avatar, path: _userId);
+    print("Logged in as =>$_userId");
+    await _storageService.uploadFile(
+      _avatar,
+      path: _userId,
+      extension: pickedFile.path.substring(
+        pickedFile.path.lastIndexOf("."),
+      ),
+    );
   }
 
   // Pick business document from device storage
@@ -101,8 +114,22 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
   @override
   void initState() {
     super.initState();
-    _storageService.onStorageUploadResponse.listen((event) {
+    // Get user id from shared preferences
+    _userId = sl.get<PrefsProvider>().userId;
+
+    // Storage service
+    _storageService.onStorageUploadResponse.listen((event) async {
       debugPrint(event.state.toString());
+      if (event.state == UploadProgressState.DONE) {
+        var user = await _dataService.getArtisanById(id: _userId).first;
+        print("Current user => ${user?.user}");
+        if (user != null)
+          _dataService.updateUser(
+            ArtisanModel(
+              artisan: user.user.copyWith(avatar: event.url),
+            ),
+          );
+      }
     });
   }
 
