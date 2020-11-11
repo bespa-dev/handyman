@@ -55,38 +55,38 @@ class LocalDatabase extends _$LocalDatabase {
   static LocalDatabase get instance => LocalDatabase._();
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (m, from, to) async {
           switch (from) {
-            case 1:
-              await m.addColumn(photoGallery, photoGallery.createdAt);
-              break;
-            case 4:
-              await m.addColumn(user, user.phone);
-              break;
-            case 6:
-              await m.addColumn(bookings, bookings.imageUrl);
-              break;
-            case 7:
-              await m.addColumn(serviceProvider, serviceProvider.startPrice);
-              await m.addColumn(serviceProvider, serviceProvider.endPrice);
-              break;
-            case 9:
-              await m.addColumn(bookings, bookings.isAccepted);
-              break;
-            case 10:
-              // Destructive migration
-              // Signs out any logged in user and clears user preferences
-              await sl.get<AuthService>().signOut();
-              break;
-              case 11:
-              // Destructive migration
-              // Signs out any logged in user and clears user preferences
-              await m.addColumn(serviceProvider, serviceProvider.isApproved);
-              break;
+            // case 1:
+            //   await m.addColumn(photoGallery, photoGallery.createdAt);
+            //   break;
+            // case 4:
+            //   await m.addColumn(user, user.phone);
+            //   break;
+            // case 6:
+            //   await m.addColumn(bookings, bookings.imageUrl);
+            //   break;
+            // case 7:
+            //   await m.addColumn(serviceProvider, serviceProvider.startPrice);
+            //   await m.addColumn(serviceProvider, serviceProvider.endPrice);
+            //   break;
+            // case 9:
+            //   await m.addColumn(bookings, bookings.isAccepted);
+            //   break;
+            // case 10:
+            //   // Destructive migration
+            //   // Signs out any logged in user and clears user preferences
+            //   await sl.get<AuthService>().signOut();
+            //   break;
+            //   case 11:
+            //   // Destructive migration
+            //   // Signs out any logged in user and clears user preferences
+            //   await m.addColumn(serviceProvider, serviceProvider.isApproved);
+            //   break;
           }
         },
         onCreate: (m) async {

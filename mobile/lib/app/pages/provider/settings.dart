@@ -25,6 +25,7 @@ import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
+import 'package:handyman/domain/services/storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -63,7 +64,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
       _aboutController = TextEditingController(),
       _phoneController = TextEditingController();
 
-  CalendarController _calendarController;
+  CalendarController _calendarController = CalendarController();
   DataService _dataService = DataServiceImpl.instance;
   final _storageService = StorageServiceImpl.instance;
 
@@ -107,7 +108,13 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       _avatar = File(pickedFile.path);
-      await _storageService.uploadFile(_avatar, path: _userId);
+      await _storageService.uploadFile(
+        _avatar,
+        path: _userId,
+        extension: pickedFile.path.substring(
+          pickedFile.path.lastIndexOf("."),
+        ),
+      );
       setState(() {});
     }
   }
@@ -115,10 +122,23 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   @override
   void initState() {
     super.initState();
-    _calendarController = CalendarController();
     if (mounted) {
-      _storageService.onStorageUploadResponse.listen((event) {
+      // Get user id from shared preferences
+      _userId = sl.get<PrefsProvider>().userId;
+
+      // Storage service
+      _storageService.onStorageUploadResponse.listen((event) async {
         debugPrint(event.state.toString());
+        if (event.state == UploadProgressState.DONE) {
+          var user = await _dataService.getArtisanById(id: _userId).first;
+          print("Current user => ${user?.user}");
+          if (user != null)
+            _dataService.updateUser(
+              ArtisanModel(
+                artisan: user.user.copyWith(avatar: event.url),
+              ),
+            );
+        }
       });
       _activeTabIndex = widget.activeTabIndex;
     }
@@ -135,9 +155,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
 
   @override
   void dispose() {
-    // Focus.of(context).unfocus();
     _calendarController?.dispose();
-    // _dataService.updateUser(ArtisanModel(artisan: _currentUser), sync: true);
     _businessNameController.dispose();
     _aboutController.dispose();
     _phoneController.dispose();
@@ -853,7 +871,6 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
               },
             ),
           ),
-          _buildPriceRange(user),
           StreamBuilder<geo.Position>(
             stream: _getUserLocation(),
             builder: (_, locationSnapshot) {
@@ -878,76 +895,6 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
           ),
         ],
       );
-
-  Widget _buildPriceRange(Artisan user) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(
-        getProportionateScreenWidth(kSpacingX16),
-        getProportionateScreenHeight(kSpacingX8),
-        getProportionateScreenWidth(kSpacingX16),
-        getProportionateScreenHeight(kSpacingX16),
-      ),
-      margin: EdgeInsets.only(
-        left: getProportionateScreenWidth(kSpacingX24),
-        right: getProportionateScreenWidth(kSpacingX24),
-        bottom: getProportionateScreenHeight(kSpacingX16),
-      ),
-      decoration: BoxDecoration(
-        color: _themeData.scaffoldBackgroundColor.withOpacity(kEmphasisLow),
-        borderRadius: BorderRadius.circular(kSpacingX16),
-        border: Border.all(
-            color: _themeData.disabledColor.withOpacity(kEmphasisLow)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(text: "Service price range"),
-                TextSpan(
-                    text: " (in GHC)", style: _themeData.textTheme.bodyText1),
-              ],
-              style: _themeData.textTheme.headline6,
-            ),
-          ),
-          SizedBox(
-            height: getProportionateScreenHeight(kSpacingX12),
-          ),
-          Row(
-            children: [
-              // ₵
-              Text("GHC10"),
-              Expanded(
-                child: RangeSlider(
-                  labels: RangeLabels(
-                      user?.startPrice.toString(), user?.endPrice.toString()),
-                  divisions: 10,
-                  min: 9.99,
-                  max: 199.99,
-                  values: RangeValues(user?.startPrice?.roundToDouble() ?? 10,
-                      user?.endPrice?.roundToDouble() ?? 20),
-                  onChanged: (newValue) {
-                    print("New value => $newValue");
-                    _dataService.updateUser(
-                      ArtisanModel(
-                        artisan: user.copyWith(
-                          startPrice: newValue.start.roundToDouble(),
-                          endPrice: newValue.end.roundToDouble(),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Text("GHC200"),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 
   void _showEditUsernameDialog(Artisan user) {
     showDialog(

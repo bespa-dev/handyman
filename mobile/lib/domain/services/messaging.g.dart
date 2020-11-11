@@ -56,4 +56,5 @@ const _$PayloadTypeEnumMap = {
   PayloadType.BOOKING: 'BOOKING',
   PayloadType.CONVERSATION: 'CONVERSATION',
   PayloadType.TOKEN_UPDATE: 'TOKEN_UPDATE',
+  PayloadType.NONE: 'NONE',
 };
