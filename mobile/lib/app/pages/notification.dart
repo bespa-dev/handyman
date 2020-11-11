@@ -1,6 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
+import 'package:handyman/app/routes/route.gr.dart';
+import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
@@ -53,6 +56,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                 !snapshot.data.user.isApproved)
                         ? _buildWaitingApprovalHeader(currentUser)
                         : SizedBox.shrink(),
+                    _buildNotificationsTab(provider),
                   ],
                 ),
               );
@@ -61,43 +65,121 @@ class _NotificationPageState extends State<NotificationPage> {
     );
   }
 
-  Widget _buildWaitingApprovalHeader(Artisan artisan) => Padding(
-        padding: EdgeInsets.only(
-          bottom: getProportionateScreenHeight(kSpacingX16),
-        ),
-        child: Column(
+  Widget _buildWaitingApprovalHeader(Artisan artisan) => artisan == null
+      ? SizedBox.shrink()
+      : Column(
           children: [
-            Divider(),
-            Container(
-              height: _kHeight * 0.15,
-              width: _kWidth,
-              clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                // crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(artisan?.name ?? "No name"),
+            RichText(
+              text: TextSpan(
+                children: <TextSpan>[
+                  TextSpan(
+                    text: "Your account is ",
+                    style: _themeData.textTheme.bodyText1,
+                  ),
+                  TextSpan(
+                    text:
+                        artisan.isApproved ? "approved." : "pending approval.",
+                    style: _themeData.textTheme.bodyText1.copyWith(
+                      color: artisan.isApproved
+                          ? kGreenColor
+                          : _themeData.colorScheme.error,
+                    ),
+                  ),
                 ],
               ),
             ),
-            Divider(),
+            Padding(
+              padding: EdgeInsets.only(
+                top: getProportionateScreenHeight(kSpacingX12),
+                bottom: getProportionateScreenHeight(kSpacingX16),
+              ),
+              child: Column(
+                children: [
+                  ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: _kHeight * 0.15,
+                      ),
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Positioned.fill(
+                            child: Container(
+                              width: _kWidth,
+                              clipBehavior: Clip.hardEdge,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(kSpacingX12),
+                                color: artisan.isApproved
+                                    ? kGreenColor
+                                    : _themeData.colorScheme.error,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            left: kSpacingX2,
+                            right: getProportionateScreenWidth(kSpacingX16),
+                            top: kSpacingX2,
+                            bottom: kSpacingX2,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    getProportionateScreenWidth(kSpacingX16),
+                                vertical:
+                                    getProportionateScreenHeight(kSpacingX12),
+                              ),
+                              clipBehavior: Clip.hardEdge,
+                              decoration: BoxDecoration(
+                                color: _themeData.scaffoldBackgroundColor,
+                                borderRadius:
+                                    BorderRadius.circular(kSpacingX12),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    artisan?.name ?? "No name",
+                                    style: _themeData.textTheme.headline6,
+                                  ),
+                                  SizedBox(
+                                    height: getProportionateScreenHeight(
+                                        kSpacingX8),
+                                  ),
+                                  Text(
+                                    artisan.business ?? artisan?.email ?? "",
+                                    style: _themeData.textTheme.caption,
+                                  ),
+                                  SizedBox(
+                                    height: getProportionateScreenHeight(
+                                        kSpacingX8),
+                                  ),
+                                  ButtonClear(
+                                    text: "View profile",
+                                    onPressed: () => context.navigator
+                                        .push(Routes.providerSettingsPage),
+                                    themeData: _themeData,
+                                    textColor: artisan.isApproved
+                                        ? kGreenColor
+                                        : _themeData.colorScheme.primary,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      )),
+                ],
+              ),
+            ),
           ],
-        ),
-      );
+        );
 
-  _buildAppBar(PrefsProvider provider) => Container(
-        width: SizeConfig.screenWidth,
+  Widget _buildAppBar(PrefsProvider provider) => Container(
+        width: _kWidth,
         height: getProportionateScreenHeight(kToolbarHeight),
         color: _themeData.scaffoldBackgroundColor.withOpacity(kOpacityX90),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            // IconButton(
-            //   icon: Icon(Feather.x),
-            //   onPressed: () =>
-            //       context.navigator.pop(),
-            // ),
             IconButton(
               tooltip: "Toggle theme",
               icon: Icon(provider.isLightTheme ? Feather.moon : Feather.sun),
@@ -105,5 +187,10 @@ class _NotificationPageState extends State<NotificationPage> {
             )
           ],
         ),
+      );
+
+  // Notifications tab
+  Widget _buildNotificationsTab(PrefsProvider provider) => Container(
+      // TODO: Add notifications tab here
       );
 }

@@ -182,7 +182,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                                   width: SizeConfig.screenWidth,
                                   height: kToolbarHeight,
                                   color: _themeData.scaffoldBackgroundColor
-                                      .withOpacity(kOpacityX90),
+                                      .withOpacity(kOpacityX14),
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,

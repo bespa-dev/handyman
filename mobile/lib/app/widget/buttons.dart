@@ -209,7 +209,7 @@ class ButtonClear extends FlatButton {
     double preferredHeight,
     Color backgroundColor,
   }) : super(
-          splashColor: kTransparent,
+          splashColor: themeData.splashColor,
           highlightColor: kTransparent,
           textColor: textColor,
           clipBehavior: Clip.hardEdge,
