@@ -4,6 +4,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
+import 'package:handyman/app/pages/notification.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/badgeable_tab_bar.dart';
 import 'package:handyman/app/widget/booking_card_item.dart';
@@ -12,6 +13,7 @@ import 'package:handyman/app/widget/emergency_ping_button.dart';
 import 'package:handyman/app/widget/menu_icon.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/entities/booking.dart';
 import 'package:handyman/data/local_database.dart';
@@ -37,17 +39,27 @@ class _DashboardPageState extends State<DashboardPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _themeData = Theme.of(context);
-    // Get current user instance
-    // Get business details and
   }
 
   @override
   void initState() {
     super.initState();
 
-    /// FIXME: User data not loaded when page is first viewed
-    if (mounted)
-      Future.delayed(kScaleDuration).then((value) => setState(() => {}));
+    if (mounted) {
+      var userId = sl.get<PrefsProvider>().userId;
+      sl.get<DataService>().getArtisanById(id: userId).listen((result) {
+        if (result.isCustomer || result.user == null) return;
+        var approved = result.user.isApproved;
+        if (!approved)
+          context.navigator.pushAndRemoveUntil(
+            Routes.notificationPage,
+            (route) => route is NotificationPage,
+            arguments: NotificationPageArguments(
+              payload: NotificationPayload.empty(),
+            ),
+          );
+      });
+    }
   }
 
   @override

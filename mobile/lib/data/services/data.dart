@@ -18,6 +18,7 @@ import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/data.dart';
+import 'package:handyman/domain/services/messaging.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
@@ -512,5 +513,10 @@ class DataServiceImpl implements DataService {
         }
       });
     });
+  }
+
+  @override
+  Stream<List<dynamic>> getNotifications({String userId, PayloadType type}) async* {
+    yield ["okay", "done"];
   }
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:handyman/data/entities/category.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/models/user.dart';
+import 'package:handyman/domain/services/messaging.dart';
 import 'package:meta/meta.dart';
 
 /// Base data service
@@ -80,4 +81,6 @@ abstract class DataService {
     String description,
     File image,
   });
+
+  Stream<List<dynamic>> getNotifications({String userId, PayloadType type});
 }

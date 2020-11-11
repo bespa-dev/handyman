@@ -129,7 +129,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
       // Storage service
       _storageService.onStorageUploadResponse.listen((event) async {
         debugPrint(event.state.toString());
-        if (event.state == UploadProgressState.DONE) {
+        if (event.state == UploadProgressState.DONE && !event.isInComplete) {
           var user = await _dataService.getArtisanById(id: _userId).first;
           print("Current user => ${user?.user}");
           if (user != null)

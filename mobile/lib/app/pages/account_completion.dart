@@ -43,7 +43,7 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
   final _businessNameController = TextEditingController(),
       _phoneController = TextEditingController();
   bool _isLoading = false;
-  String _categoryFilter = "Plumber";
+  String _categoryFilter = "Mechanics";
   String _categoryFilterId;
 
   // endregion
@@ -56,14 +56,14 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
   File _businessDoc;
   final _currentTimestamp = DateTime.now().millisecondsSinceEpoch;
   String _userId;
-  final picker = ImagePicker();
+  final _picker = ImagePicker();
 
   // endregion
 
   ThemeData _themeData;
 
   Future<void> _getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await _picker.getImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       debugPrint("Image picked as -> ${pickedFile.path}");
       _avatar = File(pickedFile.path);
