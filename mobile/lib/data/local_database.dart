@@ -2,12 +2,10 @@ import 'dart:async' show Future, Stream;
 import 'dart:io';
 
 import 'package:async/async.dart' show StreamGroup;
-import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/data/entities/artisan_model.dart';
 import 'package:handyman/data/entities/conversation.dart';
 import 'package:handyman/data/entities/gallery.dart';
 import 'package:handyman/domain/models/user.dart';
-import 'package:handyman/domain/services/auth.dart';
 import 'package:meta/meta.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';

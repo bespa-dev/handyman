@@ -118,14 +118,14 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                         maxLines: 2,
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(
-                          height: getProportionateScreenHeight(kSpacingX8)),
-                      Text(
-                        "\₵${widget.artisan?.user?.startPrice}",
-                        style: themeData.textTheme.headline6.copyWith(
-                          color: themeData.colorScheme.primary,
-                        ),
-                      ),
+                      // SizedBox(
+                      //     height: getProportionateScreenHeight(kSpacingX8)),
+                      // Text(
+                      //   "\₵${widget.artisan?.user?.startPrice}",
+                      //   style: themeData.textTheme.headline6.copyWith(
+                      //     color: themeData.colorScheme.primary,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -199,13 +199,13 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
                     ),
                   ],
                 ),
-                Spacer(),
-                Text(
-                  "\₵${widget.artisan.user?.startPrice}",
-                  style: themeData.textTheme.headline6.copyWith(
-                    color: themeData.colorScheme.primary,
-                  ),
-                ),
+                // Spacer(),
+                // Text(
+                //   "\₵${widget.artisan.user?.startPrice}",
+                //   style: themeData.textTheme.headline6.copyWith(
+                //     color: themeData.colorScheme.primary,
+                //   ),
+                // ),
               ],
             ),
           ),

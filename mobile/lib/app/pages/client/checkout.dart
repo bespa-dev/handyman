@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:meta/meta.dart';
 
@@ -19,7 +20,7 @@ class CheckoutPage extends StatefulWidget {
 
 class _CheckoutPageState extends State<CheckoutPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  double _kWidth, _kHeight;
+  double _kWidth = SizeConfig.screenWidth, _kHeight = SizeConfig.screenHeight;
   ThemeData _themeData;
 
   @override
@@ -27,9 +28,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
     super.didChangeDependencies();
 
     _themeData = Theme.of(context);
-    final size = MediaQuery.of(context).size;
-    _kWidth = size.width;
-    _kHeight = size.height;
   }
 
   @override

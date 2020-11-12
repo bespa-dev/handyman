@@ -246,6 +246,7 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                                 },
                                 itemCount: 3,
                                 itemBuilder: (_, index) {
+                                  // TODO: Add bookings here
                                   return buildFunctionalityNotAvailablePanel(
                                       context);
                                 },

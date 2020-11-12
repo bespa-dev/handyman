@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route_annotations.dart';
-import 'package:handyman/app/pages/account_completion.dart';
-import 'package:handyman/app/pages/account_selection.dart';
+import 'package:handyman/app/pages/provider/account_completion.dart';
 import 'package:handyman/app/pages/client/checkout.dart';
 import 'package:handyman/app/pages/client/home.dart';
 import 'package:handyman/app/pages/client/profile.dart';
@@ -33,7 +32,7 @@ import 'guard.dart';
     AdaptiveRoute(page: SearchPage, guards: [AuthGuard]),
     AdaptiveRoute(page: NotificationPage, guards: [AuthGuard]),
     AdaptiveRoute(page: BookingsDetailsPage, guards: [AuthGuard]),
-    AdaptiveRoute(page: AccountCompletionPage, guards: [AuthGuard]),
+    AdaptiveRoute(page: AccountCompletionPage, guards: [AuthGuard, ProviderGuard]),
     AdaptiveRoute(page: ConversationPage, guards: [AuthGuard]),
     AdaptiveRoute(page: UserInfoPage, guards: [AuthGuard]),
     AdaptiveRoute(page: HomePage, guards: [AuthGuard, ClientGuard]),

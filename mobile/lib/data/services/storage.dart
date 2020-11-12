@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -15,7 +14,6 @@ import 'package:uuid/uuid.dart';
 @immutable
 class StorageServiceImpl implements StorageService {
   final _bucket = sl.get<StorageReference>();
-  final _firestore = sl.get<FirebaseFirestore>();
 
   StorageServiceImpl._();
 
@@ -36,8 +34,7 @@ class StorageServiceImpl implements StorageService {
     path = path ?? Uuid().v4();
     final dir = await path_provider.getTemporaryDirectory();
 
-    final targetPath =
-        dir.absolute.path + "/$path.$extension";
+    final targetPath = dir.absolute.path + "/$path.$extension";
     final filePath = file.absolute.path;
     print("File path => $filePath");
     print("Target path => $targetPath");

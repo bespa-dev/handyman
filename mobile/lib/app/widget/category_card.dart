@@ -5,11 +5,8 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
-import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
-import 'package:handyman/domain/models/user.dart';
-import 'package:handyman/domain/services/data.dart';
 
 class GridCategoryCardItem extends StatefulWidget {
   final List<ServiceCategory> categories;
@@ -21,8 +18,6 @@ class GridCategoryCardItem extends StatefulWidget {
 }
 
 class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
-  final _dataService = sl.get<DataService>();
-
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);

@@ -4,17 +4,18 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
-import 'package:handyman/app/pages/account_completion.dart';
 import 'package:handyman/app/pages/onboarding.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/account_selector.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/core/constants.dart';
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
-import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:provider/provider.dart';
+
+import 'provider/account_completion.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -32,9 +33,8 @@ class _RegisterPageState extends State<RegisterPage> {
       _firstNameController = TextEditingController(),
       _lastNameController = TextEditingController();
 
-  // FIXME: Do not directly import FirebaseAuthService
-  AuthService _authService = FirebaseAuthService.create();
-  PrefsProvider _prefsProvider = PrefsProvider.create();
+  // Services
+  AuthService _authService = sl.get<AuthService>();
 
   // Perform registration
   void _performRegister() async {
@@ -62,11 +62,6 @@ class _RegisterPageState extends State<RegisterPage> {
       // Monitor user auth state change
       _authService.onAuthStateChanged.listen((user) {
         if (user != null) {
-          // Save to prefs
-          _prefsProvider.saveUserId(user.user.id);
-          _prefsProvider
-              .saveUserType(user.isCustomer ? kCustomerString : kArtisanString);
-
           // Complete user's account
           context.navigator.pushAndRemoveUntil(
             _isCustomer ? Routes.onboardingPage : Routes.accountCompletionPage,
@@ -81,28 +76,19 @@ class _RegisterPageState extends State<RegisterPage> {
       _authService.onProcessingStateChanged.listen((state) {
         _isLoading = state == AuthState.AUTHENTICATING;
         if (mounted) setState(() {});
-        if (state == AuthState.ERROR)
-          ScaffoldMessenger.of(context)
-            ..removeCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text("An error occurred. Try again later"),
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-        else if (state == AuthState.AUTHENTICATING)
-          ScaffoldMessenger.of(context)
-            ..removeCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text("Authenticating..."),
-                behavior: SnackBarBehavior.floating,
-                duration: const Duration(minutes: 1),
-              ),
-            );
-        else if (state == AuthState.SUCCESS) {
-          ScaffoldMessenger.of(context).removeCurrentSnackBar();
-        }
+      });
+
+      // Observe message state changes
+      _authService.onMessageChanged.listen((message) {
+        ScaffoldMessenger.of(context)
+          ..removeCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text(message),
+              duration: const Duration(milliseconds: 1200),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
       });
     }
   }

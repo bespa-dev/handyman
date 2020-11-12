@@ -6,11 +6,15 @@ import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:handyman/domain/services/messaging.dart';
 import 'package:provider/provider.dart';
+
+import 'onboarding.dart';
+import 'provider/account_completion.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -19,47 +23,46 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   bool _isLoading = false;
-  AuthService _authService;
-  DataService _dataService;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  // Services
+  final _authService = sl.get<AuthService>();
+  final _dataService = sl.get<DataService>();
 
   @override
   void initState() {
     super.initState();
 
     if (mounted) {
-      _dataService = Provider.of<DataService>(context, listen: false);
-      _authService = Provider.of<AuthService>(context, listen: false);
+      // Observe auth state changes
       _authService.onProcessingStateChanged.listen((state) {
         _isLoading = state == AuthState.AUTHENTICATING;
         setState(() {});
-        if (state == AuthState.ERROR)
-          ScaffoldMessenger.of(context)
-            ..removeCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text("An error occurred. Try again later"),
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-        else if (state == AuthState.AUTHENTICATING)
-          ScaffoldMessenger.of(context)
-            ..removeCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text("Authenticating..."),
-                behavior: SnackBarBehavior.floating,
-                duration: const Duration(minutes: 1),
-              ),
-            );
       });
 
+      // Observe message state changes
+      _authService.onMessageChanged.listen((message) {
+        ScaffoldMessenger.of(context)
+          ..removeCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text(message),
+              duration: const Duration(milliseconds: 1200),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+      });
+
+      // Observe user state changes
       _authService.onAuthStateChanged.listen((user) {
         if (user != null) {
-          ScaffoldMessenger.of(context).removeCurrentSnackBar();
+          // Complete user's account
           context.navigator.pushAndRemoveUntil(
-            Routes.onboardingPage,
-            (route) => false,
+            user.isCustomer
+                ? Routes.onboardingPage
+                : Routes.accountCompletionPage,
+            (route) => user.isCustomer
+                ? route is OnboardingPage
+                : route is AccountCompletionPage,
           );
         }
       });
@@ -72,11 +75,9 @@ class _SplashPageState extends State<SplashPage> {
     SizeConfig().init(context);
 
     ThemeData themeData = Theme.of(context);
-    final size = MediaQuery.of(context).size;
-    final kWidth = size.width;
+    final kWidth = SizeConfig.screenWidth;
 
     return Scaffold(
-      key: _scaffoldKey,
       body: Consumer<PrefsProvider>(
         builder: (_, provider, __) => SafeArea(
           child: Stack(
@@ -93,7 +94,7 @@ class _SplashPageState extends State<SplashPage> {
                     )
                   : SizedBox.shrink(),
               Container(
-                width: double.infinity,
+                width: kWidth,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,

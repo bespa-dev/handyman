@@ -22,10 +22,12 @@ class FirebaseAuthService implements AuthService {
   final _auth = sl.get<FirebaseAuth>();
   final _firestore = sl.get<FirebaseFirestore>();
   final _firebaseMessaging = sl.get<FirebaseMessaging>();
+
+  // Local database
   final _database = sl.get<LocalDatabase>();
 
-  // Preferences
-  PrefsProvider _prefsProvider;
+  // Get prefs instance
+  final _prefsProvider = sl.get<PrefsProvider>();
 
   // Authentication states
   final successState = AuthState.SUCCESS;
@@ -35,12 +37,9 @@ class FirebaseAuthService implements AuthService {
 
   // Private constructor
   FirebaseAuthService._() {
-    // Get prefs instance
-    _prefsProvider = PrefsProvider.create();
-
     // Get current user id, if any
     final uid = _auth.currentUser?.uid;
-    debugPrint("User id => $uid");
+    debugPrint("FirebaseAuthService._(): User id => $uid");
 
     // Save to prefs
     if (uid != null && uid.isNotEmpty) _prefsProvider?.saveUserId(uid);
@@ -49,14 +48,20 @@ class FirebaseAuthService implements AuthService {
   // Singleton
   static AuthService create() => FirebaseAuthService._();
 
+  // StreamControllers
+  final StreamController<String> _onMessageChanged =
+      StreamController.broadcast();
   final StreamController<BaseUser> _onAuthStateChanged =
       StreamController.broadcast();
   final StreamController<AuthState> _onProcessingStateChanged =
       StreamController.broadcast();
 
+  /// Creates new user data in Firestore & saves it locally, returning that user instance
   Future<BaseUser> _createUserInstance(
       User user, String username, bool isCustomer) async {
     _onProcessingStateChanged.sink.add(loadingState);
+    _onMessageChanged.sink.add("Please wait...");
+
     // get device token
     final token = await _firebaseMessaging.getToken();
 
@@ -81,6 +86,7 @@ class FirebaseAuthService implements AuthService {
       _prefsProvider.saveUserType(kCustomerString);
       _onProcessingStateChanged.sink.add(successState);
       _onAuthStateChanged.sink.add(model);
+      _onMessageChanged.sink.add("Account created successfully");
       return model;
     } else {
       final artisan = Artisan(
@@ -119,13 +125,16 @@ class FirebaseAuthService implements AuthService {
       _prefsProvider.saveUserType(kArtisanString);
       _onProcessingStateChanged.sink.add(successState);
       _onAuthStateChanged.sink.add(model);
+      _onMessageChanged.sink.add("Account created successfully");
       return model;
     }
   }
 
+  /// Gets user's data from Firestore & saves it locally, returning that user instance
   Future<BaseUser> _userFromFirebase(User user,
       {bool isCustomer = true}) async {
     _onProcessingStateChanged.sink.add(loadingState);
+    _onMessageChanged.sink.add("Please wait...");
 
     // get device token
     final token = await _firebaseMessaging.getToken();
@@ -144,9 +153,11 @@ class FirebaseAuthService implements AuthService {
           _prefsProvider.saveUserType(kCustomerString);
           _onProcessingStateChanged.sink.add(successState);
           _onAuthStateChanged.sink.add(model);
+          _onMessageChanged.sink.add("Account updated successfully");
           return model;
         } else {
           _onProcessingStateChanged.sink.add(errorState);
+          _onMessageChanged.sink.add("Unable to get your account details");
           return null;
         }
       } else {
@@ -157,7 +168,6 @@ class FirebaseAuthService implements AuthService {
         if (snapshot.exists) {
           final artisan = Artisan.fromJson(snapshot.data());
 
-          _onProcessingStateChanged.sink.add(successState);
           final model = ArtisanModel(
               artisan: artisan.copyWith(
             business: artisan.business ?? "",
@@ -166,11 +176,14 @@ class FirebaseAuthService implements AuthService {
           await _database.userDao.saveProvider(model);
           _prefsProvider.saveUserId(user.uid);
           _prefsProvider.saveUserType(kArtisanString);
+          _onProcessingStateChanged.sink.add(successState);
           _onAuthStateChanged.sink.add(model);
+          _onMessageChanged.sink.add("Account updated successfully");
           return model;
         } else {
           _onAuthStateChanged.sink.add(null);
           _onProcessingStateChanged.sink.add(errorState);
+          _onMessageChanged.sink.add("Unable to get your account details");
           return null;
         }
       }
@@ -178,6 +191,7 @@ class FirebaseAuthService implements AuthService {
       return _createUserInstance(user, user.displayName, isCustomer);
   }
 
+  /// Checks for user's data existence in Firestore
   Future<bool> _userExists(String email, {bool isCustomer = true}) async {
     if (isCustomer) {
       final snapshot = await _firestore
@@ -195,6 +209,7 @@ class FirebaseAuthService implements AuthService {
     }
   }
 
+  /// Creates new user accounts
   @override
   Future<BaseUser> createUserWithEmailAndPassword({
     String username,
@@ -203,6 +218,8 @@ class FirebaseAuthService implements AuthService {
     bool isCustomer,
   }) async {
     _onProcessingStateChanged.sink.add(loadingState);
+    _onMessageChanged.sink.add("Please wait...");
+
     try {
       // Create user account
       final credential = await _auth.createUserWithEmailAndPassword(
@@ -214,11 +231,14 @@ class FirebaseAuthService implements AuthService {
       return _createUserInstance(credential.user, username, isCustomer);
     } on Exception catch (e) {
       _onProcessingStateChanged.sink.add(errorState);
+      _onMessageChanged.sink.add(
+          "Failed to create your account at this time. Please try again later");
       debugPrint(e.toString());
       return null;
     }
   }
 
+  /// Listens for current user's details
   @override
   Stream<BaseUser> currentUser() async* {
     debugPrint(
@@ -230,30 +250,34 @@ class FirebaseAuthService implements AuthService {
           .map((customer) => CustomerModel(customer: customer));
       yield* localSource;
 
+      // Get snapshots from Firestore
       var customerSnapshot = _firestore
           .collection(FirestoreUtils.kCustomerRef)
           .doc(_prefsProvider.userId)
           .snapshots(includeMetadataChanges: true);
       customerSnapshot.listen((event) async {
         if (event.exists) {
+          // Update local database
           final customer = Customer.fromJson(event.data());
           final model = CustomerModel(customer: customer);
           await _database.userDao.addCustomer(model);
         }
       });
-    } else /*if (_prefsProvider.userType == kArtisanString)*/ {
+    } else {
       var localSource = _database.userDao
           .artisanById(_prefsProvider.userId)
           .watchSingle()
           .map((event) => ArtisanModel(artisan: event));
       yield* localSource;
 
+      // Get snapshots from Firestore
       final snapshot = _firestore
           .collection(FirestoreUtils.kArtisanRef)
           .doc(_prefsProvider.userId)
           .snapshots(includeMetadataChanges: true);
       snapshot.listen((event) async {
         if (event.exists) {
+          // Update local database
           final artisan = Artisan.fromJson(event.data());
           final model = ArtisanModel(artisan: artisan);
           await _database.userDao.saveProvider(model);
@@ -262,17 +286,28 @@ class FirebaseAuthService implements AuthService {
     }
   }
 
+  /// Listens to [BaseUser] changes
   @override
   Stream<BaseUser> get onAuthStateChanged => _onAuthStateChanged.stream;
 
+  /// Listens to [AuthState] changes
   @override
   Stream<AuthState> get onProcessingStateChanged =>
       _onProcessingStateChanged.stream;
 
+  /// Listens to message changes. This will be displayed from the UI
   @override
-  Future<void> sendPasswordReset({String email}) =>
-      _auth.sendPasswordResetEmail(email: email);
+  Stream<String> get onMessageChanged => _onMessageChanged.stream;
 
+  /// Resets user password
+  @override
+  Future<void> sendPasswordReset({String email}) async {
+    _onProcessingStateChanged.sink.add(loadingState);
+    await _auth.sendPasswordResetEmail(email: email);
+    _onProcessingStateChanged.sink.add(successState);
+  }
+
+  /// Signs in existing users
   @override
   Future<BaseUser> signInWithEmailAndPassword(
       {String email, String password, bool isCustomer}) async {
@@ -297,6 +332,7 @@ class FirebaseAuthService implements AuthService {
     }
   }
 
+  /// Signs in with Google account
   @override
   Future<BaseUser> signInWithGoogle({bool isCustomer = true}) async {
     _onProcessingStateChanged.sink.add(loadingState);
@@ -322,12 +358,19 @@ class FirebaseAuthService implements AuthService {
         }
       }
     } on PlatformException catch (e) {
-      debugPrint(e.message);
+      debugPrint("Google Auth => ${e.message}");
       _onProcessingStateChanged.sink.add(errorState);
+      _onMessageChanged.sink.add(e.message);
+      return null;
+    } catch (e) {
+      debugPrint("Google Auth => $e");
+      _onProcessingStateChanged.sink.add(errorState);
+      _onMessageChanged.sink.add(e.toString());
       return null;
     }
   }
 
+  /// Signs out any logged in user
   @override
   Future<bool> signOut() async {
     _onProcessingStateChanged?.sink?.add(loadingState);
@@ -350,9 +393,11 @@ class FirebaseAuthService implements AuthService {
     }
   }
 
+  /// Closes all active streams
   @override
   void dispose() {
     _onProcessingStateChanged.close();
     _onAuthStateChanged.close();
+    _onMessageChanged.close();
   }
 }

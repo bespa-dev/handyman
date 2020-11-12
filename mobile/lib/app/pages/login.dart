@@ -10,8 +10,8 @@ import 'package:handyman/app/widget/account_selector.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/fields.dart';
 import 'package:handyman/core/constants.dart';
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
-import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:provider/provider.dart';
 
@@ -29,9 +29,8 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController(),
       _passwordController = TextEditingController();
 
-  // FIXME: Do not directly import FirebaseAuthService
-  AuthService _authService = FirebaseAuthService.create();
-  PrefsProvider _prefsProvider = PrefsProvider.create();
+  // Services
+  AuthService _authService = sl.get<AuthService>();
 
   // Perform login
   void _performLogin() async {
@@ -53,16 +52,9 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     if (mounted) {
-      // _prefsProvider = Provider.of<PrefsProvider>(context, listen: false);
-      // _authService = Provider.of<AuthService>(context, listen: false);
       // Monitor user auth state change
       _authService.onAuthStateChanged.listen((user) {
         if (user != null) {
-          // Save to prefs
-          _prefsProvider.saveUserId(user.user.id);
-          _prefsProvider
-              .saveUserType(user.isCustomer ? kCustomerString : kArtisanString);
-
           // Complete user's account
           context.navigator.popAndPush(
               user.isCustomer ? Routes.homePage : Routes.dashboardPage);
@@ -73,28 +65,19 @@ class _LoginPageState extends State<LoginPage> {
       _authService.onProcessingStateChanged.listen((state) {
         _isLoading = state == AuthState.AUTHENTICATING;
         if (mounted) setState(() {});
-        if (state == AuthState.ERROR)
-          ScaffoldMessenger.of(context)
-            ..removeCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text("An error occurred. Try again later"),
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-        else if (state == AuthState.AUTHENTICATING)
-          ScaffoldMessenger.of(context)
-            ..removeCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text("Authenticating..."),
-                behavior: SnackBarBehavior.floating,
-                duration: const Duration(minutes: 1),
-              ),
-            );
-        else if (state == AuthState.SUCCESS) {
-          ScaffoldMessenger.of(context).removeCurrentSnackBar();
-        }
+      });
+
+      // Observe message state changes
+      _authService.onMessageChanged.listen((message) {
+        ScaffoldMessenger.of(context)
+          ..removeCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text(message),
+              duration: const Duration(milliseconds: 1200),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
       });
     }
   }

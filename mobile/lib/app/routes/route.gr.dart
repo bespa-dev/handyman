@@ -10,7 +10,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/services/messaging.dart';
-import '../pages/account_completion.dart';
 import '../pages/client/checkout.dart';
 import '../pages/client/home.dart';
 import '../pages/client/profile.dart';
@@ -22,6 +21,7 @@ import '../pages/conversation.dart';
 import '../pages/login.dart';
 import '../pages/notification.dart';
 import '../pages/onboarding.dart';
+import '../pages/provider/account_completion.dart';
 import '../pages/provider/bookings.dart';
 import '../pages/provider/dashboard.dart';
 import '../pages/provider/settings.dart';
@@ -86,7 +86,7 @@ class Router extends RouterBase {
     RouteDef(Routes.bookingsDetailsPage,
         page: BookingsDetailsPage, guards: [AuthGuard]),
     RouteDef(Routes.accountCompletionPage,
-        page: AccountCompletionPage, guards: [AuthGuard]),
+        page: AccountCompletionPage, guards: [AuthGuard, ProviderGuard]),
     RouteDef(Routes.conversationPage,
         page: ConversationPage, guards: [AuthGuard]),
     RouteDef(Routes.userInfoPage, page: UserInfoPage, guards: [AuthGuard]),

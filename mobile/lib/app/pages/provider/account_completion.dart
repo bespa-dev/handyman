@@ -14,8 +14,6 @@ import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/entities/artisan_model.dart';
 import 'package:handyman/data/local_database.dart';
-import 'package:handyman/data/services/data.dart';
-import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
@@ -35,7 +33,9 @@ class AccountCompletionPage extends StatefulWidget {
 }
 
 class _AccountCompletionPageState extends State<AccountCompletionPage> {
-  final _storageService = StorageServiceImpl.instance;
+  // Services
+  final _dataService = sl.get<DataService>();
+  final _storageService = sl.get<StorageService>();
 
   // region Form
   final _formKey = GlobalKey<FormState>();
@@ -47,9 +47,6 @@ class _AccountCompletionPageState extends State<AccountCompletionPage> {
   String _categoryFilterId;
 
   // endregion
-
-  // Data service
-  final _dataService = DataServiceImpl.instance;
 
   // region Image Picker
   File _avatar;

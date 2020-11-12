@@ -516,7 +516,9 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Stream<List<dynamic>> getNotifications({String userId, PayloadType type}) async* {
+  Stream<List<dynamic>> getNotifications(
+      {String userId, PayloadType type}) async* {
+    // TODO: Fix it
     yield ["okay", "done"];
   }
 }
