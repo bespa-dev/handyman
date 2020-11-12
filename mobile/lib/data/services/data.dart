@@ -518,7 +518,17 @@ class DataServiceImpl implements DataService {
   @override
   Stream<List<dynamic>> getNotifications(
       {String userId, PayloadType type}) async* {
-    // TODO: Fix it
-    yield ["okay", "done"];
+    switch(type) {
+      case PayloadType.CONVERSATION:
+
+        break;
+      case PayloadType.BOOKING:
+
+        break;
+      default:
+        // TODO: Fix it
+        yield ["okay", "done"];
+        break;
+    }
   }
 }

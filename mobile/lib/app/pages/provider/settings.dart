@@ -52,6 +52,8 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   double _kWidth;
   ThemeData _themeData;
   bool _isLoading = false;
+  String _categoryFilter = "Mechanics";
+  String _categoryFilterId;
 
   // Artisan _currentUser;
   bool _shouldDismissEarnPointsSheet = true,

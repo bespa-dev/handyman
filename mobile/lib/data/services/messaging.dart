@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -24,8 +25,9 @@ class MessagingServiceImpl implements MessagingService {
   // Creates an instance of the class and initializes plugins
   static MessagingServiceImpl get instance => MessagingServiceImpl._();
 
-  static void _initPlugins() async {
-    // initialise the plugin. `logo_colored` needs to be a added as a drawable resource to the Android head project
+  void _initPlugins() async {
+    // initialise the plugin. `logo_colored` needs to be a added as
+    // a drawable resource to the Android head project
     var initializationSettingsAndroid =
         AndroidInitializationSettings('logo_colored');
     var initializationSettingsIOS = IOSInitializationSettings(
@@ -46,15 +48,18 @@ class MessagingServiceImpl implements MessagingService {
         .listen((IosNotificationSettings settings) {
       debugPrint("Settings registered: $settings");
     });
+
+    // Get device token
     final token = await msgService.getToken();
     debugPrint("MessagingServiceImpl._initPlugins: Token => $token");
 
-    var prefsProvider = PrefsProvider.create();
+    // Get logged in user instance, if any
+    var prefsProvider = sl.get<PrefsProvider>();
     var dataService = sl.get<DataService>();
     var currentUser = prefsProvider.userType == kCustomerString
         ? await dataService.getCustomerById(id: prefsProvider.userId)?.first
         : await dataService.getArtisanById(id: prefsProvider.userId)?.first;
-    if (currentUser != null) {
+    if (currentUser != null && token != null) {
       // Update user token
       var updatedUser = currentUser.user?.copyWith(token: token);
       debugPrint(
@@ -65,19 +70,17 @@ class MessagingServiceImpl implements MessagingService {
     // FIXME: Failed to push notification when sent from console
     // Configure messaging
     msgService.configure(
-      // onBackgroundMessage: (Map<String, dynamic> message) async {
-      //   debugPrint("onBackgroundMessage: $message");
-      // },
+      onBackgroundMessage: Platform.isIOS ? null : _backgroundMessageHandler,
       onMessage: (Map<String, dynamic> message) async {
-        // final notification = message["notification"];
+        final notification = message["notification"];
         debugPrint("onMessage: $message");
-        // final title = notification["title"];
-        // final body = notification["body"];
-        // showNotification(
-        //   title: notification["title"],
-        //   body: notification["body"],
-        //   payload: notification["data"]?.toString(),
-        // );
+        final title = notification["title"];
+        final body = notification["body"];
+        showNotification(
+          title: title,
+          body: body,
+          payload: notification["data"]?.toString(),
+        );
       },
       onLaunch: (Map<String, dynamic> message) async {
         debugPrint("onLaunch: $message");
@@ -107,6 +110,8 @@ class MessagingServiceImpl implements MessagingService {
             : 'Conversation notifications',
         importance: Importance.Max,
         priority: Priority.High,
+        enableLights: true,
+        enableVibration: true,
         ticker: 'ticker',
       );
       var iOSPlatformChannelSpecifics = IOSNotificationDetails();
@@ -129,9 +134,8 @@ class MessagingServiceImpl implements MessagingService {
   }
 
   static Future _selectNotification(String payload) async {
-    if (payload != null) {
-      debugPrint('notification payload: ' + payload);
-    }
+    if (payload != null)
+      debugPrint('_selectNotification => notification payload: ' + payload);
 
     // Send user to notifications page
     ExtendedNavigator.root.push(
@@ -145,6 +149,11 @@ class MessagingServiceImpl implements MessagingService {
   static Future _onDidReceiveLocalNotification(
       int id, String title, String body, String payload) async {
     debugPrint("_onDidReceiveLocalNotification => $title");
+  }
+
+  // Handles background messages
+  static Future _backgroundMessageHandler(Map<String, dynamic> message) async {
+    debugPrint("onBackgroundMessage: $message");
   }
 
   @override

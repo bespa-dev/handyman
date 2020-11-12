@@ -3912,7 +3912,7 @@ mixin _$UserDaoMixin on DatabaseAccessor<LocalDatabase> {
 
   Selectable<Artisan> artisans(String var1) {
     return customSelect(
-        'SELECT * FROM service_provider WHERE category = ? ORDER BY id desc',
+        'SELECT * FROM service_provider WHERE category = ? AND approved ORDER BY id desc',
         variables: [Variable.withString(var1)],
         readsFrom: {serviceProvider}).map(serviceProvider.mapFromRow);
   }

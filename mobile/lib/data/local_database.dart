@@ -209,7 +209,7 @@ class MessageDao extends DatabaseAccessor<LocalDatabase>
     "customerById": "SELECT * FROM user WHERE id = ?",
     "artisanById": "SELECT * FROM service_provider WHERE id = ?",
     "artisans":
-        "SELECT * FROM service_provider WHERE category = ? ORDER BY id desc",
+        "SELECT * FROM service_provider WHERE category = ? AND approved ORDER BY id desc",
     "searchFor":
         "SELECT * FROM service_provider INNER JOIN user ON service_provider.name LIKE ? OR service_provider.category LIKE ? ORDER BY user.id, service_provider.id DESC",
   },

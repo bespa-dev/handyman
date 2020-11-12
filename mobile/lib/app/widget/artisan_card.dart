@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
@@ -54,11 +55,24 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                             child: CircularProgressIndicator(
                                 value: downloadProgress.progress)),
                     errorWidget: (_, __, chunk) => Container(
+                          alignment: Alignment.topCenter,
+                          padding: EdgeInsets.only(
+                            top: getProportionateScreenHeight(kSpacingX36),
+                          ),
                           color: RandomColor()
                               .randomColor(
                                 colorBrightness: ColorBrightness.dark,
                               )
                               .withOpacity(kOpacityX14),
+                          child: Icon(
+                            Feather.user,
+                            size: kSpacingX64,
+                            color: RandomColor()
+                                .randomColor(
+                                  colorBrightness: ColorBrightness.veryLight,
+                                )
+                                .withOpacity(kOpacityX14),
+                          ),
                         ),
                     fit: BoxFit.cover),
               ),
@@ -118,14 +132,18 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                         maxLines: 2,
                         textAlign: TextAlign.center,
                       ),
-                      // SizedBox(
-                      //     height: getProportionateScreenHeight(kSpacingX8)),
-                      // Text(
-                      //   "\₵${widget.artisan?.user?.startPrice}",
-                      //   style: themeData.textTheme.headline6.copyWith(
-                      //     color: themeData.colorScheme.primary,
-                      //   ),
-                      // ),
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX8)),
+                      RatingBarIndicator(
+                        rating: widget.artisan?.user?.rating ?? 0,
+                        itemBuilder: (_, index) => Icon(
+                          kRatingStar,
+                          color: kAmberColor,
+                        ),
+                        itemCount: 5,
+                        itemSize: kSpacingX16,
+                        direction: Axis.horizontal,
+                      ),
                     ],
                   ),
                 ),
@@ -199,13 +217,17 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
                     ),
                   ],
                 ),
-                // Spacer(),
-                // Text(
-                //   "\₵${widget.artisan.user?.startPrice}",
-                //   style: themeData.textTheme.headline6.copyWith(
-                //     color: themeData.colorScheme.primary,
-                //   ),
-                // ),
+                Spacer(),
+                RatingBarIndicator(
+                  rating: widget.artisan?.user?.rating ?? 0,
+                  itemBuilder: (_, index) => Icon(
+                    kRatingStar,
+                    color: kAmberColor,
+                  ),
+                  itemCount: 5,
+                  itemSize: kSpacingX16,
+                  direction: Axis.horizontal,
+                ),
               ],
             ),
           ),

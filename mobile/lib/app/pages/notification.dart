@@ -57,7 +57,8 @@ class _NotificationPageState extends State<NotificationPage> {
                     children: [
                       _buildAppBar(provider),
                       widget.payload.payloadType == PayloadType.NONE ||
-                              (!snapshot.data.isCustomer &&
+                              (snapshot.data != null &&
+                                  !snapshot.data.isCustomer &&
                                   !snapshot.data.user.isApproved)
                           ? _buildWaitingApprovalHeader(currentUser)
                           : SizedBox.shrink(),
@@ -176,12 +177,21 @@ class _NotificationPageState extends State<NotificationPage> {
               ),
             ),
             artisan.isApproved
-                ? ButtonPrimary(
-                    width: _kWidth * 0.75,
-                    themeData: _themeData,
-                    onTap: () =>
-                        context.navigator.popAndPush(Routes.dashboardPage),
-                    label: "View dashboard",
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ButtonPrimary(
+                        width: _kWidth * 0.6,
+                        gravity: ButtonIconGravity.END,
+                        icon: Icons.arrow_right_alt_outlined,
+                        themeData: _themeData,
+                        onTap: () =>
+                            context.navigator.popAndPush(Routes.dashboardPage),
+                        label: "View dashboard",
+                      ),
+                      SizedBox(
+                          height: getProportionateScreenHeight(kSpacingX12)),
+                    ],
                   )
                 : SizedBox.shrink(),
           ],
@@ -227,7 +237,7 @@ class _NotificationPageState extends State<NotificationPage> {
             ),
             SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
             Container(
-              height: _kHeight * 0.6,
+              height: _kHeight * 0.5,
               width: _kWidth,
               child: Consumer<DataService>(
                 builder: (_, dataService, __) => PageView.builder(
