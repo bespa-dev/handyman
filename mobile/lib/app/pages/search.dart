@@ -312,7 +312,9 @@ class _SearchPageState extends State<SearchPage> {
                                         duration: kScaleDuration,
                                         child: FadeInAnimation(
                                           child: GridArtisanCardItem(
-                                              artisan: item),
+                                            artisan: item,
+                                            provider: provider,
+                                          ),
                                         ),
                                       ),
                                     );

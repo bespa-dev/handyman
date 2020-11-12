@@ -42,7 +42,7 @@ class StorageServiceImpl implements StorageService {
         ? await FlutterImageCompress.compressAndGetFile(
             filePath,
             targetPath,
-            quality: 80, // Compress to 80% image quality
+            quality: 75, // Compress to 75% image quality
             minHeight: 512,
             minWidth: 512,
             format: filePath.endsWith("jpg") || filePath.endsWith("jpeg")

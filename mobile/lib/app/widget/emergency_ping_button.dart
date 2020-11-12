@@ -18,7 +18,7 @@ class EmergencyPingButton extends StatefulWidget {
 }
 
 class _EmergencyPingButtonState extends State<EmergencyPingButton> {
-  bool _isCalling = false, _isHidden = false;
+  bool _isCalling = false;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class _EmergencyPingButtonState extends State<EmergencyPingButton> {
           Positioned(
             bottom: MediaQuery.of(context).padding.bottom,
             width: size.width,
-            child: _isHidden ? SizedBox.shrink() : _buildEmergencyButton(),
+            child: _buildEmergencyButton(),
           ),
         ],
       ),
@@ -106,10 +106,6 @@ class _EmergencyPingButtonState extends State<EmergencyPingButton> {
             ),
             backgroundColor: themeData.colorScheme.error,
             behavior: SnackBarBehavior.floating,
-            onVisible: () {
-              _isHidden = true;
-              setState(() {});
-            },
             action: SnackBarAction(
               label: "Change".toUpperCase(),
               onPressed: () => context.navigator.push(Routes.profilePage),

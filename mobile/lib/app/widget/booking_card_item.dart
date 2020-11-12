@@ -58,7 +58,7 @@ class _BookingCardItemState extends State<BookingCardItem> {
           padding: EdgeInsets.all(kSpacingX16),
           child: InkWell(
             borderRadius: kDecoration.borderRadius,
-            onTap: () => widget.onTap(),
+            onTap: widget.onTap,
             child: Column(
               children: [
                 Row(
@@ -68,10 +68,16 @@ class _BookingCardItemState extends State<BookingCardItem> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.booking.reason,
-                          style: themeData.textTheme.headline6.copyWith(
-                            fontWeight: FontWeight.w600,
+                        ConstrainedBox(
+                          constraints: BoxConstraints.tightFor(
+                            width: SizeConfig.screenWidth * 0.6,
+                          ),
+                          child: Text(
+                            widget.booking.reason,
+                            style: themeData.textTheme.headline6.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         SizedBox(

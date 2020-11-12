@@ -169,6 +169,7 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                                             child: FadeInAnimation(
                                               child: GridArtisanCardItem(
                                                 artisan: artisans[index],
+                                                provider: provider,
                                               ),
                                             ),
                                           ),
@@ -187,6 +188,7 @@ class _CategoryProvidersPageState extends State<CategoryProvidersPage> {
                                           child: FadeInAnimation(
                                             child: ListArtisanCardItem(
                                               artisan: artisans[index],
+                                              provider: provider,
                                             ),
                                           ),
                                         ),

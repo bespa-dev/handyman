@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
 import 'package:handyman/core/constants.dart';
@@ -12,8 +13,10 @@ import 'package:random_color/random_color.dart';
 
 class GridArtisanCardItem extends StatefulWidget {
   final BaseUser artisan;
+  final PrefsProvider provider;
 
-  const GridArtisanCardItem({Key key, this.artisan}) : super(key: key);
+  const GridArtisanCardItem({Key key, this.artisan, this.provider})
+      : super(key: key);
 
   @override
   _GridArtisanCardItemState createState() => _GridArtisanCardItemState();
@@ -61,7 +64,9 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                           ),
                           color: RandomColor()
                               .randomColor(
-                                colorBrightness: ColorBrightness.dark,
+                                colorBrightness: widget.provider.isLightTheme
+                                    ? ColorBrightness.veryDark
+                                    : ColorBrightness.veryLight,
                               )
                               .withOpacity(kOpacityX14),
                           child: Icon(
@@ -69,9 +74,11 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                             size: kSpacingX64,
                             color: RandomColor()
                                 .randomColor(
-                                  colorBrightness: ColorBrightness.veryLight,
+                                  colorBrightness: widget.provider.isLightTheme
+                                      ? ColorBrightness.veryDark
+                                      : ColorBrightness.veryLight,
                                 )
-                                .withOpacity(kOpacityX14),
+                                .withOpacity(kOpacityX35),
                           ),
                         ),
                     fit: BoxFit.cover),
@@ -158,8 +165,10 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
 
 class ListArtisanCardItem extends StatefulWidget {
   final BaseUser artisan;
+  final PrefsProvider provider;
 
-  const ListArtisanCardItem({Key key, this.artisan}) : super(key: key);
+  const ListArtisanCardItem({Key key, this.artisan, this.provider})
+      : super(key: key);
 
   @override
   _ListArtisanCardItemState createState() => _ListArtisanCardItemState();
@@ -196,7 +205,12 @@ class _ListArtisanCardItemState extends State<ListArtisanCardItem> {
                 UserAvatar(
                   url: widget.artisan?.user?.avatar,
                   ringColor: RandomColor(1)
-                      .randomColor(colorBrightness: ColorBrightness.dark),
+                      .randomColor(
+                        colorBrightness: widget.provider.isLightTheme
+                            ? ColorBrightness.veryDark
+                            : ColorBrightness.veryLight,
+                      )
+                      .withOpacity(kOpacityX35),
                 ),
                 SizedBox(width: getProportionateScreenWidth(kSpacingX8)),
                 Column(

@@ -138,10 +138,13 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                                                 color: RandomColor()
                                                     .randomColor(
                                                       colorBrightness:
-                                                          ColorBrightness
-                                                              .veryLight,
+                                                          provider.isLightTheme
+                                                              ? ColorBrightness
+                                                                  .veryDark
+                                                              : ColorBrightness
+                                                                  .veryLight,
                                                     )
-                                                    .withOpacity(kOpacityX14),
+                                                    .withOpacity(kOpacityX35),
                                               ),
                                             ),
                                           ),

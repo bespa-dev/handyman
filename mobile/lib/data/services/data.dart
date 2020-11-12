@@ -19,6 +19,7 @@ import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:handyman/domain/services/messaging.dart';
+import 'package:handyman/domain/services/storage.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
@@ -35,6 +36,7 @@ class DataServiceImpl implements DataService {
   final _bookingDao = sl.get<LocalDatabase>().bookingDao;
   final _galleryDao = sl.get<LocalDatabase>().galleryDao;
   final _firestore = sl.get<FirebaseFirestore>();
+  final _storageService = sl.get<StorageService>();
 
   // Private constructor
   DataServiceImpl._();
@@ -495,10 +497,15 @@ class DataServiceImpl implements DataService {
       locationLng: lng,
     );
     if (image != null) {
-      final storageService = StorageServiceImpl.instance;
-      await storageService.uploadFile(image, path: booking.id);
-      storageService.onStorageUploadResponse.listen((event) async {
-        if (!event.isInComplete) {
+      await _storageService.uploadFile(
+        image,
+        path: booking.id,
+        extension: image.path.substring(
+          image.path.lastIndexOf("."),
+        ),
+      );
+      _storageService.onStorageUploadResponse.listen((event) async {
+        if (event.state == UploadProgressState.DONE) {
           await _bookingDao.addItem(booking.copyWith(imageUrl: event.url));
           await _firestore
               .collection(FirestoreUtils.kBookingsRef)
