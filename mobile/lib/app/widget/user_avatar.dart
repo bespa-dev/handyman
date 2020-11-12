@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
@@ -24,7 +23,7 @@ class UserAvatar extends StatelessWidget {
     this.onTap,
     this.radius = kSpacingX48,
     this.isCircular = true,
-    this.errorIcon = Feather.user,
+    this.errorIcon = kUserImageNotFound,
   }) : super(key: key);
 
   @override
@@ -42,7 +41,8 @@ class UserAvatar extends StatelessWidget {
           decoration: BoxDecoration(
             shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
             color: themeData.scaffoldBackgroundColor,
-            border: Border.all(color: ringColor, width: isCircular ? kSpacingX4 : kSpacingX2),
+            border: Border.all(
+                color: ringColor, width: isCircular ? kSpacingX4 : kSpacingX2),
             borderRadius: isCircular ? null : BorderRadius.circular(radius / 8),
           ),
           child: url != null && url.isNotEmpty
@@ -54,40 +54,42 @@ class UserAvatar extends StatelessWidget {
                         isCircular ? null : BorderRadius.circular(radius / 8),
                   ),
                   child: CachedNetworkImage(
-                    imageUrl: url ?? "",
-                    progressIndicatorBuilder: (_, url, downloadProgress) =>
-                        Container(
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                        shape:
-                            isCircular ? BoxShape.circle : BoxShape.rectangle,
-                        borderRadius: isCircular
-                            ? null
-                            : BorderRadius.circular(radius / 8),
-                      ),
-                    ),
-                    fit: BoxFit.cover,
-                    width: radius,
-                    height: radius,
-                    alignment: Alignment.center,
-                    errorWidget: (_, __, chunk) => Container(
-                      alignment: Alignment.center,
-                      height: radius,
-                      width: radius,
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                        color: themeData.colorScheme.onBackground
-                            .withOpacity(kOpacityX14),
-                        borderRadius: isCircular
-                            ? null
-                            : BorderRadius.circular(radius / 8),
-                        shape:
-                            isCircular ? BoxShape.circle : BoxShape.rectangle,
-                      ),
-                      child: Icon(Feather.user,
-                          size: radius / 2.5, color: ringColor),
-                    ),
-                  ),
+                          imageUrl: url ?? "",
+                          progressIndicatorBuilder:
+                              (_, url, downloadProgress) => Container(
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(
+                              shape: isCircular
+                                  ? BoxShape.circle
+                                  : BoxShape.rectangle,
+                              borderRadius: isCircular
+                                  ? null
+                                  : BorderRadius.circular(radius / 8),
+                            ),
+                          ),
+                          fit: BoxFit.cover,
+                          width: radius,
+                          height: radius,
+                          alignment: Alignment.center,
+                          errorWidget: (_, __, chunk) => Container(
+                            alignment: Alignment.center,
+                            height: radius,
+                            width: radius,
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(
+                              color: themeData.colorScheme.onBackground
+                                  .withOpacity(kOpacityX14),
+                              borderRadius: isCircular
+                                  ? null
+                                  : BorderRadius.circular(radius / 8),
+                              shape: isCircular
+                                  ? BoxShape.circle
+                                  : BoxShape.rectangle,
+                            ),
+                            child: Icon(kUserImageNotFound,
+                                size: radius / 2.5, color: ringColor),
+                          ),
+                        ),
                 )
               : Container(
                   clipBehavior: Clip.hardEdge,

@@ -80,6 +80,8 @@ abstract class DataService {
     int hourOfDay,
     String description,
     File image,
+    double lat,
+    double lng,
   });
 
   Stream<List<dynamic>> getNotifications({String userId, PayloadType type});

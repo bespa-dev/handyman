@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:handyman/core/constants.dart';
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/entities/booking.dart';
 import 'package:handyman/data/local_database.dart';
+import 'package:handyman/domain/services/location.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:meta/meta.dart';
 
@@ -168,11 +169,11 @@ class _BookingCardItemState extends State<BookingCardItem> {
                           height: getProportionateScreenHeight(kSpacingX4),
                         ),
                         FutureBuilder<String>(
-                          future: getLocationName(
-                            Position(
-                                latitude: widget.booking.locationLat,
-                                longitude: widget.booking.locationLng),
-                          ),
+                          future: sl.get<LocationService>().getLocationName(
+                                metadata: LocationMetaData(
+                                    lat: widget.booking.locationLat,
+                                    lng: widget.booking.locationLng),
+                              ),
                           builder: (_, locationSnapshot) {
                             debugPrint("Address -> ${locationSnapshot.data}");
                             return AnimatedOpacity(

@@ -68,7 +68,7 @@ class _DashboardPageState extends State<DashboardPage> {
           builder: (_, dataService, __) {
             return Consumer<PrefsProvider>(
               builder: (_, provider, __) => StreamBuilder<BaseUser>(
-                stream: authService.currentUser(),
+                stream: dataService.getArtisanById(id: provider.userId),
                 builder: (_, snapshot) {
                   final artisan = snapshot.data?.user;
 

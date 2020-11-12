@@ -13,6 +13,7 @@ class PrefsProvider with ChangeNotifier {
       _shouldShowSplash = true;
   String _userId, _userType, _emergencyContactNumber;
   final StreamController<bool> _themeController = StreamController.broadcast();
+  final StreamController<String> _uidController = StreamController.broadcast();
 
   SharedPreferences _prefs;
 
@@ -54,6 +55,7 @@ class PrefsProvider with ChangeNotifier {
     await _prefs?.setString(PrefsUtils.USER_ID, value);
     _userId = value;
     _isLoggedIn = value != null && value.isNotEmpty;
+    _uidController.sink.add(value);
     notifyListeners();
   }
 
@@ -99,6 +101,7 @@ class PrefsProvider with ChangeNotifier {
   @override
   void dispose() {
     _themeController.close();
+    _uidController.close();
     super.dispose();
   }
 }

@@ -17,6 +17,7 @@ import 'package:handyman/data/services/data.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:provider/provider.dart';
+import 'package:random_color/random_color.dart';
 
 /// Shows details of an Artisan
 /// 1. Personal profile
@@ -128,6 +129,21 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                                           child: CachedNetworkImage(
                                             imageUrl: avatar,
                                             fit: BoxFit.cover,
+                                            errorWidget: (_, __, chunk) =>
+                                                Container(
+                                              alignment: Alignment.center,
+                                              child: Icon(
+                                                kUserImageNotFound,
+                                                size: kSpacingX120,
+                                                color: RandomColor()
+                                                    .randomColor(
+                                                      colorBrightness:
+                                                          ColorBrightness
+                                                              .veryLight,
+                                                    )
+                                                    .withOpacity(kOpacityX14),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         Positioned(

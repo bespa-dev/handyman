@@ -433,9 +433,11 @@ class DataServiceImpl implements DataService {
         .snapshots(includeMetadataChanges: true);
 
     snapshots.listen((event) {
-      event.docs.forEach((element) async {
-        if (element.exists)
-          await _bookingDao.addItem(Booking.fromJson(element.data()));
+      event.docChanges.forEach((element) async {
+        if (element.type == DocumentChangeType.removed) {
+          _bookingDao.removeBooking(element.doc.id);
+        } else if (element.doc.exists)
+          await _bookingDao.addItem(Booking.fromJson(element.doc.data()));
       });
     });
   }
@@ -472,7 +474,10 @@ class DataServiceImpl implements DataService {
     int hourOfDay,
     String description,
     File image,
+    double lat,
+    double lng,
   }) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
     final booking = Booking(
       id: Uuid().v4(),
       customerId: customer,
@@ -481,18 +486,33 @@ class DataServiceImpl implements DataService {
       reason: description,
       value: artisan?.startPrice,
       progress: 0.0,
+      createdAt: now,
+      description: description,
+      // current time +72hrs
+      dueDate: now + 259200000,
+      isAccepted: false,
+      locationLat: lat,
+      locationLng: lng,
     );
-    final storageService = StorageServiceImpl.instance;
-    await storageService.uploadFile(image, path: booking.id);
-    storageService.onStorageUploadResponse.listen((event) async {
-      if (!event.isInComplete) {
-        await _bookingDao.addItem(booking.copyWith(imageUrl: event.url));
-        await _firestore
-            .collection(FirestoreUtils.kBookingsRef)
-            .doc(booking.id)
-            .set(booking.toJson(), SetOptions(merge: true));
-      }
-    });
+    if (image != null) {
+      final storageService = StorageServiceImpl.instance;
+      await storageService.uploadFile(image, path: booking.id);
+      storageService.onStorageUploadResponse.listen((event) async {
+        if (!event.isInComplete) {
+          await _bookingDao.addItem(booking.copyWith(imageUrl: event.url));
+          await _firestore
+              .collection(FirestoreUtils.kBookingsRef)
+              .doc(booking.id)
+              .set(booking.toJson(), SetOptions(merge: true));
+        }
+      });
+    } else {
+      await _bookingDao.addItem(booking);
+      await _firestore
+          .collection(FirestoreUtils.kBookingsRef)
+          .doc(booking.id)
+          .set(booking.toJson(), SetOptions(merge: true));
+    }
   }
 
   @override
@@ -518,12 +538,10 @@ class DataServiceImpl implements DataService {
   @override
   Stream<List<dynamic>> getNotifications(
       {String userId, PayloadType type}) async* {
-    switch(type) {
+    switch (type) {
       case PayloadType.CONVERSATION:
-
         break;
       case PayloadType.BOOKING:
-
         break;
       default:
         // TODO: Fix it

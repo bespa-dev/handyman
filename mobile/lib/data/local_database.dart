@@ -20,7 +20,8 @@ import 'entities/user.dart';
 
 part 'local_database.g.dart';
 
-LazyDatabase _openConnection() => LazyDatabase(() async {
+LazyDatabase _openConnection() =>
+    LazyDatabase(() async {
       // put the database file, called db.sqlite here, into the documents folder
       // for your app.
       final dbFolder = await getApplicationDocumentsDirectory();
@@ -56,35 +57,36 @@ class LocalDatabase extends _$LocalDatabase {
   int get schemaVersion => 1;
 
   @override
-  MigrationStrategy get migration => MigrationStrategy(
+  MigrationStrategy get migration =>
+      MigrationStrategy(
         onUpgrade: (m, from, to) async {
           switch (from) {
-            // case 1:
-            //   await m.addColumn(photoGallery, photoGallery.createdAt);
-            //   break;
-            // case 4:
-            //   await m.addColumn(user, user.phone);
-            //   break;
-            // case 6:
-            //   await m.addColumn(bookings, bookings.imageUrl);
-            //   break;
-            // case 7:
-            //   await m.addColumn(serviceProvider, serviceProvider.startPrice);
-            //   await m.addColumn(serviceProvider, serviceProvider.endPrice);
-            //   break;
-            // case 9:
-            //   await m.addColumn(bookings, bookings.isAccepted);
-            //   break;
-            // case 10:
-            //   // Destructive migration
-            //   // Signs out any logged in user and clears user preferences
-            //   await sl.get<AuthService>().signOut();
-            //   break;
-            //   case 11:
-            //   // Destructive migration
-            //   // Signs out any logged in user and clears user preferences
-            //   await m.addColumn(serviceProvider, serviceProvider.isApproved);
-            //   break;
+          // case 1:
+          //   await m.addColumn(photoGallery, photoGallery.createdAt);
+          //   break;
+          // case 4:
+          //   await m.addColumn(user, user.phone);
+          //   break;
+          // case 6:
+          //   await m.addColumn(bookings, bookings.imageUrl);
+          //   break;
+          // case 7:
+          //   await m.addColumn(serviceProvider, serviceProvider.startPrice);
+          //   await m.addColumn(serviceProvider, serviceProvider.endPrice);
+          //   break;
+          // case 9:
+          //   await m.addColumn(bookings, bookings.isAccepted);
+          //   break;
+          // case 10:
+          //   // Destructive migration
+          //   // Signs out any logged in user and clears user preferences
+          //   await sl.get<AuthService>().signOut();
+          //   break;
+          //   case 11:
+          //   // Destructive migration
+          //   // Signs out any logged in user and clears user preferences
+          //   await m.addColumn(serviceProvider, serviceProvider.isApproved);
+          //   break;
           }
         },
         onCreate: (m) async {
@@ -121,13 +123,14 @@ class CategoryDao extends DatabaseAccessor<LocalDatabase>
   queries: {
     "bookingById": "SELECT * FROM bookings WHERE id = ?",
     "bookingByDueDate":
-        "SELECT * FROM bookings WHERE due_date LIKE ? AND provider_id = ? ORDER BY due_date DESC",
+    "SELECT * FROM bookings WHERE due_date LIKE ? AND provider_id = ? ORDER BY due_date DESC",
     "bookingsForCustomer":
-        "SELECT * FROM bookings WHERE customer_id = ? ORDER BY due_date DESC",
+    "SELECT * FROM bookings WHERE customer_id = ? ORDER BY due_date DESC",
     "bookingsForProvider":
-        "SELECT * FROM bookings WHERE provider_id = ? ORDER BY due_date DESC",
+    "SELECT * FROM bookings WHERE provider_id = ? ORDER BY due_date DESC",
     "bookingsForCustomerAndProvider":
-        "SELECT * FROM bookings WHERE customer_id = ? AND provider_id = ? ORDER BY due_date DESC"
+    "SELECT * FROM bookings WHERE customer_id = ? AND provider_id = ? ORDER BY due_date DESC",
+    "removeBooking": "DELETE from bookings WHERE id = ?",
   },
 )
 class BookingDao extends DatabaseAccessor<LocalDatabase>
@@ -148,11 +151,11 @@ class BookingDao extends DatabaseAccessor<LocalDatabase>
   tables: [Review],
   queries: {
     "reviewsForProvider":
-        "SELECT * FROM review WHERE provider_id = ? ORDER BY created_at DESC",
+    "SELECT * FROM review WHERE provider_id = ? ORDER BY created_at DESC",
     "reviewsByCustomer":
-        "SELECT * FROM review WHERE customer_id = ? ORDER BY created_at DESC",
+    "SELECT * FROM review WHERE customer_id = ? ORDER BY created_at DESC",
     "reviewsForCustomerAndProvider":
-        "SELECT * FROM review WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC",
+    "SELECT * FROM review WHERE customer_id = ? AND provider_id = ? ORDER BY created_at DESC",
     "deleteReviewById": "DELETE FROM review WHERE id = ? AND customer_id = ?"
   },
 )
@@ -180,24 +183,26 @@ class MessageDao extends DatabaseAccessor<LocalDatabase>
   Stream<List<Conversation>> conversationWithRecipient(
       {@required String sender, String recipient}) {
     var streamSender = (select(message)
-          ..where((item) => item.author.equals(sender))
-          ..where((item) => item.recipient.equals(recipient))
-          ..orderBy(
-            [
-              (u) => OrderingTerm(
+      ..where((item) => item.author.equals(sender))..where((item) =>
+          item.recipient.equals(recipient))
+      ..orderBy(
+        [
+              (u) =>
+              OrderingTerm(
                   expression: u.createdAt, mode: OrderingMode.desc),
-            ],
-          ))
+        ],
+      ))
         .watch();
     var streamRecipient = (select(message)
-          ..where((item) => item.author.equals(recipient))
-          ..where((item) => item.recipient.equals(sender))
-          ..orderBy(
-            [
-              (u) => OrderingTerm(
+      ..where((item) => item.author.equals(recipient))..where((item) =>
+          item.recipient.equals(sender))
+      ..orderBy(
+        [
+              (u) =>
+              OrderingTerm(
                   expression: u.createdAt, mode: OrderingMode.desc),
-            ],
-          ))
+        ],
+      ))
         .watch();
     return StreamGroup.merge([streamSender, streamRecipient]);
   }
@@ -209,9 +214,9 @@ class MessageDao extends DatabaseAccessor<LocalDatabase>
     "customerById": "SELECT * FROM user WHERE id = ?",
     "artisanById": "SELECT * FROM service_provider WHERE id = ?",
     "artisans":
-        "SELECT * FROM service_provider WHERE category = ? AND approved ORDER BY id desc",
+    "SELECT * FROM service_provider WHERE category = ? AND approved ORDER BY id desc",
     "searchFor":
-        "SELECT * FROM service_provider INNER JOIN user ON service_provider.name LIKE ? OR service_provider.category LIKE ? ORDER BY user.id, service_provider.id DESC",
+    "SELECT * FROM service_provider INNER JOIN user ON service_provider.name LIKE ? OR service_provider.category LIKE ? ORDER BY user.id, service_provider.id DESC",
   },
 )
 class UserDao extends DatabaseAccessor<LocalDatabase> with _$UserDaoMixin {
@@ -220,18 +225,21 @@ class UserDao extends DatabaseAccessor<LocalDatabase> with _$UserDaoMixin {
   Future<int> addCustomer(BaseUser item) =>
       into(user).insert(item.user, mode: InsertMode.insertOrReplace);
 
-  Future addProviders(List<BaseUser> providers) async => providers.forEach(
-      (person) async => await saveProvider(ArtisanModel(artisan: person.user)));
+  Future addProviders(List<BaseUser> providers) async =>
+      providers.forEach(
+              (person) async =>
+          await saveProvider(ArtisanModel(artisan: person.user)));
 
-  Future<int> saveProvider(BaseUser artisan) => into(serviceProvider)
-      .insert(artisan.user, mode: InsertMode.insertOrReplace);
+  Future<int> saveProvider(BaseUser artisan) =>
+      into(serviceProvider)
+          .insert(artisan.user, mode: InsertMode.insertOrReplace);
 }
 
 @UseDao(
   tables: [PhotoGallery],
   queries: {
     "photosForUser":
-        "SELECT * FROM photo_gallery WHERE user_id = ? ORDER BY created_at DESC",
+    "SELECT * FROM photo_gallery WHERE user_id = ? ORDER BY created_at DESC",
   },
 )
 class GalleryDao extends DatabaseAccessor<LocalDatabase>

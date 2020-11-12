@@ -16,6 +16,7 @@ import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
+import 'package:handyman/domain/services/location.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -186,26 +187,31 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
             ),
           ),
           SizedBox(height: getProportionateScreenHeight(kSpacingX24)),
-          Container(
-            alignment: Alignment.center,
-            child: ButtonOutlined(
-              width: SizeConfig.screenWidth * 0.7,
-              themeData: _themeData,
-              enabled: widget.artisan.isAvailable,
-              onTap: () {
-                context.navigator.pop();
-                _dataService.requestBooking(
-                  artisan: widget.artisan,
-                  customer: user?.id,
-                  hourOfDay: _currentHour,
-                  category: _category?.id,
-                  description: _descriptionController.text?.trim(),
-                  image: _imageFile,
-                );
-              },
-              label: widget.artisan.isAvailable
-                  ? "Book service"
-                  : "Artisan is unavailable",
+          FutureBuilder<LocationMetaData>(
+            future: sl.get<LocationService>().getCurrentLocation(),
+            builder: (_, snapshot) => Container(
+              alignment: Alignment.center,
+              child: ButtonOutlined(
+                width: SizeConfig.screenWidth * 0.6,
+                themeData: _themeData,
+                enabled: widget.artisan.isAvailable,
+                onTap: () {
+                  _dataService.requestBooking(
+                    artisan: widget.artisan,
+                    customer: user?.id,
+                    hourOfDay: _currentHour,
+                    category: _category?.id,
+                    description: _descriptionController.text?.trim(),
+                    image: _imageFile,
+                    lat: snapshot.hasError ? 0 : snapshot.data.lat,
+                    lng: snapshot.hasError ? 0 : snapshot.data.lng,
+                  );
+                  context.navigator.pop();
+                },
+                label: widget.artisan.isAvailable
+                    ? "Book service"
+                    : "Artisan is unavailable",
+              ),
             ),
           ),
         ],
@@ -236,6 +242,8 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                   labelText: "Your name",
                   controller: _nameController..text = user?.name,
                   color: _themeData.colorScheme.onBackground,
+                  validator: (_) =>
+                      _.isEmpty ? "Please enter your full name" : null,
                   textInputAction: TextInputAction.next,
                 ),
                 TextFormInput(
@@ -243,6 +251,23 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                   color: _themeData.colorScheme.onBackground,
                   controller: _phoneController..text = user?.phone,
                   keyboardType: TextInputType.phone,
+                  textInputAction: TextInputAction.next,
+                ),
+                Text(
+                  "Request details",
+                  style: _themeData.textTheme.button.copyWith(
+                    color: _themeData.colorScheme.onBackground,
+                  ),
+                ),
+                SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
+                TextFormInput(
+                  labelText: "Reason for request",
+                  color: _themeData.colorScheme.onBackground,
+                  controller: _descriptionController,
+                  keyboardType: TextInputType.multiline,
+                  validator: (_) => _.isEmpty
+                      ? "Please enter a short description of your request"
+                      : null,
                   textInputAction: TextInputAction.done,
                 ),
               ],

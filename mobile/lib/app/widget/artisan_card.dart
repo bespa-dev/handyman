@@ -65,7 +65,7 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                               )
                               .withOpacity(kOpacityX14),
                           child: Icon(
-                            Feather.user,
+                            kUserImageNotFound,
                             size: kSpacingX64,
                             color: RandomColor()
                                 .randomColor(

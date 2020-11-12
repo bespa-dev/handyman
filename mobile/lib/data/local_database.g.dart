@@ -3858,6 +3858,15 @@ mixin _$BookingDaoMixin on DatabaseAccessor<LocalDatabase> {
         variables: [Variable.withString(var1), Variable.withString(var2)],
         readsFrom: {bookings}).map(bookings.mapFromRow);
   }
+
+  Future<int> removeBooking(String var1) {
+    return customUpdate(
+      'DELETE from bookings WHERE id = ?',
+      variables: [Variable.withString(var1)],
+      updates: {bookings},
+      updateKind: UpdateKind.delete,
+    );
+  }
 }
 mixin _$ReviewDaoMixin on DatabaseAccessor<LocalDatabase> {
   $ReviewTable get review => attachedDatabase.review;

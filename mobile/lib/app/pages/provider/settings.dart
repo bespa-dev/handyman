@@ -1,11 +1,9 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:geolocator/geolocator.dart' as geo;
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/pages/login.dart';
 import 'package:handyman/app/routes/route.gr.dart';
@@ -25,6 +23,7 @@ import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
+import 'package:handyman/domain/services/location.dart';
 import 'package:handyman/domain/services/storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -52,6 +51,8 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   double _kWidth;
   ThemeData _themeData;
   bool _isLoading = false;
+
+  // FIXME: Add service picker in profile
   String _categoryFilter = "Mechanics";
   String _categoryFilterId;
 
@@ -692,9 +693,6 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
         );
 
   // Gets user's current location and finds the name of that address
-  Stream<geo.Position> _getUserLocation() => geo.Geolocator.getCurrentPosition(
-          desiredAccuracy: geo.LocationAccuracy.high)
-      .asStream();
 
   Widget _buildTabBar() => Container(
         margin: EdgeInsets.symmetric(
@@ -873,8 +871,8 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
               },
             ),
           ),
-          StreamBuilder<geo.Position>(
-            stream: _getUserLocation(),
+          StreamBuilder<LocationMetaData>(
+            stream: sl.get<LocationService>().watchCurrentLocation(),
             builder: (_, locationSnapshot) {
               return AnimatedContainer(
                 duration: kSheetDuration,
@@ -890,7 +888,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                             ConnectionState.waiting
                     ? Loading()
                     : buildMapPreviewForBusinessLocation(
-                        position: locationSnapshot.data,
+                        metadata: locationSnapshot.data,
                       ),
               );
             },

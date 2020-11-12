@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/booking_card_item.dart';
@@ -13,6 +12,7 @@ import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/services/data.dart';
+import 'package:handyman/domain/services/location.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:meta/meta.dart';
@@ -27,13 +27,15 @@ final _kDefaultMargin = EdgeInsets.only(
 );
 
 Widget buildMapPreviewForBusinessLocation(
-        {@required Position position, bool isLightTheme}) =>
-    position == null
+        {@required LocationMetaData metadata, bool isLightTheme}) =>
+    metadata == null
         ? SizedBox.shrink()
         : Column(
             children: [
               FutureBuilder<String>(
-                  future: getLocationName(position),
+                  future: sl
+                      .get<LocationService>()
+                      .getLocationName(metadata: metadata),
                   builder: (context, snapshot) {
                     return Stack(
                       children: [
@@ -66,9 +68,8 @@ Widget buildMapPreviewForBusinessLocation(
                                     markers: [
                                       Marker(
                                         markerId: MarkerId(Uuid().v4()),
-                                        position: LatLng(
-                                            position?.latitude ?? 0,
-                                            position?.longitude ?? 0),
+                                        position: LatLng(metadata?.lat ?? 0,
+                                            metadata?.lng ?? 0),
                                         infoWindow: InfoWindow(
                                           title: "Your current location",
                                           snippet: snapshot.data ?? "",
@@ -76,8 +77,8 @@ Widget buildMapPreviewForBusinessLocation(
                                       ),
                                     ].toSet(),
                                     initialCameraPosition: CameraPosition(
-                                      target: LatLng(position.latitude,
-                                          position.longitude),
+                                      target:
+                                          LatLng(metadata.lat, metadata.lng),
                                       zoom: 18.0,
                                     ),
                                     zoomControlsEnabled: false,

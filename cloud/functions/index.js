@@ -78,7 +78,7 @@ exports.onArtisanWrite = functions.firestore
 
 // invoked when a booking record is created, updated or deleted
 exports.onBookingRequestWrite = functions.firestore
-  .document("requests/{id}")
+  .document("bookings/{id}")
   .onWrite(async (change, _context) => {
     let clientIndex = client.initIndex("bookings");
     if (change.after.data()) {
@@ -90,7 +90,7 @@ exports.onBookingRequestWrite = functions.firestore
       if (data.is_accepted) {
         // Get customer id from request and get data from database
         var customerSnapshot = await admin.firestore
-          .document(`customers/${data.customer_id}`)
+          .doc(`customers/${data.customer_id}`)
           .get();
 
         if (customerSnapshot.data().exists) {
@@ -110,29 +110,29 @@ exports.onBookingRequestWrite = functions.firestore
           await admin.messaging().send(message);
           console.log("Successfully sent message:", response);
         }
-      }
+      } else {
+        // Get artisan id from request and get data from database
+        var artisanSnapshot = await admin.firestore
+          .doc(`artisans/${data.provider_id}`)
+          .get();
 
-      // Get artisan id from request and get data from database
-      var artisanSnapshot = await admin.firestore
-        .document(`artisans/${data.provider_id}`)
-        .get();
+        if (artisanSnapshot.data().exists) {
+          // This registration token comes from the client FCM SDKs.
+          var registrationToken = artisanSnapshot.data().token;
 
-      if (artisanSnapshot.data().exists) {
-        // This registration token comes from the client FCM SDKs.
-        var registrationToken = artisanSnapshot.data().token;
+          var message = {
+            data: {
+              booking: data.id,
+              customer: data.customer_id,
+            },
+            token: registrationToken,
+          };
 
-        var message = {
-          data: {
-            booking: data.id,
-            customer: data.customer_id,
-          },
-          token: registrationToken,
-        };
-
-        // Send a message to the device corresponding to the provided
-        // registration token.
-        await admin.messaging().send(message);
-        console.log("Successfully sent message:", response);
+          // Send a message to the device corresponding to the provided
+          // registration token.
+          await admin.messaging().send(message);
+          console.log("Successfully sent message:", response);
+        }
       }
     } else if (!change.after.exists) {
       let data = change.before.data();

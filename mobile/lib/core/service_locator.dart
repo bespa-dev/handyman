@@ -9,10 +9,12 @@ import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/data/services/data.dart';
+import 'package:handyman/data/services/location.dart';
 import 'package:handyman/data/services/messaging.dart';
 import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
+import 'package:handyman/domain/services/location.dart';
 import 'package:handyman/domain/services/messaging.dart';
 import 'package:handyman/domain/services/storage.dart';
 import 'package:meta/meta.dart';
@@ -51,6 +53,7 @@ Future<void> registerServiceLocator() async {
   sl.registerSingleton<PrefsProvider>(PrefsProvider.create());
 
   // Services
+  sl.registerLazySingleton<LocationService>(() => LocationServiceImpl.create());
   sl.registerLazySingleton<AuthService>(() => FirebaseAuthService.create());
   sl.registerLazySingleton<DataService>(() => DataServiceImpl.instance);
   sl.registerLazySingleton<StorageService>(() => StorageServiceImpl.instance);

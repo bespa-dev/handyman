@@ -15,6 +15,7 @@ import 'size_config.dart';
 const kGeneralCategory = "bbe8a179-7797-4d87-b388-cf93125f490e";
 const _kGoogleApiKey = "AIzaSyByvL9jc4UvlhILkhAZs7ZrQP68LwWDgFg";
 const kRatingStar = Entypo.star;
+const kUserImageNotFound = Icons.broken_image_outlined;
 
 /// Predicts location address info using Google Places API
 Future<Prediction> getLocationPrediction(context) async =>
@@ -25,12 +26,6 @@ Future<Prediction> getLocationPrediction(context) async =>
       // Mode.fullscreen
       language: "en",
     );
-
-Future<String> getLocationName(Position position) async {
-  final addresses = await Geocoder.local.findAddressesFromCoordinates(
-      Coordinates(position.latitude, position.longitude));
-  return addresses.first?.addressLine ?? "Unknown location";
-}
 
 void showNotAvailableDialog(BuildContext context) => showDialog(
       context: context,
