@@ -15,6 +15,7 @@ import 'package:handyman/data/services/data.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
+import 'package:handyman/domain/services/messaging.dart';
 import 'package:provider/provider.dart';
 import 'package:random_color/random_color.dart';
 
@@ -99,12 +100,12 @@ class _HomePageState extends State<HomePage> {
                                 color: themeData.cardColor,
                                 shape: BoxShape.rectangle,
                               ),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                      getProportionateScreenWidth(kSpacingX8)),
+                              padding: EdgeInsets.only(
+                                left: getProportionateScreenWidth(kSpacingX4),
+                                right: getProportionateScreenWidth(kSpacingX8),
+                              ),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   IconButton(
                                     tooltip: "Toggle theme",
@@ -116,36 +117,56 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     onPressed: () => provider.toggleTheme(),
                                   ),
-                                  Expanded(
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        "Search for artisans & more",
-                                        style: themeData.textTheme.headline6
-                                            .copyWith(
-                                          color: themeData.iconTheme.color,
-                                        ),
+                                  Container(
+                                    child: Text(
+                                      "Search for artisans & more",
+                                      style: themeData.textTheme.headline6
+                                          .copyWith(
+                                        color: themeData.iconTheme.color,
                                       ),
                                     ),
                                   ),
+                                  Spacer(),
                                   StreamBuilder<BaseUser>(
                                       stream: authService.currentUser(),
-                                      builder: (context, userSnapshot) =>
-                                          UserAvatar(
-                                            url:
-                                                userSnapshot.data?.user?.avatar,
-                                            radius: kSpacingX36,
-                                            onTap: () => context.navigator.push(
-                                              Routes.userInfoPage,
-                                              arguments: UserInfoPageArguments(
-                                                customer:
-                                                    userSnapshot.data?.user,
+                                      builder: (context, userSnapshot) => Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              IconButton(
+                                                tooltip: "Notifications",
+                                                icon: Icon(Entypo.bell),
+                                                onPressed: () =>
+                                                    context.navigator.push(
+                                                  Routes.notificationPage,
+                                                  arguments:
+                                                      NotificationPageArguments(
+                                                    payload: NotificationPayload
+                                                        .empty(),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                            ringColor: RandomColor(1)
-                                                .randomColor(
-                                                    colorBrightness:
-                                                        ColorBrightness.dark),
+                                              UserAvatar(
+                                                url: userSnapshot
+                                                    .data?.user?.avatar,
+                                                radius: kSpacingX36,
+                                                onTap: () =>
+                                                    context.navigator.push(
+                                                  Routes.userInfoPage,
+                                                  arguments:
+                                                      UserInfoPageArguments(
+                                                    customer:
+                                                        userSnapshot.data?.user,
+                                                  ),
+                                                ),
+                                                ringColor: RandomColor(1)
+                                                    .randomColor(
+                                                        colorBrightness:
+                                                            ColorBrightness
+                                                                .dark),
+                                              ),
+                                            ],
                                           )),
                                 ],
                               ),

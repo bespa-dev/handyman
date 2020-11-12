@@ -72,8 +72,50 @@ class _DashboardPageState extends State<DashboardPage> {
                 builder: (_, snapshot) {
                   final artisan = snapshot.data?.user;
 
-                  return snapshot.data?.isCustomer ?? false
-                      ? Container()
+                  return snapshot.data == null || snapshot.data.isCustomer
+                      ? Scaffold(
+                          body: Container(
+                            width: SizeConfig.screenWidth,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Icon(
+                                  Entypo.users,
+                                  size:
+                                      getProportionateScreenHeight(kSpacingX96),
+                                  color: _themeData.colorScheme.onBackground,
+                                ),
+                                SizedBox(
+                                  height:
+                                      getProportionateScreenHeight(kSpacingX16),
+                                ),
+                                Text(
+                                  "You are not logged in as an Artisan",
+                                  style:
+                                      _themeData.textTheme.bodyText2.copyWith(
+                                    color: _themeData.colorScheme.onBackground,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(
+                                  height:
+                                      getProportionateScreenHeight(kSpacingX64),
+                                ),
+                                ButtonPrimary(
+                                  width:
+                                      getProportionateScreenWidth(kSpacingX120),
+                                  label: "Sign out",
+                                  onTap: () => context.navigator.pop(),
+                                  themeData: _themeData,
+                                  textColor: _themeData.colorScheme.onError,
+                                  color: _themeData.colorScheme.error,
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
                       : Scaffold(
                           key: _scaffoldKey,
                           extendBody: true,
@@ -397,14 +439,17 @@ class _DashboardPageState extends State<DashboardPage> {
   /// Get ongoing [Booking]s
   Widget _buildOngoingTasksWidget(List<Booking> bookings) => bookings.isEmpty
       ? _buildEmptyListView()
-      : Padding(
+      : Container(
           padding: EdgeInsets.symmetric(
             horizontal: getProportionateScreenWidth(kSpacingX24),
           ),
           child: AnimationLimiter(
             child: AnimationConfiguration.synchronized(
               duration: kScaleDuration,
-              child: Column(
+              child: ListView(
+                padding: EdgeInsets.only(
+                  bottom: getProportionateScreenHeight(kSpacingX96),
+                ),
                 children: [
                   ...bookings
                       .where((element) =>
@@ -433,14 +478,17 @@ class _DashboardPageState extends State<DashboardPage> {
         element.createdAt <= DateTime.now().millisecondsSinceEpoch &&
         element.dueDate == null);
     return filteredBooking.isNotEmpty
-        ? Padding(
+        ? Container(
             padding: EdgeInsets.symmetric(
               horizontal: getProportionateScreenWidth(kSpacingX24),
             ),
             child: AnimationLimiter(
               child: AnimationConfiguration.synchronized(
                 duration: kScaleDuration,
-                child: Column(
+                child: ListView(
+                  padding: EdgeInsets.only(
+                    bottom: getProportionateScreenHeight(kSpacingX96),
+                  ),
                   children: [
                     ...filteredBooking
                         .map(
@@ -492,7 +540,6 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
             ListTile(
               title: Text("Notifications"),
-              // TODO: Fix notifications UI
               onTap: () => context.navigator.push(
                 Routes.notificationPage,
                 arguments: NotificationPageArguments(
@@ -524,7 +571,6 @@ class _DashboardPageState extends State<DashboardPage> {
                   context.navigator.popAndPush(Routes.providerSettingsPage),
               title: Text(
                 artisan?.name ?? "Create a username",
-                // style: _themeData.textTheme.bodyText1,
               ),
               leading: UserAvatar(
                 url: artisan?.avatar,

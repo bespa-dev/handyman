@@ -8,6 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/utils.dart';
@@ -37,6 +38,7 @@ class DataServiceImpl implements DataService {
   final _galleryDao = sl.get<LocalDatabase>().galleryDao;
   final _firestore = sl.get<FirebaseFirestore>();
   final _storageService = sl.get<StorageService>();
+  final _prefsProvider = sl.get<PrefsProvider>();
 
   // Private constructor
   DataServiceImpl._();
@@ -228,9 +230,11 @@ class DataServiceImpl implements DataService {
         .snapshots(includeMetadataChanges: true);
 
     snapshots.listen((event) {
-      event.docs.forEach((element) async {
-        if (element.exists)
-          await _bookingDao.addItem(Booking.fromJson(element.data()));
+      event.docChanges.forEach((element) async {
+        if (element.doc.exists)
+          await _bookingDao.addItem(Booking.fromJson(element.doc.data()));
+        else
+          await _bookingDao.removeBooking(element.doc.id);
       });
     });
   }
@@ -491,7 +495,7 @@ class DataServiceImpl implements DataService {
       createdAt: now,
       description: description,
       // current time +72hrs
-      dueDate: now + 259200000,
+      dueDate: /*now + 259200000*/ null,
       isAccepted: false,
       locationLat: lat,
       locationLng: lng,
@@ -505,7 +509,7 @@ class DataServiceImpl implements DataService {
         ),
       );
       _storageService.onStorageUploadResponse.listen((event) async {
-        if (event.state == UploadProgressState.DONE) {
+        if (!event.isInComplete) {
           await _bookingDao.addItem(booking.copyWith(imageUrl: event.url));
           await _firestore
               .collection(FirestoreUtils.kBookingsRef)
@@ -547,13 +551,46 @@ class DataServiceImpl implements DataService {
       {String userId, PayloadType type}) async* {
     switch (type) {
       case PayloadType.CONVERSATION:
+        yield* _messageDao.myMessages(userId: userId);
+        _firestore
+            .collection(FirestoreUtils.kMessagesRef)
+            .where("recipient", isEqualTo: userId)
+            .snapshots()
+            .listen((snapshot) {
+          snapshot.docChanges.forEach((changes) async {
+            if (changes.doc.exists)
+              _messageDao
+                  .sendMessage(Conversation.fromJson(changes.doc.data()));
+            else if (changes.type == DocumentChangeType.removed)
+              _messageDao.removeMessage(changes.doc.id);
+          });
+        });
         break;
       case PayloadType.BOOKING:
+        final isCustomer = _prefsProvider.userType == kCustomerString;
+        yield* isCustomer
+            ? _bookingDao.bookingsForCustomer(userId).watch()
+            : _bookingDao.bookingsForProvider(userId).watch();
+
+        _firestore
+            .collection(FirestoreUtils.kBookingsRef)
+            .where("field", isEqualTo: userId)
+            .snapshots()
+            .listen((snapshot) {
+          snapshot.docChanges.forEach((changes) async {
+            if (changes.doc.exists)
+              await _bookingDao.addItem(Booking.fromJson(changes.doc.data()));
+            else if (changes.type == DocumentChangeType.removed)
+              await _bookingDao.removeBooking(changes.doc.id);
+          });
+        });
         break;
       default:
-        // TODO: Fix it
-        yield ["okay", "done"];
+        print("No options selected");
         break;
     }
   }
+
+  @override
+  Future<void> updateBooking({Booking booking}) async {}
 }

@@ -49,17 +49,17 @@ class _NotificationPageState extends State<NotificationPage> {
               final currentUser = snapshot.data?.user;
               return Scaffold(
                 body: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: getProportionateScreenWidth(kSpacingX24),
-                    vertical: getProportionateScreenHeight(kSpacingX16),
+                  padding: EdgeInsets.only(
+                    left: getProportionateScreenWidth(kSpacingX24),
+                    right: getProportionateScreenWidth(kSpacingX24),
+                    bottom: getProportionateScreenHeight(kSpacingX16),
                   ),
                   child: Column(
                     children: [
                       _buildAppBar(provider),
-                      widget.payload.payloadType == PayloadType.NONE ||
-                              (snapshot.data != null &&
-                                  !snapshot.data.isCustomer &&
-                                  !snapshot.data.user.isApproved)
+                      (snapshot.data != null &&
+                              !snapshot.data.isCustomer &&
+                              !snapshot.data.user.isApproved)
                           ? _buildWaitingApprovalHeader(currentUser)
                           : SizedBox.shrink(),
                       _buildNotificationsTab(provider),
@@ -197,19 +197,31 @@ class _NotificationPageState extends State<NotificationPage> {
           ],
         );
 
-  Widget _buildAppBar(PrefsProvider provider) => Container(
-        width: _kWidth,
-        height: getProportionateScreenHeight(kToolbarHeight),
-        color: _themeData.scaffoldBackgroundColor.withOpacity(kOpacityX90),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            IconButton(
-              tooltip: "Toggle theme",
-              icon: Icon(provider.isLightTheme ? Feather.moon : Feather.sun),
-              onPressed: () => provider.toggleTheme(),
-            )
-          ],
+  Widget _buildAppBar(PrefsProvider provider) => SafeArea(
+        child: Container(
+          width: _kWidth,
+          margin: EdgeInsets.only(
+            bottom: getProportionateScreenHeight(kSpacingX12),
+          ),
+          height: getProportionateScreenHeight(kToolbarHeight),
+          color: _themeData.scaffoldBackgroundColor.withOpacity(kOpacityX90),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              provider.userType == kCustomerString
+                  ? IconButton(
+                      tooltip: "Back",
+                      icon: Icon(Feather.x),
+                      onPressed: () => context.navigator.pop(),
+                    )
+                  : SizedBox.shrink(),
+              IconButton(
+                tooltip: "Toggle theme",
+                icon: Icon(provider.isLightTheme ? Feather.moon : Feather.sun),
+                onPressed: () => provider.toggleTheme(),
+              )
+            ],
+          ),
         ),
       );
 

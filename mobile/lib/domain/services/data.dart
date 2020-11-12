@@ -36,6 +36,8 @@ abstract class DataService {
   /// Send a [CustomerReview]
   Future<void> sendReview({String message, String reviewer, String artisan});
 
+  Future<void> updateBooking({@required Booking booking});
+
   /// Get [Booking] for [Artisan] by [id]
   Stream<List<Booking>> getBookingsForArtisan(String id);
 

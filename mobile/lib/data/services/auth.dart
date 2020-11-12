@@ -392,11 +392,13 @@ class FirebaseAuthService implements AuthService {
       await _prefsProvider.clearUserData();
 
       _onProcessingStateChanged?.sink?.add(successState);
+      _onMessageChanged.sink.add("User signed out successfully");
       _onAuthStateChanged?.sink?.add(null);
       return true;
     } on PlatformException catch (e) {
       debugPrint(e.message);
       _onProcessingStateChanged?.sink?.add(errorState);
+      _onMessageChanged.sink.add("Unable to complete sign out");
       return false;
     }
   }

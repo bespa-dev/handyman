@@ -3903,6 +3903,14 @@ mixin _$ReviewDaoMixin on DatabaseAccessor<LocalDatabase> {
 }
 mixin _$MessageDaoMixin on DatabaseAccessor<LocalDatabase> {
   $MessageTable get message => attachedDatabase.message;
+  Future<int> removeMessage(String var1) {
+    return customUpdate(
+      'DELETE FROM message WHERE id = ?',
+      variables: [Variable.withString(var1)],
+      updates: {message},
+      updateKind: UpdateKind.delete,
+    );
+  }
 }
 mixin _$UserDaoMixin on DatabaseAccessor<LocalDatabase> {
   $UserTable get user => attachedDatabase.user;
