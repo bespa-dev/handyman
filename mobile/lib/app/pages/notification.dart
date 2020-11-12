@@ -190,7 +190,7 @@ class _NotificationPageState extends State<NotificationPage> {
                         label: "View dashboard",
                       ),
                       SizedBox(
-                          height: getProportionateScreenHeight(kSpacingX12)),
+                          height: getProportionateScreenHeight(kSpacingX24)),
                     ],
                   )
                 : SizedBox.shrink(),

@@ -13,7 +13,7 @@ class PrefsProvider with ChangeNotifier {
       _shouldShowSplash = true;
   String _userId, _userType, _emergencyContactNumber;
   final StreamController<bool> _themeController = StreamController.broadcast();
-  final StreamController<String> _uidController = StreamController.broadcast();
+  // final StreamController<String> _uidController = StreamController.broadcast();
 
   SharedPreferences _prefs;
 
@@ -29,6 +29,9 @@ class PrefsProvider with ChangeNotifier {
       _isLightTheme = _prefs.getBool(PrefsUtils.THEME_MODE) ?? false;
       _shouldShowSplash = _prefs.getBool(PrefsUtils.SHOW_SPLASH_SCREEN) ?? true;
       _isLoggedIn = _userId != null && _userId.isNotEmpty;
+
+      // _uidController.sink.add(_userId);
+      _themeController.sink.add(_isLightTheme);
       toggleTheme(_isLightTheme);
     });
   }
@@ -51,11 +54,13 @@ class PrefsProvider with ChangeNotifier {
 
   Stream<bool> get onThemeChanged => _themeController.stream;
 
+  // Stream<String> get onUserIdChanged => _uidController.stream;
+
   void saveUserId([String value]) async {
     await _prefs?.setString(PrefsUtils.USER_ID, value);
     _userId = value;
     _isLoggedIn = value != null && value.isNotEmpty;
-    _uidController.sink.add(value);
+    // _uidController.sink.add(value);
     notifyListeners();
   }
 
@@ -94,6 +99,7 @@ class PrefsProvider with ChangeNotifier {
   Future<void> clearUserData() async {
     _userId = null;
     _userType = null;
+    // _uidController.sink.add(null);
     await _prefs?.setString(PrefsUtils.USER_ID, null);
     await _prefs?.setString(PrefsUtils.USER_TYPE, null);
   }
@@ -101,7 +107,7 @@ class PrefsProvider with ChangeNotifier {
   @override
   void dispose() {
     _themeController.close();
-    _uidController.close();
+    // _uidController.close();
     super.dispose();
   }
 }

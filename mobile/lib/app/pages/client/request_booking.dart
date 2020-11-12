@@ -196,17 +196,20 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                 themeData: _themeData,
                 enabled: widget.artisan.isAvailable,
                 onTap: () {
-                  _dataService.requestBooking(
-                    artisan: widget.artisan,
-                    customer: user?.id,
-                    hourOfDay: _currentHour,
-                    category: _category?.id,
-                    description: _descriptionController.text?.trim(),
-                    image: _imageFile,
-                    lat: snapshot.hasError ? 0 : snapshot.data.lat,
-                    lng: snapshot.hasError ? 0 : snapshot.data.lng,
-                  );
-                  context.navigator.pop();
+                  // Validate form and send request
+                  if (_formKey.currentState.validate()) {
+                    _dataService.requestBooking(
+                      artisan: widget.artisan,
+                      customer: user?.id,
+                      hourOfDay: _currentHour,
+                      category: _category?.id,
+                      description: _descriptionController.text?.trim(),
+                      image: _imageFile,
+                      lat: snapshot.hasError ? 0 : snapshot.data.lat,
+                      lng: snapshot.hasError ? 0 : snapshot.data.lng,
+                    );
+                    context.navigator.pop();
+                  }
                 },
                 label: widget.artisan.isAvailable
                     ? "Book service"
@@ -227,7 +230,7 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
               color: _themeData.colorScheme.onBackground,
             ),
           ),
-          SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
+          SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
           Form(
             key: _formKey,
             child: Column(
@@ -253,13 +256,17 @@ class _RequestBookingPageState extends State<RequestBookingPage> {
                   keyboardType: TextInputType.phone,
                   textInputAction: TextInputAction.next,
                 ),
-                Text(
-                  "Request details",
-                  style: _themeData.textTheme.button.copyWith(
-                    color: _themeData.colorScheme.onBackground,
+                SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Request details",
+                    style: _themeData.textTheme.button.copyWith(
+                      color: _themeData.colorScheme.onBackground,
+                    ),
                   ),
                 ),
-                SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
+                SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
                 TextFormInput(
                   labelText: "Reason for request",
                   color: _themeData.colorScheme.onBackground,

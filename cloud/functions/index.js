@@ -89,7 +89,7 @@ exports.onBookingRequestWrite = functions.firestore
 
       if (data.is_accepted) {
         // Get customer id from request and get data from database
-        var customerSnapshot = await admin.firestore
+        var customerSnapshot = await admin.firestore()
           .doc(`customers/${data.customer_id}`)
           .get();
 
@@ -112,7 +112,7 @@ exports.onBookingRequestWrite = functions.firestore
         }
       } else {
         // Get artisan id from request and get data from database
-        var artisanSnapshot = await admin.firestore
+        var artisanSnapshot = await admin.firestore()
           .doc(`artisans/${data.provider_id}`)
           .get();
 

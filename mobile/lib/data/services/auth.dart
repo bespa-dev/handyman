@@ -241,11 +241,18 @@ class FirebaseAuthService implements AuthService {
   /// Listens for current user's details
   @override
   Stream<BaseUser> currentUser() async* {
+    if (!_prefsProvider.isLoggedIn) return;
+
+    // Listen for changes in user id
+    // _prefsProvider.onUserIdChanged.listen((userId) async* {
+    final userId = _prefsProvider.userId;
     debugPrint(
-        "FirebaseAuthService.currentUser => ${_prefsProvider.userType} : ${_prefsProvider.userId}");
+        "FirebaseAuthService.currentUser => ${_prefsProvider.userType} : $userId");
+    if (userId == null || userId.isEmpty) return;
+
     if (_prefsProvider.userType == kCustomerString) {
       var localSource = _database.userDao
-          .customerById(_prefsProvider.userId)
+          .customerById(userId)
           .watchSingle()
           .map((customer) => CustomerModel(customer: customer));
       yield* localSource;
@@ -253,7 +260,7 @@ class FirebaseAuthService implements AuthService {
       // Get snapshots from Firestore
       var customerSnapshot = _firestore
           .collection(FirestoreUtils.kCustomerRef)
-          .doc(_prefsProvider.userId)
+          .doc(userId)
           .snapshots(includeMetadataChanges: true);
       customerSnapshot.listen((event) async {
         if (event.exists) {
@@ -265,7 +272,7 @@ class FirebaseAuthService implements AuthService {
       });
     } else {
       var localSource = _database.userDao
-          .artisanById(_prefsProvider.userId)
+          .artisanById(userId)
           .watchSingle()
           .map((event) => ArtisanModel(artisan: event));
       yield* localSource;
@@ -273,7 +280,7 @@ class FirebaseAuthService implements AuthService {
       // Get snapshots from Firestore
       final snapshot = _firestore
           .collection(FirestoreUtils.kArtisanRef)
-          .doc(_prefsProvider.userId)
+          .doc(userId)
           .snapshots(includeMetadataChanges: true);
       snapshot.listen((event) async {
         if (event.exists) {
@@ -284,6 +291,7 @@ class FirebaseAuthService implements AuthService {
         }
       });
     }
+    // });
   }
 
   /// Listens to [BaseUser] changes
