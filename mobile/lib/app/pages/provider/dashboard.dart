@@ -213,7 +213,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               ],
                             ),
                           ),
-                          drawer: _buildSideBar(artisan, authService),
+                          drawer: _buildSideBar(artisan, authService, provider),
                         );
                 },
               ),
@@ -510,7 +510,9 @@ class _DashboardPageState extends State<DashboardPage> {
         : _buildEmptyListView();
   }
 
-  Drawer _buildSideBar(Artisan artisan, AuthService authService) => Drawer(
+  Drawer _buildSideBar(
+          Artisan artisan, AuthService authService, PrefsProvider provider) =>
+      Drawer(
         child: Column(
           children: [
             SafeArea(
@@ -522,7 +524,8 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
                 alignment: Alignment.centerLeft,
                 child: Image(
-                  image: Svg(kLogoAsset),
+                  image:
+                      Svg(provider.isLightTheme ? kLogoAsset : kLogoDarkAsset),
                   height: getProportionateScreenHeight(kSpacingX56),
                   width: getProportionateScreenWidth(kSpacingX56),
                 ),
@@ -564,7 +567,8 @@ class _DashboardPageState extends State<DashboardPage> {
                   vertical: getProportionateScreenHeight(kSpacingX16),
                 ),
                 child: Image(
-                  image: Svg(kLogoAsset),
+                  image:
+                      Svg(provider.isLightTheme ? kLogoAsset : kLogoDarkAsset),
                   height: getProportionateScreenHeight(kSpacingX48),
                   width: getProportionateScreenHeight(kSpacingX48),
                 ),

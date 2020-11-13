@@ -133,7 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   getProportionateScreenWidth(kSpacingX16),
                             ),
                             child: Image(
-                              image: Svg(kLogoAsset),
+                              image: Svg(provider.isLightTheme ? kLogoAsset : kLogoDarkAsset),
                               fit: BoxFit.contain,
                               height: getProportionateScreenHeight(kSpacingX64),
                               width: getProportionateScreenWidth(kSpacingX64),

@@ -108,7 +108,7 @@ class _SplashPageState extends State<SplashPage> {
                       ),
                       decoration: BoxDecoration(),
                       child: Image(
-                        image: Svg(kLogoAsset),
+                        image: Svg(provider.isLightTheme ? kLogoAsset : kLogoDarkAsset),
                         fit: BoxFit.contain,
                         height: getProportionateScreenHeight(kSpacingX120),
                         width: getProportionateScreenWidth(kSpacingX120),

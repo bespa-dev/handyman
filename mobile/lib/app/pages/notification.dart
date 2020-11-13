@@ -16,7 +16,6 @@ import 'package:handyman/domain/services/data.dart';
 import 'package:handyman/domain/services/messaging.dart';
 import 'package:provider/provider.dart';
 
-// C:\Users\Quabynah Bilson\Documents\GitHub\handyman\mobile\build\app\outputs\flutter-apk
 /// Notifications Page: Shows notifications of
 /// 1. Bookings
 /// 2. Conversations
@@ -286,7 +285,9 @@ class _NotificationPageState extends State<NotificationPage> {
             userId: provider.userId, type: PayloadType.BOOKING),
         builder: (_, snapshot) {
           return ListView.separated(
-            padding: EdgeInsets.zero,
+            padding: EdgeInsets.only(
+              bottom: _kHeight * 0.25,
+            ),
             clipBehavior: Clip.hardEdge,
             itemBuilder: (_, index) {
               final item = snapshot.data[index];

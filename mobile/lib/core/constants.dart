@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:geocoder/geocoder.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:handyman/app/widget/buttons.dart';
 
@@ -129,7 +127,8 @@ const kFunctionalityUnavailable =
     "Functionality is currently unavailable. Try again after the next update. Thank you";
 const kCustomerString = "Customer";
 const kLogoAsset = "assets/logo/logo_colored.svg";
-const kLogoDarkAsset = "assets/logo/logo_dark.svg";
+const kLogoDarkAsset = "assets/logo/logo_colored.svg";
+// const kLogoDarkAsset = "assets/logo/logo_dark.svg";
 const kTimeSvgAsset = "assets/svg/time.svg";
 const kPeopleSvgAsset = "assets/svg/people.svg";
 const kBookingSvgAsset = "assets/svg/booking.svg";
