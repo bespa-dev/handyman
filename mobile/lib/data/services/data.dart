@@ -574,7 +574,8 @@ class DataServiceImpl implements DataService {
 
         _firestore
             .collection(FirestoreUtils.kBookingsRef)
-            .where("field", isEqualTo: userId)
+            .where(isCustomer ? "customer_id" : "provider_id",
+                isEqualTo: userId)
             .snapshots()
             .listen((snapshot) {
           snapshot.docChanges.forEach((changes) async {

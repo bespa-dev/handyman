@@ -1,9 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/badgeable_tab_bar.dart';
+import 'package:handyman/app/widget/booking_card_item.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
@@ -227,7 +229,6 @@ class _NotificationPageState extends State<NotificationPage> {
 
   // Notifications tab
   Widget _buildNotificationsTab(PrefsProvider provider) => Expanded(
-        // TODO: Add notifications tab here
         child: Column(
           children: [
             BadgeableTabBar(
@@ -277,11 +278,35 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget _buildRequestNotificationsTab(
           PrefsProvider provider, DataService service) =>
       StreamBuilder<List<dynamic>>(
+        initialData: [],
         stream: service.getNotifications(
             userId: provider.userId, type: PayloadType.BOOKING),
         builder: (_, snapshot) {
-          return Container(
-            child: Text("requests here"),
+          return ListView.separated(
+            padding: EdgeInsets.zero,
+            clipBehavior: Clip.hardEdge,
+            itemBuilder: (_, index) {
+              final item = snapshot.data[index];
+              return AnimationConfiguration.staggeredList(
+                position: index,
+                duration: kScaleDuration,
+                child: SlideAnimation(
+                  verticalOffset: kSpacingNone,
+                  child: FadeInAnimation(
+                    child: BookingCardItem(
+                      booking: item,
+                      onTap: () => context.navigator.push(
+                        Routes.bookingsDetailsPage,
+                        arguments: BookingsDetailsPageArguments(booking: item),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+            separatorBuilder: (_, __) =>
+                SizedBox(height: getProportionateScreenHeight(kSpacingX2)),
+            itemCount: snapshot.data.length,
           );
         },
       );
@@ -290,11 +315,46 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget _buildConversationNotificationsTab(
           PrefsProvider provider, DataService service) =>
       StreamBuilder<List<dynamic>>(
+        initialData: [],
         stream: service.getNotifications(
             userId: provider.userId, type: PayloadType.CONVERSATION),
         builder: (_, snapshot) {
-          return Container(
-            child: Text("conversations here"),
+          return ListView.separated(
+            padding: EdgeInsets.zero,
+            clipBehavior: Clip.hardEdge,
+            itemBuilder: (_, index) {
+              final item = snapshot.data[index];
+              final isCustomer = provider.userType == kCustomerString;
+
+              return AnimationConfiguration.staggeredList(
+                position: index,
+                duration: kScaleDuration,
+                child: SlideAnimation(
+                  verticalOffset: kSpacingNone,
+                  child: FadeInAnimation(
+                    child: StreamBuilder<BaseUser>(
+                        stream: isCustomer
+                            ? service.getArtisanById(id: item.author)
+                            : service.getCustomerById(id: item.author),
+                        builder: (context, chatSnapshot) {
+                          return chatSnapshot.hasError
+                              ? SizedBox.shrink()
+                              : ListTile(
+                                  /*TODO*/
+                                  onTap: () => showNotAvailableDialog(context),
+                                  title: Text(chatSnapshot.data?.user?.name ??
+                                      "User not found"),
+                                  subtitle:
+                                      Text(item.message ?? "Nothing to show"),
+                                );
+                        }),
+                  ),
+                ),
+              );
+            },
+            separatorBuilder: (_, __) =>
+                SizedBox(height: getProportionateScreenHeight(kSpacingX2)),
+            itemCount: snapshot.data.length,
           );
         },
       );

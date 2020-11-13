@@ -539,6 +539,12 @@ class _DashboardPageState extends State<DashboardPage> {
               selectedTileColor: _themeData.selectedRowColor,
             ),
             ListTile(
+              title: Text("Business Center"),
+              // TODO: Add business center in v0.0.3
+              onTap: () => showNotAvailableDialog(context),
+              leading: Icon(Icons.business_center_outlined),
+            ),
+            ListTile(
               title: Text("Notifications"),
               onTap: () => context.navigator.push(
                 Routes.notificationPage,

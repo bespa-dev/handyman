@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/pages/login.dart';
 import 'package:handyman/app/routes/route.gr.dart';
@@ -27,6 +28,7 @@ import 'package:handyman/domain/services/location.dart';
 import 'package:handyman/domain/services/storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 /// Profile page for [Artisan]
@@ -48,13 +50,14 @@ class ProviderSettingsPage extends StatefulWidget {
 
 class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  double _kWidth;
+  double _kWidth = SizeConfig.screenWidth, _kHeight = SizeConfig.screenHeight;
   ThemeData _themeData;
   bool _isLoading = false;
 
   // FIXME: Add service picker in profile
   String _categoryFilter = "Mechanics";
   String _categoryFilterId;
+  final _sheetController = SheetController();
 
   // Artisan _currentUser;
   bool _shouldDismissEarnPointsSheet = true,
@@ -150,10 +153,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     _themeData = Theme.of(context);
-    final size = MediaQuery.of(context).size;
-    _kWidth = size.width;
   }
 
   @override
@@ -871,8 +871,26 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
               },
             ),
           ),
-          StreamBuilder<LocationMetaData>(
-            stream: sl.get<LocationService>().watchCurrentLocation(),
+          Container(
+            margin: EdgeInsets.only(
+              left: getProportionateScreenWidth(kSpacingX24),
+              right: getProportionateScreenWidth(kSpacingX24),
+              bottom: getProportionateScreenHeight(kSpacingX16),
+            ),
+            child: buildProfileDescriptor(
+              context,
+              themeData: _themeData,
+              title: "Service Category",
+              content: _categoryFilter,
+              isEditing: false,
+              iconData: Feather.edit_2,
+              onTap: () => _showArtisanCategorySelectionDialog(user),
+              onEditComplete: (_) {},
+              inputAction: TextInputAction.done,
+            ),
+          ),
+          FutureBuilder<LocationMetaData>(
+            future: sl.get<LocationService>().getCurrentLocation(),
             builder: (_, locationSnapshot) {
               return AnimatedContainer(
                 duration: kSheetDuration,
@@ -931,5 +949,113 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
         ],
       ),
     );
+  }
+
+  void _showArtisanCategorySelectionDialog(Artisan user) async {
+    await showSlidingBottomSheet(context, builder: (context) {
+      return SlidingSheetDialog(
+        elevation: kSpacingX8,
+        dismissOnBackdropTap: false,
+        controller: _sheetController,
+        addTopViewPaddingOnFullscreen: true,
+        headerBuilder: (_, __) => Material(
+          type: MaterialType.card,
+          clipBehavior: Clip.hardEdge,
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: getProportionateScreenWidth(kSpacingX16),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "Select a category",
+                  style: _themeData.textTheme.headline6,
+                ),
+                IconButton(
+                  icon: Icon(
+                    Feather.chevron_down,
+                  ),
+                  color: _themeData.colorScheme.onBackground,
+                  onPressed: () => context.navigator.pop(),
+                ),
+              ],
+            ),
+          ),
+        ),
+        color: _themeData.scaffoldBackgroundColor.withOpacity(kOpacityX50),
+        duration: kScaleDuration,
+        cornerRadius: kSpacingX16,
+        snapSpec: const SnapSpec(
+          snap: true,
+          snappings: [0.4, 0.75],
+          positioning: SnapPositioning.relativeToAvailableSpace,
+        ),
+        padding: EdgeInsets.symmetric(
+          vertical: getProportionateScreenHeight(kSpacingX8),
+        ),
+        builder: (context, state) {
+          return Material(
+            type: MaterialType.card,
+            child: Container(
+              height: _kHeight * 0.4,
+              padding: EdgeInsets.symmetric(
+                  horizontal: getProportionateScreenWidth(kSpacingX24)),
+              child: StreamBuilder<List<ServiceCategory>>(
+                  stream: _dataService.getCategories(),
+                  initialData: [],
+                  builder: (context, snapshot) {
+                    return Container(
+                      child: snapshot.hasError
+                          ? SizedBox.shrink()
+                          : ListView.separated(
+                              padding: EdgeInsets.zero,
+                              clipBehavior: Clip.hardEdge,
+                              itemBuilder: (_, index) {
+                                final category = snapshot.data[index];
+                                return AnimationConfiguration.staggeredList(
+                                  position: index,
+                                  duration: kScaleDuration,
+                                  child: SlideAnimation(
+                                    verticalOffset: kSpacingNone,
+                                    child: FadeInAnimation(
+                                      child: ListTile(
+                                        leading: UserAvatar(
+                                          url: category.avatar,
+                                          ringColor: _themeData
+                                              .colorScheme.onBackground,
+                                        ),
+                                        title: Text(category.name),
+                                        onTap: () {
+                                          _categoryFilterId = category.id;
+                                          _categoryFilter = category.name;
+                                          setState(() {});
+                                          _dataService.updateUser(
+                                            ArtisanModel(
+                                              artisan: user.copyWith(
+                                                category: category.id,
+                                              ),
+                                            ),
+                                          );
+                                          context.navigator.pop();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (_, __) => SizedBox(
+                                  height:
+                                      getProportionateScreenHeight(kSpacingX2)),
+                              itemCount: snapshot.data.length,
+                            ),
+                    );
+                  }),
+            ),
+          );
+        },
+      );
+    });
   }
 }
