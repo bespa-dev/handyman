@@ -16,6 +16,7 @@ import 'package:handyman/domain/services/data.dart';
 import 'package:handyman/domain/services/messaging.dart';
 import 'package:provider/provider.dart';
 
+// C:\Users\Quabynah Bilson\Documents\GitHub\handyman\mobile\build\app\outputs\flutter-apk
 /// Notifications Page: Shows notifications of
 /// 1. Bookings
 /// 2. Conversations
@@ -250,7 +251,9 @@ class _NotificationPageState extends State<NotificationPage> {
             ),
             SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
             Container(
-              height: _kHeight * 0.5,
+              height: provider.userType == kCustomerString
+                  ? _kHeight
+                  : _kHeight * 0.5,
               width: _kWidth,
               child: Consumer<DataService>(
                 builder: (_, dataService, __) => PageView.builder(
