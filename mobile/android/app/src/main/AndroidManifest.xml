@@ -12,7 +12,7 @@
 
     <!-- android:name="io.flutter.app.FlutterApplication" -->
     <application
-        android:name="dev.azaware.handyman.HandyManApplication"
+        android:name="io.flutter.app.FlutterApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="HandyMan">
         <activity
