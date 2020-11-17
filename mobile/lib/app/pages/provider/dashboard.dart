@@ -72,7 +72,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 builder: (_, snapshot) {
                   final artisan = snapshot.data?.user;
 
-                  return snapshot.data == null || snapshot.data.isCustomer
+                  return snapshot.hasError
                       ? Scaffold(
                           body: Container(
                             width: SizeConfig.screenWidth,
@@ -453,8 +453,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 children: [
                   ...bookings
                       .where((element) =>
-                          element.dueDate >=
-                          DateTime.now().millisecondsSinceEpoch)
+                          element.isAccepted &&
+                          element.dueDate <=
+                              DateTime.now().millisecondsSinceEpoch)
                       .map(
                         (item) => BookingCardItem(
                           booking: item,
@@ -474,9 +475,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   /// Get newly requested [Booking]s
   Widget _buildRequestsWidget(List<Booking> bookings) {
-    final filteredBooking = bookings.where((element) =>
-        element.createdAt <= DateTime.now().millisecondsSinceEpoch &&
-        element.dueDate == null);
+    final filteredBooking = bookings.where((element) => !element.isAccepted);
     return filteredBooking.isNotEmpty
         ? Container(
             padding: EdgeInsets.symmetric(

@@ -291,22 +291,25 @@ class _NotificationPageState extends State<NotificationPage> {
             clipBehavior: Clip.hardEdge,
             itemBuilder: (_, index) {
               final item = snapshot.data[index];
-              return AnimationConfiguration.staggeredList(
-                position: index,
-                duration: kScaleDuration,
-                child: SlideAnimation(
-                  verticalOffset: kSpacingNone,
-                  child: FadeInAnimation(
-                    child: BookingCardItem(
-                      booking: item,
-                      onTap: () => context.navigator.push(
-                        Routes.bookingsDetailsPage,
-                        arguments: BookingsDetailsPageArguments(booking: item),
+              return snapshot.hasData
+                  ? AnimationConfiguration.staggeredList(
+                      position: index,
+                      duration: kScaleDuration,
+                      child: SlideAnimation(
+                        verticalOffset: kSpacingNone,
+                        child: FadeInAnimation(
+                          child: BookingCardItem(
+                            booking: item,
+                            onTap: () => context.navigator.push(
+                              Routes.bookingsDetailsPage,
+                              arguments:
+                                  BookingsDetailsPageArguments(booking: item),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              );
+                    )
+                  : _buildEmptyListView("You have no bookings for today");
             },
             separatorBuilder: (_, __) =>
                 SizedBox(height: getProportionateScreenHeight(kSpacingX2)),
@@ -342,15 +345,22 @@ class _NotificationPageState extends State<NotificationPage> {
                             : service.getCustomerById(id: item.author),
                         builder: (context, chatSnapshot) {
                           return chatSnapshot.hasError
-                              ? SizedBox.shrink()
-                              : ListTile(
-                                  /*TODO*/
-                                  onTap: () => showNotAvailableDialog(context),
-                                  title: Text(chatSnapshot.data?.user?.name ??
-                                      "User not found"),
-                                  subtitle:
-                                      Text(item.message ?? "Nothing to show"),
-                                );
+                              ? _buildEmptyListView(
+                                  "You have no new conversations for today")
+                              : chatSnapshot.hasData
+                                  ? ListTile(
+                                      /*TODO*/
+                                      onTap: () =>
+                                          showNotAvailableDialog(context),
+                                      title: Text(
+                                          chatSnapshot.data?.user?.name ??
+                                              "User not found"),
+                                      subtitle: Text(
+                                          item.message ?? "Nothing to show"),
+                                    )
+                                  : Center(
+                                      child: Text("No conversations here"),
+                                    );
                         }),
                   ),
                 ),
@@ -361,5 +371,41 @@ class _NotificationPageState extends State<NotificationPage> {
             itemCount: snapshot.data.length,
           );
         },
+      );
+
+  Widget _buildEmptyListView(String title) => Container(
+        height: kSpacingX320,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              Entypo.bucket,
+              size: getProportionateScreenHeight(kSpacingX96),
+              color: _themeData.colorScheme.onBackground,
+            ),
+            SizedBox(
+              height: getProportionateScreenHeight(kSpacingX16),
+            ),
+            Text(
+              title,
+              style: _themeData.textTheme.bodyText2.copyWith(
+                color: _themeData.colorScheme.onBackground,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: getProportionateScreenHeight(kSpacingX24),
+            ),
+            ButtonOutlined(
+              width: _kWidth * 0.6,
+              themeData: _themeData,
+              gravity: ButtonIconGravity.END,
+              icon: Icons.arrow_right_alt_outlined,
+              onTap: () => showNotAvailableDialog(context),
+              label: "Earn Skills Badge",
+            ),
+          ],
+        ),
       );
 }

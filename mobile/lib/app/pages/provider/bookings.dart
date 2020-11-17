@@ -274,7 +274,7 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
           padding: EdgeInsets.symmetric(
             vertical: getProportionateScreenHeight(kSpacingX8),
           ),
-          color: _themeData.scaffoldBackgroundColor.withOpacity(kOpacityX50),
+          color: _themeData.scaffoldBackgroundColor.withOpacity(kOpacityX14),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
