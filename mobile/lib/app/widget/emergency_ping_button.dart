@@ -92,6 +92,7 @@ class _EmergencyPingButtonState extends State<EmergencyPingButton> {
   void _contactEmergencyService(PrefsProvider provider) async {
     final themeData = Theme.of(context);
 
+    // TODO: Use bottom sheet
     if (provider.emergencyContactNumber == null ||
         provider.emergencyContactNumber.isEmpty) {
       ScaffoldMessenger.of(context)
