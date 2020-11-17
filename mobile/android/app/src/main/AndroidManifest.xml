@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="dev.azaware.handyman"
     android:installLocation="auto">
 
@@ -12,9 +13,11 @@
 
     <!-- android:name="io.flutter.app.FlutterApplication" -->
     <application
-        android:name="io.flutter.app.FlutterApplication"
+        android:name=".HandyManApp"
         android:icon="@mipmap/ic_launcher"
-        android:label="HandyMan">
+        android:label="HandyMan"
+        android:fullBackupContent="true"
+        tools:ignore="AllowBackup">
         <activity
             android:name="dev.azaware.handyman.MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
