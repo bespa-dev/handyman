@@ -266,6 +266,10 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
               }),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Feather.message_circle),
+        onPressed: () => /*context.navigator.push(Routes.conversationPage)*/null,
+      ),
     );
   }
 

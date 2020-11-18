@@ -16,6 +16,7 @@ class OnboardingPage extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   int _currentPage = 2;
+
   final PageController _pageController =
       PageController(initialPage: 2, keepPage: true);
 
@@ -25,6 +26,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
     "$kAppName is Here for You",
     "Simple Booking",
     "1000+ Services",
+  ];
+
+  final _subtitles = const <String>[
+    "$kAppName provides badges to its artisans based on the services provided by the artisans and reviews made by customers",
+    "$kAppName allows you to book service of an artisan within the shortest time period. Save yourself with stress and let $kAppName handle your the right artisan for the perfect service",
+    "$kAppName is here to connect customers and artisans at a more simple and specific way",
+    "$kAppName provides you with the option to book any artisan at any point in time and place you need the artisans service",
+    "With the $kAppName platform customers are able to get in contact with 1000 and more artisans available for a service needed",
   ];
 
   final _images = <String>[
@@ -37,10 +46,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     final themeData = Theme.of(context);
-    final size = MediaQuery.of(context).size;
-    final kWidth = size.width;
-    final kHeight = size.height;
 
     return Scaffold(
       key: _scaffoldKey,
@@ -69,15 +76,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   });
                 },
                 itemBuilder: (_, index) => Container(
-                  width: kWidth,
-                  height: kHeight,
+                  width: SizeConfig.screenWidth,
+                  height: SizeConfig.screenHeight,
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
                       Positioned(
-                        top: kHeight * 0.25,
-                        bottom: kHeight * 0.5,
-                        width: kWidth,
+                        top: SizeConfig.screenHeight * 0.25,
+                        bottom: SizeConfig.screenHeight * 0.5,
+                        width: SizeConfig.screenWidth,
                         child: Container(
                           height: getProportionateScreenHeight(
                               index == 2 ? kSpacingX100 : kSpacingX120),
@@ -95,10 +102,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       ),
                       Positioned(
                         bottom: kSpacingNone,
-                        top: kHeight * 0.6,
-                        width: kWidth,
+                        top: SizeConfig.screenHeight * 0.6,
+                        width: SizeConfig.screenWidth,
                         child: Container(
-                          width: kWidth,
+                          width: SizeConfig.screenWidth,
                           padding: EdgeInsets.symmetric(
                             horizontal:
                                 getProportionateScreenWidth(kSpacingX16),
@@ -120,7 +127,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                                   height: getProportionateScreenHeight(
                                       kSpacingX16)),
                               Text(
-                                kLoremText,
+                                _subtitles[index],
                                 style: themeData.textTheme.bodyText1,
                                 textAlign: TextAlign.center,
                               ),
@@ -150,7 +157,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 ),
                 child: Container(
                   height: kToolbarHeight,
-                  width: kWidth * 0.3,
+                  width: SizeConfig.screenWidth * 0.3,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: themeData.colorScheme.primary,

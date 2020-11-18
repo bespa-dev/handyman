@@ -125,7 +125,7 @@ class _EmergencyPingButtonState extends State<EmergencyPingButton> {
                 color: _themeData.colorScheme.secondary,
                 alignment: Alignment.center,
                 child: Text(
-                  'This is the footer',
+                  'Save contact',
                   style: _themeData.textTheme.button,
                 ),
               ),

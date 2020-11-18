@@ -67,15 +67,16 @@ class MessagingServiceImpl implements MessagingService {
       if (updatedUser != null) await dataService.updateUser(currentUser);
     }
 
-    // FIXME: Failed to push notification when sent from console
     // Configure messaging
     msgService.configure(
       onBackgroundMessage: Platform.isIOS ? null : _backgroundMessageHandler,
       onMessage: (Map<String, dynamic> message) async {
         final notification = message["notification"];
         debugPrint("onMessage: $message");
+
         final title = notification["title"];
         final body = notification["body"];
+
         showNotification(
           title: title,
           body: body,

@@ -26,8 +26,8 @@ import 'guard.dart';
 /// generate routes using => flutter packages pub run build_runner watch --delete-conflicting-outputs
 @MaterialAutoRouter(
   routes: [
-    AdaptiveRoute(page: OnboardingPage, initial: true),
-    AdaptiveRoute(page: SplashPage),
+    AdaptiveRoute(page: OnboardingPage),
+    AdaptiveRoute(page: SplashPage, initial: true),
     AdaptiveRoute(page: LoginPage),
     AdaptiveRoute(page: RegisterPage),
     AdaptiveRoute(page: CheckoutPage, guards: [AuthGuard]),

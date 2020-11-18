@@ -33,8 +33,8 @@ import '../pages/splash.dart';
 import 'guard.dart';
 
 class Routes {
-  static const String onboardingPage = '/';
-  static const String splashPage = '/splash-page';
+  static const String onboardingPage = '/onboarding-page';
+  static const String splashPage = '/';
   static const String loginPage = '/login-page';
   static const String registerPage = '/register-page';
   static const String checkoutPage = '/checkout-page';
