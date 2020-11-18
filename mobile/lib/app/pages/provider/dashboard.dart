@@ -4,6 +4,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
+import 'package:handyman/app/pages/login.dart';
 import 'package:handyman/app/pages/notification.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/badgeable_tab_bar.dart';
@@ -542,8 +543,7 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
             ListTile(
               title: Text("Business Center"),
-              // TODO: Add business center in v0.0.3
-              onTap: () => showNotAvailableDialog(context),
+              onTap: () => context.navigator.push(Routes.businessCenterPage),
               leading: Icon(Icons.business_center_outlined),
             ),
             ListTile(
@@ -587,8 +587,35 @@ class _DashboardPageState extends State<DashboardPage> {
                 ringColor: _themeData.colorScheme.primary,
               ),
               trailing: IconButton(
-                icon: Icon(Feather.help_circle),
-                onPressed: () => showNotAvailableDialog(context),
+                icon: Icon(Feather.log_out),
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: Text("Leaving already?"),
+                    content: Text(
+                      kSignOutText,
+                    ),
+                    actions: [
+                      ButtonClear(
+                        text: "No",
+                        onPressed: () => ctx.navigator.pop(),
+                        themeData: _themeData,
+                      ),
+                      ButtonClear(
+                        text: "Yes",
+                        onPressed: () async {
+                          ctx.navigator.pop();
+                          await sl.get<AuthService>().signOut();
+                          context.navigator.pushAndRemoveUntil(
+                            Routes.loginPage,
+                            (route) => route is LoginPage,
+                          );
+                        },
+                        themeData: _themeData,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
             SizedBox(

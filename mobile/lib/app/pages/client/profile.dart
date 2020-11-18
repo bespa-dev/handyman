@@ -435,8 +435,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     contentPadding: EdgeInsets.zero,
                     leading: Icon(Feather.eye),
                     onTap: () {
-                      ctx.navigator.pop();
-                      showNotAvailableDialog(ctx);
+                      ctx.navigator.popAndPush(
+                        Routes.photoPreviewPage,
+                        arguments: PhotoPreviewPageArguments(
+                          imageUrl: user?.avatar,
+                        ),
+                      );
                     },
                   ),
                   ListTile(

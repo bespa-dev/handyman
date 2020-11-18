@@ -112,7 +112,7 @@ const double kEmphasisHigh = 0.9;
 /// App
 const kAppName = "HandyMan";
 const kAppSlogan = "Get some real work done";
-const kAppVersion = "v0.0.1";
+const kAppVersion = "v0.0.5";
 const kAppSloganDesc = "Find your service & book easily with $kAppName";
 const kArtisanReviewHelpDialogContent =
     "Sensitive data (like email addresses, phone numbers, user ids etc) will not be made public to customers on this platform.\nYour ratings are also based on the accumulated reviews by customers you have served over the last 6 months";

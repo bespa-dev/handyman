@@ -197,9 +197,16 @@ class _BookingCardItemState extends State<BookingCardItem> {
                                     width:
                                         getProportionateScreenWidth(kSpacingX4),
                                   ),
-                                  Text(
-                                    "Address - ${locationSnapshot.data}",
-                                    style: themeData.textTheme.bodyText1,
+                                  ConstrainedBox(
+                                    constraints: BoxConstraints.tightFor(
+                                      width: SizeConfig.screenWidth * 0.55,
+                                    ),
+                                    child: Text(
+                                      "Address - ${locationSnapshot.data}",
+                                      style: themeData.textTheme.bodyText1,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                    ),
                                   ),
                                 ],
                               ),

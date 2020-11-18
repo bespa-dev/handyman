@@ -78,7 +78,7 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
   String _userId;
   final picker = ImagePicker();
 
-  _showPickerDialog(BuildContext ctx) => AlertDialog(
+  _showPickerDialog(BuildContext ctx, String avatar) => AlertDialog(
         title: Text("Select an option"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -87,8 +87,12 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
               title: Text("View"),
               leading: Icon(Feather.eye),
               onTap: () {
-                ctx.navigator.pop();
-                showNotAvailableDialog(ctx);
+                ctx.navigator.popAndPush(
+                  Routes.photoPreviewPage,
+                  arguments: PhotoPreviewPageArguments(
+                    imageUrl: avatar,
+                  ),
+                );
               },
             ),
             ListTile(
@@ -220,7 +224,8 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                                 onTap: () => showDialog(
                                                   context: context,
                                                   builder: (ctx) =>
-                                                      _showPickerDialog(ctx),
+                                                      _showPickerDialog(
+                                                          ctx, user?.avatar),
                                                 ),
                                                 url: user?.avatar,
                                                 radius: kSpacingX72,
@@ -235,7 +240,8 @@ class _ProviderSettingsPageState extends State<ProviderSettingsPage> {
                                                 onTap: () => showDialog(
                                                   context: context,
                                                   builder: (ctx) =>
-                                                      _showPickerDialog(ctx),
+                                                      _showPickerDialog(
+                                                          ctx, user?.avatar),
                                                 ),
                                                 child: Container(
                                                   height:

@@ -21,8 +21,10 @@ import '../pages/conversation.dart';
 import '../pages/login.dart';
 import '../pages/notification.dart';
 import '../pages/onboarding.dart';
+import '../pages/photo_preview.dart';
 import '../pages/provider/account_completion.dart';
 import '../pages/provider/bookings.dart';
+import '../pages/provider/business_center.dart';
 import '../pages/provider/dashboard.dart';
 import '../pages/provider/settings.dart';
 import '../pages/register.dart';
@@ -31,8 +33,8 @@ import '../pages/splash.dart';
 import 'guard.dart';
 
 class Routes {
-  static const String onboardingPage = '/onboarding-page';
-  static const String splashPage = '/';
+  static const String onboardingPage = '/';
+  static const String splashPage = '/splash-page';
   static const String loginPage = '/login-page';
   static const String registerPage = '/register-page';
   static const String checkoutPage = '/checkout-page';
@@ -42,6 +44,7 @@ class Routes {
   static const String accountCompletionPage = '/account-completion-page';
   static const String conversationPage = '/conversation-page';
   static const String userInfoPage = '/user-info-page';
+  static const String photoPreviewPage = '/photo-preview-page';
   static const String homePage = '/home-page';
   static const String profilePage = '/profile-page';
   static const String requestBookingPage = '/request-booking-page';
@@ -49,6 +52,7 @@ class Routes {
   static const String serviceProviderDetails = '/service-provider-details';
   static const String providerSettingsPage = '/provider-settings-page';
   static const String dashboardPage = '/dashboard-page';
+  static const String businessCenterPage = '/business-center-page';
   static const all = <String>{
     onboardingPage,
     splashPage,
@@ -61,6 +65,7 @@ class Routes {
     accountCompletionPage,
     conversationPage,
     userInfoPage,
+    photoPreviewPage,
     homePage,
     profilePage,
     requestBookingPage,
@@ -68,6 +73,7 @@ class Routes {
     serviceProviderDetails,
     providerSettingsPage,
     dashboardPage,
+    businessCenterPage,
   };
 }
 
@@ -90,6 +96,8 @@ class Router extends RouterBase {
     RouteDef(Routes.conversationPage,
         page: ConversationPage, guards: [AuthGuard]),
     RouteDef(Routes.userInfoPage, page: UserInfoPage, guards: [AuthGuard]),
+    RouteDef(Routes.photoPreviewPage,
+        page: PhotoPreviewPage, guards: [AuthGuard]),
     RouteDef(Routes.homePage, page: HomePage, guards: [AuthGuard, ClientGuard]),
     RouteDef(Routes.profilePage,
         page: ProfilePage, guards: [AuthGuard, ClientGuard]),
@@ -103,6 +111,8 @@ class Router extends RouterBase {
         page: ProviderSettingsPage, guards: [AuthGuard, ProviderGuard]),
     RouteDef(Routes.dashboardPage,
         page: DashboardPage, guards: [AuthGuard, ProviderGuard]),
+    RouteDef(Routes.businessCenterPage,
+        page: BusinessCenterPage, guards: [AuthGuard, ProviderGuard]),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
@@ -199,6 +209,18 @@ class Router extends RouterBase {
         settings: data,
       );
     },
+    PhotoPreviewPage: (data) {
+      final args = data.getArgs<PhotoPreviewPageArguments>(
+        orElse: () => PhotoPreviewPageArguments(),
+      );
+      return buildAdaptivePageRoute<dynamic>(
+        builder: (context) => PhotoPreviewPage(
+          key: args.key,
+          imageUrl: args.imageUrl,
+        ),
+        settings: data,
+      );
+    },
     HomePage: (data) {
       return buildAdaptivePageRoute<dynamic>(
         builder: (context) => HomePage(),
@@ -265,6 +287,12 @@ class Router extends RouterBase {
         settings: data,
       );
     },
+    BusinessCenterPage: (data) {
+      return buildAdaptivePageRoute<dynamic>(
+        builder: (context) => BusinessCenterPage(),
+        settings: data,
+      );
+    },
   };
 }
 
@@ -308,6 +336,13 @@ class UserInfoPageArguments {
   final Key key;
   final dynamic customer;
   UserInfoPageArguments({this.key, @required this.customer});
+}
+
+/// PhotoPreviewPage arguments holder class
+class PhotoPreviewPageArguments {
+  final Key key;
+  final String imageUrl;
+  PhotoPreviewPageArguments({this.key, this.imageUrl});
 }
 
 /// RequestBookingPage arguments holder class
