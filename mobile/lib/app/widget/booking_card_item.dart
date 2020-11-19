@@ -181,7 +181,6 @@ class _BookingCardItemState extends State<BookingCardItem> {
                                     lng: widget.booking.locationLng),
                               ),
                           builder: (_, locationSnapshot) {
-                            debugPrint("Address -> ${locationSnapshot.data}");
                             return AnimatedOpacity(
                               opacity: locationSnapshot.hasData ? 1.0 : 0.0,
                               duration: kScaleDuration,

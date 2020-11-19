@@ -1,9 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:contact_picker/contact_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/core/constants.dart';
+import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import "package:meta/meta.dart";
 import 'package:provider/provider.dart';
@@ -22,6 +24,7 @@ class _EmergencyPingButtonState extends State<EmergencyPingButton> {
   bool _isCalling = false;
   final ContactPicker _contactPicker = ContactPicker();
   ThemeData _themeData;
+  final _sheetController = SheetController();
 
   @override
   Widget build(BuildContext context) {
@@ -64,9 +67,7 @@ class _EmergencyPingButtonState extends State<EmergencyPingButton> {
           alignment: Alignment.center,
           height: getProportionateScreenHeight(kToolbarHeight),
           width: SizeConfig.screenWidth,
-          decoration: BoxDecoration(
-            color: backgroundColor,
-          ),
+          decoration: BoxDecoration(color: backgroundColor),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -92,96 +93,77 @@ class _EmergencyPingButtonState extends State<EmergencyPingButton> {
   }
 
   void _contactEmergencyService(PrefsProvider provider) async {
-    if (provider.emergencyContactNumber == null ||
-        provider.emergencyContactNumber.isEmpty) {
-      await showSlidingBottomSheet(context, builder: (context) {
-        return SlidingSheetDialog(
-          elevation: 8,
-          cornerRadius: kSpacingX16,
-          snapSpec: const SnapSpec(
-            snap: true,
-            snappings: [0.4, 0.7, 1.0],
-            positioning: SnapPositioning.relativeToAvailableSpace,
-          ),
-          headerBuilder: (context, state) {
-            return Container(
+    final backgroundColor = !_isCalling
+        ? _themeData.colorScheme.error
+        : _themeData.disabledColor.withOpacity(kOpacityX14);
+    final onBackgroundColor =
+        !_isCalling ? _themeData.colorScheme.onError : _themeData.disabledColor;
+
+    await showSlidingBottomSheet(context, builder: (context) {
+      return SlidingSheetDialog(
+        elevation: kSpacingX8,
+        controller: _sheetController,
+        cornerRadius: kSpacingX16,
+        snapSpec: const SnapSpec(
+          snap: true,
+          snappings: [0.4, 0.7, 1.0],
+          positioning: SnapPositioning.relativeToAvailableSpace,
+        ),
+        headerBuilder: (context, state) {
+          return Container(
+            height: kToolbarHeight,
+            width: SizeConfig.screenWidth,
+            alignment: Alignment.center,
+            child: Text(
+              'Your Emergency Contact Info',
+              style: _themeData.textTheme.headline6,
+            ),
+          );
+        },
+        footerBuilder: (context, state) {
+          return GestureDetector(
+            onTap: () async {
+              if (provider.emergencyContactNumber != null) {
+                _isCalling = !_isCalling;
+                _sheetController.rebuild();
+                await Future.delayed(kTestDuration);
+                launchUrl(url: "tel:${provider.emergencyContactNumber}");
+                _isCalling = !_isCalling;
+              }
+            },
+            child: Container(
               height: kToolbarHeight,
-              width: double.infinity,
+              width: SizeConfig.screenWidth,
+              decoration: BoxDecoration(color: backgroundColor),
               alignment: Alignment.center,
               child: Text(
-                'Emergency contact',
-                style: _themeData.textTheme.headline6,
+                _isCalling ? "Calling..." : 'Call now'.toUpperCase(),
+                style: _themeData.textTheme.button
+                    .copyWith(color: onBackgroundColor),
               ),
-            );
-          },
-          footerBuilder: (context, state) {
-            return GestureDetector(
-              onTap: () {
-                print("Emergency contact saved");
-              },
-              child: Container(
-                height: kToolbarHeight,
-                width: double.infinity,
-                color: _themeData.colorScheme.secondary,
-                alignment: Alignment.center,
-                child: Text(
-                  'Save contact',
-                  style: _themeData.textTheme.button,
-                ),
+            ),
+          );
+        },
+        builder: (context, state) {
+          return Material(
+            child: Container(
+              width: SizeConfig.screenWidth,
+              padding: EdgeInsets.all(kSpacingX16),
+              child: ListTile(
+                onTap: () async {
+                  Contact contact = await _contactPicker.selectContact();
+                  provider.updateEmergencyContact(contact.phoneNumber.number);
+                  _sheetController.rebuild();
+                },
+                title: Text("Emergency Contact"),
+                subtitle: Text(provider.emergencyContactNumber ??
+                    "Select an emergency contact"),
+                leading: Icon(Feather.users),
               ),
-            );
-          },
-          builder: (context, state) {
-            return Container(
-              height: SizeConfig.screenHeight * 0.3,
-              child: Center(
-                child: Material(
-                  child: InkWell(
-                    onTap: () => Navigator.pop(context, 'This is the result.'),
-                    child: Padding(
-                      padding: const EdgeInsets.all(kSpacingX16),
-                      child: Text(
-                        'This is the content of the sheet',
-                        style: _themeData.textTheme.bodyText1,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      });
-    } else {
-      setState(() {
-        _isCalling = !_isCalling;
-      });
-      print("Emergency service...");
-      await Future.delayed(kTestDuration);
-      setState(() {
-        _isCalling = !_isCalling;
-      });
-    }
+            ),
+          );
+        },
+      );
+    });
   }
 }
-
-/*
-* ScaffoldMessenger.of(context)
-        ..removeCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Text(
-              "Add an emergency contact in your profile settings page",
-              style: TextStyle(
-                color: themeData.colorScheme.onError,
-              ),
-            ),
-            backgroundColor: themeData.colorScheme.error,
-            behavior: SnackBarBehavior.floating,
-            action: SnackBarAction(
-              label: "Change".toUpperCase(),
-              onPressed: () => context.navigator.push(Routes.profilePage),
-            ),
-          ),
-        );
-* */
