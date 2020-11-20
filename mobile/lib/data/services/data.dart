@@ -593,5 +593,20 @@ class DataServiceImpl implements DataService {
   }
 
   @override
-  Future<void> updateBooking({Booking booking}) async {}
+  Future<void> updateBooking({Booking booking}) async {
+    await _bookingDao.addItem(booking);
+    await _firestore
+        .collection(FirestoreUtils.kBookingsRef)
+        .doc(booking.id)
+        .set(booking.toJson(), SetOptions(merge: true));
+  }
+
+  @override
+  Future<void> deleteBooking({Booking booking}) async {
+    await _bookingDao.removeBooking(booking.id);
+    await _firestore
+        .collection(FirestoreUtils.kBookingsRef)
+        .doc(booking.id)
+        .delete();
+  }
 }

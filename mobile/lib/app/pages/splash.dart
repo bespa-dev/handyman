@@ -31,7 +31,8 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-
+    // TODO: remove this before release
+    debugPrint(DateTime.now().millisecondsSinceEpoch.toString());
     if (mounted) {
       // Observe auth state changes
       _authService.onProcessingStateChanged.listen((state) {

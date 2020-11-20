@@ -38,6 +38,8 @@ abstract class DataService {
 
   Future<void> updateBooking({@required Booking booking});
 
+  Future<void> deleteBooking({@required Booking booking});
+
   /// Get [Booking] for [Artisan] by [id]
   Stream<List<Booking>> getBookingsForArtisan(String id);
 
