@@ -73,14 +73,14 @@ class _EmergencyPingButtonState extends State<EmergencyPingButton> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                _isCalling ? Feather.phone_call : Feather.phone,
+                Feather.phone,
                 color: onBackgroundColor,
               ),
               SizedBox(
                 width: getProportionateScreenWidth(kSpacingX16),
               ),
               Text(
-                _isCalling ? "Calling..." : "In trouble? Call for help now",
+                "In trouble? Call for help now".toUpperCase(),
                 style: _themeData.textTheme.button.copyWith(
                   color: onBackgroundColor,
                 ),
@@ -124,6 +124,7 @@ class _EmergencyPingButtonState extends State<EmergencyPingButton> {
           return GestureDetector(
             onTap: () async {
               if (provider.emergencyContactNumber != null) {
+                // TODO: Add emergency calling API here
                 _isCalling = !_isCalling;
                 _sheetController.rebuild();
                 await Future.delayed(kTestDuration);
@@ -137,7 +138,7 @@ class _EmergencyPingButtonState extends State<EmergencyPingButton> {
               decoration: BoxDecoration(color: backgroundColor),
               alignment: Alignment.center,
               child: Text(
-                _isCalling ? "Calling..." : 'Call now'.toUpperCase(),
+                "Call now".toUpperCase(),
                 style: _themeData.textTheme.button
                     .copyWith(color: onBackgroundColor),
               ),

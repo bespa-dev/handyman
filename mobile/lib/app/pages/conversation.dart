@@ -27,8 +27,6 @@ class ConversationPage extends StatefulWidget {
 }
 
 class _ConversationPageState extends State<ConversationPage> {
-  DataService _apiService;
-
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
@@ -37,14 +35,13 @@ class _ConversationPageState extends State<ConversationPage> {
       extendBody: true,
       body: Consumer<DataService>(
         builder: (_, service, __) {
-          _apiService = service;
           return Consumer<PrefsProvider>(
             builder: (_, provider, __) => Container(
               child: SafeArea(
                 child: StreamBuilder<BaseUser>(
                   stream: widget.isCustomer
-                      ? _apiService.getCustomerById(id: widget.recipient)
-                      : _apiService.getArtisanById(id: widget.recipient),
+                      ? service.getCustomerById(id: widget.recipient)
+                      : service.getArtisanById(id: widget.recipient),
                   builder: (_, snapshot) {
                     return snapshot.hasError
                         ? Container(
@@ -67,7 +64,7 @@ class _ConversationPageState extends State<ConversationPage> {
                               ],
                             ),
                           )
-                        : _buildChatWidget(snapshot.data);
+                        : _buildChatWidget(snapshot.data, service);
                   },
                 ),
               ),
@@ -78,49 +75,49 @@ class _ConversationPageState extends State<ConversationPage> {
     );
   }
 
-  Widget _buildChatWidget(BaseUser recipient) => Consumer<AuthService>(
+  Widget _buildChatWidget(BaseUser recipient, DataService service) =>
+      Consumer<AuthService>(
         builder: (_, authService, __) => StreamBuilder<BaseUser>(
-            stream: authService.currentUser(),
-            builder: (context, snapshot) => Stack(
-                  children: [
-                    Column(
-                      children: [
-                        Expanded(
-                          child: ChatMessages(
-                            messages: _apiService.getConversation(
-                              sender: snapshot.data?.user?.id,
-                              recipient: widget.recipient,
-                            ),
-                            recipient: recipient,
-                            sender: snapshot.data,
-                          ),
-                        ),
-                        UserInput(
-                          user: snapshot.data,
-                          onMessageSent: (content) async {
-                            if (content.isEmpty) return;
-                            final timestamp =
-                                DateFormat.jms().format(DateTime.now());
-                            final conversation = Conversation(
-                              id: Uuid().v4(),
-                              author: snapshot.data?.user?.id,
-                              recipient: widget.recipient,
-                              content: content,
-                              createdAt: timestamp,
-                            );
-                            await _apiService.sendMessage(
-                                conversation: conversation);
-                          },
-                        ),
-                      ],
+          stream: authService.currentUser(),
+          builder: (context, snapshot) => Stack(
+            children: [
+              Column(
+                children: [
+                  Expanded(
+                    child: ChatMessages(
+                      messages: service.getConversation(
+                        sender: snapshot.data?.user?.id,
+                        recipient: widget.recipient,
+                      ),
+                      recipient: recipient,
+                      sender: snapshot.data,
                     ),
-                    Positioned(
-                      top: kSpacingNone,
-                      left: kSpacingNone,
-                      right: kSpacingNone,
-                      child: ChatHeader(user: recipient),
-                    ),
-                  ],
-                )),
+                  ),
+                  UserInput(
+                    user: snapshot.data,
+                    onMessageSent: (content) async {
+                      if (content.isEmpty) return;
+                      final timestamp = DateFormat.jms().format(DateTime.now());
+                      final conversation = Conversation(
+                        id: Uuid().v4(),
+                        author: snapshot.data?.user?.id,
+                        recipient: widget.recipient,
+                        content: content,
+                        createdAt: timestamp,
+                      );
+                      await service.sendMessage(conversation: conversation);
+                    },
+                  ),
+                ],
+              ),
+              Positioned(
+                top: kSpacingNone,
+                left: kSpacingNone,
+                right: kSpacingNone,
+                child: ChatHeader(user: recipient),
+              ),
+            ],
+          ),
+        ),
       );
 }

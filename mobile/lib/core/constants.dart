@@ -69,7 +69,8 @@ Widget buildFunctionalityNotAvailablePanel(BuildContext context) => Container(
       ),
     );
 
-Future getMapStyle({bool isLightTheme = false}) async =>
+/// Sets map style
+getMapStyle({bool isLightTheme = false}) async =>
     await rootBundle.loadString(
         isLightTheme ? "assets/map_style.json" : "assets/dark_map_style.json");
 

@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
+import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/artisan_settings_widgets.dart';
-import 'package:handyman/app/widget/badgeable_tab_bar.dart';
 import 'package:handyman/app/widget/marker_generator.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
@@ -29,247 +29,221 @@ class BookingsDetailsPage extends StatefulWidget {
 class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   DataService _dataService = sl.get<DataService>();
-  double _kWidth, _kHeight;
+  double _kWidth = SizeConfig.screenWidth, _kHeight = SizeConfig.screenHeight;
   ThemeData _themeData;
+  GoogleMapController _controller;
   var markers = <Marker>[];
-  int _currentTabIndex = 0;
-  final _pageController = PageController(initialPage: 0, keepPage: true);
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     _themeData = Theme.of(context);
-    final size = MediaQuery.of(context).size;
-    _kWidth = size.width;
-    _kHeight = size.height;
   }
 
   @override
   void initState() {
     super.initState();
-    MarkerGenerator([
-      Text("Hello"),
-    ], (bitmaps) {
-      setState(() {
-        // markers = mapBitmapsToMarkers(bitmaps);
+    if (mounted) {
+      MarkerGenerator([
+        Text("Hello"),
+      ], (bitmaps) {
+        setState(() {
+          // markers = mapBitmapsToMarkers(bitmaps);
+        });
+      }).generate(context);
+
+      // Listen for theme changes and update map accordingly
+      Provider.of<PrefsProvider>(context, listen: false)
+          .onThemeChanged
+          .listen((isLightTheme) async {
+        debugPrint(
+            "BookingsDetailsPage.initState : Current theme value => $isLightTheme");
+        final mapStyle = await getMapStyle(isLightTheme: isLightTheme);
+        _controller?.setMapStyle(mapStyle);
+        setState(() {});
       });
-    }).generate(context);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      extendBody: true,
-      body: Consumer<AuthService>(
-        builder: (_, service, __) => Consumer<PrefsProvider>(
-          builder: (_, provider, __) => StreamBuilder<Booking>(
-              initialData: widget.booking,
-              stream: _dataService.getBookingById(id: widget.booking.id),
-              builder: (_, bs) {
-                final booking = bs.data;
-                return Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    provider.isLightTheme
-                        ? Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(kBackgroundAsset),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          )
-                        : SizedBox.shrink(),
-                    Positioned(
-                      height: getProportionateScreenHeight(kSpacingX360),
-                      width: _kWidth,
-                      child: Container(
-                        height: getProportionateScreenHeight(kSpacingX360),
-                        width: _kWidth,
-                        child: GoogleMap(
-                          initialCameraPosition: CameraPosition(
-                            target: LatLng(
-                              booking.locationLat,
-                              booking.locationLng,
-                            ),
-                            zoom: 16.0,
-                          ),
-                          markers: (markers
-                                ..add(
-                                  Marker(
-                                    markerId: MarkerId(booking.id),
-                                    position: LatLng(
-                                      booking.locationLat,
-                                      booking.locationLng,
+    return Consumer<AuthService>(
+      builder: (_, service, __) => Consumer<PrefsProvider>(
+          builder: (_, provider, __) => Scaffold(
+                key: _scaffoldKey,
+                extendBody: true,
+                body: StreamBuilder<Booking>(
+                    initialData: widget.booking,
+                    stream: _dataService.getBookingById(id: widget.booking.id),
+                    builder: (_, bs) {
+                      final booking = bs.data;
+                      return Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          provider.isLightTheme
+                              ? Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(kBackgroundAsset),
+                                      fit: BoxFit.cover,
                                     ),
-                                    draggable: false,
-                                    // icon: ,
                                   ),
-                                ))
-                              .toSet(),
-                          liteModeEnabled:
-                              defaultTargetPlatform == TargetPlatform.android,
-                          myLocationButtonEnabled: true,
-                          myLocationEnabled: true,
-                          rotateGesturesEnabled: true,
-                          trafficEnabled: true,
-                          zoomControlsEnabled: false,
-                          zoomGesturesEnabled: true,
-                          onMapCreated: (controller) async {
-                            debugPrint(
-                                "Light mode for map => ${provider.isLightTheme}");
-                            final mapStyle = await getMapStyle(
-                                isLightTheme: provider.isLightTheme ?? false);
-                            controller.setMapStyle(mapStyle);
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      width: _kWidth,
-                      top: getProportionateScreenHeight(kSpacingX320),
-                      bottom: kSpacingNone,
-                      child: Container(
-                        clipBehavior: Clip.hardEdge,
-                        decoration: BoxDecoration(
-                          color: _themeData.cardColor,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(kSpacingX24),
-                            topRight: Radius.circular(kSpacingX24),
-                          ),
-                        ),
-                        padding: EdgeInsets.only(
-                          top: getProportionateScreenHeight(kSpacingX16),
-                        ),
-                        height: _kHeight,
-                        width: _kWidth,
-                        child: ListView(
-                          padding: EdgeInsets.symmetric(
-                            horizontal:
-                                getProportionateScreenWidth(kSpacingX24),
-                            vertical: getProportionateScreenHeight(kSpacingX16),
-                          ),
-                          children: [
-                            Text(
-                              widget.booking.reason,
-                              style: _themeData.textTheme.headline5.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(
-                                height:
-                                    getProportionateScreenHeight(kSpacingX16)),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Overall progress",
-                                  style: _themeData.textTheme.caption.copyWith(
-                                    fontWeight: FontWeight.bold,
+                                )
+                              : SizedBox.shrink(),
+                          Positioned(
+                            height: _kHeight * 0.45,
+                            width: _kWidth,
+                            child: Container(
+                              height: _kHeight * 0.45,
+                              width: _kWidth,
+                              child: GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                  target: LatLng(
+                                    booking.locationLat,
+                                    booking.locationLng,
                                   ),
+                                  zoom: 16.0,
                                 ),
-                                Text(
-                                  "${(widget.booking.progress * 100).round()}%",
-                                  style: _themeData.textTheme.caption.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                                height:
-                                    getProportionateScreenHeight(kSpacingX8)),
-                            LinearProgressIndicator(
-                              minHeight: 6,
-                              value: widget.booking.progress,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                _themeData.colorScheme.primary,
-                              ),
-                              backgroundColor: _themeData.disabledColor
-                                  .withOpacity(kEmphasisLow),
-                            ),
-                            SizedBox(
-                                height:
-                                    getProportionateScreenHeight(kSpacingX16)),
-                            buildProfileDescriptor(
-                              context,
-                              themeData: _themeData,
-                              title: "Description",
-                              isEditable: false,
-                              content: widget.booking.description,
-                              onTap: () => showNotAvailableDialog(context),
-                            ),
-                            SizedBox(
-                                height:
-                                    getProportionateScreenHeight(kSpacingX16)),
-                            Container(
-                              margin: EdgeInsets.symmetric(
-                                horizontal:
-                                    getProportionateScreenWidth(kSpacingNone),
-                              ),
-                              child: BadgeableTabBar(
-                                tabs: <BadgeableTabBarItem>[
-                                  BadgeableTabBarItem(title: "Tasks"),
-                                  BadgeableTabBarItem(title: "Overview"),
-                                  BadgeableTabBarItem(title: "Notes"),
-                                ],
-                                onTabSelected: (index) {
-                                  _currentTabIndex = index;
-                                  _pageController.animateToPage(
-                                    index,
-                                    curve: Curves.fastOutSlowIn,
-                                    duration: kSheetDuration,
-                                  );
-                                  setState(() {});
-                                },
-                                color: _themeData.colorScheme.primary,
-                                activeIndex: _currentTabIndex,
-                              ),
-                            ),
-                            SizedBox(
-                                height:
-                                    getProportionateScreenHeight(kSpacingX16)),
-                            Container(
-                              height:
-                                  getProportionateScreenHeight(kSpacingX320),
-                              child: PageView.builder(
-                                controller: _pageController,
-                                clipBehavior: Clip.hardEdge,
-                                pageSnapping: true,
-                                onPageChanged: (index) {
+                                mapToolbarEnabled: false,
+                                buildingsEnabled: true,
+                                compassEnabled: false,
+                                indoorViewEnabled: false,
+                                markers: (markers
+                                      ..add(
+                                        Marker(
+                                          markerId: MarkerId(booking.id),
+                                          position: LatLng(
+                                            booking.locationLat,
+                                            booking.locationLng,
+                                          ),
+                                          draggable: false,
+                                          // icon: ,
+                                        ),
+                                      ))
+                                    .toSet(),
+                                liteModeEnabled: true,
+                                myLocationButtonEnabled: true,
+                                myLocationEnabled: true,
+                                rotateGesturesEnabled: true,
+                                trafficEnabled: true,
+                                zoomControlsEnabled: false,
+                                zoomGesturesEnabled: true,
+                                onMapCreated: (controller) async {
                                   setState(() {
-                                    _currentTabIndex = index;
+                                    _controller = controller;
                                   });
                                 },
-                                itemCount: 3,
-                                itemBuilder: (_, index) {
-                                  // TODO: Add bookings here
-                                  return buildFunctionalityNotAvailablePanel(
-                                      context);
-                                },
                               ),
                             ),
-                          ],
-                        ),
-                      ),
+                          ),
+                          Positioned(
+                            width: _kWidth,
+                            top: _kHeight * 0.43,
+                            bottom: kSpacingNone,
+                            child: Container(
+                              clipBehavior: Clip.hardEdge,
+                              decoration: BoxDecoration(
+                                color: _themeData.cardColor,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(kSpacingX24),
+                                  topRight: Radius.circular(kSpacingX24),
+                                ),
+                              ),
+                              padding: EdgeInsets.only(
+                                top: getProportionateScreenHeight(kSpacingX16),
+                              ),
+                              height: _kHeight,
+                              width: _kWidth,
+                              child: ListView(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      getProportionateScreenWidth(kSpacingX24),
+                                  vertical:
+                                      getProportionateScreenHeight(kSpacingX16),
+                                ),
+                                children: [
+                                  Text(
+                                    widget.booking.reason,
+                                    style:
+                                        _themeData.textTheme.headline5.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height: getProportionateScreenHeight(
+                                          kSpacingX16)),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Overall progress",
+                                        style: _themeData.textTheme.caption
+                                            .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${(widget.booking.progress * 100).round()}%",
+                                        style: _themeData.textTheme.caption
+                                            .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                      height: getProportionateScreenHeight(
+                                          kSpacingX8)),
+                                  LinearProgressIndicator(
+                                    minHeight: kSpacingX4,
+                                    value: widget.booking.progress,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      _themeData.colorScheme.primary,
+                                    ),
+                                    backgroundColor: _themeData.disabledColor
+                                        .withOpacity(kEmphasisLow),
+                                  ),
+                                  SizedBox(
+                                      height: getProportionateScreenHeight(
+                                          kSpacingX16)),
+                                  buildProfileDescriptor(
+                                    context,
+                                    themeData: _themeData,
+                                    title: "Description",
+                                    isEditable: false,
+                                    content: widget.booking.description,
+                                    onTap: () =>
+                                        showNotAvailableDialog(context),
+                                  ),
+                                  SizedBox(
+                                    height: getProportionateScreenHeight(
+                                        kSpacingX16),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: kSpacingNone,
+                            width: _kWidth,
+                            child: _buildAppBar(provider),
+                          ),
+                        ],
+                      );
+                    }),
+                floatingActionButton: FloatingActionButton(
+                  child: Icon(Feather.message_circle),
+                  onPressed: () => context.navigator.push(
+                    Routes.conversationPage,
+                    arguments: ConversationPageArguments(
+                      isCustomer: provider.userType == kCustomerString,
+                      recipient: widget.booking.customerId,
                     ),
-                    Positioned(
-                      top: kSpacingNone,
-                      width: _kWidth,
-                      child: _buildAppBar(provider),
-                    ),
-                  ],
-                );
-              }),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Feather.message_circle),
-        onPressed: () => /*context.navigator.push(Routes.conversationPage)*/null,
-      ),
+                  ),
+                ),
+              )),
     );
   }
 
