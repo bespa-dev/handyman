@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -219,6 +220,82 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                                       onTap: () =>
                                           showNotAvailableDialog(context),
                                     ),
+                                    booking.imageUrl == null
+                                        ? SizedBox.shrink()
+                                        : Column(
+                                            children: [
+                                              SizedBox(
+                                                height:
+                                                    getProportionateScreenHeight(
+                                                        kSpacingX16),
+                                              ),
+                                              AnimatedContainer(
+                                                width: _kWidth,
+                                                height: _kHeight * 0.2,
+                                                duration: kScaleDuration,
+                                                clipBehavior: Clip.hardEdge,
+                                                padding: EdgeInsets.fromLTRB(
+                                                  getProportionateScreenWidth(
+                                                      kSpacingX16),
+                                                  getProportionateScreenHeight(
+                                                      kSpacingX8),
+                                                  getProportionateScreenWidth(
+                                                      kSpacingX16),
+                                                  getProportionateScreenHeight(
+                                                      kSpacingX8),
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: _themeData
+                                                      .scaffoldBackgroundColor
+                                                      .withOpacity(
+                                                          kEmphasisLow),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          kSpacingX16),
+                                                  border: Border.all(
+                                                      color: _themeData
+                                                          .disabledColor
+                                                          .withOpacity(
+                                                              kEmphasisLow)),
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text("Image",
+                                                        style: _themeData
+                                                            .textTheme
+                                                            .headline6),
+                                                    SizedBox(
+                                                      height:
+                                                          getProportionateScreenHeight(
+                                                              kSpacingX8),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        context.navigator.push(
+                                                          Routes
+                                                              .photoPreviewPage,
+                                                          arguments:
+                                                              PhotoPreviewPageArguments(
+                                                            imageUrl: booking
+                                                                .imageUrl,
+                                                          ),
+                                                        );
+                                                      },
+                                                      child: CachedNetworkImage(
+                                                        imageUrl:
+                                                            booking.imageUrl,
+                                                        fit: BoxFit.cover,
+                                                        width: _kWidth,
+                                                        height: _kHeight * 0.14,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                     SizedBox(
                                       height: getProportionateScreenHeight(
                                           kSpacingX16),
@@ -292,7 +369,24 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
 
   Widget _buildJobWidget(
           PrefsProvider provider, Booking booking, DataService service) =>
-      Container();
+      Column(
+        children: [
+          ButtonOutlined(
+            width: _kWidth,
+            themeData: _themeData,
+            onTap: () {
+              service.updateBooking(
+                booking: booking.copyWith(
+                  progress: 1.0,
+                  dueDate: DateTime.now().millisecondsSinceEpoch,
+                ),
+              );
+              setState(() {});
+            },
+            label: "Mark as complete",
+          ),
+        ],
+      );
 
   Widget _buildActionsWidget(
           PrefsProvider provider, Booking booking, DataService service) =>
