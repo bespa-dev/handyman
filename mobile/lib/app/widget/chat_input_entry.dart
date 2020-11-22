@@ -344,7 +344,6 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
           myLocationEnabled: true,
           zoomControlsEnabled: true,
           myLocationButtonEnabled: true,
-          liteModeEnabled: defaultTargetPlatform == TargetPlatform.android,
           initialCameraPosition: CameraPosition(
             target: _currentPosition ??= LatLng(5.5329650, -0.2592160),
             zoom: 16.0,
@@ -353,7 +352,8 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
             _controller = controller;
             var preferences = await sl.getAsync<SharedPreferences>();
             var isLightTheme = preferences.getBool(PrefsUtils.THEME_MODE);
-            final mapStyle = await getMapStyle(isLightTheme: isLightTheme ?? false);
+            final mapStyle =
+                await getMapStyle(isLightTheme: isLightTheme ?? false);
             _controller.setMapStyle(mapStyle);
             setState(() {});
           },

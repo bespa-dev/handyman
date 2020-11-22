@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             child: Container(
                               height: kToolbarHeight,
-                              width: double.infinity,
+                              width: SizeConfig.screenWidth,
                               clipBehavior: Clip.hardEdge,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.all(
@@ -105,7 +105,6 @@ class _HomePageState extends State<HomePage> {
                                 right: getProportionateScreenWidth(kSpacingX8),
                               ),
                               child: Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   IconButton(
                                     tooltip: "Toggle theme",
@@ -117,16 +116,16 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     onPressed: () => provider.toggleTheme(),
                                   ),
-                                  Container(
+                                  Expanded(
                                     child: Text(
                                       "Search for artisans & more",
-                                      style: themeData.textTheme.headline6
+                                      style: themeData.textTheme.button
                                           .copyWith(
                                         color: themeData.iconTheme.color,
                                       ),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
-                                  Spacer(),
                                   StreamBuilder<BaseUser>(
                                       stream: authService.currentUser(),
                                       builder: (context, userSnapshot) => Row(
@@ -160,11 +159,7 @@ class _HomePageState extends State<HomePage> {
                                                         userSnapshot.data?.user,
                                                   ),
                                                 ),
-                                                ringColor: RandomColor(1)
-                                                    .randomColor(
-                                                        colorBrightness:
-                                                            ColorBrightness
-                                                                .dark),
+                                                ringColor: themeData.iconTheme.color,
                                               ),
                                             ],
                                           )),

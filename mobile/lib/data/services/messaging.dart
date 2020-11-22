@@ -7,12 +7,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
-import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/utils.dart';
+import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:handyman/domain/services/messaging.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MessagingServiceImpl implements MessagingService {
   static FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
@@ -42,29 +41,29 @@ class MessagingServiceImpl implements MessagingService {
 
     // Request notification permissions
     final msgService = sl.get<FirebaseMessaging>();
-    msgService.requestNotificationPermissions(const IosNotificationSettings(
-        sound: true, badge: true, alert: true, provisional: true));
-    msgService.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
-      debugPrint("Settings registered: $settings");
-    });
+    if (Platform.isIOS) {
+      msgService.requestNotificationPermissions(const IosNotificationSettings(
+          sound: true, badge: true, alert: true, provisional: true));
+      msgService.onIosSettingsRegistered
+          .listen((IosNotificationSettings settings) {
+        debugPrint("Settings registered: $settings");
+      });
+    }
 
     // Get device token
     final token = await msgService.getToken();
     debugPrint("MessagingServiceImpl._initPlugins: Token => $token");
 
     // Get logged in user instance, if any
-    var prefsProvider = sl.get<PrefsProvider>();
-    var dataService = sl.get<DataService>();
-    var currentUser = prefsProvider.userType == kCustomerString
-        ? await dataService.getCustomerById(id: prefsProvider.userId)?.first
-        : await dataService.getArtisanById(id: prefsProvider.userId)?.first;
+    var authService = sl.get<AuthService>();
+    var currentUser = await authService.currentUser().first;
     if (currentUser != null && token != null) {
       // Update user token
       var updatedUser = currentUser.user?.copyWith(token: token);
       debugPrint(
           "MessagingServiceImpl._initPlugins: Updated user => $updatedUser");
-      if (updatedUser != null) await dataService.updateUser(currentUser);
+      if (updatedUser != null)
+        await sl.get<DataService>().updateUser(currentUser);
     }
 
     // Configure messaging
@@ -99,8 +98,7 @@ class MessagingServiceImpl implements MessagingService {
       String channel = NotificationUtils.BOOKING_CHANNEL,
       dynamic payload}) async {
     // get user login state
-    var preferences = await sl.getAsync<SharedPreferences>();
-    final isLoggedIn = preferences.getString(PrefsUtils.USER_ID) != null;
+    final isLoggedIn = sl.get<PrefsProvider>().isLoggedIn;
 
     if (isLoggedIn) {
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(

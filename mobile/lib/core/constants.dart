@@ -7,6 +7,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:handyman/app/widget/buttons.dart';
 
+import 'service_locator.dart';
 import 'size_config.dart';
 
 /// Defaults
@@ -70,9 +71,38 @@ Widget buildFunctionalityNotAvailablePanel(BuildContext context) => Container(
     );
 
 /// Sets map style
-getMapStyle({bool isLightTheme = false}) async =>
+Future getMapStyle({bool isLightTheme = false}) async =>
     await rootBundle.loadString(
         isLightTheme ? "assets/map_style.json" : "assets/dark_map_style.json");
+
+/// Dev security
+Widget buildAppLockWidget(BuildContext context, {@required String message}) =>
+    Container(
+      height: SizeConfig.screenHeight,
+      width: SizeConfig.screenWidth,
+      padding: EdgeInsets.symmetric(
+          horizontal: getProportionateScreenWidth(kSpacingX24)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            message ?? "App lock activated remotely",
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          SizedBox(height: getProportionateScreenHeight(kSpacingX36)),
+          ButtonOutlined(
+            width: SizeConfig.screenWidth * 0.45,
+            themeData: Theme.of(context),
+            onTap: () => launchUrl(
+                url:
+                    "mailto:codelbas.quabynah@gmail.com?subject=Unlock app&body=$kAppName activation required"),
+            label: "Contact Developer",
+          )
+        ],
+      ),
+    );
 
 /// Dimensions
 const double kSpacingNone = 0.0;

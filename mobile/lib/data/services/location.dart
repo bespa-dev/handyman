@@ -7,7 +7,8 @@ import 'package:meta/meta.dart';
 class LocationServiceImpl implements LocationService {
   LocationServiceImpl._();
 
-  static LocationService create() => LocationServiceImpl._();
+  static LocationServiceImpl _instance;
+  static LocationService create() => _instance ??= LocationServiceImpl._();
 
   @override
   Future<LocationMetaData> getCurrentLocation() async {

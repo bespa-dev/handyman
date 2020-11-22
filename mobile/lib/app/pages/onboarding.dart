@@ -30,7 +30,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   final _subtitles = const <String>[
     "$kAppName provides badges to its artisans based on the services provided by the artisans and reviews made by customers",
-    "$kAppName allows you to book service of an artisan within the shortest time period. Save yourself with stress and let $kAppName handle your the right artisan for the perfect service",
+    "$kAppName allows you to book service of an artisan within the shortest time period. Save yourself with stress and let $kAppName get you the right artisan for the perfect service",
     "$kAppName is here to connect customers and artisans at a more simple and specific way",
     "$kAppName provides you with the option to book any artisan at any point in time and place you need the artisans service",
     "With the $kAppName platform customers are able to get in contact with 1000 and more artisans available for a service needed",

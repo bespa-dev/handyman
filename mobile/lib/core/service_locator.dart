@@ -11,6 +11,7 @@ import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/data/services/data.dart';
 import 'package:handyman/data/services/location.dart';
 import 'package:handyman/data/services/messaging.dart';
+import 'package:handyman/data/services/remote_config.dart';
 import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
@@ -44,7 +45,7 @@ void launchUrl({@required String url}) async {
 Future<void> registerServiceLocator() async {
   // Shared Preferences
   sl.registerLazySingletonAsync<SharedPreferences>(
-          () => SharedPreferences.getInstance());
+      () => SharedPreferences.getInstance());
 
   // Local database
   sl.registerSingleton<LocalDatabase>(LocalDatabase.instance);
@@ -58,15 +59,16 @@ Future<void> registerServiceLocator() async {
   sl.registerLazySingleton<DataService>(() => DataServiceImpl.instance);
   sl.registerLazySingleton<StorageService>(() => StorageServiceImpl.instance);
   sl.registerLazySingleton<MessagingService>(
-          () => MessagingServiceImpl.instance);
+      () => MessagingServiceImpl.instance);
+  sl.registerLazySingletonAsync<RemoteConfigService>(
+      () => RemoteConfigService.getInstance());
 
   // Firebase APIs
   sl.registerLazySingletonAsync<RemoteConfig>(() => RemoteConfig.instance);
   sl.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
   sl.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
   sl.registerLazySingleton<FirebaseMessaging>(() => FirebaseMessaging());
-  sl.registerLazySingleton<StorageReference>(() =>
-      FirebaseStorage.instance
-          .ref()
-          .child(kAppName.toLowerCase().replaceAll(" ", "_")));
+  sl.registerLazySingleton<StorageReference>(() => FirebaseStorage.instance
+      .ref()
+      .child(kAppName.toLowerCase().replaceAll(" ", "_")));
 }

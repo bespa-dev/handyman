@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "419742430509-pni2j449614ge1ghu965lvdm92skotfs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.azaware.handyman",
+            "certificate_hash": "faaf5a2dab165836189d0cd99f15d4264e84624a"
+          }
+        },
+        {
           "client_id": "419742430509-odot6pbu6a5p5oqas01bpod18lrcntnq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

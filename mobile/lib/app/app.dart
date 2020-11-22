@@ -11,6 +11,7 @@ import 'package:handyman/core/theme.dart';
 import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/data/services/data.dart';
 import 'package:handyman/data/services/messaging.dart';
+import 'package:handyman/data/services/remote_config.dart';
 import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
@@ -27,16 +28,8 @@ class _HandyManAppState extends State<HandyManApp> {
   final _analytics = FirebaseAnalytics();
 
   Future<void> setupRemoteConfig() async {
-    // RemoteConfig
-    final remoteConfig = await sl.getAsync<RemoteConfig>();
-
-    // Enable developer mode to relax fetch throttling
-    remoteConfig.setConfigSettings(RemoteConfigSettings(debugMode: true));
-    // TODO: Configure remote config
-    remoteConfig.setDefaults(<String, dynamic>{
-      'welcome': 'default welcome',
-      'hello': 'default hello',
-    });
+    var configService = await sl.getAsync<RemoteConfigService>();
+    await configService.init();
   }
 
   @override

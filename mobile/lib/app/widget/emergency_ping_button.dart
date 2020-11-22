@@ -125,11 +125,11 @@ class _EmergencyPingButtonState extends State<EmergencyPingButton> {
             onTap: () async {
               if (provider.emergencyContactNumber != null) {
                 // TODO: Add emergency calling API here
-                _isCalling = !_isCalling;
-                _sheetController.rebuild();
-                await Future.delayed(kTestDuration);
+                // _isCalling = !_isCalling;
+                // _sheetController.rebuild();
+                // await Future.delayed(kScaleDuration);
                 launchUrl(url: "tel:${provider.emergencyContactNumber}");
-                _isCalling = !_isCalling;
+                // _isCalling = !_isCalling;
               }
             },
             child: Container(
