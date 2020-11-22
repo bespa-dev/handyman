@@ -104,7 +104,7 @@ class _ConversationPageState extends State<ConversationPage> {
                     user: snapshot.data,
                     onMessageSent: (content) async {
                       if (content.isEmpty) return;
-                      final timestamp = DateFormat.jms().format(DateTime.now());
+                      final timestamp = DateFormat.jm().format(DateTime.now());
                       final conversation = Conversation(
                         id: Uuid().v4(),
                         author: snapshot.data?.user?.id,

@@ -7,6 +7,7 @@ import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/data/local_database.dart';
 import 'package:handyman/domain/models/user.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:meta/meta.dart';
 import 'package:provider/provider.dart';
 import 'package:random_color/random_color.dart';
@@ -45,6 +46,7 @@ class _ChatListItemState extends State<ChatListItem> {
         final color =
             provider.isLightTheme ? kChatBackgroundLight : kChatBackgroundDark;
         final textAlignment = isMe ? TextAlign.end : TextAlign.start;
+        final timestampInMilliseconds = widget.conversation.createdAt;
 
         return InkWell(
           onTap: () => widget.onTap(conversation),
@@ -78,7 +80,7 @@ class _ChatListItemState extends State<ChatListItem> {
                       ? getProportionateScreenWidth(kSpacingX16)
                       : getProportionateScreenWidth(kSpacingX4),
                   top: getProportionateScreenWidth(kSpacingX8),
-                  bottom: getProportionateScreenWidth(kSpacingX16),
+                  bottom: getProportionateScreenWidth(kSpacingX8),
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
@@ -96,7 +98,7 @@ class _ChatListItemState extends State<ChatListItem> {
                   crossAxisAlignment:
                       isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                   children: [
-                    // TODO: Add support for images & timestamps
+                    // TODO: Add support for images
                     // Use  -> Jiffy.unix(timestampInMilliseconds).yMd
                     ConstrainedBox(
                       constraints: BoxConstraints(
@@ -106,6 +108,12 @@ class _ChatListItemState extends State<ChatListItem> {
                         conversation.content,
                         textAlign: textAlignment,
                       ),
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(kSpacingX4)),
+                    Text(
+                      Jiffy(widget.conversation.createdAt,"h:mm:ss a").fromNow(),
+                      textAlign: textAlignment,
+                      style: Theme.of(context).textTheme.overline,
                     ),
                   ],
                 ),
@@ -137,41 +145,45 @@ class ChatMessages extends StatefulWidget {
 
 class _ChatMessagesState extends State<ChatMessages> {
   @override
-  Widget build(BuildContext context) => StreamBuilder<List<Conversation>>(
-      stream: widget.messages,
-      builder: (context, snapshot) {
-        // FIXME: Add swipe action for instant reply
-        return snapshot.hasData
-            ? AnimationLimiter(
-                child: ListView.separated(
-                  padding: EdgeInsets.only(
-                      bottom: getProportionateScreenHeight(kSpacingX8)),
-                  scrollDirection: Axis.vertical,
-                  reverse: true,
-                  clipBehavior: Clip.hardEdge,
-                  separatorBuilder: (_, __) => SizedBox(
-                      height: getProportionateScreenHeight(kSpacingX8)),
-                  itemBuilder: (_, index) {
-                    final conversation = snapshot.data[index];
-                    return AnimationConfiguration.staggeredList(
-                      duration: kScaleDuration,
-                      position: index,
-                      child: SlideAnimation(
-                        verticalOffset: kSlideOffset,
-                        child: FadeInAnimation(
-                          child: ChatListItem(
-                            onTap: (_) {},
-                            conversation: conversation,
-                            recipient: widget.recipient,
-                            sender: widget.sender,
-                          ),
-                        ),
+  Widget build(BuildContext context) => Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: getProportionateScreenWidth(kSpacingX8)),
+        child: StreamBuilder<List<Conversation>>(
+            stream: widget.messages,
+            builder: (context, snapshot) {
+              // FIXME: Add swipe action for instant reply
+              return snapshot.hasData
+                  ? AnimationLimiter(
+                      child: ListView.separated(
+                        padding: EdgeInsets.only(
+                            bottom: getProportionateScreenHeight(kSpacingX8)),
+                        scrollDirection: Axis.vertical,
+                        reverse: true,
+                        clipBehavior: Clip.hardEdge,
+                        separatorBuilder: (_, __) => SizedBox(
+                            height: getProportionateScreenHeight(kSpacingX8)),
+                        itemBuilder: (_, index) {
+                          final conversation = snapshot.data[index];
+                          return AnimationConfiguration.staggeredList(
+                            duration: kScaleDuration,
+                            position: index,
+                            child: SlideAnimation(
+                              verticalOffset: kSlideOffset,
+                              child: FadeInAnimation(
+                                child: ChatListItem(
+                                  onTap: (_) {},
+                                  conversation: conversation,
+                                  recipient: widget.recipient,
+                                  sender: widget.sender,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        itemCount: snapshot.data.length,
                       ),
-                    );
-                  },
-                  itemCount: snapshot.data.length,
-                ),
-              )
-            : Container();
-      });
+                    )
+                  : Container();
+            }),
+      );
 }

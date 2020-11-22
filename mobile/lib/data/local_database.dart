@@ -195,7 +195,7 @@ class MessageDao extends DatabaseAccessor<LocalDatabase>
 
   Stream<List<Conversation>> conversationWithRecipient(
       {@required String sender, @required String recipient}) {
-    var streamSender = (select(message)
+    var streamSender = /*(select(message)
           ..where((item) => item.author.equals(sender))
           ..where((item) => item.recipient.equals(recipient))
           ..orderBy(
@@ -203,9 +203,10 @@ class MessageDao extends DatabaseAccessor<LocalDatabase>
               (u) => OrderingTerm(
                   expression: u.createdAt, mode: OrderingMode.desc),
             ],
-          ))
+          ))*/
+    select(message)
         .watch();
-    var streamRecipient = (select(message)
+    var streamRecipient = /*(select(message)
           ..where((item) => item.author.equals(recipient))
           ..where((item) => item.recipient.equals(sender))
           ..orderBy(
@@ -213,9 +214,10 @@ class MessageDao extends DatabaseAccessor<LocalDatabase>
               (u) => OrderingTerm(
                   expression: u.createdAt, mode: OrderingMode.desc),
             ],
-          ))
+          ))*/
+    select(message)
         .watch();
-    return StreamGroup.merge([streamSender, streamRecipient]);
+    return StreamGroup.merge([streamSender, streamRecipient]).asBroadcastStream();
   }
 }
 

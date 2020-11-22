@@ -5,12 +5,12 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/core/utils.dart';
-import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:meta/meta.dart';
 
@@ -43,7 +43,7 @@ class _UserInputState extends State<UserInput> {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: double.infinity,
+        width: SizeConfig.screenWidth,
         child: Column(
           children: [
             Divider(),
@@ -66,26 +66,42 @@ class _UserInputState extends State<UserInput> {
                 currentInputSelector = selector;
                 if (selector == InputSelector.KEYBOARD)
                   FocusScope.of(context).requestFocus(_focusNode);
-                else if (selector == InputSelector.PHONE)
-                  widget.user.user.phone.isNotEmpty
-                      ? showNotAvailableDialog(context)
-                      : launchUrl(url: "tel:${widget.user.user.phone}");
-                else if (selector == InputSelector.DM)
-                  widget.user.user.email.isEmpty
-                      ? showNotAvailableDialog(context)
-                      : launchUrl(
-                          url:
-                              "mailto:${widget.user.user.email}?subject=Request%20your%20service");
-                else {
+                else if (selector == InputSelector.PHONE) if (widget
+                    .user.user.phone.isEmpty)
+                  ScaffoldMessenger.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(
+                      SnackBar(
+                        content: Text("User does not have a phone number"),
+                      ),
+                    );
+                else
+                  launchUrl(url: "tel:${widget.user.user.phone}");
+                else if (selector == InputSelector.DM) {
+                  if (widget.user.user.email.isEmpty)
+                    ScaffoldMessenger.of(context)
+                      ..removeCurrentSnackBar()
+                      ..showSnackBar(
+                        SnackBar(
+                          content: Text("User does not have an email address"),
+                        ),
+                      );
+                  else
+                    launchUrl(
+                        url:
+                            "mailto:${widget.user.user.email}?subject=Requesting%20for%20your%20service");
+                } else {
                   FocusScope.of(context).unfocus();
                   setState(() {});
                 }
               },
-              sendMessageEnabled: textController.text.isNotEmpty,
+              sendMessageEnabled: true,
               onMessageSent: () {
-                widget.onMessageSent(textController.text.trim());
-                textController.clear();
-                setState(() {});
+                if (textController.text.isNotEmpty) {
+                  widget.onMessageSent(textController.text.trim());
+                  textController.clear();
+                  setState(() {});
+                }
               },
               currentInputSelector: currentInputSelector,
             ),
@@ -137,11 +153,11 @@ class _UserInputTextState extends State<UserInputText> {
     final themeData = Theme.of(context);
 
     return Container(
-      width: double.infinity,
+      width: SizeConfig.screenWidth,
       alignment: Alignment.center,
       padding: EdgeInsets.only(left: getProportionateScreenWidth(kSpacingX16)),
       // height: getProportionateScreenHeight(kSpacingX48),
-      child: TextFormField(
+     /* child: TextFormField(
         focusNode: widget.focusNode,
         autofocus: widget.focusState,
         minLines: 2,
@@ -160,7 +176,7 @@ class _UserInputTextState extends State<UserInputText> {
         autocorrect: true,
         textInputAction: TextInputAction.send,
         onTap: () => widget.onTextFieldFocused(true),
-      ),
+      ),*/
     );
   }
 }

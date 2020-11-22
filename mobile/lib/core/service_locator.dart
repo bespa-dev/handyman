@@ -58,16 +58,15 @@ Future<void> registerServiceLocator() async {
   sl.registerLazySingleton<AuthService>(() => FirebaseAuthService.create());
   sl.registerLazySingleton<DataService>(() => DataServiceImpl.instance);
   sl.registerLazySingleton<StorageService>(() => StorageServiceImpl.instance);
-  sl.registerLazySingleton<MessagingService>(
-      () => MessagingServiceImpl.instance);
-  sl.registerLazySingletonAsync<RemoteConfigService>(
+  sl.registerSingleton<MessagingService>(MessagingServiceImpl.instance);
+  sl.registerSingletonAsync<RemoteConfigService>(
       () => RemoteConfigService.getInstance());
 
   // Firebase APIs
-  sl.registerLazySingletonAsync<RemoteConfig>(() => RemoteConfig.instance);
   sl.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
   sl.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
   sl.registerLazySingleton<FirebaseMessaging>(() => FirebaseMessaging());
+  sl.registerSingletonAsync<RemoteConfig>(() => RemoteConfig.instance);
   sl.registerLazySingleton<StorageReference>(() => FirebaseStorage.instance
       .ref()
       .child(kAppName.toLowerCase().replaceAll(" ", "_")));
