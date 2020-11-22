@@ -18,7 +18,7 @@ class MessagingServiceImpl implements MessagingService {
       FlutterLocalNotificationsPlugin();
 
   MessagingServiceImpl._() {
-    _initPlugins();
+    //_initPlugins();
   }
 
   // Creates an instance of the class and initializes plugins

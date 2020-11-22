@@ -10,9 +10,9 @@ import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/core/utils.dart';
+import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/domain/models/user.dart';
 import 'package:meta/meta.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 enum InputSelector { NONE, KEYBOARD, MAP, DM, EMOJI, PHONE, PICTURE }
 
@@ -350,8 +350,7 @@ class __SelectorExpandedState extends State<_SelectorExpanded> {
           ),
           onMapCreated: (controller) async {
             _controller = controller;
-            var preferences = await sl.getAsync<SharedPreferences>();
-            var isLightTheme = preferences.getBool(PrefsUtils.THEME_MODE);
+            var isLightTheme = sl.get<PrefsProvider>().isLoggedIn;
             final mapStyle =
                 await getMapStyle(isLightTheme: isLightTheme ?? false);
             _controller.setMapStyle(mapStyle);

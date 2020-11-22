@@ -32,7 +32,6 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
   double _kWidth = SizeConfig.screenWidth, _kHeight = SizeConfig.screenHeight;
   ThemeData _themeData;
   GoogleMapController _controller;
-  var markers = <Marker>[];
   bool _isAccepted = false;
 
   @override
@@ -103,19 +102,19 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                             buildingsEnabled: true,
                             compassEnabled: false,
                             indoorViewEnabled: false,
-                            markers: (markers
-                                  ..add(
-                                    Marker(
-                                      markerId: MarkerId(booking.id),
-                                      position: LatLng(
-                                        booking.locationLat,
-                                        booking.locationLng,
-                                      ),
-                                      draggable: false,
-                                      // icon: ,
-                                    ),
-                                  ))
-                                .toSet(),
+                            markers: Set.from(
+                              [
+                                Marker(
+                                  markerId: MarkerId(booking.id),
+                                  position: LatLng(
+                                    booking.locationLat,
+                                    booking.locationLng,
+                                  ),
+                                  draggable: false,
+                                  // icon: ,
+                                ),
+                              ],
+                            ),
                             trafficEnabled: true,
                             zoomControlsEnabled: false,
                             zoomGesturesEnabled: true,
@@ -334,8 +333,7 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
                             onPressed: () => context.navigator.push(
                                   Routes.conversationPage,
                                   arguments: ConversationPageArguments(
-                                    isCustomer:
-                                        provider.userType == kCustomerString,
+                                    isCustomer: true,
                                     recipient: widget.booking.customerId,
                                   ),
                                 ))
@@ -357,13 +355,18 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
             width: _kWidth,
             themeData: _themeData,
             onTap: () {
+              ScaffoldMessenger.of(context)
+                ..removeCurrentSnackBar()
+                ..showSnackBar(SnackBar(
+                  content: Text("Task completed successfully"),
+                ));
+              context.navigator.pop();
               service.updateBooking(
                 booking: booking.copyWith(
                   progress: 1.0,
                   dueDate: DateTime.now().millisecondsSinceEpoch,
                 ),
               );
-              setState(() {});
             },
             label: "Mark as complete",
           ),

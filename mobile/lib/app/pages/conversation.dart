@@ -83,5 +83,48 @@ class _ConversationPageState extends State<ConversationPage> {
   }
 
   Widget _buildChatWidget(BaseUser recipient, DataService service) =>
-      Container();
+      Consumer<AuthService>(
+        builder: (_, authService, __) => StreamBuilder<BaseUser>(
+          stream: authService.currentUser(),
+          builder: (context, snapshot) => Stack(
+            children: [
+              Column(
+                children: [
+                  Expanded(
+                    child: ChatMessages(
+                      messages: service.getConversation(
+                        sender: snapshot.data?.user?.id,
+                        recipient: widget.recipient,
+                      ),
+                      recipient: recipient,
+                      sender: snapshot.data,
+                    ),
+                  ),
+                  UserInput(
+                    user: snapshot.data,
+                    onMessageSent: (content) async {
+                      if (content.isEmpty) return;
+                      final timestamp = DateFormat.jms().format(DateTime.now());
+                      final conversation = Conversation(
+                        id: Uuid().v4(),
+                        author: snapshot.data?.user?.id,
+                        recipient: widget.recipient,
+                        content: content,
+                        createdAt: timestamp,
+                      );
+                      await service.sendMessage(conversation: conversation);
+                    },
+                  ),
+                ],
+              ),
+              Positioned(
+                top: kSpacingNone,
+                left: kSpacingNone,
+                right: kSpacingNone,
+                child: ChatHeader(user: recipient),
+              ),
+            ],
+          ),
+        ),
+      );
 }
