@@ -50,9 +50,7 @@ class _BookingsDetailsPageState extends State<BookingsDetailsPage> {
       MarkerGenerator([
         Text("Hello"),
       ], (bitmaps) {
-        setState(() {
-          // markers = mapBitmapsToMarkers(bitmaps);
-        });
+        setState(() {});
       }).generate(context);
     }
   }
