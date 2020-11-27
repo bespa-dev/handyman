@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "handyman-mobile"
+    "default": "handyman-mobile",
+    "handyman": "handyman-mobile-app"
   }
 }
