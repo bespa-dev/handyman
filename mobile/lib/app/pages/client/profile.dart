@@ -188,26 +188,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                           ),
                                           Divider(),
                                           ListTile(
-                                            onTap: () => null,
+                                            onTap: () async {
+                                              Contact contact =
+                                                  await _contactPicker
+                                                      .selectContact();
+                                              provider.updateEmergencyContact(
+                                                  contact.phoneNumber.number);
+                                              setState(() {});
+                                            },
                                             title: Text("Emergency Contact"),
                                             subtitle: Text(provider
                                                     .emergencyContactNumber ??
                                                 "Select an emergency contact"),
                                             leading: Icon(Feather.users),
-                                            trailing: IconButton(
-                                              icon: Icon(
-                                                Feather.user_plus,
-                                                size: kSpacingX16,
-                                              ),
-                                              onPressed: () async {
-                                                Contact contact =
-                                                    await _contactPicker
-                                                        .selectContact();
-                                                provider.updateEmergencyContact(
-                                                    contact.phoneNumber.number);
-                                                setState(() {});
-                                              },
-                                            ),
                                           ),
                                           Divider(),
                                           SizedBox(

@@ -17,7 +17,6 @@ import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
 import 'package:handyman/domain/services/messaging.dart';
 import 'package:provider/provider.dart';
-import 'package:random_color/random_color.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -119,8 +118,8 @@ class _HomePageState extends State<HomePage> {
                                   Expanded(
                                     child: Text(
                                       "Search for artisans & more",
-                                      style: themeData.textTheme.button
-                                          .copyWith(
+                                      style:
+                                          themeData.textTheme.button.copyWith(
                                         color: themeData.iconTheme.color,
                                       ),
                                       textAlign: TextAlign.center,
@@ -150,16 +149,10 @@ class _HomePageState extends State<HomePage> {
                                                 url: userSnapshot
                                                     .data?.user?.avatar,
                                                 radius: kSpacingX36,
-                                                onTap: () =>
-                                                    context.navigator.push(
-                                                  Routes.userInfoPage,
-                                                  arguments:
-                                                      UserInfoPageArguments(
-                                                    customer:
-                                                        userSnapshot.data?.user,
-                                                  ),
-                                                ),
-                                                ringColor: themeData.iconTheme.color,
+                                                onTap: () => context.navigator
+                                                    .push(Routes.profilePage),
+                                                ringColor:
+                                                    themeData.iconTheme.color,
                                               ),
                                             ],
                                           )),
