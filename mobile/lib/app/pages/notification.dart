@@ -251,8 +251,8 @@ class _NotificationPageState extends State<NotificationPage> {
             SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
             Container(
               height: provider.userType == kCustomerString
-                  ? _kHeight
-                  : _kHeight * 0.5,
+                  ? _kHeight * 0.75
+                  : _kHeight * 0.6,
               width: _kWidth,
               child: Consumer<DataService>(
                 builder: (_, dataService, __) => PageView.builder(
@@ -285,14 +285,14 @@ class _NotificationPageState extends State<NotificationPage> {
             userId: provider.userId, type: PayloadType.BOOKING),
         builder: (_, snapshot) {
           return ListView.separated(
-            padding: EdgeInsets.only(
-              bottom: _kHeight * 0.25,
-            ),
+            padding: EdgeInsets.zero,
             clipBehavior: Clip.hardEdge,
             itemBuilder: (_, index) {
               final item = snapshot.data[index];
-              return snapshot.hasData
-                  ? AnimationConfiguration.staggeredList(
+              print(item);
+              return snapshot.hasError || snapshot.data.isEmpty
+                  ? _buildEmptyListView("You have no bookings for today")
+                  : AnimationConfiguration.staggeredList(
                       position: index,
                       duration: kScaleDuration,
                       child: SlideAnimation(
@@ -308,13 +308,13 @@ class _NotificationPageState extends State<NotificationPage> {
                           ),
                         ),
                       ),
-                    )
-                  : _buildEmptyListView("You have no bookings for today");
+                    );
             },
             separatorBuilder: (_, __) =>
                 SizedBox(height: getProportionateScreenHeight(kSpacingX2)),
             itemCount: snapshot.data.length,
           );
+          // return _buildEmptyListView("You have no bookings for today");
         },
       );
 
@@ -394,17 +394,17 @@ class _NotificationPageState extends State<NotificationPage> {
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(
-              height: getProportionateScreenHeight(kSpacingX24),
-            ),
-            ButtonOutlined(
-              width: _kWidth * 0.6,
-              themeData: _themeData,
-              gravity: ButtonIconGravity.END,
-              icon: Icons.arrow_right_alt_outlined,
-              onTap: () => showNotAvailableDialog(context),
-              label: "Earn Skills Badge",
-            ),
+            // SizedBox(
+            //   height: getProportionateScreenHeight(kSpacingX24),
+            // ),
+            // ButtonOutlined(
+            //   width: _kWidth * 0.6,
+            //   themeData: _themeData,
+            //   gravity: ButtonIconGravity.END,
+            //   icon: Icons.arrow_right_alt_outlined,
+            //   onTap: () => showNotAvailableDialog(context),
+            //   label: "Earn Skills Badge",
+            // ),
           ],
         ),
       );
