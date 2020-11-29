@@ -1,8 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
+import 'package:handyman/app/pages/login.dart';
 import 'package:handyman/app/routes/route.gr.dart';
+import 'package:handyman/app/widget/buttons.dart';
 import 'package:handyman/app/widget/category_card.dart';
 import 'package:handyman/app/widget/emergency_ping_button.dart';
 import 'package:handyman/app/widget/user_avatar.dart';
@@ -48,11 +51,59 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    return Scaffold(
-      key: _scaffoldKey,
-      body: Consumer<AuthService>(
-        builder: (_, authService, __) => Consumer<PrefsProvider>(
-          builder: (_, provider, __) => SafeArea(
+    return Consumer<PrefsProvider>(
+      builder: (_, provider, __) => Consumer<AuthService>(
+        builder: (_, authService, __) => Scaffold(
+          key: _scaffoldKey,
+          drawer: Drawer(
+            child: Column(
+              children: [
+                ListTile(
+                  title: Text("My Account"),
+                  onTap: () => context.navigator.popAndPush(
+                    Routes.profilePage,
+                  ),
+                  leading: Icon(Entypo.user),
+                  selected: false,
+                  selectedTileColor: themeData.selectedRowColor,
+                ),
+                ListTile(
+                  title: Text("Notifications"),
+                  onTap: () => context.navigator.push(
+                    Routes.notificationPage,
+                    arguments: NotificationPageArguments(
+                      payload: NotificationPayload.empty(),
+                    ),
+                  ),
+                  leading: Icon(Entypo.bell),
+                ),
+                Divider(),
+                AboutListTile(
+                  applicationVersion: kAppVersion,
+                  applicationName: kAppName,
+                  applicationLegalese: kAppSloganDesc,
+                  applicationIcon: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: getProportionateScreenHeight(kSpacingX16),
+                    ),
+                    child: Image(
+                      image: Svg(
+                          provider.isLightTheme ? kLogoAsset : kLogoDarkAsset),
+                      height: getProportionateScreenHeight(kSpacingX48),
+                      width: getProportionateScreenHeight(kSpacingX48),
+                    ),
+                  ),
+                ),
+                Divider(),
+                Spacer(),
+                _buildLogoutButton(authService),
+                SizedBox(
+                  height: getProportionateScreenHeight(kSpacingX4),
+                ),
+              ],
+            ),
+          ),
+          body: SafeArea(
             child: EmergencyPingButton(
               child: Stack(
                 fit: StackFit.expand,
@@ -274,6 +325,59 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLogoutButton(AuthService authService) {
+    final _themeData = Theme.of(context);
+
+    return InkWell(
+      onTap: () => showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text("Leaving already?"),
+          content: Text(
+            kSignOutText,
+          ),
+          actions: [
+            ButtonClear(
+              text: "No",
+              onPressed: () => ctx.navigator.pop(),
+              themeData: _themeData,
+            ),
+            Consumer<AuthService>(
+              builder: (_, authService, __) => ButtonClear(
+                text: "Yes",
+                onPressed: () {
+                  ctx.navigator.pop();
+                  authService.signOut();
+                  context.navigator.pushAndRemoveUntil(
+                    Routes.loginPage,
+                    (route) => route is LoginPage,
+                  );
+                },
+                themeData: _themeData,
+              ),
+            ),
+          ],
+        ),
+      ),
+      splashColor: _themeData.splashColor,
+      child: Container(
+        alignment: Alignment.center,
+        height: getProportionateScreenHeight(kToolbarHeight),
+        width: SizeConfig.screenWidth * 0.5,
+        decoration: BoxDecoration(
+          color: _themeData.colorScheme.error,
+          borderRadius: BorderRadius.circular(kSpacingX36),
+        ),
+        child: Text(
+          "Sign out".toUpperCase(),
+          style: _themeData.textTheme.button.copyWith(
+            color: _themeData.colorScheme.onError,
           ),
         ),
       ),

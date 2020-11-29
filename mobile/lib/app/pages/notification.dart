@@ -157,7 +157,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                 ),
                                 SizedBox(
                                   height:
-                                      getProportionateScreenHeight(kSpacingX8),
+                                      getProportionateScreenHeight(kSpacingX4),
                                 ),
                                 ButtonClear(
                                   text: "View profile",
@@ -252,7 +252,7 @@ class _NotificationPageState extends State<NotificationPage> {
             Container(
               height: provider.userType == kCustomerString
                   ? _kHeight * 0.75
-                  : _kHeight * 0.6,
+                  : _kHeight * 0.5,
               width: _kWidth,
               child: Consumer<DataService>(
                 builder: (_, dataService, __) => PageView.builder(

@@ -28,7 +28,7 @@ class MessagingServiceImpl implements MessagingService {
     // initialise the plugin. `logo_colored` needs to be a added as
     // a drawable resource to the Android head project
     var initializationSettingsAndroid =
-        AndroidInitializationSettings('logo_colored');
+        AndroidInitializationSettings('app_logo');
     var initializationSettingsIOS = IOSInitializationSettings(
         requestSoundPermission: true,
         requestBadgePermission: true,
