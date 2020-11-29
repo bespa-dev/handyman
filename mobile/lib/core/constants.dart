@@ -157,9 +157,8 @@ const kArtisanString = "Artisan";
 const kFunctionalityUnavailable =
     "Functionality is currently unavailable. Try again after the next update. Thank you";
 const kCustomerString = "Customer";
-const kLogoAsset = "assets/logo/logo_colored.svg";
-const kLogoDarkAsset = "assets/logo/logo_colored.svg";
-// const kLogoDarkAsset = "assets/logo/logo_dark.svg";
+const kLogoAsset = "assets/logo/logo.svg";
+const kLogoDarkAsset = "assets/logo/logo_dark.svg";
 const kTimeSvgAsset = "assets/svg/time.svg";
 const kPeopleSvgAsset = "assets/svg/people.svg";
 const kBookingSvgAsset = "assets/svg/booking.svg";
