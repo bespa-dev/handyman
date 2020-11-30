@@ -11,7 +11,6 @@ import 'core/utils.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   // Locale support for calendar date formatting
   await initializeDateFormatting();
 
