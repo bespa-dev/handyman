@@ -4,7 +4,6 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/guard.dart';
-import 'package:handyman/app/routes/route.gr.dart' as gr;
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/theme.dart';
 import 'package:handyman/data/services/auth.dart';
@@ -17,6 +16,8 @@ import 'package:handyman/domain/services/data.dart';
 import 'package:handyman/domain/services/messaging.dart';
 import 'package:handyman/domain/services/storage.dart';
 import 'package:provider/provider.dart';
+
+import 'routes/route.gr.dart' as gr;
 
 class HandyManApp extends StatefulWidget {
   @override
