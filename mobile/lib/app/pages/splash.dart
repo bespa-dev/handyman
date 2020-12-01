@@ -5,6 +5,7 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/route.gr.dart';
 import 'package:handyman/app/widget/buttons.dart';
+import 'package:handyman/app/widget/loaders.dart';
 import 'package:handyman/core/constants.dart';
 import 'package:handyman/core/size_config.dart';
 import 'package:handyman/domain/services/auth.dart';
@@ -22,6 +23,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   bool _isLoading = false;
+  bool _isFetchingLoginState = true;
 
   @override
   void initState() {
@@ -50,6 +52,9 @@ class _SplashPageState extends State<SplashPage> {
       // watch current user state
       authService.currentUser().listen((currentUser) {
         logger.i("Current user => $currentUser");
+        setState(() {
+          _isFetchingLoginState = currentUser != null;
+        });
         if (currentUser != null) {
           // Complete user's account
           context.navigator.popAndPush(
@@ -84,164 +89,178 @@ class _SplashPageState extends State<SplashPage> {
     final kWidth = SizeConfig.screenWidth;
 
     return Scaffold(
-      body: Consumer<PrefsProvider>(
-        builder: (_, provider, __) => Consumer<AuthService>(
-          builder: (_, authService, __) => Consumer<DataService>(
-            builder: (_, dataService, __) => SafeArea(
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  provider.isLightTheme
-                      ? Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(kBackgroundAsset),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        )
-                      : SizedBox.shrink(),
-                  provider.showAppFeatures
-                      ? Container(
-                          width: kWidth,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                height:
-                                    getProportionateScreenHeight(kSpacingX120),
-                                width:
-                                    getProportionateScreenWidth(kSpacingX120),
-                                clipBehavior: Clip.hardEdge,
-                                margin: EdgeInsets.symmetric(
-                                  horizontal:
-                                      getProportionateScreenWidth(kSpacingX64),
+      body: _isFetchingLoginState
+          ? Loading()
+          : Consumer<PrefsProvider>(
+              builder: (_, provider, __) => Consumer<AuthService>(
+                builder: (_, authService, __) => Consumer<DataService>(
+                  builder: (_, dataService, __) => SafeArea(
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        provider.isLightTheme
+                            ? Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(kBackgroundAsset),
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                                decoration: BoxDecoration(),
-                                child: Image(
-                                  image: Svg(provider.isLightTheme
-                                      ? kLogoAsset
-                                      : kLogoDarkAsset),
-                                  fit: BoxFit.contain,
-                                  height: getProportionateScreenHeight(
-                                      kSpacingX120),
-                                  width:
-                                      getProportionateScreenWidth(kSpacingX120),
-                                ),
-                              ),
-                              SizedBox(
-                                  height: getProportionateScreenHeight(
-                                      kSpacingX48)),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: getProportionateScreenWidth(
-                                        kSpacingX16)),
+                              )
+                            : SizedBox.shrink(),
+                        provider.showAppFeatures
+                            ? Container(
+                                width: kWidth,
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      kAppSlogan,
-                                      style: themeData.textTheme.headline3,
-                                      textAlign: TextAlign.center,
+                                    Container(
+                                      height: getProportionateScreenHeight(
+                                          kSpacingX120),
+                                      width: getProportionateScreenWidth(
+                                          kSpacingX120),
+                                      clipBehavior: Clip.hardEdge,
+                                      margin: EdgeInsets.symmetric(
+                                        horizontal: getProportionateScreenWidth(
+                                            kSpacingX64),
+                                      ),
+                                      decoration: BoxDecoration(),
+                                      child: Image(
+                                        image: Svg(provider.isLightTheme
+                                            ? kLogoAsset
+                                            : kLogoDarkAsset),
+                                        fit: BoxFit.contain,
+                                        height: getProportionateScreenHeight(
+                                            kSpacingX120),
+                                        width: getProportionateScreenWidth(
+                                            kSpacingX120),
+                                      ),
                                     ),
                                     SizedBox(
                                         height: getProportionateScreenHeight(
-                                            kSpacingX12)),
-                                    Text(
-                                      kAppSloganDesc,
-                                      style: themeData.textTheme.bodyText1,
-                                      textAlign: TextAlign.center,
+                                            kSpacingX48)),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              getProportionateScreenWidth(
+                                                  kSpacingX16)),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            kAppSlogan,
+                                            style:
+                                                themeData.textTheme.headline3,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(
+                                              height:
+                                                  getProportionateScreenHeight(
+                                                      kSpacingX12)),
+                                          Text(
+                                            kAppSloganDesc,
+                                            style:
+                                                themeData.textTheme.bodyText1,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                  height: getProportionateScreenHeight(
-                                      kSpacingX96)),
-                              ButtonPrimary(
-                                width: kWidth * 0.7,
-                                themeData: themeData,
-                                onTap: () async => context.navigator.popAndPush(
-                                  provider.isLoggedIn
-                                      ? provider.userType == kCustomerString
-                                          ? Routes.homePage
-                                          : (await dataService
-                                                      .getArtisanById(
-                                                          id: provider.userId)
-                                                      .first)
-                                                  .user
-                                                  .isApproved
-                                              ? Routes.dashboardPage
-                                              : Routes.notificationPage
-                                      : Routes.registerPage,
-                                  arguments: NotificationPageArguments(
-                                    payload: NotificationPayload.empty(),
-                                  ),
-                                ),
-                                enabled: !_isLoading,
-                                label: provider.isLoggedIn
-                                    ? "Proceed"
-                                    : "Sign up with Email ID",
-                              ),
-                              SizedBox(
-                                  height: getProportionateScreenHeight(
-                                      kSpacingX16)),
-                              provider.isLoggedIn
-                                  ? SizedBox.shrink()
-                                  : ButtonOutlined(
+                                    SizedBox(
+                                        height: getProportionateScreenHeight(
+                                            kSpacingX96)),
+                                    ButtonPrimary(
                                       width: kWidth * 0.7,
                                       themeData: themeData,
-                                      onTap: () => showDialog(
-                                        context: context,
-                                        builder: (ctx) => AlertDialog(
-                                          title: Text("Continue as..."),
-                                          content: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              ListTile(
-                                                title: Text("Artisan"),
-                                                onTap: () {
-                                                  ctx.navigator.pop();
-                                                  authService.signInWithGoogle(
-                                                      isCustomer: false);
-                                                },
-                                              ),
-                                              ListTile(
-                                                title: Text("Customer"),
-                                                onTap: () {
-                                                  ctx.navigator.pop();
-                                                  authService.signInWithGoogle(
-                                                      isCustomer: true);
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                          actions: [
-                                            ButtonClear(
-                                              text: "Cancel",
-                                              onPressed: () =>
-                                                  ctx.navigator.pop(),
-                                              themeData: themeData,
-                                            ),
-                                          ],
+                                      onTap: () async =>
+                                          context.navigator.popAndPush(
+                                        provider.isLoggedIn
+                                            ? provider.userType ==
+                                                    kCustomerString
+                                                ? Routes.homePage
+                                                : (await dataService
+                                                            .getArtisanById(
+                                                                id: provider
+                                                                    .userId)
+                                                            .first)
+                                                        .user
+                                                        .isApproved
+                                                    ? Routes.dashboardPage
+                                                    : Routes.notificationPage
+                                            : Routes.registerPage,
+                                        arguments: NotificationPageArguments(
+                                          payload: NotificationPayload.empty(),
                                         ),
                                       ),
-                                      gravity: ButtonIconGravity.START,
-                                      icon: AntDesign.google,
                                       enabled: !_isLoading,
-                                      label: "Sign up with Google",
+                                      label: provider.isLoggedIn
+                                          ? "Proceed"
+                                          : "Sign up with Email ID",
                                     ),
-                            ],
-                          ),
-                        )
-                      : buildAppLockWidget(context,
-                          message: provider.configMessage),
-                ],
+                                    SizedBox(
+                                        height: getProportionateScreenHeight(
+                                            kSpacingX16)),
+                                    provider.isLoggedIn
+                                        ? SizedBox.shrink()
+                                        : ButtonOutlined(
+                                            width: kWidth * 0.7,
+                                            themeData: themeData,
+                                            onTap: () => showDialog(
+                                              context: context,
+                                              builder: (ctx) => AlertDialog(
+                                                title: Text("Continue as..."),
+                                                content: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    ListTile(
+                                                      title: Text("Artisan"),
+                                                      onTap: () {
+                                                        ctx.navigator.pop();
+                                                        authService
+                                                            .signInWithGoogle(
+                                                                isCustomer:
+                                                                    false);
+                                                      },
+                                                    ),
+                                                    ListTile(
+                                                      title: Text("Customer"),
+                                                      onTap: () {
+                                                        ctx.navigator.pop();
+                                                        authService
+                                                            .signInWithGoogle(
+                                                                isCustomer:
+                                                                    true);
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                                actions: [
+                                                  ButtonClear(
+                                                    text: "Cancel",
+                                                    onPressed: () =>
+                                                        ctx.navigator.pop(),
+                                                    themeData: themeData,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            gravity: ButtonIconGravity.START,
+                                            icon: AntDesign.google,
+                                            enabled: !_isLoading,
+                                            label: "Sign up with Google",
+                                          ),
+                                  ],
+                                ),
+                              )
+                            : buildAppLockWidget(context,
+                                message: provider.configMessage),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
