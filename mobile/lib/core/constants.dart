@@ -6,9 +6,13 @@ import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:handyman/app/widget/buttons.dart';
+import 'package:logger/logger.dart';
 
 import 'service_locator.dart';
 import 'size_config.dart';
+
+/// Logger
+final logger = Logger();
 
 /// Defaults
 const kGeneralCategory = "bbe8a179-7797-4d87-b388-cf93125f490e";

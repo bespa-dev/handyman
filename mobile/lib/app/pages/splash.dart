@@ -47,6 +47,17 @@ class _SplashPageState extends State<SplashPage> {
           );
       });
 
+      // watch current user state
+      authService.currentUser().listen((currentUser) {
+        logger.i("Current user => $currentUser");
+        if (currentUser != null) {
+          // Complete user's account
+          context.navigator.popAndPush(
+            currentUser.isCustomer ? Routes.homePage : Routes.dashboardPage,
+          );
+        }
+      });
+
       // Observe user state changes
       authService.onAuthStateChanged.listen((user) {
         if (user != null) {
