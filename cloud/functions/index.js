@@ -102,7 +102,32 @@ exports.onBookingRequestWrite = functions.firestore
             data: {
               booking: data.id,
               provider: data.provider_id,
-              message: "Booking accepted"
+              message: "Booking accepted",
+            },
+            token: registrationToken,
+          };
+
+          // Send a message to the device corresponding to the provided
+          // registration token.
+          await admin.messaging().send(message);
+          console.log("Successfully sent message:", response);
+        }
+      } else if (data.progress === 1) {
+        // Get customer id from request and get data from database
+        var customerSnapshot = await admin
+          .firestore()
+          .doc(`customers/${data.customer_id}`)
+          .get();
+
+        if (customerSnapshot.data().exists) {
+          // This registration token comes from the client FCM SDKs.
+          var registrationToken = customerSnapshot.data().token;
+
+          var message = {
+            data: {
+              booking: data.id,
+              provider: data.provider_id,
+              message: "Booking completed successfully. Tap here to review and checkout",
             },
             token: registrationToken,
           };
@@ -127,7 +152,7 @@ exports.onBookingRequestWrite = functions.firestore
             data: {
               booking: data.id,
               customer: data.customer_id,
-              message: "Booking accepted"
+              message: "Booking accepted",
             },
             token: registrationToken,
           };
@@ -158,7 +183,7 @@ exports.onBookingRequestWrite = functions.firestore
           data: {
             booking: data.id,
             provider: data.provider_id,
-            message: "Booking declined"
+            message: "Booking declined",
           },
           token: registrationToken,
         };
