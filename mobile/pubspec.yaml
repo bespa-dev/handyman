@@ -6,7 +6,7 @@ publish_to: "github.com"
 authors:
   - "Quabynah Codelabs LLC <codelbas.quabynah@gmail.com>"
 
-version: 1.0.1+11
+version: 1.0.2+12
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -51,7 +51,6 @@ dependencies:
   intl: ^0.16.1
   jiffy: ^3.0.1
   json_annotation: ^3.0.1
-  logger: any
   md2_tab_indicator: ^1.0.2
   moor: ^3.1.0
   path: ^1.7.0
@@ -73,11 +72,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   auto_route_generator: ^0.6.8
-  # flutter packages pub run build_runner watch --delete-conflicting-outputs
   build_runner: ^1.10.2
-  flutter_launcher_name: ^0.0.1
   flutter_launcher_icons: ^0.7.4
+  flutter_launcher_name: ^0.0.1
   json_serializable: ^3.2.0
+  logger: ^0.9.4
   moor_generator: ^3.3.1
 
 # flutter pub run flutter_launcher_icons:main
@@ -85,6 +84,7 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/logo/app_logo.png"
+  adaptive_icon_background: #0E37EA
 
 flutter:
   uses-material-design: true
