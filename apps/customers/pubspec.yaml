@@ -1,0 +1,33 @@
+name: lite
+
+description: App for customers on the handyMan platform (lite version)
+
+repository: "https://github.com/Quabynah-Codelabs/handyman"
+
+authors:
+  - "Quabynah Bilson <codelbas.quabynah@gmail.com>"
+
+documentation: "https://github.com/Quabynah-Codelabs/handyman/docs"
+
+issue_tracker: "https://github.com/Quabynah-Codelabs/handyman/issues"
+
+publish_to: "github.com"
+
+version: 1.2.0+12
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true

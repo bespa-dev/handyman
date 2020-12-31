@@ -4,12 +4,10 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:handyman/app/model/prefs_provider.dart';
 import 'package:handyman/app/routes/guard.dart';
-import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/theme.dart';
 import 'package:handyman/data/services/auth.dart';
 import 'package:handyman/data/services/data.dart';
 import 'package:handyman/data/services/messaging.dart';
-import 'package:handyman/data/services/remote_config.dart';
 import 'package:handyman/data/services/storage.dart';
 import 'package:handyman/domain/services/auth.dart';
 import 'package:handyman/domain/services/data.dart';
@@ -26,17 +24,6 @@ class HandyManApp extends StatefulWidget {
 
 class _HandyManAppState extends State<HandyManApp> {
   final _analytics = FirebaseAnalytics();
-
-  Future<void> setupRemoteConfig() async {
-    var configService = await sl.getAsync<RemoteConfigService>();
-    await configService.init();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    setupRemoteConfig();
-  }
 
   @override
   Widget build(BuildContext context) {

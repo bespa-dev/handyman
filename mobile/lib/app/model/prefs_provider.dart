@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:handyman/core/service_locator.dart';
 import 'package:handyman/core/utils.dart';
-import 'package:handyman/data/services/remote_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// [SharedPreferences] helper class
@@ -14,7 +13,6 @@ class PrefsProvider with ChangeNotifier {
       _shouldShowSplash = true;
   String _userId, _userType, _emergencyContactNumber;
   final StreamController<bool> _themeController = StreamController.broadcast();
-  RemoteConfigService _remoteConfigService;
 
   SharedPreferences _prefs;
 
@@ -35,12 +33,7 @@ class PrefsProvider with ChangeNotifier {
       _themeController.sink.add(_isLightTheme);
       toggleTheme(_isLightTheme);
     });
-
-    // Get remote config service
-    RemoteConfigService.getInstance().then((value) => _remoteConfigService = value);
   }
-
-  String get configMessage => _remoteConfigService.configMessage;
 
   static PrefsProvider create() => PrefsProvider._();
 
@@ -57,8 +50,6 @@ class PrefsProvider with ChangeNotifier {
   bool get shouldShowSplash => _shouldShowSplash;
 
   bool get isLightTheme => _isLightTheme;
-
-  bool get showAppFeatures => _remoteConfigService?.showAppFeatures ?? true;
 
   Stream<bool> get onThemeChanged => _themeController.stream;
 
