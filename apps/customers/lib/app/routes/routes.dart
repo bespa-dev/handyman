@@ -9,7 +9,7 @@ import 'package:lite/app/pages/pages.dart';
   transitionsBuilder: TransitionsBuilders.zoomIn,
   generateNavigationHelperExtension: true,
   routes: <AutoRoute>[
-    CustomRoute(page: SplashPage),
+    CustomRoute(page: SplashPage, initial: true),
   ],
 )
 class $Router {}

@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:logger/logger.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'size_config.dart';
 
 /// Logger
-final logger = Logger();
+final logger = Logger(printer: PrettyPrinter(printTime: true));
 
 /// Defaults
 const kGeneralCategory = "bbe8a179-7797-4d87-b388-cf93125f490e";
@@ -16,33 +17,33 @@ const kRatingStar = Entypo.star;
 const kUserImageNotFound = Icons.broken_image_outlined;
 
 Widget buildFunctionalityNotAvailablePanel(BuildContext context) => Container(
-  height: getProportionateScreenHeight(kSpacingX320),
-  child: Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      Icon(
-        Entypo.feather,
-        size: getProportionateScreenHeight(kSpacingX96),
-        color: Theme.of(context).colorScheme.onBackground,
+      height: getProportionateScreenHeight(kSpacingX320),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            Entypo.feather,
+            size: getProportionateScreenHeight(kSpacingX96),
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
+          SizedBox(height: getProportionateScreenHeight(kSpacingX24)),
+          Text(
+            "Functionality currently not available",
+            style: Theme.of(context).textTheme.subtitle1,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
+          Text(
+            "Grab a beverage and check back later!",
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
+                  color: Theme.of(context).disabledColor,
+                ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
-      SizedBox(height: getProportionateScreenHeight(kSpacingX24)),
-      Text(
-        "Functionality currently not available",
-        style: Theme.of(context).textTheme.subtitle1,
-        textAlign: TextAlign.center,
-      ),
-      SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
-      Text(
-        "Grab a beverage and check back later!",
-        style: Theme.of(context).textTheme.bodyText2.copyWith(
-          color: Theme.of(context).disabledColor,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    ],
-  ),
-);
+    );
 
 /// Sets map style
 Future getMapStyle({bool isLightTheme = false}) async =>
@@ -86,9 +87,9 @@ const double kEmphasisMedium = 0.67;
 const double kEmphasisHigh = 0.9;
 
 /// App
-const kAppName = "HandyMan";
+const kAppName = "HandyMan Lite";
 const kAppSlogan = "Get some real work done";
-const kAppVersion = "v0.0.5";
+const kAppVersion = "v1.2.0";
 const kAppSloganDesc = "Find your service & book easily with $kAppName";
 const kArtisanReviewHelpDialogContent =
     "Sensitive data (like email addresses, phone numbers, user ids etc) will not be made public to customers on this platform.\nYour ratings are also based on the accumulated reviews by customers you have served over the last 6 months";
@@ -151,11 +152,8 @@ const kPrimaryColorDark = Color(0xFF9BA1F6);
 const kSecondaryDarkColor = Color(0xFF9BA1F6);
 const kErrorDarkColor = Color(0xffEC407A);
 const kAccentDarkColor = kWhiteColor;
-const kBackgroundDarkColor = Color(0xFF151515);
-// const kBackgroundDarkColor = Color(0xFF202124);
-// const kBackgroundDarkColor = Color(0xFF24191C);
-const kCardDarkColor = Color(0xFF272727);
-// const kCardDarkColor = Color(0xFF3C4043);
+const kCardDarkColor = Color(0xff212529);
+const kBackgroundDarkColor = Color(0xFF05050B);
 const kSurfaceDarkColor = Color(0xFF222225);
 
 /// Icon Colors
@@ -178,3 +176,10 @@ const kTitleTextColorDark = Color(0xFFDEDEDE);
 
 const kShadowColor = Color(0xFFDEDEDE);
 const kShadowDarkColor = Color(0xFF7C7C7C);
+
+/// launch [url]
+Future<void> launchUrl({@required String url}) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  }
+}

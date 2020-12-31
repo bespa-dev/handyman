@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import '../pages/pages.dart';
 
 class Routes {
-  static const String splashPage = '/splash-page';
+  static const String splashPage = '/';
   static const all = <String>{
     splashPage,
   };

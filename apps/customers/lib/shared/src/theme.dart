@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'constants.dart';
 
 /// Fonts
-final _kTitleFontFamily = GoogleFonts.raleway().fontFamily;
+final _kTitleFontFamily = GoogleFonts.poppins().fontFamily;
 final _kBodyFontFamily = GoogleFonts.rubik().fontFamily;
 
 /// Light theme

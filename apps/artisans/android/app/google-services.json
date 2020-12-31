@@ -1,0 +1,85 @@
+{
+  "project_info": {
+    "project_number": "1019948772794",
+    "firebase_url": "https://handyman-mobile-app.firebaseio.com",
+    "project_id": "handyman-mobile-app",
+    "storage_bucket": "handyman-mobile-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019948772794:android:a65cb064521f8670498183",
+        "android_client_info": {
+          "package_name": "dev.azaware.handyman"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1019948772794-ons5nkcl1islmsfoup0r8c2aa10jri0p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.azaware.handyman",
+            "certificate_hash": "c7a35f1a1f8eecd685bca35564663c98dfc331c2"
+          }
+        },
+        {
+          "client_id": "1019948772794-ri8a9efr1es6090j8i9odchm1uh8qvl0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.azaware.handyman",
+            "certificate_hash": "ee2f4c379fbdf8330e4b8873803ff0c69a69b42d"
+          }
+        },
+        {
+          "client_id": "1019948772794-6s2aets4s7phbtbpr17joilk34li4l2s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhyBlUAkfyVoCDtFjdL6Ef02R-EuGHsdI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1019948772794-6s2aets4s7phbtbpr17joilk34li4l2s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019948772794:android:7feadc4c8fe45bd9498183",
+        "android_client_info": {
+          "package_name": "dev.azaware.handyman.lite"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1019948772794-6s2aets4s7phbtbpr17joilk34li4l2s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhyBlUAkfyVoCDtFjdL6Ef02R-EuGHsdI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1019948772794-6s2aets4s7phbtbpr17joilk34li4l2s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -69,6 +69,8 @@ dependencies:
   flutter_bloc: ^6.1.1
   super_enum: ^0.5.0
   circular_reveal_animation: ^1.1.5
+  flutter_rating_bar:
+  contact_picker:
 
 dev_dependencies:
   flutter_test:
