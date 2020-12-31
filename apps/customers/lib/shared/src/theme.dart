@@ -5,6 +5,7 @@ import 'constants.dart';
 
 /// Fonts
 final _kTitleFontFamily = GoogleFonts.poppins().fontFamily;
+// final _kTitleFontFamily = GoogleFonts.ibmPlexSans().fontFamily;
 final _kBodyFontFamily = GoogleFonts.rubik().fontFamily;
 
 /// Light theme

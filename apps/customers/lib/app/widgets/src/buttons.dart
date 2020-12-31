@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lite/shared/shared.dart';
 
-
 enum ButtonIconGravity { NONE, END, START }
 
 class ButtonOutlined extends StatelessWidget {
@@ -32,7 +31,7 @@ class ButtonOutlined extends StatelessWidget {
       splashColor: themeData.splashColor,
       onTap: enabled ? onTap : null,
       borderRadius:
-          BorderRadius.circular(getProportionateScreenWidth(kSpacingX36)),
+          BorderRadius.circular(getProportionateScreenWidth(kSpacingX8)),
       child: AnimatedContainer(
         duration: kScaleDuration,
         curve: Curves.fastOutSlowIn,
@@ -46,7 +45,7 @@ class ButtonOutlined extends StatelessWidget {
                 : themeData.disabledColor,
           ),
           borderRadius:
-              BorderRadius.circular(getProportionateScreenWidth(kSpacingX36)),
+              BorderRadius.circular(getProportionateScreenWidth(kSpacingX8)),
         ),
         child: Row(
           mainAxisAlignment: icon == null || gravity != ButtonIconGravity.NONE
@@ -152,7 +151,7 @@ class ButtonPrimary extends StatelessWidget {
     return InkWell(
       splashColor: themeData.splashColor,
       borderRadius:
-          BorderRadius.circular(getProportionateScreenWidth(kSpacingX36)),
+          BorderRadius.circular(getProportionateScreenWidth(kSpacingX8)),
       onTap: enabled ? onTap : null,
       child: AnimatedContainer(
         duration: kScaleDuration,
@@ -164,7 +163,7 @@ class ButtonPrimary extends StatelessWidget {
               ? color ?? themeData.colorScheme.primary
               : themeData.disabledColor,
           borderRadius:
-              BorderRadius.circular(getProportionateScreenWidth(kSpacingX36)),
+              BorderRadius.circular(getProportionateScreenWidth(kSpacingX8)),
         ),
         child: Row(
           mainAxisAlignment: icon == null || gravity != ButtonIconGravity.NONE
@@ -219,7 +218,7 @@ class ButtonClear extends FlatButton {
               color: backgroundColor,
               borderRadius: backgroundColor == null
                   ? null
-                  : BorderRadius.circular(kSpacingX16),
+                  : BorderRadius.circular(kSpacingX8),
             ),
             alignment: Alignment.center,
             height:
