@@ -8,16 +8,17 @@
  */
 
 export 'src/auth.dart'; // done
-export 'src/booking.dart'; //
-export 'src/business.dart'; //
-export 'src/category.dart'; //
-export 'src/conversation.dart'; //
-export 'src/gallery.dart'; //
-export 'src/location.dart'; //
+export 'src/booking.dart'; // done
+export 'src/business.dart'; // done
+export 'src/category.dart'; // done
+export 'src/conversation.dart'; // done
+export 'src/gallery.dart'; // done
+export 'src/location.dart'; // done
 export 'src/prefs.dart'; // done
 export 'src/prefs.dart'; // done
-export 'src/search.dart'; //
+export 'src/search.dart'; // done
 export 'src/storage.dart'; //
+export 'src/usecase/exception.dart'; // done
 export 'src/usecase/result.dart'; // done
 export 'src/usecase/usecase.dart'; // done
 export 'src/user.dart'; // done

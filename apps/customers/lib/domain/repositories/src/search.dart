@@ -12,5 +12,5 @@ import 'package:meta/meta.dart';
 
 abstract class BaseSearchRepository implements Exposable {
   /// Search for any [BaseArtisan]
-  Future<List<BaseUser>> searchFor({@required String value, String categoryId});
+  Future<List<BaseUser>> searchFor({@required String query, String categoryId});
 }

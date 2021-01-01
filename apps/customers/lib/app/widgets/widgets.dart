@@ -12,7 +12,6 @@ export 'src/buttons.dart';
 export 'src/emergency_ping_button.dart';
 export 'src/fields.dart';
 export 'src/loaders.dart';
-export 'src/marker_generator.dart';
 export 'src/menu_icon.dart';
 export 'src/page_indicator.dart';
 export 'src/sign_out_button.dart';

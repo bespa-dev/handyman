@@ -16,7 +16,7 @@ abstract class BaseLocationRepository implements Exposable {
   Future<LocationMetadata> getCurrentLocation();
 
   /// Observe location updates
-  Stream<LocationMetadata> watchCurrentLocation();
+  Stream<LocationMetadata> observeCurrentLocation();
 
   /// Get location name based on [metaData]
   Future<String> getLocationName({@required LocationMetadata metadata});

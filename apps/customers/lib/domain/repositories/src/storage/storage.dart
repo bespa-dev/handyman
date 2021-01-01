@@ -35,9 +35,8 @@ abstract class BaseStorageRepository implements Exposable {
 
   /// upload media file (pdf, image etc)
   Future<String> uploadFile(
-    File file, {
+    String filePath, {
     String path,
-    String extension,
     bool isImageFile = true,
   });
 

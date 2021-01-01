@@ -7,3 +7,24 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:lite/domain/models/models.dart';
+import 'package:lite/domain/repositories/repositories.dart';
+
+import 'usecase/result.dart';
+import 'usecase/usecase.dart';
+
+class SearchUseCase extends UseCase<List<BaseUser>, String> {
+  final BaseSearchRepository _repo;
+
+  const SearchUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<List<BaseUser>>> execute(String query) async {
+    try {
+      var results = await _repo.searchFor(query: query);
+      return UseCaseResult.success(results);
+    } on Exception {
+      return UseCaseResult.error("Unable to complete search");
+    }
+  }
+}

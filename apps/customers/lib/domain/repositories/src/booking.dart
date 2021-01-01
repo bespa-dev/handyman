@@ -7,8 +7,6 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'dart:io';
-
 import 'package:lite/domain/models/models.dart';
 import 'package:meta/meta.dart';
 
@@ -22,13 +20,12 @@ abstract class BaseBookingRepository implements Exposable {
 
   /// Request [Booking] for an [Artisan]
   Future<void> requestBooking({
-    @required BaseArtisan artisan,
+    @required String artisan,
     @required String customer,
     @required String category,
     @required String description,
-    @required File image,
-    @required double lat,
-    @required double lng,
+    @required String image,
+    @required LocationMetadata metadata,
   });
 
   Future<void> updateBooking({@required BaseBooking booking});
@@ -37,6 +34,5 @@ abstract class BaseBookingRepository implements Exposable {
 
   /// Get [Booking] for [Artisan] & [Customer]
   Stream<List<BaseBooking>> bookingsForCustomerAndArtisan(
-      String customerId, String artisanId);
-
+      {String customerId, String artisanId});
 }

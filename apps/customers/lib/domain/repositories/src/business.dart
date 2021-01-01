@@ -16,6 +16,6 @@ abstract class BaseBusinessRepository implements Exposable {
   /// Upload business [images]
   Future<void> uploadBusinessPhotos({
     @required String userId,
-    @required List<File> images,
+    @required List<String> images,
   });
 }
