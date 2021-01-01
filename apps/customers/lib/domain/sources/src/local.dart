@@ -9,22 +9,11 @@
 
 import 'dart:io';
 
-import 'package:lite/domain/models/models.dart'
-    show
-        BaseArtisan,
-        BaseBooking,
-        BaseConversation,
-        BaseGallery,
-        BaseReview,
-        BaseServiceCategory,
-        BaseUser,
-        Exposable,
-        PayloadType,
-        ServiceCategoryGroup;
+import 'package:lite/domain/models/models.dart';
 import 'package:meta/meta.dart';
 
-/// base data repository class
-abstract class BaseDataRepository implements Exposable {
+/// base local datasource class
+abstract class BaseLocalDatasource {
   /// observe current user
   Stream<BaseUser> currentUser();
 
@@ -75,7 +64,10 @@ abstract class BaseDataRepository implements Exposable {
   Stream<List<BaseGallery>> getPhotosForArtisan({@required String userId});
 
   /// Upload business [images]
-  Future<void> uploadBusinessPhotos(String userId, List<File> images);
+  Future<void> uploadBusinessPhotos({
+    @required String userId,
+    @required List<File> images,
+  });
 
   /// Search for any [BaseArtisan]
   Future<List<BaseUser>> searchFor({@required String value, String categoryId});
@@ -107,7 +99,4 @@ abstract class BaseDataRepository implements Exposable {
     @required double lat,
     @required double lng,
   });
-
-  Stream<List<dynamic>> getNotifications(
-      {@required String userId, @required PayloadType type});
 }

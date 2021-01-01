@@ -10,8 +10,19 @@
 import 'package:lite/domain/models/models.dart';
 import 'package:meta/meta.dart';
 
-/// base messaging repository class
-abstract class BaseMessagingRepository implements Exposable {
+abstract class BaseConversationRepository implements Exposable {
+  /// Get [BaseConversation] between [sender] & [recipient]
+  Stream<List<BaseConversation>> getConversation(
+      {@required String sender, @required String recipient});
+
+  /// Send [BaseConversation]
+  Future<void> sendMessage({
+    @required String sender,
+    @required String recipient,
+    @required String body,
+    @required ConversationFormat type,
+  });
+
   /// show a notification
   Future<void> showNotification({
     @required String title,

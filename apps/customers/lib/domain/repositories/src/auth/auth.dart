@@ -8,8 +8,8 @@
  */
 
 import 'package:lite/domain/models/models.dart';
-import 'package:super_enum/super_enum.dart';
 import 'package:meta/meta.dart';
+import 'package:super_enum/super_enum.dart';
 
 part 'auth.super.dart';
 
@@ -46,11 +46,14 @@ abstract class BaseAuthRepository implements Exposable {
     @required String password,
   });
 
-  /// sign in with google
-  Future<BaseUser> signInWithGoogle();
+  /// sign in with third party OAuth service
+  Future<BaseUser> signInWithFederatedOAuth();
 
   /// sign out
   Future<void> signOut();
+
+  /// reset password
+  Future<void> sendPasswordReset({@required String email});
 
   /// close all streams, if any
   void dispose();

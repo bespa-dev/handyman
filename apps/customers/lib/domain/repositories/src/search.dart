@@ -8,14 +8,9 @@
  */
 
 import 'package:lite/domain/models/models.dart';
+import 'package:meta/meta.dart';
 
-/// Base preference repository
-abstract class BasePreferenceRepository implements Exposable {
-  String emergencyContactNumber;
-
-  String userId;
-
-  Stream<bool> get onThemeChanged;
-
-  bool isLightTheme;
+abstract class BaseSearchRepository implements Exposable {
+  /// Search for any [BaseArtisan]
+  Future<List<BaseUser>> searchFor({@required String value, String categoryId});
 }
