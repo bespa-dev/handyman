@@ -1,10 +1,19 @@
+/*
+ * Copyright (c) 2021.
+ * This application is owned by HandyMan LLC,
+ * developed & designed by Quabynah Codelabs LLC.
+ *
+ *
+ * author: codelbas.quabynah@gmail.com
+ */
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'constants.dart';
 
 /// Fonts
-final _kTitleFontFamily = GoogleFonts.raleway().fontFamily;
+final _kTitleFontFamily = GoogleFonts.comfortaa().fontFamily;
 final _kBodyFontFamily = GoogleFonts.rubik().fontFamily;
 
 /// Light theme
@@ -99,6 +108,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
 /// Dark theme
 ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
       platform: TargetPlatform.iOS,
+      // shadowColor: kShadowDarkColor,
       selectedRowColor: kSecondaryDarkColor,
       errorColor: kErrorDarkColor,
       appBarTheme: appBarTheme,
