@@ -17,8 +17,7 @@ export 'src/location.dart'; // done
 export 'src/prefs.dart'; // done
 export 'src/prefs.dart'; // done
 export 'src/search.dart'; // done
-export 'src/storage.dart'; //
-export 'src/usecase/exception.dart'; // done
+export 'src/storage.dart'; // done
 export 'src/usecase/result.dart'; // done
 export 'src/usecase/usecase.dart'; // done
 export 'src/user.dart'; // done

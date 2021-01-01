@@ -7,8 +7,6 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'dart:io';
-
 import 'package:lite/domain/models/models.dart';
 import 'package:meta/meta.dart';
 import 'package:super_enum/super_enum.dart';
@@ -18,9 +16,13 @@ part 'storage.super.dart';
 /// storage progress
 @superEnum
 enum _StorageProgress {
-  @object
+  @Data(
+    fields: [DataField<String>("url")],
+  )
   UploadSuccess,
-  @object
+  @Data(
+    fields: [DataField<String>("cause")],
+  )
   UploadFailed,
   @object
   UploadInProgress,

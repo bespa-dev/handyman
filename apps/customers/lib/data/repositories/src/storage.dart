@@ -7,16 +7,17 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:lite/domain/repositories/repositories.dart';
+import 'package:lite/domain/repositories/src/storage/storage.dart';
 import 'package:lite/shared/shared.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:super_enum/super_enum.dart';
 import 'package:uuid/uuid.dart';
 
 class StorageRepositoryImpl implements BaseStorageRepository {
@@ -41,6 +42,33 @@ class StorageRepositoryImpl implements BaseStorageRepository {
       {String path, bool isImageFile = true}) async {
     var compressedFile = await compressMedia(filePath, isImageFile);
     var uploadTask = bucket.child(path ??= Uuid().v4()).putFile(compressedFile);
+
+    /// listen for live stream of events from upload
+    uploadTask.events.listen((event) async {
+      switch (event.type) {
+        case StorageTaskEventType.success:
+          var url = await event.snapshot.ref.getDownloadURL();
+          _onStorageUploadResponseController
+              .add(StorageProgress.uploadSuccess(url: url));
+          break;
+        case StorageTaskEventType.failure:
+          _onStorageUploadResponseController.add(StorageProgress.uploadFailed(
+              cause: "Failed with error -> ${event.snapshot.error}"));
+          break;
+        case StorageTaskEventType.pause:
+          _onStorageUploadResponseController
+              .add(StorageProgress.uploadPaused());
+          break;
+        case StorageTaskEventType.resume:
+          _onStorageUploadResponseController
+              .add(StorageProgress.uploadInProgress());
+          break;
+        case StorageTaskEventType.progress:
+          _onStorageUploadResponseController
+              .add(StorageProgress.uploadInProgress());
+          break;
+      }
+    });
     var snapshot = await uploadTask.onComplete; // get snapshot upon completion
     return await snapshot.ref.getDownloadURL(); // return download url
   }

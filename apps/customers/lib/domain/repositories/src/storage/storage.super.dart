@@ -12,9 +12,11 @@ part of 'storage.dart';
 abstract class StorageProgress extends Equatable {
   const StorageProgress(this._type);
 
-  factory StorageProgress.uploadSuccess() = UploadSuccess.create;
+  factory StorageProgress.uploadSuccess({@required String url}) =
+      UploadSuccess.create;
 
-  factory StorageProgress.uploadFailed() = UploadFailed.create;
+  factory StorageProgress.uploadFailed({@required String cause}) =
+      UploadFailed.create;
 
   factory StorageProgress.uploadInProgress() = UploadInProgress.create;
 
@@ -25,8 +27,8 @@ abstract class StorageProgress extends Equatable {
   /// The [when] method is the equivalent to pattern matching.
   /// Its prototype depends on the _StorageProgress [_type]s defined.
   R when<R extends Object>(
-      {@required R Function() uploadSuccess,
-      @required R Function() uploadFailed,
+      {@required R Function(UploadSuccess) uploadSuccess,
+      @required R Function(UploadFailed) uploadFailed,
       @required R Function() uploadInProgress,
       @required R Function() uploadPaused}) {
     assert(() {
@@ -40,9 +42,9 @@ abstract class StorageProgress extends Equatable {
     }());
     switch (this._type) {
       case _StorageProgress.UploadSuccess:
-        return uploadSuccess();
+        return uploadSuccess(this as UploadSuccess);
       case _StorageProgress.UploadFailed:
-        return uploadFailed();
+        return uploadFailed(this as UploadFailed);
       case _StorageProgress.UploadInProgress:
         return uploadInProgress();
       case _StorageProgress.UploadPaused:
@@ -56,8 +58,8 @@ abstract class StorageProgress extends Equatable {
   /// On the other hand, it adds an extra orElse required parameter,
   /// for fallback behavior.
   R whenOrElse<R extends Object>(
-      {R Function() uploadSuccess,
-      R Function() uploadFailed,
+      {R Function(UploadSuccess) uploadSuccess,
+      R Function(UploadFailed) uploadFailed,
       R Function() uploadInProgress,
       R Function() uploadPaused,
       @required R Function(StorageProgress) orElse}) {
@@ -70,10 +72,10 @@ abstract class StorageProgress extends Equatable {
     switch (this._type) {
       case _StorageProgress.UploadSuccess:
         if (uploadSuccess == null) break;
-        return uploadSuccess();
+        return uploadSuccess(this as UploadSuccess);
       case _StorageProgress.UploadFailed:
         if (uploadFailed == null) break;
-        return uploadFailed();
+        return uploadFailed(this as UploadFailed);
       case _StorageProgress.UploadInProgress:
         if (uploadInProgress == null) break;
         return uploadInProgress();
@@ -87,8 +89,8 @@ abstract class StorageProgress extends Equatable {
   /// The [whenPartial] method is equivalent to [whenOrElse],
   /// but non-exhaustive.
   void whenPartial(
-      {void Function() uploadSuccess,
-      void Function() uploadFailed,
+      {void Function(UploadSuccess) uploadSuccess,
+      void Function(UploadFailed) uploadFailed,
       void Function() uploadInProgress,
       void Function() uploadPaused}) {
     assert(() {
@@ -103,10 +105,10 @@ abstract class StorageProgress extends Equatable {
     switch (this._type) {
       case _StorageProgress.UploadSuccess:
         if (uploadSuccess == null) break;
-        return uploadSuccess();
+        return uploadSuccess(this as UploadSuccess);
       case _StorageProgress.UploadFailed:
         if (uploadFailed == null) break;
-        return uploadFailed();
+        return uploadFailed(this as UploadFailed);
       case _StorageProgress.UploadInProgress:
         if (uploadInProgress == null) break;
         return uploadInProgress();
@@ -122,32 +124,64 @@ abstract class StorageProgress extends Equatable {
 
 @immutable
 abstract class UploadSuccess extends StorageProgress {
-  const UploadSuccess() : super(_StorageProgress.UploadSuccess);
+  const UploadSuccess({@required this.url})
+      : super(_StorageProgress.UploadSuccess);
 
-  factory UploadSuccess.create() = _UploadSuccessImpl;
+  factory UploadSuccess.create({@required String url}) = _UploadSuccessImpl;
+
+  final String url;
+
+  /// Creates a copy of this UploadSuccess but with the given fields
+  /// replaced with the new values.
+  UploadSuccess copyWith({String url});
 }
 
 @immutable
 class _UploadSuccessImpl extends UploadSuccess {
-  const _UploadSuccessImpl() : super();
+  const _UploadSuccessImpl({@required this.url}) : super(url: url);
 
   @override
-  String toString() => 'UploadSuccess()';
+  final String url;
+
+  @override
+  _UploadSuccessImpl copyWith({Object url = superEnum}) => _UploadSuccessImpl(
+        url: url == superEnum ? this.url : url as String,
+      );
+  @override
+  String toString() => 'UploadSuccess(url: ${this.url})';
+  @override
+  List<Object> get props => [url];
 }
 
 @immutable
 abstract class UploadFailed extends StorageProgress {
-  const UploadFailed() : super(_StorageProgress.UploadFailed);
+  const UploadFailed({@required this.cause})
+      : super(_StorageProgress.UploadFailed);
 
-  factory UploadFailed.create() = _UploadFailedImpl;
+  factory UploadFailed.create({@required String cause}) = _UploadFailedImpl;
+
+  final String cause;
+
+  /// Creates a copy of this UploadFailed but with the given fields
+  /// replaced with the new values.
+  UploadFailed copyWith({String cause});
 }
 
 @immutable
 class _UploadFailedImpl extends UploadFailed {
-  const _UploadFailedImpl() : super();
+  const _UploadFailedImpl({@required this.cause}) : super(cause: cause);
 
   @override
-  String toString() => 'UploadFailed()';
+  final String cause;
+
+  @override
+  _UploadFailedImpl copyWith({Object cause = superEnum}) => _UploadFailedImpl(
+        cause: cause == superEnum ? this.cause : cause as String,
+      );
+  @override
+  String toString() => 'UploadFailed(cause: ${this.cause})';
+  @override
+  List<Object> get props => [cause];
 }
 
 @immutable
