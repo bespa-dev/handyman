@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2021.
+ * This application is owned by HandyMan LLC,
+ * developed & designed by Quabynah Codelabs LLC.
+ *
+ *
+ * author: codelbas.quabynah@gmail.com
+ */
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

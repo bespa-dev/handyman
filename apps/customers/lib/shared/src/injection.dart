@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2021.
+ * This application is owned by HandyMan LLC,
+ * developed & designed by Quabynah Codelabs LLC.
+ *
+ *
+ * author: codelbas.quabynah@gmail.com
+ */
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:intl/date_symbol_data_local.dart';

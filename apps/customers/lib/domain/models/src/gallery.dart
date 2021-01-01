@@ -7,10 +7,11 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-/// marks a class as exposable
-abstract class Exposable {}
+import 'package:lite/domain/models/models.dart' show BaseModel;
 
-/// annotation for exposing types of [Exposable]
-class Exposed {
-  const Exposed();
+/// base gallery class
+abstract class BaseGallery extends BaseModel {
+  String userId;
+
+  String imageUrl;
 }

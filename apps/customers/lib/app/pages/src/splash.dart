@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2021.
+ * This application is owned by HandyMan LLC,
+ * developed & designed by Quabynah Codelabs LLC.
+ *
+ *
+ * author: codelbas.quabynah@gmail.com
+ */
+
 import 'package:flutter/material.dart';
 import 'package:lite/app/widgets/src/buttons.dart';
 import 'package:lite/shared/shared.dart';
@@ -15,9 +24,11 @@ class _SplashPageState extends State<SplashPage> {
 
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: kSpacingX24,
-          horizontal: kSpacingX36,
+        padding: EdgeInsets.fromLTRB(
+          kSpacingX24,
+          kSpacingX36,
+          kSpacingX24,
+          kSpacingX24,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -36,13 +47,15 @@ class _SplashPageState extends State<SplashPage> {
               style: kTheme.textTheme.subtitle1,
             ),
             Spacer(flex: 4),
-            ButtonPrimary(
-              width: SizeConfig.screenWidth * 0.8,
-              themeData: kTheme,
-              onTap: () {},
-              label: "Get Started",
+            Align(
+              alignment: Alignment.center,
+              child: ButtonPrimary(
+                width: SizeConfig.screenWidth * 0.85,
+                themeData: kTheme,
+                onTap: () {},
+                label: "Get Started",
+              ),
             ),
-            Spacer(flex: 1),
           ],
         ),
       ),

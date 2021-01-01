@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2021.
+ * This application is owned by HandyMan LLC,
+ * developed & designed by Quabynah Codelabs LLC.
+ *
+ *
+ * author: codelbas.quabynah@gmail.com
+ */
+
 import 'package:algolia/algolia.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

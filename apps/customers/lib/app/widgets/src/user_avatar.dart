@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2021.
+ * This application is owned by HandyMan LLC,
+ * developed & designed by Quabynah Codelabs LLC.
+ *
+ *
+ * author: codelbas.quabynah@gmail.com
+ */
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:lite/shared/shared.dart';

@@ -7,5 +7,12 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-export 'src/auth.dart';
-export 'src/prefs.dart';
+import 'base.dart';
+
+/// base review class
+abstract class BaseReview extends BaseModel {
+  String body;
+  String customerId;
+  String artisanId;
+  double rating;
+}
