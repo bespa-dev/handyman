@@ -7,13 +7,8 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:lite/domain/models/models.dart' show BaseModel;
+import 'package:lite/domain/models/models.dart' show BaseModel, LocationMetadata;
 
-/// base position class
-abstract class BasePosition {
-  double lat;
-  double lng;
-}
 
 /// base bookings class
 abstract class BaseBooking extends BaseModel {
@@ -22,7 +17,7 @@ abstract class BaseBooking extends BaseModel {
   String category;
   String imageUrl;
   String description;
-  BasePosition position;
+  LocationMetadata position;
   double cost;
   double progress;
   int dueDate;

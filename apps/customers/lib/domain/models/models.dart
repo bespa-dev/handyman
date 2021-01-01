@@ -13,6 +13,8 @@ export 'src/category/category.dart';
 export 'src/conversation/conversation.dart';
 export 'src/exposables/exposed.dart';
 export 'src/gallery.dart';
+export 'src/location/location.dart';
+export 'src/payload/payload.dart';
 export 'src/review.dart';
 export 'src/user/artisan.dart';
 export 'src/user/user.dart';

@@ -9,6 +9,7 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/shared/shared.dart';
 import 'package:meta/meta.dart';

@@ -14,12 +14,17 @@ part 'category.super.dart';
 
 @superEnum
 enum _ServiceCategoryGroup {
-@object
-Featured,@object
-Popular,@object
-MostRated,@object
-Recent,@object
-Recommended,}
+  @object
+  Featured,
+  @object
+  Popular,
+  @object
+  MostRated,
+  @object
+  Recent,
+  @object
+  Recommended,
+}
 
 /// base service category class
 abstract class BaseServiceCategory extends BaseModel {
