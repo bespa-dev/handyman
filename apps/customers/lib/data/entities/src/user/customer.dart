@@ -42,7 +42,7 @@ class Customer extends BaseUser {
 
   @HiveField(6)
   @override
-  final int createdAt;
+  final String createdAt;
 
   Customer({
     this.name,

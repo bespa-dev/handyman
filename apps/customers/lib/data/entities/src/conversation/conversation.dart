@@ -38,7 +38,7 @@ class Conversation extends BaseConversation {
 
   @HiveField(5)
   @override
-  final int createdAt;
+  final String createdAt;
 
   Conversation({
     this.createdAt,

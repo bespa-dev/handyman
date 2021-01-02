@@ -18,7 +18,7 @@ class GalleryAdapter extends TypeAdapter<Gallery> {
     };
     return Gallery(
       id: fields[2] as String,
-      createdAt: fields[3] as int,
+      createdAt: fields[3] as String,
       userId: fields[0] as String,
       imageUrl: fields[1] as String,
     );
@@ -56,7 +56,7 @@ class GalleryAdapter extends TypeAdapter<Gallery> {
 Gallery _$GalleryFromJson(Map<String, dynamic> json) {
   return Gallery(
     id: json['id'] as String,
-    createdAt: json['created_at'] as int,
+    createdAt: json['created_at'] as String,
     userId: json['user_id'] as String,
     imageUrl: json['image_url'] as String,
   );

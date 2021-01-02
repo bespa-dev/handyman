@@ -38,7 +38,7 @@ class Review extends BaseReview {
 
   @HiveField(5)
   @override
-  final int createdAt;
+  final String createdAt;
 
   Review({
     this.id,

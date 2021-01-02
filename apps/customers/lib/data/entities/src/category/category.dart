@@ -34,7 +34,7 @@ class ServiceCategory extends BaseServiceCategory {
 
   @HiveField(4)
   @override
-  final int createdAt;
+  final String createdAt;
 
   ServiceCategory({
     this.id,

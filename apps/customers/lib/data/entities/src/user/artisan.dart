@@ -63,7 +63,7 @@ class Artisan extends BaseArtisan {
 
   @HiveField(11)
   @override
-  final int createdAt;
+  final String createdAt;
 
   Artisan({
     this.id,

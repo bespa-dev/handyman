@@ -21,7 +21,7 @@ class ObserveUserUseCase extends ObservableUseCase<BaseArtisan, String> {
   @override
   Future<UseCaseResult<Stream<BaseArtisan>>> execute(String userId) async {
     try {
-      final person = _repo.getArtisanById(id: userId);
+      final person = _repo.observeArtisanById(id: userId);
       return UseCaseResult<Stream<BaseArtisan>>.success(person);
     } on Exception {
       return UseCaseResult.error(null);

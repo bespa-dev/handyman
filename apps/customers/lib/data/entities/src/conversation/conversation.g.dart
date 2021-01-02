@@ -17,7 +17,7 @@ class ConversationAdapter extends TypeAdapter<Conversation> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Conversation(
-      createdAt: fields[5] as int,
+      createdAt: fields[5] as String,
       id: fields[4] as String,
       author: fields[0] as String,
       recipient: fields[1] as String,
@@ -61,7 +61,7 @@ class ConversationAdapter extends TypeAdapter<Conversation> {
 
 Conversation _$ConversationFromJson(Map<String, dynamic> json) {
   return Conversation(
-    createdAt: json['createdAt'] as int,
+    createdAt: json['createdAt'] as String,
     id: json['id'] as String,
     author: json['author'] as String,
     recipient: json['recipient'] as String,

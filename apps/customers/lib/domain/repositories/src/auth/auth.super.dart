@@ -11,41 +11,48 @@ part of 'auth.dart';
 abstract class AuthState extends Equatable {
   const AuthState(this._type);
 
-  factory AuthState.initial() = Initial.create;
+  factory AuthState.initialState() = InitialState.create;
 
-  factory AuthState.loading() = Loading.create;
+  factory AuthState.loadingState() = LoadingState.create;
 
-  factory AuthState.authenticated() = Authenticated.create;
+  factory AuthState.authenticatedState({@required BaseUser user}) =
+      AuthenticatedState.create;
 
-  factory AuthState.failed() = Failed.create;
+  factory AuthState.failedState({String message}) = FailedState.create;
+
+  factory AuthState.invalidCredentialsState() = InvalidCredentialsState.create;
 
   final _AuthState _type;
 
   /// The [when] method is the equivalent to pattern matching.
   /// Its prototype depends on the _AuthState [_type]s defined.
   R when<R extends Object>(
-      {@required R Function() initial,
-      @required R Function() loading,
-      @required R Function() authenticated,
-      @required R Function() failed}) {
+      {@required R Function() initialState,
+      @required R Function() loadingState,
+      @required R Function(AuthenticatedState) authenticatedState,
+      @required R Function(FailedState) failedState,
+      @required R Function() invalidCredentialsState}) {
     assert(() {
-      if (initial == null ||
-          loading == null ||
-          authenticated == null ||
-          failed == null) {
+      if (initialState == null ||
+          loadingState == null ||
+          authenticatedState == null ||
+          failedState == null ||
+          invalidCredentialsState == null) {
         throw 'check for all possible cases';
       }
       return true;
     }());
     switch (this._type) {
-      case _AuthState.Initial:
-        return initial();
-      case _AuthState.Loading:
-        return loading();
-      case _AuthState.Authenticated:
-        return authenticated();
-      case _AuthState.Failed:
-        return failed();
+      case _AuthState.InitialState:
+        return initialState();
+      case _AuthState.LoadingState:
+        return loadingState();
+      case _AuthState.AuthenticatedState:
+        return authenticatedState(this as AuthenticatedState);
+      case _AuthState.FailedState:
+        return failedState(this as FailedState);
+      case _AuthState.InvalidCredentialsState:
+        return invalidCredentialsState();
     }
   }
 
@@ -55,10 +62,11 @@ abstract class AuthState extends Equatable {
   /// On the other hand, it adds an extra orElse required parameter,
   /// for fallback behavior.
   R whenOrElse<R extends Object>(
-      {R Function() initial,
-      R Function() loading,
-      R Function() authenticated,
-      R Function() failed,
+      {R Function() initialState,
+      R Function() loadingState,
+      R Function(AuthenticatedState) authenticatedState,
+      R Function(FailedState) failedState,
+      R Function() invalidCredentialsState,
       @required R Function(AuthState) orElse}) {
     assert(() {
       if (orElse == null) {
@@ -67,18 +75,21 @@ abstract class AuthState extends Equatable {
       return true;
     }());
     switch (this._type) {
-      case _AuthState.Initial:
-        if (initial == null) break;
-        return initial();
-      case _AuthState.Loading:
-        if (loading == null) break;
-        return loading();
-      case _AuthState.Authenticated:
-        if (authenticated == null) break;
-        return authenticated();
-      case _AuthState.Failed:
-        if (failed == null) break;
-        return failed();
+      case _AuthState.InitialState:
+        if (initialState == null) break;
+        return initialState();
+      case _AuthState.LoadingState:
+        if (loadingState == null) break;
+        return loadingState();
+      case _AuthState.AuthenticatedState:
+        if (authenticatedState == null) break;
+        return authenticatedState(this as AuthenticatedState);
+      case _AuthState.FailedState:
+        if (failedState == null) break;
+        return failedState(this as FailedState);
+      case _AuthState.InvalidCredentialsState:
+        if (invalidCredentialsState == null) break;
+        return invalidCredentialsState();
     }
     return orElse(this);
   }
@@ -86,32 +97,37 @@ abstract class AuthState extends Equatable {
   /// The [whenPartial] method is equivalent to [whenOrElse],
   /// but non-exhaustive.
   void whenPartial(
-      {void Function() initial,
-      void Function() loading,
-      void Function() authenticated,
-      void Function() failed}) {
+      {void Function() initialState,
+      void Function() loadingState,
+      void Function(AuthenticatedState) authenticatedState,
+      void Function(FailedState) failedState,
+      void Function() invalidCredentialsState}) {
     assert(() {
-      if (initial == null &&
-          loading == null &&
-          authenticated == null &&
-          failed == null) {
+      if (initialState == null &&
+          loadingState == null &&
+          authenticatedState == null &&
+          failedState == null &&
+          invalidCredentialsState == null) {
         throw 'provide at least one branch';
       }
       return true;
     }());
     switch (this._type) {
-      case _AuthState.Initial:
-        if (initial == null) break;
-        return initial();
-      case _AuthState.Loading:
-        if (loading == null) break;
-        return loading();
-      case _AuthState.Authenticated:
-        if (authenticated == null) break;
-        return authenticated();
-      case _AuthState.Failed:
-        if (failed == null) break;
-        return failed();
+      case _AuthState.InitialState:
+        if (initialState == null) break;
+        return initialState();
+      case _AuthState.LoadingState:
+        if (loadingState == null) break;
+        return loadingState();
+      case _AuthState.AuthenticatedState:
+        if (authenticatedState == null) break;
+        return authenticatedState(this as AuthenticatedState);
+      case _AuthState.FailedState:
+        if (failedState == null) break;
+        return failedState(this as FailedState);
+      case _AuthState.InvalidCredentialsState:
+        if (invalidCredentialsState == null) break;
+        return invalidCredentialsState();
     }
   }
 
@@ -120,61 +136,109 @@ abstract class AuthState extends Equatable {
 }
 
 @immutable
-abstract class Initial extends AuthState {
-  const Initial() : super(_AuthState.Initial);
+abstract class InitialState extends AuthState {
+  const InitialState() : super(_AuthState.InitialState);
 
-  factory Initial.create() = _InitialImpl;
+  factory InitialState.create() = _InitialStateImpl;
 }
 
 @immutable
-class _InitialImpl extends Initial {
-  const _InitialImpl() : super();
+class _InitialStateImpl extends InitialState {
+  const _InitialStateImpl() : super();
 
   @override
-  String toString() => 'Initial()';
+  String toString() => 'InitialState()';
 }
 
 @immutable
-abstract class Loading extends AuthState {
-  const Loading() : super(_AuthState.Loading);
+abstract class LoadingState extends AuthState {
+  const LoadingState() : super(_AuthState.LoadingState);
 
-  factory Loading.create() = _LoadingImpl;
+  factory LoadingState.create() = _LoadingStateImpl;
 }
 
 @immutable
-class _LoadingImpl extends Loading {
-  const _LoadingImpl() : super();
+class _LoadingStateImpl extends LoadingState {
+  const _LoadingStateImpl() : super();
 
   @override
-  String toString() => 'Loading()';
+  String toString() => 'LoadingState()';
 }
 
 @immutable
-abstract class Authenticated extends AuthState {
-  const Authenticated() : super(_AuthState.Authenticated);
+abstract class AuthenticatedState extends AuthState {
+  const AuthenticatedState({@required this.user})
+      : super(_AuthState.AuthenticatedState);
 
-  factory Authenticated.create() = _AuthenticatedImpl;
+  factory AuthenticatedState.create({@required BaseUser user}) =
+      _AuthenticatedStateImpl;
+
+  final BaseUser user;
+
+  /// Creates a copy of this AuthenticatedState but with the given fields
+  /// replaced with the new values.
+  AuthenticatedState copyWith({BaseUser user});
 }
 
 @immutable
-class _AuthenticatedImpl extends Authenticated {
-  const _AuthenticatedImpl() : super();
+class _AuthenticatedStateImpl extends AuthenticatedState {
+  const _AuthenticatedStateImpl({@required this.user}) : super(user: user);
 
   @override
-  String toString() => 'Authenticated()';
-}
-
-@immutable
-abstract class Failed extends AuthState {
-  const Failed() : super(_AuthState.Failed);
-
-  factory Failed.create() = _FailedImpl;
-}
-
-@immutable
-class _FailedImpl extends Failed {
-  const _FailedImpl() : super();
+  final BaseUser user;
 
   @override
-  String toString() => 'Failed()';
+  _AuthenticatedStateImpl copyWith({Object user = superEnum}) =>
+      _AuthenticatedStateImpl(
+        user: user == superEnum ? this.user : user as BaseUser,
+      );
+  @override
+  String toString() => 'AuthenticatedState(user: ${this.user})';
+  @override
+  List<Object> get props => [user];
+}
+
+@immutable
+abstract class FailedState extends AuthState {
+  const FailedState({this.message}) : super(_AuthState.FailedState);
+
+  factory FailedState.create({String message}) = _FailedStateImpl;
+
+  final String message;
+
+  /// Creates a copy of this FailedState but with the given fields
+  /// replaced with the new values.
+  FailedState copyWith({String message});
+}
+
+@immutable
+class _FailedStateImpl extends FailedState {
+  const _FailedStateImpl({this.message}) : super(message: message);
+
+  @override
+  final String message;
+
+  @override
+  _FailedStateImpl copyWith({Object message = superEnum}) => _FailedStateImpl(
+        message: message == superEnum ? this.message : message as String,
+      );
+  @override
+  String toString() => 'FailedState(message: ${this.message})';
+  @override
+  List<Object> get props => [message];
+}
+
+@immutable
+abstract class InvalidCredentialsState extends AuthState {
+  const InvalidCredentialsState() : super(_AuthState.InvalidCredentialsState);
+
+  factory InvalidCredentialsState.create() = _InvalidCredentialsStateImpl;
+}
+
+@immutable
+class _InvalidCredentialsStateImpl extends InvalidCredentialsState {
+  const _InvalidCredentialsStateImpl() : super();
+
+  @override
+  String toString() => 'InvalidCredentialsState()';
 }

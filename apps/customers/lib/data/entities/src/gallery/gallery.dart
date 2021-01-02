@@ -30,7 +30,7 @@ class Gallery extends BaseGallery {
 
   @HiveField(3)
   @override
-  final int createdAt;
+  final String createdAt;
 
   Gallery({
     this.id,

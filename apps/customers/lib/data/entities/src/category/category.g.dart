@@ -18,7 +18,7 @@ class ServiceCategoryAdapter extends TypeAdapter<ServiceCategory> {
     };
     return ServiceCategory(
       id: fields[3] as String,
-      createdAt: fields[4] as int,
+      createdAt: fields[4] as String,
       name: fields[0] as String,
       avatar: fields[1] as String,
       groupName: fields[2] as String,
@@ -59,7 +59,7 @@ class ServiceCategoryAdapter extends TypeAdapter<ServiceCategory> {
 ServiceCategory _$ServiceCategoryFromJson(Map<String, dynamic> json) {
   return ServiceCategory(
     id: json['id'] as String,
-    createdAt: json['createdAt'] as int,
+    createdAt: json['createdAt'] as String,
     name: json['name'] as String,
     avatar: json['avatar'] as String,
     groupName: json['groupName'] as String,

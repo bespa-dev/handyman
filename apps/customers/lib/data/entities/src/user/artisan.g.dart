@@ -18,7 +18,7 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
     };
     return Artisan(
       id: fields[10] as String,
-      createdAt: fields[11] as int,
+      createdAt: fields[11] as String,
       businessId: fields[0] as String,
       category: fields[1] as String,
       startWorkingHours: fields[2] as int,
@@ -80,7 +80,7 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
 Artisan _$ArtisanFromJson(Map<String, dynamic> json) {
   return Artisan(
     id: json['id'] as String,
-    createdAt: json['created_at'] as int,
+    createdAt: json['created_at'] as String,
     businessId: json['business_id'] as String,
     category: json['category'] as String,
     startWorkingHours: json['start_working_hours'] as int,

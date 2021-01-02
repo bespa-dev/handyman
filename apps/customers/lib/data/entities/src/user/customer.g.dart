@@ -23,7 +23,7 @@ class CustomerAdapter extends TypeAdapter<Customer> {
       token: fields[3] as String,
       phone: fields[4] as String,
       id: fields[5] as String,
-      createdAt: fields[6] as int,
+      createdAt: fields[6] as String,
     );
   }
 
@@ -70,7 +70,7 @@ Customer _$CustomerFromJson(Map<String, dynamic> json) {
     token: json['token'] as String,
     phone: json['phone'] as String,
     id: json['id'] as String,
-    createdAt: json['createdAt'] as int,
+    createdAt: json['createdAt'] as String,
   );
 }
 

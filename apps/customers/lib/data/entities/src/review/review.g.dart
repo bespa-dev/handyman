@@ -18,7 +18,7 @@ class ReviewAdapter extends TypeAdapter<Review> {
     };
     return Review(
       id: fields[4] as String,
-      createdAt: fields[5] as int,
+      createdAt: fields[5] as String,
       body: fields[0] as String,
       customerId: fields[1] as String,
       artisanId: fields[2] as String,
@@ -62,7 +62,7 @@ class ReviewAdapter extends TypeAdapter<Review> {
 Review _$ReviewFromJson(Map<String, dynamic> json) {
   return Review(
     id: json['id'] as String,
-    createdAt: json['created_at'] as int,
+    createdAt: json['created_at'] as String,
     body: json['body'] as String,
     customerId: json['customer_id'] as String,
     artisanId: json['artisan_id'] as String,

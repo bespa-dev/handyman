@@ -58,7 +58,7 @@ class Booking extends BaseBooking {
 
   @HiveField(10)
   @override
-  final int createdAt;
+  final String createdAt;
 
   Booking({
     this.id,

@@ -18,7 +18,7 @@ class BookingAdapter extends TypeAdapter<Booking> {
     };
     return Booking(
       id: fields[9] as String,
-      createdAt: fields[10] as int,
+      createdAt: fields[10] as String,
       customerId: fields[0] as String,
       artisanId: fields[1] as String,
       category: fields[2] as String,
@@ -77,7 +77,7 @@ class BookingAdapter extends TypeAdapter<Booking> {
 Booking _$BookingFromJson(Map<String, dynamic> json) {
   return Booking(
     id: json['id'] as String,
-    createdAt: json['created_at'] as int,
+    createdAt: json['created_at'] as String,
     customerId: json['customer_id'] as String,
     artisanId: json['artisan_id'] as String,
     category: json['category'] as String,
