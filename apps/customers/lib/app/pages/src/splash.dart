@@ -9,6 +9,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:lite/app/widgets/src/buttons.dart';
+import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/shared/shared.dart';
 
 class SplashPage extends StatefulWidget {
@@ -17,6 +18,26 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  final _userRepo = Injection.get<BaseUserRepository>();
+  final _authRepo = Injection.get<BaseAuthRepository>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _userRepo.currentUser().listen((event) {
+      logger.d("Current user -> $event");
+    });
+
+    _authRepo.onAuthStateChanged.listen((event) async {
+      logger.d(event);
+    });
+
+    _authRepo.onMessageChanged.listen((event) async {
+      logger.d(event);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -52,7 +73,9 @@ class _SplashPageState extends State<SplashPage> {
               child: ButtonPrimary(
                 width: SizeConfig.screenWidth * 0.85,
                 themeData: kTheme,
-                onTap: () {},
+                onTap: () async {
+                  await _authRepo.signInWithFederatedOAuth();
+                },
                 label: "Get Started",
               ),
             ),

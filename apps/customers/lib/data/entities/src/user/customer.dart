@@ -62,4 +62,22 @@ class Customer extends BaseUser {
 
   factory Customer.fromJson(Map<String, dynamic> json) =>
       _$CustomerFromJson(json);
+
+  @override
+  BaseUser copyWith({
+    String name,
+    String email,
+    String avatar,
+    String token,
+    String phone,
+  }) =>
+      Customer(
+        id: this.id,
+        name: name ?? this.name,
+        email: email ?? this.email,
+        avatar: avatar ?? this.avatar,
+        createdAt: this.createdAt,
+        token: token ?? this.token,
+        phone: phone ?? this.phone,
+      );
 }

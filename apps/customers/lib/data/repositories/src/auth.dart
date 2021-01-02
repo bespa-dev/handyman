@@ -64,6 +64,11 @@ class AuthRepositoryImpl implements BaseAuthRepository {
       return newUser;
     } else {
       _prefsRepo.userId = user.id;
+      await _userRepo.updateUser(
+        user: user.copyWith(
+          token: await _messaging.getToken(),
+        ),
+      );
       _onAuthStateChangedController
           .add(AuthState.authenticatedState(user: user));
       _onMessageChangedController.add("Signed in successfully");

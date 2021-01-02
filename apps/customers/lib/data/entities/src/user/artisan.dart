@@ -65,6 +65,26 @@ class Artisan extends BaseArtisan {
   @override
   final String createdAt;
 
+  @HiveField(12)
+  @override
+  final String token;
+
+  @HiveField(13)
+  @override
+  final String phone;
+
+  @HiveField(14)
+  @override
+  final String avatar;
+
+  @HiveField(15)
+  @override
+  final String email;
+
+  @HiveField(16)
+  @override
+  final String name;
+
   Artisan({
     this.id,
     this.createdAt,
@@ -78,6 +98,11 @@ class Artisan extends BaseArtisan {
     this.isCertified,
     this.isAvailable,
     this.isApproved,
+    this.token,
+    this.phone,
+    this.avatar,
+    this.email,
+    this.name,
   });
 
   @override
@@ -103,4 +128,32 @@ class Artisan extends BaseArtisan {
 
   factory Artisan.fromJson(Map<String, dynamic> json) =>
       _$ArtisanFromJson(json);
+
+  @override
+  BaseUser copyWith({
+    String name,
+    String email,
+    String avatar,
+    String token,
+    String phone,
+  }) =>
+      Artisan(
+        id: this.id,
+        createdAt: this.createdAt,
+        category: this.category,
+        bookingsCount: this.bookingsCount,
+        businessId: this.businessId,
+        endWorkingHours: this.endWorkingHours,
+        isApproved: this.isApproved,
+        isAvailable: this.isAvailable,
+        isCertified: this.isCertified,
+        reports: this.reports,
+        requests: this.requests,
+        startWorkingHours: this.startWorkingHours,
+        token: token ?? this.token,
+        phone: phone ?? this.phone,
+        avatar: avatar ?? this.avatar,
+        email: email ?? this.email,
+        name: name ?? this.name,
+      );
 }

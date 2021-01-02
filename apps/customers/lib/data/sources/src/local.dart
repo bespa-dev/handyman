@@ -88,10 +88,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   }
 
   @override
-  Future<BaseArtisan> getArtisanById({String id}) {
-    // TODO: implement getArtisanById
-    throw UnimplementedError();
-  }
+  Future<BaseArtisan> getArtisanById({String id}) async => artisanBox.get(id);
 
   @override
   Stream<BaseBooking> getBookingById({String id}) {
@@ -107,10 +104,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   }
 
   @override
-  Future<BaseUser> getCustomerById({String id}) {
-    // TODO: implement getCustomerById
-    throw UnimplementedError();
-  }
+  Future<BaseUser> getCustomerById({String id}) async => customerBox.get(id);
 
   @override
   Stream<List<BaseGallery>> getPhotosForArtisan({String userId}) {
@@ -236,9 +230,12 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   }
 
   @override
-  Future<void> updateUser(BaseUser user) {
-    // TODO: implement updateUser
-    throw UnimplementedError();
+  Future<void> updateUser(BaseUser user) async {
+    if (user is Customer) {
+      await customerBox.put(user.id, user);
+    } else if (user is Artisan) {
+      await artisanBox.put(user.id, user);
+    }
   }
 
   @override

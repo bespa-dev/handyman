@@ -10,9 +10,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lite/data/entities/entities.dart';
 import 'package:lite/domain/models/models.dart';
-import 'package:lite/domain/models/src/booking.dart';
-import 'package:lite/domain/models/src/category/category.dart';
-import 'package:lite/domain/models/src/conversation/conversation.dart';
 import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/domain/sources/sources.dart';
 import 'package:lite/shared/shared.dart';
@@ -78,9 +75,10 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   }
 
   @override
-  Future<BaseUser> getCustomerById({String id}) {
-    // TODO: implement getCustomerById
-    throw UnimplementedError();
+  Future<BaseUser> getCustomerById({String id}) async {
+    var snapshot =
+        await firestore.collection(RefUtils.kCustomerRef).doc(id).get();
+    return snapshot.exists ? Customer.fromJson(snapshot.data()) : null;
   }
 
   @override
@@ -189,9 +187,12 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   }
 
   @override
-  Future<void> updateUser(BaseUser user) {
-    // TODO: implement updateUser
-    throw UnimplementedError();
+  Future<void> updateUser(BaseUser user) async {
+    await firestore
+        .collection(
+            user is Artisan ? RefUtils.kArtisanRef : RefUtils.kCustomerRef)
+        .doc(user.id)
+        .set(user.toJson(), SetOptions(merge: true));
   }
 
   @override
