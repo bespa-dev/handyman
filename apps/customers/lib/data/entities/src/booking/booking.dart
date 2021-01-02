@@ -50,7 +50,7 @@ class Booking extends BaseBooking {
 
   @HiveField(8)
   @override
-  final int dueDate;
+  final String dueDate;
 
   @HiveField(9)
   @override

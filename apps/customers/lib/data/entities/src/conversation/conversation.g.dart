@@ -61,7 +61,7 @@ class ConversationAdapter extends TypeAdapter<Conversation> {
 
 Conversation _$ConversationFromJson(Map<String, dynamic> json) {
   return Conversation(
-    createdAt: json['createdAt'] as String,
+    createdAt: json['created_at'] as String,
     id: json['id'] as String,
     author: json['author'] as String,
     recipient: json['recipient'] as String,
@@ -77,5 +77,5 @@ Map<String, dynamic> _$ConversationToJson(Conversation instance) =>
       'body': instance.body,
       'format': instance.format,
       'id': instance.id,
-      'createdAt': instance.createdAt,
+      'created_at': instance.createdAt,
     };

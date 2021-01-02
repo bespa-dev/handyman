@@ -45,10 +45,10 @@ abstract class BaseRemoteDatasource {
   Stream<List<BaseReview>> observeReviewsByCustomer(String id);
 
   /// Delete a [CustomerReview] by [id]
-  Future<void> deleteReviewById({String id, String customerId});
+  Future<void> deleteReviewById({String id});
 
   /// Send a [CustomerReview]
-  Future<void> sendReview({String message, String reviewer, String artisan});
+  Future<void> sendReview({@required BaseReview review});
 
   Future<void> updateBooking({@required BaseBooking booking});
 
@@ -68,13 +68,7 @@ abstract class BaseRemoteDatasource {
   Stream<List<BaseGallery>> getPhotosForArtisan({@required String userId});
 
   /// Upload business [images]
-  Future<void> uploadBusinessPhotos({
-    @required String userId,
-    @required List<String> images,
-  });
-
-  /// Search for any [BaseArtisan]
-  Future<List<BaseUser>> searchFor({@required String value, String categoryId});
+  Future<void> uploadBusinessPhotos({@required List<BaseGallery> galleryItems});
 
   /// Get [BaseConversation] between [sender] & [recipient]
   Stream<List<BaseConversation>> observeConversation(
@@ -94,13 +88,5 @@ abstract class BaseRemoteDatasource {
       {@required String dueDate, @required String artisanId});
 
   /// Request [Booking] for an [Artisan]
-  Future<void> requestBooking({
-    @required String artisan,
-    @required String customer,
-    @required String category,
-    @required String description,
-    @required String image,
-    @required double lat,
-    @required double lng,
-  });
+  Future<void> requestBooking({@required BaseBooking booking});
 }

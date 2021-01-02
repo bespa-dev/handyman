@@ -7,7 +7,10 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:lite/data/entities/entities.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/domain/repositories/repositories.dart';
@@ -20,13 +23,36 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   final FirebaseFirestore firestore;
 
   FirebaseRemoteDatasource(
-      {@required this.prefsRepo, @required this.firestore});
+      {@required this.prefsRepo, @required this.firestore}) {
+    /// load initial data from assets
+    _performInitLoad();
+  }
+
+  void _performInitLoad() async {
+    /// decode categories from json
+    var source = await rootBundle.loadString("assets/categories.json");
+    var decoded = jsonDecode(source) as List;
+    for (var json in decoded) {
+      final item = ServiceCategory.fromJson(json);
+
+      /// put each one into firestore document
+      await firestore
+          .collection(RefUtils.kCategoryRef)
+          .doc(item.id)
+          .set(item.toJson(), SetOptions(merge: true));
+    }
+  }
 
   @override
   Stream<List<BaseBooking>> bookingsForCustomerAndArtisan(
-      String customerId, String artisanId) {
-    // TODO: implement bookingsForCustomerAndArtisan
-    throw UnimplementedError();
+      String customerId, String artisanId) async* {
+    yield* firestore
+        .collection(RefUtils.kBookingRef)
+        .where("customer_id", isEqualTo: customerId)
+        .where("artisan_id", isEqualTo: artisanId)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Booking.fromJson(e.data())).toList());
   }
 
   @override
@@ -44,34 +70,41 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   }
 
   @override
-  Future<void> deleteBooking({BaseBooking booking}) {
-    // TODO: implement deleteBooking
-    throw UnimplementedError();
+  Future<void> deleteBooking({BaseBooking booking}) async => await firestore
+      .collection(RefUtils.kBookingRef)
+      .doc(booking.id)
+      .set(booking.toJson(), SetOptions(merge: true));
+
+  @override
+  Future<void> deleteReviewById({String id}) async =>
+      await firestore.collection(RefUtils.kReviewRef).doc(id).delete();
+
+  @override
+  Future<BaseArtisan> getArtisanById({String id}) async {
+    var snapshot =
+        await firestore.collection(RefUtils.kArtisanRef).doc(id).get();
+    return snapshot.exists ? Artisan.fromJson(snapshot.data()) : null;
   }
 
   @override
-  Future<void> deleteReviewById({String id, String customerId}) {
-    // TODO: implement deleteReviewById
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<BaseArtisan> getArtisanById({String id}) {
-    // TODO: implement getArtisanById
-    throw UnimplementedError();
-  }
-
-  @override
-  Stream<BaseBooking> getBookingById({String id}) {
-    // TODO: implement getBookingById
-    throw UnimplementedError();
+  Stream<BaseBooking> getBookingById({String id}) async* {
+    yield* firestore
+        .collection(RefUtils.kBookingRef)
+        .doc(id)
+        .snapshots()
+        .map((event) => Booking.fromJson(event.data()));
   }
 
   @override
   Stream<List<BaseBooking>> getBookingsByDueDate(
-      {String dueDate, String artisanId}) {
-    // TODO: implement getBookingsByDueDate
-    throw UnimplementedError();
+      {String dueDate, String artisanId}) async* {
+    yield* firestore
+        .collection(RefUtils.kBookingRef)
+        .where("due_date", isLessThanOrEqualTo: dueDate)
+        .where("artisan_id", isEqualTo: artisanId)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Booking.fromJson(e.data())).toList());
   }
 
   @override
@@ -82,122 +115,157 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   }
 
   @override
-  Stream<List<BaseGallery>> getPhotosForArtisan({String userId}) {
-    // TODO: implement getPhotosForArtisan
-    throw UnimplementedError();
+  Stream<List<BaseGallery>> getPhotosForArtisan({String userId}) async* {
+    yield* firestore
+        .collection(RefUtils.kGalleryRef)
+        .where("user_id", isEqualTo: userId)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Gallery.fromJson(e.data())).toList());
   }
 
   @override
-  Stream<BaseArtisan> observeArtisanById({String id}) {
-    // TODO: implement observeArtisanById
-    throw UnimplementedError();
+  Stream<BaseArtisan> observeArtisanById({String id}) async* {
+    yield* firestore
+        .collection(RefUtils.kArtisanRef)
+        .doc(id)
+        .snapshots()
+        .map((event) => Artisan.fromJson(event.data()));
   }
 
   @override
-  Stream<List<BaseArtisan>> observeArtisans({String category}) {
-    // TODO: implement observeArtisans
-    throw UnimplementedError();
+  Stream<List<BaseArtisan>> observeArtisans({String category}) async* {
+    yield* firestore
+        .collection(RefUtils.kArtisanRef)
+        .where("category", isEqualTo: category)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Artisan.fromJson(e.data())).toList());
   }
 
   @override
-  Stream<List<BaseBooking>> observeBookingsForArtisan(String id) {
-    // TODO: implement observeBookingsForArtisan
-    throw UnimplementedError();
+  Stream<List<BaseBooking>> observeBookingsForArtisan(String id) async* {
+    yield* firestore
+        .collection(RefUtils.kBookingRef)
+        .where("artisan_id", isEqualTo: id)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Booking.fromJson(e.data())).toList());
   }
 
   @override
-  Stream<List<BaseBooking>> observeBookingsForCustomer(String id) {
-    // TODO: implement observeBookingsForCustomer
-    throw UnimplementedError();
+  Stream<List<BaseBooking>> observeBookingsForCustomer(String id) async* {
+    yield* firestore
+        .collection(RefUtils.kBookingRef)
+        .where("customer_id", isEqualTo: id)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Booking.fromJson(e.data())).toList());
   }
 
   @override
   Stream<List<BaseServiceCategory>> observeCategories(
-      {ServiceCategoryGroup categoryGroup}) {
-    // TODO: implement observeCategories
-    throw UnimplementedError();
+      {@required ServiceCategoryGroup categoryGroup}) async* {
+    yield* firestore
+        .collection(RefUtils.kCategoryRef)
+        .where("group_name", isEqualTo: categoryGroup.name())
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => ServiceCategory.fromJson(e.data())).toList());
   }
 
   @override
-  Stream<BaseServiceCategory> observeCategoryById({String id}) {
-    // TODO: implement observeCategoryById
-    throw UnimplementedError();
+  Stream<BaseServiceCategory> observeCategoryById({String id}) async* {
+    yield* firestore
+        .collection(RefUtils.kCategoryRef)
+        .doc(id)
+        .snapshots()
+        .map((event) => ServiceCategory.fromJson(event.data()));
   }
 
   @override
   Stream<List<BaseConversation>> observeConversation(
-      {String sender, String recipient}) {
-    // TODO: implement observeConversation
-    throw UnimplementedError();
+      {String sender, String recipient}) async* {
+    yield* firestore
+        .collection(RefUtils.kConversationRef)
+        .where("author", isLessThanOrEqualTo: sender)
+        .where("recipient", isLessThanOrEqualTo: recipient)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Conversation.fromJson(e.data())).toList());
   }
 
   @override
-  Stream<BaseUser> observeCustomerById({String id}) {
-    // TODO: implement observeCustomerById
-    throw UnimplementedError();
+  Stream<BaseUser> observeCustomerById({String id}) async* {
+    yield* firestore
+        .collection(RefUtils.kCustomerRef)
+        .doc(id)
+        .snapshots()
+        .map((event) => Customer.fromJson(event.data()));
   }
 
   @override
-  Stream<List<BaseReview>> observeReviewsByCustomer(String id) {
-    // TODO: implement observeReviewsByCustomer
-    throw UnimplementedError();
+  Stream<List<BaseReview>> observeReviewsByCustomer(String id) async* {
+    yield* firestore
+        .collection(RefUtils.kReviewRef)
+        .where("customer_id", isLessThanOrEqualTo: id)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Review.fromJson(e.data())).toList());
   }
 
   @override
-  Stream<List<BaseReview>> observeReviewsForArtisan(String id) {
-    // TODO: implement observeReviewsForArtisan
-    throw UnimplementedError();
+  Stream<List<BaseReview>> observeReviewsForArtisan(String id) async* {
+    yield* firestore
+        .collection(RefUtils.kReviewRef)
+        .where("artisan_id", isLessThanOrEqualTo: id)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Review.fromJson(e.data())).toList());
   }
 
   @override
-  Future<void> requestBooking(
-      {String artisan,
-      String customer,
-      String category,
-      String description,
-      String image,
-      double lat,
-      double lng}) {
-    // TODO: implement requestBooking
-    throw UnimplementedError();
-  }
+  Future<void> requestBooking({@required BaseBooking booking}) async =>
+      await firestore
+          .collection(RefUtils.kBookingRef)
+          .doc(booking.id)
+          .set(booking.toJson(), SetOptions(merge: true));
 
   @override
-  Future<List<BaseUser>> searchFor({String value, String categoryId}) {
-    // TODO: implement searchFor
-    throw UnimplementedError();
-  }
+  Future<void> sendMessage({BaseConversation conversation}) async =>
+      await firestore
+          .collection(RefUtils.kConversationRef)
+          .doc(conversation.id)
+          .set(conversation.toJson(), SetOptions(merge: true));
 
   @override
-  Future<void> sendMessage({BaseConversation conversation}) {
-    // TODO: implement sendMessage
-    throw UnimplementedError();
-  }
+  Future<void> sendReview({@required BaseReview review}) async =>
+      await firestore
+          .collection(RefUtils.kReviewRef)
+          .doc(review.id)
+          .set(review.toJson(), SetOptions(merge: true));
 
   @override
-  Future<void> sendReview({String message, String reviewer, String artisan}) {
-    // TODO: implement sendReview
-    throw UnimplementedError();
-  }
+  Future<void> updateBooking({@required BaseBooking booking}) async =>
+      await firestore
+          .collection(RefUtils.kBookingRef)
+          .doc(booking.id)
+          .set(booking.toJson(), SetOptions(merge: true));
 
   @override
-  Future<void> updateBooking({BaseBooking booking}) {
-    // TODO: implement updateBooking
-    throw UnimplementedError();
-  }
+  Future<void> updateUser(BaseUser user) async => await firestore
+      .collection(
+          user is Artisan ? RefUtils.kArtisanRef : RefUtils.kCustomerRef)
+      .doc(user.id)
+      .set(user.toJson(), SetOptions(merge: true));
 
   @override
-  Future<void> updateUser(BaseUser user) async {
-    await firestore
-        .collection(
-            user is Artisan ? RefUtils.kArtisanRef : RefUtils.kCustomerRef)
-        .doc(user.id)
-        .set(user.toJson(), SetOptions(merge: true));
-  }
-
-  @override
-  Future<void> uploadBusinessPhotos({String userId, List<String> images}) {
-    // TODO: implement uploadBusinessPhotos
-    throw UnimplementedError();
+  Future<void> uploadBusinessPhotos({List<BaseGallery> galleryItems}) async {
+    for (var item in galleryItems) {
+      await firestore
+          .collection(RefUtils.kGalleryRef)
+          .doc(item.id)
+          .set(item.toJson(), SetOptions(merge: true));
+    }
   }
 }

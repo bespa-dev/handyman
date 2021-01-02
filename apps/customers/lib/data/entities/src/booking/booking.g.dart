@@ -27,7 +27,7 @@ class BookingAdapter extends TypeAdapter<Booking> {
       position: fields[5] as LocationMetadata,
       cost: fields[6] as double,
       progress: fields[7] as double,
-      dueDate: fields[8] as int,
+      dueDate: fields[8] as String,
     );
   }
 
@@ -88,7 +88,7 @@ Booking _$BookingFromJson(Map<String, dynamic> json) {
         : LocationMetadata.fromJson(json['position'] as Map<String, dynamic>),
     cost: (json['cost'] as num)?.toDouble(),
     progress: (json['progress'] as num)?.toDouble(),
-    dueDate: json['due_date'] as int,
+    dueDate: json['due_date'] as String,
   );
 }
 

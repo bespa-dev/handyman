@@ -7,9 +7,11 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:lite/data/entities/entities.dart';
 import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/domain/sources/sources.dart';
 import 'package:meta/meta.dart';
+import 'package:uuid/uuid.dart';
 
 class ReviewRepositoryImpl implements BaseReviewRepository {
   final BaseLocalDatasource _localDatasource;
@@ -22,17 +24,24 @@ class ReviewRepositoryImpl implements BaseReviewRepository {
         _remoteDatasource = remote;
 
   @override
-  Future<void> deleteReviewById({String id, String customerId}) async {
-    await _localDatasource.deleteReviewById(id: id, customerId: customerId);
-    await _remoteDatasource.deleteReviewById(id: id, customerId: customerId);
+  Future<void> deleteReviewById({String id}) async {
+    await _localDatasource.deleteReviewById(id: id);
+    await _remoteDatasource.deleteReviewById(id: id);
   }
 
   @override
   Future<void> sendReview(
-      {String message, String reviewer, String artisan}) async {
-    await _localDatasource.sendReview(
-        message: message, reviewer: reviewer, artisan: artisan);
-    await _remoteDatasource.sendReview(
-        message: message, reviewer: reviewer, artisan: artisan);
+      {String message, String reviewer, String artisan, double rating}) async {
+    final review = Review(
+      id: Uuid().v4(),
+      artisanId: artisan,
+      customerId: reviewer,
+      createdAt: DateTime.now().toIso8601String(),
+      body: message,
+      rating: rating,
+    );
+
+    await _localDatasource.sendReview(review: review);
+    await _remoteDatasource.sendReview(review: review);
   }
 }

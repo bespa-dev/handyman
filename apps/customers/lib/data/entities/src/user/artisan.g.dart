@@ -29,13 +29,18 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
       isCertified: fields[7] as bool,
       isAvailable: fields[8] as bool,
       isApproved: fields[9] as bool,
+      token: fields[12] as String,
+      phone: fields[13] as String,
+      avatar: fields[14] as String,
+      email: fields[15] as String,
+      name: fields[16] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Artisan obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(17)
       ..writeByte(0)
       ..write(obj.businessId)
       ..writeByte(1)
@@ -59,7 +64,17 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
       ..writeByte(10)
       ..write(obj.id)
       ..writeByte(11)
-      ..write(obj.createdAt);
+      ..write(obj.createdAt)
+      ..writeByte(12)
+      ..write(obj.token)
+      ..writeByte(13)
+      ..write(obj.phone)
+      ..writeByte(14)
+      ..write(obj.avatar)
+      ..writeByte(15)
+      ..write(obj.email)
+      ..writeByte(16)
+      ..write(obj.name);
   }
 
   @override
@@ -91,20 +106,15 @@ Artisan _$ArtisanFromJson(Map<String, dynamic> json) {
     isCertified: json['is_certified'] as bool,
     isAvailable: json['is_available'] as bool,
     isApproved: json['is_approved'] as bool,
-  )
-    ..name = json['name'] as String
-    ..email = json['email'] as String
-    ..avatar = json['avatar'] as String
-    ..token = json['token'] as String
-    ..phone = json['phone'] as String;
+    token: json['token'] as String,
+    phone: json['phone'] as String,
+    avatar: json['avatar'] as String,
+    email: json['email'] as String,
+    name: json['name'] as String,
+  );
 }
 
 Map<String, dynamic> _$ArtisanToJson(Artisan instance) => <String, dynamic>{
-      'name': instance.name,
-      'email': instance.email,
-      'avatar': instance.avatar,
-      'token': instance.token,
-      'phone': instance.phone,
       'business_id': instance.businessId,
       'category': instance.category,
       'start_working_hours': instance.startWorkingHours,
@@ -117,4 +127,9 @@ Map<String, dynamic> _$ArtisanToJson(Artisan instance) => <String, dynamic>{
       'is_approved': instance.isApproved,
       'id': instance.id,
       'created_at': instance.createdAt,
+      'token': instance.token,
+      'phone': instance.phone,
+      'avatar': instance.avatar,
+      'email': instance.email,
+      'name': instance.name,
     };

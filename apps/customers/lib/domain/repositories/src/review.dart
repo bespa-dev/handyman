@@ -11,11 +11,14 @@ import 'package:lite/domain/models/models.dart';
 import 'package:meta/meta.dart';
 
 abstract class BaseReviewRepository implements Exposable {
-
   /// Delete a [CustomerReview] by [id]
-  Future<void> deleteReviewById({@required String id, String customerId});
+  Future<void> deleteReviewById({@required String id});
 
   /// Send a [CustomerReview]
-  Future<void> sendReview({String message, String reviewer, String artisan});
-
+  Future<void> sendReview({
+    @required String message,
+    @required String reviewer,
+    @required String artisan,
+    @required double rating,
+  });
 }

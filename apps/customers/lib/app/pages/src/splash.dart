@@ -9,7 +9,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:lite/app/widgets/src/buttons.dart';
-import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/shared/shared.dart';
 
 class SplashPage extends StatefulWidget {
@@ -18,24 +17,15 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  final _userRepo = Injection.get<BaseUserRepository>();
-  final _authRepo = Injection.get<BaseAuthRepository>();
-
   @override
   void initState() {
     super.initState();
 
-    _userRepo.currentUser().listen((event) {
-      logger.d("Current user -> $event");
-    });
-
-    _authRepo.onAuthStateChanged.listen((event) async {
-      logger.d(event);
-    });
-
-    _authRepo.onMessageChanged.listen((event) async {
-      logger.d(event);
-    });
+    // logger.d(ServiceCategoryGroup.featured().name());
+    // logger.d(ServiceCategoryGroup.recent().name());
+    // logger.d(ServiceCategoryGroup.popular().name());
+    // logger.d(ServiceCategoryGroup.recommended().name());
+    // logger.d(ServiceCategoryGroup.mostRated().name());
   }
 
   @override
@@ -74,7 +64,7 @@ class _SplashPageState extends State<SplashPage> {
                 width: SizeConfig.screenWidth * 0.85,
                 themeData: kTheme,
                 onTap: () async {
-                  await _authRepo.signInWithFederatedOAuth();
+                  /// fixme -> nav to register page
                 },
                 label: "Get Started",
               ),

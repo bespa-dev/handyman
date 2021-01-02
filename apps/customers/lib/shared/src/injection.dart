@@ -196,11 +196,12 @@ final _hiveDatasourceProvider = ChangeNotifierProvider.family<
 
 /// region Parsers
 String parseFromTimestamp(
-  DateTime timestamp, {
+  String time, {
   bool isChatFormat = false,
   bool isDetailedFormat = false,
   bool fromNow = false,
 }) {
+  final timestamp = DateTime.parse(time);
   return fromNow
       ? Jiffy.unix(timestamp.millisecondsSinceEpoch).fromNow()
       : isChatFormat
@@ -208,6 +209,10 @@ String parseFromTimestamp(
           : isDetailedFormat
               ? Jiffy.unix(timestamp.millisecondsSinceEpoch).yMMMEd
               : Jiffy.unix(timestamp.millisecondsSinceEpoch).yMMMd;
+}
+
+int compareTime(String first, String second) {
+  return DateTime.tryParse(first).compareTo(DateTime.tryParse(second));
 }
 
 /// endregion

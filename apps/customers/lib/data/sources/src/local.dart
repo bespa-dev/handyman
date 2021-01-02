@@ -7,6 +7,10 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lite/data/entities/entities.dart';
@@ -60,12 +64,31 @@ class HiveLocalDatasource extends BaseLocalDatasource {
     @required this.galleryBox,
     @required this.conversationBox,
     @required this.categoryBox,
-  });
+  }) {
+    /// load initial data from assets
+    _performInitLoad();
+  }
+
+  void _performInitLoad() async {
+    /// decode categories from json
+    var source = await rootBundle.loadString("assets/categories.json");
+    var decoded = jsonDecode(source) as List;
+    for (var json in decoded) {
+      final item = ServiceCategory.fromJson(json);
+
+      /// put each one into box
+      await categoryBox.put(item.id, item);
+    }
+  }
 
   @override
   Stream<List<BaseBooking>> bookingsForCustomerAndArtisan(
       String customerId, String artisanId) async* {
-    // TODO:
+    yield bookingBox.values
+        .where((item) => item.artisanId == artisanId)
+        .where((item) => item.customerId == customerId)
+        .toList();
+    notifyListeners();
   }
 
   @override
@@ -73,161 +96,146 @@ class HiveLocalDatasource extends BaseLocalDatasource {
     if (!prefsRepo.isLoggedIn) return;
     var customer = customerBox.get(prefsRepo.userId);
     yield customer;
+    notifyListeners();
   }
 
   @override
-  Future<void> deleteBooking({BaseBooking booking}) {
-    // TODO: implement deleteBooking
-    throw UnimplementedError();
+  Future<void> deleteBooking({BaseBooking booking}) async {
+    await bookingBox.delete(booking.id);
+    notifyListeners();
   }
 
   @override
-  Future<void> deleteReviewById({String id, String customerId}) {
-    // TODO: implement deleteReviewById
-    throw UnimplementedError();
+  Future<void> deleteReviewById({String id}) async {
+    await reviewBox.delete(id);
+    notifyListeners();
   }
 
   @override
   Future<BaseArtisan> getArtisanById({String id}) async => artisanBox.get(id);
 
   @override
-  Stream<BaseBooking> getBookingById({String id}) {
-    // TODO: implement getBookingById
-    throw UnimplementedError();
+  Stream<BaseBooking> getBookingById({String id}) async* {
+    yield bookingBox.get(id);
   }
 
   @override
   Stream<List<BaseBooking>> getBookingsByDueDate(
-      {String dueDate, String artisanId}) {
-    // TODO: implement getBookingsByDueDate
-    throw UnimplementedError();
+      {String dueDate, String artisanId}) async* {
+    yield bookingBox.values
+        .where((item) => compareTime(item.dueDate, dueDate) <= 0)
+        .where((item) => item.artisanId == artisanId)
+        .toList();
   }
 
   @override
   Future<BaseUser> getCustomerById({String id}) async => customerBox.get(id);
 
   @override
-  Stream<List<BaseGallery>> getPhotosForArtisan({String userId}) {
-    // TODO: implement getPhotosForArtisan
-    throw UnimplementedError();
+  Stream<List<BaseGallery>> getPhotosForArtisan({String userId}) async* {
+    yield galleryBox.values.where((item) => item.userId == userId).toList();
   }
 
   @override
-  Stream<BaseArtisan> observeArtisanById({String id}) {
-    // TODO: implement observeArtisanById
-    throw UnimplementedError();
+  Stream<BaseArtisan> observeArtisanById({String id}) async* {
+    yield artisanBox.get(id);
   }
 
   @override
-  Stream<List<BaseArtisan>> observeArtisans({String category}) {
-    // TODO: implement observeArtisans
-    throw UnimplementedError();
+  Stream<List<BaseArtisan>> observeArtisans({String category}) async* {
+    yield artisanBox.values
+        .where((item) => item.category.contains(category))
+        .toList();
   }
 
   @override
-  Stream<List<BaseBooking>> observeBookingsForArtisan(String id) {
-    // TODO: implement observeBookingsForArtisan
-    throw UnimplementedError();
+  Stream<List<BaseBooking>> observeBookingsForArtisan(String id) async* {
+    yield bookingBox.values.where((item) => item.artisanId == id).toList();
   }
 
   @override
-  Stream<List<BaseBooking>> observeBookingsForCustomer(String id) {
-    // TODO: implement observeBookingsForCustomer
-    throw UnimplementedError();
+  Stream<List<BaseBooking>> observeBookingsForCustomer(String id) async* {
+    yield bookingBox.values.where((item) => item.customerId == id).toList();
   }
 
   @override
   Stream<List<BaseServiceCategory>> observeCategories(
-      {ServiceCategoryGroup categoryGroup}) {
-    // TODO: implement observeCategories
-    throw UnimplementedError();
+      {ServiceCategoryGroup categoryGroup}) async* {
+    yield categoryBox.values
+        .where((item) => item.groupName.contains(categoryGroup.name()))
+        .toList();
   }
 
   @override
-  Stream<BaseServiceCategory> observeCategoryById({String id}) {
-    // TODO: implement observeCategoryById
-    throw UnimplementedError();
+  Stream<BaseServiceCategory> observeCategoryById({String id}) async* {
+    yield categoryBox.get(id);
   }
 
   @override
   Stream<List<BaseConversation>> observeConversation(
-      {String sender, String recipient}) {
-    // TODO: implement observeConversation
-    throw UnimplementedError();
+      {String sender, String recipient}) async* {
+    yield conversationBox.values
+        .where((item) => item.author == sender || item.recipient == sender)
+        .where(
+            (item) => item.author == recipient || item.recipient == recipient)
+        .toList();
   }
 
   @override
-  Stream<BaseUser> observeCustomerById({String id}) {
-    // TODO: implement observeCustomerById
-    throw UnimplementedError();
+  Stream<BaseUser> observeCustomerById({String id}) async* {
+    yield customerBox.get(id);
   }
 
   @override
-  Stream<List<BaseReview>> observeReviewsByCustomer(String id) {
-    // TODO: implement observeReviewsByCustomer
-    throw UnimplementedError();
+  Stream<List<BaseReview>> observeReviewsByCustomer(String id) async* {
+    yield reviewBox.values.where((item) => item.customerId == id).toList();
   }
 
   @override
-  Stream<List<BaseReview>> observeReviewsForArtisan(String id) {
-    // TODO: implement observeReviewsForArtisan
-    throw UnimplementedError();
+  Stream<List<BaseReview>> observeReviewsForArtisan(String id) async* {
+    yield reviewBox.values.where((item) => item.artisanId == id).toList();
   }
 
   @override
-  Future<void> requestBooking(
-      {String artisan,
-      String customer,
-      String category,
-      String description,
-      String image,
-      double lat,
-      double lng}) {
-    // TODO: implement requestBooking
-    throw UnimplementedError();
+  Future<void> requestBooking({@required BaseBooking booking}) async {
+    await bookingBox.put(booking.id, booking);
+    notifyListeners();
   }
 
   @override
-  Future<List<BaseUser>> searchFor({String query, String categoryId}) {
-    // TODO: implement searchFor
-    throw UnimplementedError();
+  Future<List<BaseUser>> searchFor({String query, String categoryId}) async {
+    return artisanBox.values
+        .where((item) =>
+            item.email.contains(query) ||
+            item.category.contains(query) ||
+            item.phone.contains(query) ||
+            item.name.contains(query))
+        .toList();
   }
 
   @override
-  Future<void> sendMessage({BaseConversation conversation}) {
-    // TODO: implement sendMessage
-    throw UnimplementedError();
-  }
+  Future<void> sendMessage({@required BaseConversation conversation}) async =>
+      await conversationBox.put(conversation.id, conversation);
 
   @override
-  Future<void> sendReview({String message, String reviewer, String artisan}) {
-    // TODO: implement sendReview
-    throw UnimplementedError();
-  }
+  Future<void> sendReview({@required BaseReview review}) async =>
+      await reviewBox.put(review.id, review);
 
   @override
-  Future<void> updateBooking({BaseBooking booking}) {
-    // TODO: implement updateBooking
-    throw UnimplementedError();
-  }
+  Future<void> updateBooking({@required BaseBooking booking}) async =>
+      await bookingBox.put(booking.id, booking);
 
   @override
-  Future<void> updateCategory({BaseServiceCategory category}) {
-    // TODO: implement updateCategory
-    throw UnimplementedError();
-  }
+  Future<void> updateCategory({BaseServiceCategory category}) async =>
+      await categoryBox.put(category.id, category);
 
   @override
-  Future<void> updateGallery({BaseGallery gallery}) {
-    // TODO: implement updateGallery
-    throw UnimplementedError();
-  }
+  Future<void> updateGallery({BaseGallery gallery}) async =>
+      await galleryBox.put(gallery.id, gallery);
 
   @override
-  Future<void> updateReview({BaseReview review}) {
-    // TODO: implement updateReview
-    throw UnimplementedError();
-  }
+  Future<void> updateReview({BaseReview review}) async =>
+      await reviewBox.put(review.id, review);
 
   @override
   Future<void> updateUser(BaseUser user) async {
@@ -239,8 +247,10 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   }
 
   @override
-  Future<void> uploadBusinessPhotos({String userId, List<String> images}) {
-    // TODO: implement uploadBusinessPhotos
-    throw UnimplementedError();
+  Future<void> uploadBusinessPhotos(
+      {@required List<BaseGallery> galleryItems}) async {
+    for (var value in galleryItems) {
+      await galleryBox.put(value.id, value);
+    }
   }
 }

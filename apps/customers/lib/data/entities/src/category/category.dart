@@ -14,7 +14,7 @@ import 'package:lite/domain/models/models.dart';
 part 'category.g.dart';
 
 @HiveType(typeId: 1)
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class ServiceCategory extends BaseServiceCategory {
   @HiveField(0)
   @override

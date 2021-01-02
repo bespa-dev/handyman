@@ -14,7 +14,7 @@ import 'package:lite/domain/models/models.dart';
 part 'conversation.g.dart';
 
 @HiveType(typeId: 2)
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class Conversation extends BaseConversation {
   @HiveField(0)
   @override

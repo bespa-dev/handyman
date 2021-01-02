@@ -7,10 +7,12 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:lite/data/entities/entities.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/domain/sources/sources.dart';
 import 'package:meta/meta.dart';
+import 'package:uuid/uuid.dart';
 
 class BookingRepositoryImpl implements BaseBookingRepository {
   final BaseLocalDatasource _localDatasource;
@@ -72,24 +74,30 @@ class BookingRepositoryImpl implements BaseBookingRepository {
       String description,
       String image,
       LocationMetadata metadata}) async {
-    await _localDatasource.requestBooking(
-      artisan: artisan,
-      customer: customer,
+    final now = DateTime.now();
+    var booking = Booking(
+      id: Uuid().v4(),
+      createdAt: now.toIso8601String(),
       category: category,
+      customerId: customer,
+      artisanId: artisan,
+      cost: 12.99,
+
+      /// fixme -> resolve prices for each service request
       description: description,
-      image: image,
-      lat: metadata.lat,
-      lng: metadata.lng,
+      imageUrl: image,
+      position: metadata,
+      progress: 0.0,
+      dueDate: DateTime.utc(
+        2021,
+        now.month,
+        now.day,
+        now.hour + 48,
+        now.minute,
+      ).toIso8601String(),
     );
-    await _remoteDatasource.requestBooking(
-      artisan: artisan,
-      customer: customer,
-      category: category,
-      description: description,
-      image: image,
-      lat: metadata.lat,
-      lng: metadata.lng,
-    );
+    await _localDatasource.requestBooking(booking: booking);
+    await _remoteDatasource.requestBooking(booking: booking);
   }
 
   @override
