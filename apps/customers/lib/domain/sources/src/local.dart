@@ -17,7 +17,7 @@ abstract class BaseLocalDatasource extends ChangeNotifier {
   Stream<BaseUser> currentUser();
 
   /// Get all [BaseArtisan]
-  Stream<List<BaseArtisan>> getArtisans({@required String category});
+  Stream<List<BaseArtisan>> observeArtisans({@required String category});
 
   /// Get an [BaseArtisan] by [id]
   Stream<BaseArtisan> observeArtisanById({@required String id});
@@ -40,10 +40,10 @@ abstract class BaseLocalDatasource extends ChangeNotifier {
   Stream<BaseServiceCategory> observeCategoryById({String id});
 
   /// Get [BaseReview] for [Artisan]
-  Stream<List<BaseReview>> getReviewsForArtisan(String id);
+  Stream<List<BaseReview>> observeReviewsForArtisan(String id);
 
   /// Get [BaseReview] for [Customer] by [id]
-  Stream<List<BaseReview>> getReviewsByCustomer(String id);
+  Stream<List<BaseReview>> observeReviewsByCustomer(String id);
 
   /// Delete a [CustomerReview] by [id]
   Future<void> deleteReviewById({String id, String customerId});
@@ -56,10 +56,10 @@ abstract class BaseLocalDatasource extends ChangeNotifier {
   Future<void> deleteBooking({@required BaseBooking booking});
 
   /// Get [Booking] for [Artisan] by [id]
-  Stream<List<BaseBooking>> getBookingsForArtisan(String id);
+  Stream<List<BaseBooking>> observeBookingsForArtisan(String id);
 
   /// Get [Booking] for [Customer] by [id]
-  Stream<List<BaseBooking>> getBookingsForCustomer(String id);
+  Stream<List<BaseBooking>> observeBookingsForCustomer(String id);
 
   /// Get [Booking] for [Artisan] & [Customer]
   Stream<List<BaseBooking>> bookingsForCustomerAndArtisan(
@@ -85,7 +85,7 @@ abstract class BaseLocalDatasource extends ChangeNotifier {
   Future<void> sendMessage({@required BaseConversation conversation});
 
   /// Update [BaseUser] profile information
-  Future<void> updateUser(BaseUser user, {bool sync = true});
+  Future<void> updateUser(BaseUser user);
 
   /// Get [BaseBooking] by [id]
   Stream<BaseBooking> getBookingById({@required String id});
@@ -108,4 +108,6 @@ abstract class BaseLocalDatasource extends ChangeNotifier {
   Future<void> updateCategory({@required BaseServiceCategory category});
 
   Future<void> updateGallery({@required BaseGallery gallery});
+
+  Future<void> updateReview({@required BaseReview review});
 }
