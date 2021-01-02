@@ -9,6 +9,7 @@
 
 /// base class for all data models
 abstract class BaseModel {
+
   String id;
   int createdAt;
 

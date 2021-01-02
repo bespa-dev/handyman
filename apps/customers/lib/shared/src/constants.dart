@@ -145,10 +145,7 @@ const kChatBackgroundDark = Color(0xFF222222);
 const kTransparent = Colors.transparent;
 const kPlaceholderColor = Color(0x70000000);
 const kDisabledColor = Color(0xFF666666);
-// const kDisabledColorDark = Color(0x1f000000);
 
-// const kPrimaryColor = Color(0xFF5d1049);
-// const kSecondaryLightColor = Color(0xFFe30425);
 const kPrimaryColor = Color(0xFF0E37EA);
 const kSecondaryLightColor = Color(0xFFEBB609);
 const kErrorLightColor = Color(0xffE91E63);
@@ -157,7 +154,6 @@ const kBackgroundLightColor = kWhiteColor;
 const kCardLightColor = kWhiteColor;
 
 const kPrimaryColorDark = Color(0xFF9BA1F6);
-// const kPrimaryColorDark = Color(0xFFFF7597);
 const kSecondaryDarkColor = Color(0xFF9BA1F6);
 const kErrorDarkColor = Color(0xffEC407A);
 const kAccentDarkColor = kWhiteColor;
