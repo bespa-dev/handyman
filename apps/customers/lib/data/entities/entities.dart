@@ -8,9 +8,9 @@
  */
 
 export 'src/booking/booking.dart'; // done
-export 'src/category/category.dart';  // done
-export 'src/conversation/conversation.dart';
-export 'src/gallery/gallery.dart';
-// export 'src/review/review.dart';
-// export 'src/user/artisan.dart';
-// export 'src/user/user.dart';
+export 'src/category/category.dart'; // done
+export 'src/conversation/conversation.dart'; // done
+export 'src/gallery/gallery.dart'; // done
+export 'src/review/review.dart'; // done
+export 'src/user/artisan.dart'; // done
+export 'src/user/customer.dart'; // done

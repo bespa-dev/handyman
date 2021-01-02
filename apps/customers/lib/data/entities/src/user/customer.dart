@@ -10,30 +10,34 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lite/domain/models/models.dart';
 
-part 'category.g.dart';
+part 'customer.g.dart';
 
 @JsonSerializable()
-class ServiceCategory extends BaseServiceCategory {
+class Customer extends BaseUser {
   final String name;
+  final String email;
   final String avatar;
-  final String groupName;
+  final String token;
+  final String phone;
   final String id;
   final int createdAt;
 
-  ServiceCategory({
+  Customer({
+    this.name,
+    this.email,
+    this.avatar,
+    this.token,
+    this.phone,
     this.id,
     this.createdAt,
-    this.name,
-    this.avatar,
-    this.groupName,
   });
 
   @override
   get model => this;
 
-  factory ServiceCategory.fromJson(Map<String, dynamic> json) =>
-      _$ServiceCategoryFromJson(json);
-
   @override
-  Map<String, dynamic> toJson() => _$ServiceCategoryToJson(this);
+  Map<String, dynamic> toJson() => _$CustomerToJson(this);
+
+  factory Customer.fromJson(Map<String, dynamic> json) =>
+      _$CustomerFromJson(json);
 }

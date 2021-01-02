@@ -18,8 +18,12 @@ class Review extends BaseReview {
   final String customerId;
   final String artisanId;
   final double rating;
+  final String id;
+  final int createdAt;
 
   Review({
+    this.id,
+    this.createdAt,
     this.body,
     this.customerId,
     this.artisanId,

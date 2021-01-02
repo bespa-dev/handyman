@@ -23,8 +23,12 @@ class Booking extends BaseBooking {
   final double cost;
   final double progress;
   final int dueDate;
+  final String id;
+  final int createdAt;
 
   Booking({
+    this.id,
+    this.createdAt,
     this.customerId,
     this.artisanId,
     this.category,

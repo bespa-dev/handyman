@@ -8,6 +8,8 @@ part of 'booking.dart';
 
 Booking _$BookingFromJson(Map<String, dynamic> json) {
   return Booking(
+    id: json['id'] as String,
+    createdAt: json['created_at'] as int,
     customerId: json['customer_id'] as String,
     artisanId: json['artisan_id'] as String,
     category: json['category'] as String,
@@ -19,14 +21,10 @@ Booking _$BookingFromJson(Map<String, dynamic> json) {
     cost: (json['cost'] as num)?.toDouble(),
     progress: (json['progress'] as num)?.toDouble(),
     dueDate: json['due_date'] as int,
-  )
-    ..id = json['id'] as String
-    ..createdAt = json['createdAt'] as int;
+  );
 }
 
 Map<String, dynamic> _$BookingToJson(Booking instance) => <String, dynamic>{
-      'id': instance.id,
-      'createdAt': instance.createdAt,
       'customer_id': instance.customerId,
       'artisan_id': instance.artisanId,
       'category': instance.category,
@@ -36,4 +34,6 @@ Map<String, dynamic> _$BookingToJson(Booking instance) => <String, dynamic>{
       'cost': instance.cost,
       'progress': instance.progress,
       'due_date': instance.dueDate,
+      'id': instance.id,
+      'created_at': instance.createdAt,
     };

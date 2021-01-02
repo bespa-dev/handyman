@@ -18,8 +18,12 @@ class Conversation extends BaseConversation {
   final String recipient;
   final String body;
   final String format;
+  final String id;
+  final int createdAt;
 
   Conversation({
+    this.createdAt,
+    this.id,
     this.author,
     this.recipient,
     this.body,

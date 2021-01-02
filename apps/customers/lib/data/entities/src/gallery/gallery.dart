@@ -16,8 +16,12 @@ part 'gallery.g.dart';
 class Gallery extends BaseGallery {
   final String userId;
   final String imageUrl;
+  final String id;
+  final int createdAt;
 
   Gallery({
+    this.id,
+    this.createdAt,
     this.userId,
     this.imageUrl,
   });

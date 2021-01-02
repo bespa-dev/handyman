@@ -25,6 +25,12 @@ abstract class BaseArtisan extends BaseUser {
 
   List<String> reports;
 
+  bool isCertified;
+
+  bool isAvailable;
+
+  bool isApproved;
+
   int get requestsCount;
 
   int get reportsCount;
@@ -34,10 +40,4 @@ abstract class BaseArtisan extends BaseUser {
   int get completedBookingsCount;
 
   int get cancelledBookingsCount;
-
-  bool get isCertified;
-
-  bool get isAvailable;
-
-  bool get isApproved;
 }
