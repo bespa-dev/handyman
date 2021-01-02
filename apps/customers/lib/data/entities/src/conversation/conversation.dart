@@ -7,18 +7,37 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lite/domain/models/models.dart';
 
 part 'conversation.g.dart';
 
+@HiveType(typeId: 2)
 @JsonSerializable()
 class Conversation extends BaseConversation {
+  @HiveField(0)
+  @override
   final String author;
+
+  @HiveField(1)
+  @override
   final String recipient;
+
+  @HiveField(2)
+  @override
   final String body;
+
+  @HiveField(3)
+  @override
   final String format;
+
+  @HiveField(4)
+  @override
   final String id;
+
+  @HiveField(5)
+  @override
   final int createdAt;
 
   Conversation({
