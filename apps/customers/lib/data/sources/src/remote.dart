@@ -8,12 +8,14 @@
  */
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lite/data/entities/entities.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/domain/models/src/booking.dart';
 import 'package:lite/domain/models/src/category/category.dart';
 import 'package:lite/domain/models/src/conversation/conversation.dart';
 import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/domain/sources/sources.dart';
+import 'package:lite/shared/shared.dart';
 import 'package:meta/meta.dart';
 
 class FirebaseRemoteDatasource implements BaseRemoteDatasource {
@@ -31,9 +33,17 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   }
 
   @override
-  Stream<BaseUser> currentUser() {
-    // TODO: implement currentUser
-    throw UnimplementedError();
+  Stream<BaseUser> currentUser() async* {
+    if (!prefsRepo.isLoggedIn) return;
+    var snapshots = firestore
+        .collection(RefUtils.kCustomerRef)
+        .doc(prefsRepo.userId)
+        .snapshots();
+    snapshots.listen((event) async* {
+      if (event.exists) {
+        yield Customer.fromJson(event.data());
+      }
+    });
   }
 
   @override

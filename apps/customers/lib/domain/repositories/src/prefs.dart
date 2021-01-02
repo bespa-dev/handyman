@@ -13,16 +13,14 @@ import 'package:lite/domain/models/models.dart';
 /// Base preference repository
 abstract class BasePreferenceRepository extends ChangeNotifier with Exposable {
   String emergencyContactNumber;
-
   String userId;
+  bool isLightTheme;
+  bool useStandardViewType;
+  bool shouldShowSplash;
 
   Stream<bool> get onThemeChanged;
 
-  bool isLightTheme;
-
-  bool useStandardViewType;
-
-  bool shouldShowSplash;
+  bool get isLoggedIn;
 
   Future<void> signOut();
 

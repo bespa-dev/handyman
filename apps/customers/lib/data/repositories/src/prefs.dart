@@ -25,6 +25,7 @@ class PreferenceRepositoryImpl extends BasePreferenceRepository {
 
   bool _isLightTheme = true,
       _useStandardViewType = true,
+      _isLoggedIn = true,
       _shouldShowSplash = true;
   String _userId, _emergencyContactNumber;
   final StreamController<bool> _onThemeChangeController =
@@ -35,6 +36,9 @@ class PreferenceRepositoryImpl extends BasePreferenceRepository {
 
   @override
   bool get isLightTheme => _isLightTheme;
+
+  @override
+  bool get isLoggedIn => _isLoggedIn;
 
   @override
   bool get shouldShowSplash => _shouldShowSplash;
@@ -92,6 +96,7 @@ class PreferenceRepositoryImpl extends BasePreferenceRepository {
     _useStandardViewType = _prefs.getBool(PrefUtils.kStandardView) ?? true;
     _shouldShowSplash = _prefs.getBool(PrefUtils.kShowSplash) ?? true;
     _onThemeChangeController.add(_isLightTheme);
+    _isLoggedIn = _userId != null && _userId.isNotEmpty;
 
     notifyListeners();
   }
