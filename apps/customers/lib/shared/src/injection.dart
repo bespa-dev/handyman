@@ -116,9 +116,10 @@ final _reviewRepositoryProvider =
 final _searchRepositoryProvider =
     Provider.family<BaseSearchRepository, BasePreferenceRepository>((_, prefs) {
   var local = _.read(_localDatasourceProvider(prefs));
+  final dotenv = DotEnv();
   final algolia = Algolia.init(
-    applicationId: DotEnv().env['applicationId'],
-    apiKey: DotEnv().env['apiKey'],
+    applicationId: dotenv.env['applicationId'],
+    apiKey: dotenv.env['apiKey'],
   );
   return SearchRepositoryImpl(local: local, algolia: algolia);
 });
