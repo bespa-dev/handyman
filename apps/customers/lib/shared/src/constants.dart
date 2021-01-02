@@ -21,7 +21,6 @@ final logger = Logger(printer: PrettyPrinter(printTime: true));
 
 /// Defaults
 const kGeneralCategory = "bbe8a179-7797-4d87-b388-cf93125f490e";
-const kGoogleApiKey = "AIzaSyByvL9jc4UvlhILkhAZs7ZrQP68LwWDgFg";
 const kRatingStar = Entypo.star;
 const kUserImageNotFound = Icons.broken_image_outlined;
 

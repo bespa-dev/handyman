@@ -65,7 +65,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   @override
   Stream<List<BaseBooking>> bookingsForCustomerAndArtisan(
       String customerId, String artisanId) async* {
-    
+    // TODO:
   }
 
   @override
