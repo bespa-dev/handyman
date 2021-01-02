@@ -70,7 +70,7 @@ class GetMessagesForChatUseCase extends ObservableUseCase<
   Future<UseCaseResult<Stream<List<BaseConversation>>>> execute(
       GetMessagesForChatUseCaseParams params) async {
     try {
-      var conversation = _repo.getConversation(
+      var conversation = _repo.observeConversation(
           sender: params.sender, recipient: params.recipient);
       return UseCaseResult<Stream<List<BaseConversation>>>.success(
           conversation.asBroadcastStream());

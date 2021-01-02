@@ -12,10 +12,10 @@ import 'package:meta/meta.dart';
 
 abstract class BaseCategoryRepository implements Exposable {
   /// Get all [BaseServiceCategory]
-  Stream<List<BaseServiceCategory>> getCategories({
+  Stream<List<BaseServiceCategory>> observeCategories({
     @required ServiceCategoryGroup categoryGroup,
   });
 
   /// Get [BaseServiceCategory] by [id]
-  Stream<BaseServiceCategory> getCategoryById({String id});
+  Stream<BaseServiceCategory> observeCategoryById({String id});
 }

@@ -26,6 +26,7 @@ class AuthRepositoryImpl implements BaseAuthRepository {
   final FirebaseMessaging _messaging;
 
   final _onAuthStateChangedController = StreamController<AuthState>.broadcast();
+  final _onMessageChangedController = StreamController<String>.broadcast();
 
   AuthRepositoryImpl({
     @required GoogleSignIn googleSignIn,
@@ -56,12 +57,16 @@ class AuthRepositoryImpl implements BaseAuthRepository {
         avatar: firebaseUser.photoURL,
       );
       await _userRepo.updateUser(user: newUser);
+      _prefsRepo.userId = newUser.id;
       _onAuthStateChangedController
           .add(AuthState.authenticatedState(user: newUser));
+      _onMessageChangedController.add("New account created successfully");
       return newUser;
     } else {
+      _prefsRepo.userId = user.id;
       _onAuthStateChangedController
           .add(AuthState.authenticatedState(user: user));
+      _onMessageChangedController.add("Signed in successfully");
       return user;
     }
   }
@@ -70,9 +75,10 @@ class AuthRepositoryImpl implements BaseAuthRepository {
   Future<BaseUser> createUserWithEmailAndPassword(
       {String username, String email, String password}) async {
     if (username.isEmpty ||
-        Validators.validateEmail(email) ||
-        Validators.validatePassword(password)) {
+        !Validators.validateEmail(email) ||
+        !Validators.validatePassword(password)) {
       _onAuthStateChangedController.add(AuthState.invalidCredentialsState());
+      _onMessageChangedController.add("Invalid credentials");
       return null;
     }
     try {
@@ -84,6 +90,7 @@ class AuthRepositoryImpl implements BaseAuthRepository {
     } on Exception catch (ex) {
       _onAuthStateChangedController.add(
           AuthState.failedState(message: "Unable to create new user\n$ex"));
+      _onMessageChangedController.add("Unable to create new user");
       return null;
     }
   }
@@ -91,6 +98,7 @@ class AuthRepositoryImpl implements BaseAuthRepository {
   @override
   void dispose() {
     _onAuthStateChangedController.close();
+    _onMessageChangedController.close();
   }
 
   @override
@@ -98,30 +106,76 @@ class AuthRepositoryImpl implements BaseAuthRepository {
       _onAuthStateChangedController.stream;
 
   @override
-  // TODO: implement onMessageChanged
-  Stream<String> get onMessageChanged => throw UnimplementedError();
+  Stream<String> get onMessageChanged => _onMessageChangedController.stream;
 
   @override
-  Future<void> sendPasswordReset({String email}) {
-    // TODO: implement sendPasswordReset
-    throw UnimplementedError();
+  Future<void> sendPasswordReset({String email}) async {
+    if (!Validators.validateEmail(email)) {
+      _onAuthStateChangedController.add(AuthState.invalidCredentialsState());
+      _onMessageChangedController.add("Invalid email address");
+      return;
+    }
+
+    try {
+      _onAuthStateChangedController.add(AuthState.loadingState());
+      await _auth.sendPasswordResetEmail(email: email);
+      _onAuthStateChangedController.add(AuthState.successState());
+      _onMessageChangedController.add("Link to password reset sent to $email");
+    } on Exception catch (ex) {
+      _onAuthStateChangedController.add(AuthState.failedState(message: "$ex"));
+      _onMessageChangedController.add("Failed to reset password");
+      return;
+    }
   }
 
   @override
-  Future<BaseUser> signInWithEmailAndPassword({String email, String password}) {
-    // TODO: implement signInWithEmailAndPassword
-    throw UnimplementedError();
+  Future<BaseUser> signInWithEmailAndPassword(
+      {String email, String password}) async {
+    if (!Validators.validateEmail(email) ||
+        !Validators.validatePassword(password)) {
+      _onAuthStateChangedController.add(AuthState.invalidCredentialsState());
+      _onMessageChangedController.add("Invalid credentials");
+      return null;
+    }
+    try {
+      _onAuthStateChangedController.add(AuthState.loadingState());
+      var credential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      return _getOrCreateUserFromCredential(credential);
+    } on Exception catch (ex) {
+      _onAuthStateChangedController
+          .add(AuthState.failedState(message: "Unable to sign in\n$ex"));
+      _onMessageChangedController.add("Unable to sign in");
+      return null;
+    }
   }
 
   @override
-  Future<BaseUser> signInWithFederatedOAuth() {
-    // TODO: implement signInWithFederatedOAuth
-    throw UnimplementedError();
+  Future<BaseUser> signInWithFederatedOAuth() async {
+    try {
+      _onAuthStateChangedController.add(AuthState.loadingState());
+      var account = await _googleSignIn.signIn();
+      var authentication = await account.authentication;
+      var credential =
+          await _auth.signInWithCredential(GoogleAuthProvider.credential(
+        idToken: authentication.idToken,
+        accessToken: authentication.accessToken,
+      ));
+      return _getOrCreateUserFromCredential(credential);
+    } on Exception catch (ex) {
+      _onAuthStateChangedController
+          .add(AuthState.failedState(message: "Unable to sign in\n$ex"));
+      _onMessageChangedController.add("Unable to sign in");
+      return null;
+    }
   }
 
   @override
-  Future<void> signOut() {
-    // TODO: implement signOut
-    throw UnimplementedError();
+  Future<void> signOut() async {
+    _onAuthStateChangedController.add(AuthState.loadingState());
+    if (_googleSignIn.currentUser != null) await _googleSignIn.signOut();
+    await _auth.signOut();
+    await _prefsRepo.signOut();
+    _onAuthStateChangedController.add(AuthState.successState());
   }
 }

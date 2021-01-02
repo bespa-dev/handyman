@@ -13,7 +13,6 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:lite/domain/repositories/repositories.dart';
-import 'package:lite/domain/repositories/src/storage/storage.dart';
 import 'package:lite/shared/shared.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart';

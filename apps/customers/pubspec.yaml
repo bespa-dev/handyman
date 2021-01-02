@@ -71,6 +71,7 @@ dependencies:
   circular_reveal_animation: ^1.1.5
   flutter_rating_bar:
   contact_picker:
+  geocoder:
 
 dev_dependencies:
   flutter_test:

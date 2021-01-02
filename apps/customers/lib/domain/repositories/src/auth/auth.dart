@@ -19,6 +19,8 @@ enum _AuthState {
   InitialState,
   @object
   LoadingState,
+  @object
+  SuccessState,
   @Data(fields: [DataField<BaseUser>("user")])
   AuthenticatedState,
   @Data(fields: [DataField<String>("message", required: false)])

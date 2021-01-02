@@ -77,3 +77,69 @@ class SaveUserIdUseCase extends CompletableUseCase<String> {
     }
   }
 }
+
+/// get standard view type
+class GetStandardViewUseCase extends UseCase<bool, void> {
+  final BasePreferenceRepository _repo;
+
+  const GetStandardViewUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<bool>> execute(_) async {
+    try {
+      return UseCaseResult<bool>.success(_repo.useStandardViewType);
+    } on Exception catch (ex) {
+      return UseCaseResult.error(ex.toString());
+    }
+  }
+}
+
+/// save standard view type
+class SaveStandardViewUseCase extends CompletableUseCase<bool> {
+  final BasePreferenceRepository _repo;
+
+  const SaveStandardViewUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<void>> execute(value) async {
+    try {
+      _repo.useStandardViewType = value;
+      return UseCaseResult<bool>.success();
+    } on Exception catch (ex) {
+      return UseCaseResult.error(ex.toString());
+    }
+  }
+}
+
+/// get standard view type
+class GetShowSplashUseCase extends UseCase<bool, void> {
+  final BasePreferenceRepository _repo;
+
+  const GetShowSplashUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<bool>> execute(_) async {
+    try {
+      return UseCaseResult<bool>.success(_repo.shouldShowSplash);
+    } on Exception catch (ex) {
+      return UseCaseResult.error(ex.toString());
+    }
+  }
+}
+
+/// save standard view type
+class SaveShowSplashUseCase extends CompletableUseCase<bool> {
+  final BasePreferenceRepository _repo;
+
+  const SaveShowSplashUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<void>> execute(value) async {
+    try {
+      _repo.shouldShowSplash = value;
+      return UseCaseResult<bool>.success();
+    } on Exception catch (ex) {
+      return UseCaseResult.error(ex.toString());
+    }
+  }
+}

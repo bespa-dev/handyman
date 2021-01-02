@@ -16,3 +16,11 @@ class RefUtils {
   static const String kCategoryRef = "categories";
   static const String kReviewRef = "reviews";
 }
+
+class PrefUtils {
+  static const String kUserId = "user_id";
+  static const String kEmergencyContact = "emergency_contact";
+  static const String kTheme = "theme_mode";
+  static const String kShowSplash = "show_splash";
+  static const String kStandardView = "use_standard_view";
+}

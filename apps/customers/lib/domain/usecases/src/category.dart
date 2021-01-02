@@ -23,7 +23,7 @@ class GetCategoriesUseCase
   Future<UseCaseResult<Stream<List<BaseServiceCategory>>>> execute(
       ServiceCategoryGroup group) async {
     try {
-      var stream = _repo.getCategories(categoryGroup: group);
+      var stream = _repo.observeCategories(categoryGroup: group);
       return UseCaseResult<Stream<List<BaseServiceCategory>>>.success(stream);
     } on Exception {
       return UseCaseResult.error("Failed to get categories");
@@ -40,7 +40,7 @@ class GetCategoryByIdUseCase
   @override
   Future<UseCaseResult<Stream<BaseServiceCategory>>> execute(String id) async {
     try {
-      var stream = _repo.getCategoryById(id: id);
+      var stream = _repo.observeCategoryById(id: id);
       return UseCaseResult<Stream<BaseServiceCategory>>.success(stream);
     } on Exception {
       return UseCaseResult.error("Failed to get categories");

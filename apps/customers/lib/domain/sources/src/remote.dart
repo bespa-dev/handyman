@@ -6,7 +6,6 @@
  *
  * author: codelbas.quabynah@gmail.com
  */
-import 'dart:io';
 
 import 'package:lite/domain/models/models.dart';
 import 'package:meta/meta.dart';
@@ -26,12 +25,12 @@ abstract class BaseRemoteDatasource {
   Stream<BaseUser> getCustomerById({@required String id});
 
   /// Get all [BaseServiceCategory]
-  Stream<List<BaseServiceCategory>> getCategories({
+  Stream<List<BaseServiceCategory>> observeCategories({
     @required ServiceCategoryGroup categoryGroup,
   });
 
   /// Get [BaseServiceCategory] by [id]
-  Stream<BaseServiceCategory> getCategoryById({String id});
+  Stream<BaseServiceCategory> observeCategoryById({String id});
 
   /// Get [BaseReview] for [Artisan]
   Stream<List<BaseReview>> getReviewsForArtisan(String id);
@@ -65,14 +64,14 @@ abstract class BaseRemoteDatasource {
   /// Upload business [images]
   Future<void> uploadBusinessPhotos({
     @required String userId,
-    @required List<File> images,
+    @required List<String> images,
   });
 
   /// Search for any [BaseArtisan]
   Future<List<BaseUser>> searchFor({@required String value, String categoryId});
 
   /// Get [BaseConversation] between [sender] & [recipient]
-  Stream<List<BaseConversation>> getConversation(
+  Stream<List<BaseConversation>> observeConversation(
       {@required String sender, @required String recipient});
 
   /// Send [BaseConversation]
@@ -90,11 +89,11 @@ abstract class BaseRemoteDatasource {
 
   /// Request [Booking] for an [Artisan]
   Future<void> requestBooking({
-    @required BaseArtisan artisan,
+    @required String artisan,
     @required String customer,
     @required String category,
     @required String description,
-    @required File image,
+    @required String image,
     @required double lat,
     @required double lng,
   });

@@ -7,13 +7,12 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:meta/meta.dart';
 
 /// base local datasource class
-abstract class BaseLocalDatasource {
+abstract class BaseLocalDatasource extends ChangeNotifier {
   /// observe current user
   Stream<BaseUser> currentUser();
 
@@ -21,18 +20,24 @@ abstract class BaseLocalDatasource {
   Stream<List<BaseArtisan>> getArtisans({@required String category});
 
   /// Get an [BaseArtisan] by [id]
-  Stream<BaseArtisan> getArtisanById({@required String id});
+  Stream<BaseArtisan> observeArtisanById({@required String id});
 
   /// Get [BaseUser] by [id]
-  Stream<BaseUser> getCustomerById({@required String id});
+  Stream<BaseUser> observeCustomerById({@required String id});
+
+  /// Get an [BaseArtisan] by [id]
+  Future<BaseArtisan> getArtisanById({@required String id});
+
+  /// Get [BaseUser] by [id]
+  Future<BaseUser> getCustomerById({@required String id});
 
   /// Get all [BaseServiceCategory]
-  Stream<List<BaseServiceCategory>> getCategories({
+  Stream<List<BaseServiceCategory>> observeCategories({
     @required ServiceCategoryGroup categoryGroup,
   });
 
   /// Get [BaseServiceCategory] by [id]
-  Stream<BaseServiceCategory> getCategoryById({String id});
+  Stream<BaseServiceCategory> observeCategoryById({String id});
 
   /// Get [BaseReview] for [Artisan]
   Stream<List<BaseReview>> getReviewsForArtisan(String id);
@@ -66,14 +71,14 @@ abstract class BaseLocalDatasource {
   /// Upload business [images]
   Future<void> uploadBusinessPhotos({
     @required String userId,
-    @required List<File> images,
+    @required List<String> images,
   });
 
   /// Search for any [BaseArtisan]
-  Future<List<BaseUser>> searchFor({@required String value, String categoryId});
+  Future<List<BaseUser>> searchFor({@required String query, String categoryId});
 
   /// Get [BaseConversation] between [sender] & [recipient]
-  Stream<List<BaseConversation>> getConversation(
+  Stream<List<BaseConversation>> observeConversation(
       {@required String sender, @required String recipient});
 
   /// Send [BaseConversation]
@@ -83,7 +88,7 @@ abstract class BaseLocalDatasource {
   Future<void> updateUser(BaseUser user, {bool sync = true});
 
   /// Get [BaseBooking] by [id]
-  Stream<BaseBooking> getBookingById({String id});
+  Stream<BaseBooking> getBookingById({@required String id});
 
   /// Get [BaseBooking] by [dueDate]
   Stream<List<BaseBooking>> getBookingsByDueDate(
@@ -91,12 +96,16 @@ abstract class BaseLocalDatasource {
 
   /// Request [Booking] for an [Artisan]
   Future<void> requestBooking({
-    @required BaseArtisan artisan,
+    @required String artisan,
     @required String customer,
     @required String category,
     @required String description,
-    @required File image,
+    @required String image,
     @required double lat,
     @required double lng,
   });
+
+  Future<void> updateCategory({@required BaseServiceCategory category});
+
+  Future<void> updateGallery({@required BaseGallery gallery});
 }

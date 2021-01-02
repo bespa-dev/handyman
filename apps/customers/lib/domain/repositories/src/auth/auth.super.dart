@@ -15,6 +15,8 @@ abstract class AuthState extends Equatable {
 
   factory AuthState.loadingState() = LoadingState.create;
 
+  factory AuthState.successState() = SuccessState.create;
+
   factory AuthState.authenticatedState({@required BaseUser user}) =
       AuthenticatedState.create;
 
@@ -29,12 +31,14 @@ abstract class AuthState extends Equatable {
   R when<R extends Object>(
       {@required R Function() initialState,
       @required R Function() loadingState,
+      @required R Function() successState,
       @required R Function(AuthenticatedState) authenticatedState,
       @required R Function(FailedState) failedState,
       @required R Function() invalidCredentialsState}) {
     assert(() {
       if (initialState == null ||
           loadingState == null ||
+          successState == null ||
           authenticatedState == null ||
           failedState == null ||
           invalidCredentialsState == null) {
@@ -47,6 +51,8 @@ abstract class AuthState extends Equatable {
         return initialState();
       case _AuthState.LoadingState:
         return loadingState();
+      case _AuthState.SuccessState:
+        return successState();
       case _AuthState.AuthenticatedState:
         return authenticatedState(this as AuthenticatedState);
       case _AuthState.FailedState:
@@ -64,6 +70,7 @@ abstract class AuthState extends Equatable {
   R whenOrElse<R extends Object>(
       {R Function() initialState,
       R Function() loadingState,
+      R Function() successState,
       R Function(AuthenticatedState) authenticatedState,
       R Function(FailedState) failedState,
       R Function() invalidCredentialsState,
@@ -81,6 +88,9 @@ abstract class AuthState extends Equatable {
       case _AuthState.LoadingState:
         if (loadingState == null) break;
         return loadingState();
+      case _AuthState.SuccessState:
+        if (successState == null) break;
+        return successState();
       case _AuthState.AuthenticatedState:
         if (authenticatedState == null) break;
         return authenticatedState(this as AuthenticatedState);
@@ -99,12 +109,14 @@ abstract class AuthState extends Equatable {
   void whenPartial(
       {void Function() initialState,
       void Function() loadingState,
+      void Function() successState,
       void Function(AuthenticatedState) authenticatedState,
       void Function(FailedState) failedState,
       void Function() invalidCredentialsState}) {
     assert(() {
       if (initialState == null &&
           loadingState == null &&
+          successState == null &&
           authenticatedState == null &&
           failedState == null &&
           invalidCredentialsState == null) {
@@ -119,6 +131,9 @@ abstract class AuthState extends Equatable {
       case _AuthState.LoadingState:
         if (loadingState == null) break;
         return loadingState();
+      case _AuthState.SuccessState:
+        if (successState == null) break;
+        return successState();
       case _AuthState.AuthenticatedState:
         if (authenticatedState == null) break;
         return authenticatedState(this as AuthenticatedState);
@@ -163,6 +178,21 @@ class _LoadingStateImpl extends LoadingState {
 
   @override
   String toString() => 'LoadingState()';
+}
+
+@immutable
+abstract class SuccessState extends AuthState {
+  const SuccessState() : super(_AuthState.SuccessState);
+
+  factory SuccessState.create() = _SuccessStateImpl;
+}
+
+@immutable
+class _SuccessStateImpl extends SuccessState {
+  const _SuccessStateImpl() : super();
+
+  @override
+  String toString() => 'SuccessState()';
 }
 
 @immutable

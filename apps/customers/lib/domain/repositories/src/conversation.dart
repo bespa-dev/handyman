@@ -12,7 +12,7 @@ import 'package:meta/meta.dart';
 
 abstract class BaseConversationRepository implements Exposable {
   /// Get [BaseConversation] between [sender] & [recipient]
-  Stream<List<BaseConversation>> getConversation(
+  Stream<List<BaseConversation>> observeConversation(
       {@required String sender, @required String recipient});
 
   /// Send [BaseConversation]
@@ -23,13 +23,13 @@ abstract class BaseConversationRepository implements Exposable {
     @required ConversationFormat type,
   });
 
-  /// show a notification
-  Future<void> showNotification({
-    @required String title,
-    @required String body,
-    @required PayloadType payload,
-  });
-
-  /// get notification permissions for iOS devices
-  Future<bool> getNotificationPermissions();
+// /// show a notification
+// Future<void> showNotification({
+//   @required String title,
+//   @required String body,
+//   @required PayloadType payload,
+// });
+//
+// /// get notification permissions for iOS devices
+// Future<bool> getNotificationPermissions();
 }

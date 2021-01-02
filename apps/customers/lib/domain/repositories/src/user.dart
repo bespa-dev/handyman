@@ -36,11 +36,11 @@ abstract class BaseUserRepository implements Exposable {
   /// Get an [BaseArtisan] by [id]
   Stream<BaseArtisan> observeArtisanById({@required String id});
 
-  /// Get an [BaseArtisan] by [id]
-  Future<BaseArtisan> getArtisanById({@required String id});
-
   /// Get [BaseUser] by [id]
   Stream<BaseUser> observeCustomerById({@required String id});
+
+  /// Get an [BaseArtisan] by [id]
+  Future<BaseArtisan> getArtisanById({@required String id});
 
   /// Get [BaseUser] by [id]
   Future<BaseUser> getCustomerById({@required String id});
