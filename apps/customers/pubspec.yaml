@@ -72,6 +72,7 @@ dependencies:
   flutter_rating_bar:
   contact_picker:
   geocoder:
+  flutter_dotenv: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -95,3 +96,4 @@ flutter:
     - assets/bg/
     - assets/logo/
     - assets/svg/
+    - .env

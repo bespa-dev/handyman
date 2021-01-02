@@ -17,8 +17,8 @@ import 'package:lite/shared/shared.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // register SDKs
-  await registerSDKs();
+  /// register SDKs
+  await initAppDependencies();
 
   runApp(ProviderScope(child: LiteApp()));
 }

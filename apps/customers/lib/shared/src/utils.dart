@@ -7,6 +7,8 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'constants.dart';
+
 class RefUtils {
   static const String kBookingRef = "bookings";
   static const String kConversationRef = "conversations";
@@ -15,6 +17,7 @@ class RefUtils {
   static const String kGalleryRef = "galleries";
   static const String kCategoryRef = "categories";
   static const String kReviewRef = "reviews";
+  static String kBucketRef = kAppName.toLowerCase().replaceAll(" ", "_");
 }
 
 class PrefUtils {
