@@ -8,6 +8,7 @@
  */
 
 export 'src/account_selector.dart';
+export 'src/app_bar.dart';
 export 'src/buttons.dart';
 export 'src/emergency_ping_button.dart';
 export 'src/fields.dart';

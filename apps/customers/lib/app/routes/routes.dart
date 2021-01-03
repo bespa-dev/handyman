@@ -20,7 +20,16 @@ import 'package:lite/app/pages/pages.dart';
   routes: <AutoRoute>[
     CustomRoute(page: SplashPage, initial: true),
     CustomRoute(page: LoginPage),
-    CustomRoute(page: HomePage),
+    CustomRoute(
+      page: HomePage,
+      children: <AutoRoute>[
+        CustomRoute(page: BookingsPage),
+        CustomRoute(page: SearchPage),
+        CustomRoute(page: ArtisansPage, path: "/"),
+        CustomRoute(page: NotificationsPage),
+        CustomRoute(page: ProfilePage),
+      ],
+    ),
     CustomRoute(page: RegisterPage),
 
     /// keep at the bottom

@@ -32,7 +32,11 @@ class Router extends RouterBase {
   final _routes = <RouteDef>[
     RouteDef(Routes.splashPage, page: SplashPage),
     RouteDef(Routes.loginPage, page: LoginPage),
-    RouteDef(Routes.homePage, page: HomePage),
+    RouteDef(
+      Routes.homePage,
+      page: HomePage,
+      generator: HomePageRouter(),
+    ),
     RouteDef(Routes.registerPage, page: RegisterPage),
     RouteDef(Routes.unknownRoute, page: UnknownRoute),
   ];
@@ -86,4 +90,86 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
   Future<dynamic> pushRegisterPage() => push<dynamic>(Routes.registerPage);
 
   Future<dynamic> pushUnknownRoute() => push<dynamic>(Routes.unknownRoute);
+}
+
+class HomePageRoutes {
+  static const String bookingsPage = '/bookings-page';
+  static const String searchPage = '/search-page';
+  static const String artisansPage = '/';
+  static const String notificationsPage = '/notifications-page';
+  static const String profilePage = '/profile-page';
+  static const all = <String>{
+    bookingsPage,
+    searchPage,
+    artisansPage,
+    notificationsPage,
+    profilePage,
+  };
+}
+
+class HomePageRouter extends RouterBase {
+  @override
+  List<RouteDef> get routes => _routes;
+  final _routes = <RouteDef>[
+    RouteDef(HomePageRoutes.bookingsPage, page: BookingsPage),
+    RouteDef(HomePageRoutes.searchPage, page: SearchPage),
+    RouteDef(HomePageRoutes.artisansPage, page: ArtisansPage),
+    RouteDef(HomePageRoutes.notificationsPage, page: NotificationsPage),
+    RouteDef(HomePageRoutes.profilePage, page: ProfilePage),
+  ];
+  @override
+  Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
+  final _pagesMap = <Type, AutoRouteFactory>{
+    BookingsPage: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => BookingsPage(),
+        settings: data,
+      );
+    },
+    SearchPage: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => SearchPage(),
+        settings: data,
+      );
+    },
+    ArtisansPage: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => ArtisansPage(),
+        settings: data,
+      );
+    },
+    NotificationsPage: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            NotificationsPage(),
+        settings: data,
+      );
+    },
+    ProfilePage: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => ProfilePage(),
+        settings: data,
+      );
+    },
+  };
+}
+
+/// ************************************************************************
+/// Navigation helper methods extension
+/// *************************************************************************
+
+extension HomePageRouterExtendedNavigatorStateX on ExtendedNavigatorState {
+  Future<dynamic> pushBookingsPage() =>
+      push<dynamic>(HomePageRoutes.bookingsPage);
+
+  Future<dynamic> pushSearchPage() => push<dynamic>(HomePageRoutes.searchPage);
+
+  Future<dynamic> pushArtisansPage() =>
+      push<dynamic>(HomePageRoutes.artisansPage);
+
+  Future<dynamic> pushNotificationsPage() =>
+      push<dynamic>(HomePageRoutes.notificationsPage);
+
+  Future<dynamic> pushProfilePage() =>
+      push<dynamic>(HomePageRoutes.profilePage);
 }
