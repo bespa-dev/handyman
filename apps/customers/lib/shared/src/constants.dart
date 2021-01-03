@@ -136,7 +136,7 @@ const kRatingStar = Entypo.star;
 const kMailIcon = Feather.mail;
 const kGoogleIcon = AntDesign.google;
 const kUserImageNotFound = Icons.link_off_outlined;
-const kArrowIcon = Icons.keyboard_backspace_outlined;
+const kArrowIcon = Icons.arrow_right_alt_outlined;
 
 /// [Algolia]
 const kAlgoliaAppId = "AIBRVBFA4W";
@@ -170,8 +170,8 @@ const kAccentLightColor = kSecondaryLightColor;
 const kBackgroundLightColor = kWhiteColor;
 const kCardLightColor = kWhiteColor;
 
-const kPrimaryColorDark = Color(0xFF9BA1F6);
-const kSecondaryDarkColor = Color(0xFF9BA1F6);
+const kPrimaryColorDark = Color(0xFF05050B);
+const kSecondaryDarkColor = Color(0xFF8AC185);
 const kErrorDarkColor = Color(0xffEC407A);
 const kAccentDarkColor = kWhiteColor;
 const kCardDarkColor = Color(0xff212529);

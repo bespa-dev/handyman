@@ -141,6 +141,7 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
         surface: kSurfaceDarkColor,
         primary: kPrimaryColorDark,
         background: kBackgroundDarkColor,
+        onPrimary: kWhiteColor,
       ),
       backgroundColor: kBackgroundDarkColor,
       iconTheme: IconThemeData(color: kPrimaryIconDarkColor),

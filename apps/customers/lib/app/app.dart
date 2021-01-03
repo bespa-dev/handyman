@@ -64,8 +64,6 @@ class _LiteAppState extends State<LiteApp> {
   }
 
   void _configureUI() {
-    logger.d("Dependencies updated for ${this.runtimeType}");
-
     final isLightTheme = Theme.of(context).brightness == Brightness.light;
 
     // Set orientation

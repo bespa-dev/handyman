@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:lite/shared/shared.dart';
 
-
 class TextFormInput extends TextFormField {
   TextFormInput({
     @required String labelText,
@@ -36,13 +35,15 @@ class TextFormInput extends TextFormField {
           enabled: enabled,
           validator: validator,
           obscureText: obscureText,
+          textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
             labelText: labelText,
             hintText: hintText,
             helperText: helperText,
             suffixIcon: suffixIcon,
+            enabled: enabled,
+            hintStyle: TextStyle(color: color ?? kBlackColor),
           ),
-          obscuringCharacter: "*",
           focusNode: focusNode,
           onFieldSubmitted: onFieldSubmitted ?? (_) {},
           autofocus: autofocus,
@@ -58,6 +59,8 @@ class PasswordInput extends StatefulWidget {
   final TextInputAction textInputAction;
   final TextEditingController controller;
   final bool enabled;
+  final Color iconColor;
+  final Color color;
   final FormFieldValidator<String> validator;
   final FocusNode focusNode;
   final Function onFieldSubmitted;
@@ -72,6 +75,8 @@ class PasswordInput extends StatefulWidget {
     this.validator,
     this.focusNode,
     this.onFieldSubmitted,
+    this.iconColor,
+    this.color,
   });
 
   @override
@@ -95,13 +100,12 @@ class _PasswordInputState extends State<PasswordInput> {
       enabled: widget.enabled,
       validator: widget.validator,
       obscureText: _obscure,
-      color: themeData.textTheme.bodyText1.color,
       maxLines: 1,
       suffixIcon: IconButton(
         icon: Icon(
           _obscure ? Feather.eye : Feather.eye_off,
           size: kSpacingX24,
-          color: themeData.iconTheme.color,
+          color: widget.iconColor ?? themeData.iconTheme.color,
         ),
         onPressed: () => setState(() => _obscure = !_obscure),
       ),

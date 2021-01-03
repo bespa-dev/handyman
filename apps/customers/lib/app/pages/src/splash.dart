@@ -11,6 +11,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/routes/routes.gr.dart';
 import 'package:lite/app/widgets/widgets.dart';
@@ -74,9 +75,11 @@ class _SplashPageState extends State<SplashPage>
                 if (mounted) setState(() {});
               } else if (event is AuthFailedState) {
                 _isLoading = false;
-                if (mounted) setState(() {});
-                showSnackBarMessage(context,
-                    message: event.message ?? "Authentication failed");
+                if (mounted) {
+                  setState(() {});
+                  showSnackBarMessage(context,
+                      message: event.message ?? "Authentication failed");
+                }
               } else if (event is AuthenticatedState) {
                 _isLoading = false;
                 if (mounted) setState(() {});
@@ -88,7 +91,7 @@ class _SplashPageState extends State<SplashPage>
           } else if (state is SuccessState<Stream<String>>) {
             /// stream messages
             state.data.listen((message) {
-              showSnackBarMessage(context, message: message);
+              if (mounted) showSnackBarMessage(context, message: message);
             });
           }
         });
@@ -102,7 +105,7 @@ class _SplashPageState extends State<SplashPage>
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     final kTheme = Theme.of(context);
-    // final lightTheme = kTheme.brightness == Brightness.light;
+    final lightTheme = kTheme.brightness == Brightness.light;
 
     return Scaffold(
       body: Stack(
@@ -121,6 +124,12 @@ class _SplashPageState extends State<SplashPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Image(
+                    image: Svg(
+                      lightTheme ? kLogoAsset : kLogoDarkAsset,
+                    ),
+                  ),
+                  SizedBox(height: kSpacingX36),
                   Text(
                     kAppName,
                     textAlign: TextAlign.center,
@@ -200,8 +209,12 @@ class _SplashPageState extends State<SplashPage>
                               icon: kMailIcon,
                               gravity: ButtonIconGravity.START,
                               label: "Sign up with email",
-                              color: kTheme.colorScheme.background,
-                              textColor: kTheme.colorScheme.onBackground,
+                              color: lightTheme
+                                  ? kTheme.colorScheme.background
+                                  : kTheme.colorScheme.secondary,
+                              textColor: lightTheme
+                                  ? kTheme.colorScheme.onBackground
+                                  : kTheme.colorScheme.onSecondary,
                             ),
                             if (_isLoading) ...{
                               SizedBox(height: kSpacingX36),

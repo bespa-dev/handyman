@@ -11,6 +11,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/routes/routes.gr.dart';
+import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/shared/shared.dart';
 
@@ -27,6 +28,12 @@ class _RegisterPageState extends State<RegisterPage> {
   /// UI
   ThemeData kTheme;
   bool _isLoading = false;
+
+  /// form
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController(),
+      _nameController = TextEditingController(),
+      _passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -52,21 +59,25 @@ class _RegisterPageState extends State<RegisterPage> {
               if (mounted) setState(() {});
             } else if (event is AuthFailedState) {
               _isLoading = false;
-              if (mounted) setState(() {});
-              showSnackBarMessage(context,
-                  message: event.message ?? "Authentication failed");
+              if (mounted) {
+                setState(() {});
+                showSnackBarMessage(context,
+                    message: event.message ?? "Authentication failed");
+              }
             } else if (event is AuthenticatedState) {
               _isLoading = false;
-              if (mounted) setState(() {});
-              context.navigator
-                ..popUntilRoot()
-                ..pushHomePage();
+              if (mounted) {
+                setState(() {});
+                context.navigator
+                  ..popUntilRoot()
+                  ..pushHomePage();
+              }
             }
           });
         } else if (state is SuccessState<Stream<String>>) {
           /// stream messages
           state.data.listen((message) {
-            showSnackBarMessage(context, message: message);
+            if (mounted) showSnackBarMessage(context, message: message);
           });
         }
       });
@@ -74,11 +85,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    kTheme = Theme.of(context);
+    final kTheme = Theme.of(context);
 
     return Scaffold(
       body: Stack(
         children: [
+          /// base
           Positioned.fill(
             child: Container(
               color: kTheme.colorScheme.secondary,
@@ -88,7 +100,91 @@ class _RegisterPageState extends State<RegisterPage> {
                 kSpacingX24,
                 kSpacingX48,
               ),
-              // child: ,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.only(top: SizeConfig.screenHeight * 0.25),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Let\'s create your new account",
+                            style: kTheme.textTheme.headline4.copyWith(
+                              color: kTheme.colorScheme.onSecondary,
+                            ),
+                          ),
+                          SizedBox(height: kSpacingX8),
+                          Text(
+                            "Enter your details below to get started",
+                            style: kTheme.textTheme.headline6.copyWith(
+                              color: kTheme.colorScheme.onSecondary
+                                  .withOpacity(kEmphasisMedium),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: kSpacingX64),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          TextFormInput(
+                            labelText: "Full Name",
+                            controller: _nameController,
+                            keyboardType: TextInputType.name,
+                            textInputAction: TextInputAction.next,
+                            enabled: !_isLoading,
+                            color: kTheme.colorScheme.onSecondary,
+                            validator: (_) => _.isEmpty ? "Required" : null,
+                          ),
+                          TextFormInput(
+                            labelText: "Email address",
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            color: kTheme.colorScheme.onSecondary,
+                            enabled: !_isLoading,
+                            validator: (_) => _.isEmpty ? "Required" : null,
+                          ),
+                          PasswordInput(
+                            labelText: "Password",
+                            controller: _passwordController,
+                            iconColor: kTheme.colorScheme.onSecondary,
+                            textInputAction: TextInputAction.done,
+                            enabled: !_isLoading,
+                            color: kTheme.colorScheme.onSecondary,
+                            validator: (_) => _.isEmpty ? "Required" : null,
+                            onFieldSubmitted: (_) => _validateAndSignUp(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: kSpacingX36),
+                    if (_isLoading) ...{
+                      Loading(color: kTheme.colorScheme.primary),
+                    } else ...{
+                      Center(
+                        child: ButtonPrimary(
+                          width: SizeConfig.screenWidth * 0.85,
+                          onTap: () => _validateAndSignUp(),
+                          label: "Sign up",
+                          gravity: ButtonIconGravity.END,
+                          icon: kArrowIcon,
+                          color: kTheme.colorScheme.onBackground,
+                          textColor: kTheme.colorScheme.background,
+                        ),
+                      )
+                    }
+                  ],
+                ),
+              ),
             ),
           ),
 
@@ -105,5 +201,19 @@ class _RegisterPageState extends State<RegisterPage> {
         ],
       ),
     );
+  }
+
+  /// validate and perform login
+  void _validateAndSignUp() {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      _authBloc.add(
+        AuthEvent.emailSignUpEvent(
+          username: _nameController.text?.trim(),
+          email: _emailController.text?.trim(),
+          password: _passwordController.text?.trim(),
+        ),
+      );
+    }
   }
 }

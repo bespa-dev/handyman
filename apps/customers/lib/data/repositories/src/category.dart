@@ -25,7 +25,7 @@ class CategoryRepositoryImpl implements BaseCategoryRepository {
   @override
   Stream<List<BaseServiceCategory>> observeCategories(
       {ServiceCategoryGroup categoryGroup}) async* {
-    yield* _localDatasource.observeCategories(categoryGroup: categoryGroup);
+    yield* _localDatasource.observeCategories(categoryGroup: categoryGroup).asBroadcastStream();
     _remoteDatasource
         .observeCategories(categoryGroup: categoryGroup)
         .listen((event) async {

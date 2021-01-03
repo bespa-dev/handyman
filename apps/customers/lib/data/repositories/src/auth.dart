@@ -183,8 +183,8 @@ class AuthRepositoryImpl implements BaseAuthRepository {
   Future<void> signOut() async {
     _onAuthStateChangedController.add(AuthState.authLoadingState());
     if (_googleSignIn.currentUser != null) await _googleSignIn.signOut();
-    await _auth.signOut();
     await _prefsRepo.signOut();
+    await _auth.signOut();
     _onAuthStateChangedController.add(AuthState.authSuccessState());
   }
 }
