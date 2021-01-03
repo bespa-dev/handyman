@@ -35,4 +35,10 @@ abstract class BaseBookingRepository implements Exposable {
   /// Get [Booking] for [Artisan] & [Customer]
   Stream<List<BaseBooking>> bookingsForCustomerAndArtisan(
       {String customerId, String artisanId});
+
+  /// Get [Booking] for [Artisan] by [id]
+  Stream<List<BaseBooking>> observeBookingsForArtisan(String id);
+
+  /// Get [Booking] for [Customer] by [id]
+  Stream<List<BaseBooking>> observeBookingsForCustomer(String id);
 }

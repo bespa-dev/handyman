@@ -28,7 +28,39 @@ class GetUserIdUseCase extends NoParamsUseCase<String> {
   }
 }
 
+/// get contact
+class GetContactUseCase extends NoParamsUseCase<String> {
+  final BasePreferenceRepository _repo;
+
+  const GetContactUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<String>> execute(_) async {
+    try {
+      return UseCaseResult<String>.success(_repo.emergencyContactNumber);
+    } on Exception catch (ex) {
+      return UseCaseResult.error(ex.toString());
+    }
+  }
+}
+
 /// get theme
+class GetThemeUseCase extends NoParamsUseCase<bool> {
+  final BasePreferenceRepository _repo;
+
+  const GetThemeUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<bool>> execute(_) async {
+    try {
+      return UseCaseResult<bool>.success(_repo.isLightTheme);
+    } on Exception catch (ex) {
+      return UseCaseResult.error(ex.toString());
+    }
+  }
+}
+
+/// observe theme
 class ObserveThemeUseCase extends ObservableUseCase<bool, void> {
   final BasePreferenceRepository _repo;
 
@@ -71,6 +103,23 @@ class SaveUserIdUseCase extends CompletableUseCase<String> {
   Future<UseCaseResult<void>> execute(id) async {
     try {
       _repo.userId = id;
+      return UseCaseResult.success();
+    } on Exception catch (ex) {
+      return UseCaseResult.error(ex.toString());
+    }
+  }
+}
+
+/// save contact
+class SaveContactUseCase extends CompletableUseCase<String> {
+  final BasePreferenceRepository _repo;
+
+  const SaveContactUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<void>> execute(contact) async {
+    try {
+      _repo.emergencyContactNumber = contact;
       return UseCaseResult.success();
     } on Exception catch (ex) {
       return UseCaseResult.error(ex.toString());
@@ -141,5 +190,17 @@ class SaveShowSplashUseCase extends CompletableUseCase<bool> {
     } on Exception catch (ex) {
       return UseCaseResult.error(ex.toString());
     }
+  }
+}
+
+class PrefsSignOutUseCase extends VoidableUseCase {
+  final BasePreferenceRepository _repo;
+
+  const PrefsSignOutUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<void>> execute(_) async {
+    await _repo.signOut();
+    return UseCaseResult.success();
   }
 }

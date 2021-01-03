@@ -105,4 +105,24 @@ class BookingRepositoryImpl implements BaseBookingRepository {
     await _localDatasource.updateBooking(booking: booking);
     await _remoteDatasource.updateBooking(booking: booking);
   }
+
+  @override
+  Stream<List<BaseBooking>> observeBookingsForArtisan(String id) async* {
+    yield* _localDatasource.observeBookingsForArtisan(id);
+    _remoteDatasource.observeBookingsForArtisan(id).listen((event) async {
+      for (var value in event) {
+        if (value != null) await _localDatasource.updateBooking(booking: value);
+      }
+    });
+  }
+
+  @override
+  Stream<List<BaseBooking>> observeBookingsForCustomer(String id) async* {
+    yield* _localDatasource.observeBookingsForCustomer(id);
+    _remoteDatasource.observeBookingsForCustomer(id).listen((event) async {
+      for (var value in event) {
+        if (value != null) await _localDatasource.updateBooking(booking: value);
+      }
+    });
+  }
 }

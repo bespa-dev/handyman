@@ -13,7 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'constants.dart';
 
 /// Fonts
-final _kTitleFontFamily = GoogleFonts.comfortaa().fontFamily;
+final _kTitleFontFamily = GoogleFonts.poppins().fontFamily;
 final _kBodyFontFamily = GoogleFonts.rubik().fontFamily;
 
 /// Light theme
@@ -21,7 +21,6 @@ ThemeData themeData(BuildContext context) => ThemeData(
       platform: TargetPlatform.iOS,
       selectedRowColor: kSecondaryLightColor,
       appBarTheme: appBarTheme,
-      // shadowColor: kShadowColor,
       disabledColor: kDisabledColor,
       errorColor: kErrorLightColor,
       toggleableActiveColor: kPrimaryColor,
@@ -76,11 +75,11 @@ ThemeData themeData(BuildContext context) => ThemeData(
             fontWeight: FontWeight.w600),
         headline5: TextStyle(
             color: kTitleTextColorLight,
-            fontFamily: _kBodyFontFamily,
+            fontFamily: _kTitleFontFamily,
             fontWeight: FontWeight.w600),
         headline6: TextStyle(
             color: kTitleTextColorLight,
-            fontFamily: _kBodyFontFamily,
+            fontFamily: _kTitleFontFamily,
             fontSize: 18,
             fontWeight: FontWeight.w500),
         bodyText1:
@@ -141,6 +140,7 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
         secondary: kSecondaryDarkColor,
         surface: kSurfaceDarkColor,
         primary: kPrimaryColorDark,
+        background: kBackgroundDarkColor,
       ),
       backgroundColor: kBackgroundDarkColor,
       iconTheme: IconThemeData(color: kPrimaryIconDarkColor),
@@ -166,11 +166,11 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
             fontWeight: FontWeight.w600),
         headline5: TextStyle(
             color: kTitleTextColorDark,
-            fontFamily: _kBodyFontFamily,
+            fontFamily: _kTitleFontFamily,
             fontWeight: FontWeight.w600),
         headline6: TextStyle(
             color: kTitleTextColorDark,
-            fontFamily: _kBodyFontFamily,
+            fontFamily: _kTitleFontFamily,
             fontSize: 18,
             fontWeight: FontWeight.w500),
         bodyText1:

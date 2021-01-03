@@ -7,3 +7,10 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+export 'src/auth/auth_bloc.dart';
+export 'src/auth/auth_event.dart';
+export 'src/bloc_state.dart';
+export 'src/prefs/prefs_bloc.dart';
+export 'src/prefs/prefs_event.dart';
+export 'src/user/user_bloc.dart';
+export 'src/user/user_event.dart';

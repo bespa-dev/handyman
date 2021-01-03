@@ -103,7 +103,6 @@ class _UserProfileCardState extends State<UserProfileCard> {
                                   getProportionateScreenHeight(kSpacingX12)),
                           ButtonOutlined(
                             width: kWidth * 0.3,
-                            themeData: themeData,
                             onTap: () =>
                                 _showLearnMoreFor(widget.profiles[index]),
                             label: "Learn more",

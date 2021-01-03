@@ -17,7 +17,6 @@ class ButtonOutlined extends StatelessWidget {
   final double width;
   final double height;
   final IconData icon;
-  final ThemeData themeData;
   final Function onTap;
   final bool enabled;
   final ButtonIconGravity gravity;
@@ -25,7 +24,6 @@ class ButtonOutlined extends StatelessWidget {
   const ButtonOutlined({
     Key key,
     @required this.width,
-    @required this.themeData,
     @required this.onTap,
     @required this.label,
     this.height,
@@ -36,6 +34,7 @@ class ButtonOutlined extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
     return InkWell(
       splashColor: themeData.splashColor,
       onTap: enabled ? onTap : null,
@@ -62,7 +61,7 @@ class ButtonOutlined extends StatelessWidget {
               : MainAxisAlignment.spaceBetween,
           children: [
             icon != null && gravity == ButtonIconGravity.START
-                ? _buildIcon(icon)
+                ? _buildIcon(icon, themeData)
                 : SizedBox.shrink(),
             Text(
               label.toUpperCase(),
@@ -73,7 +72,7 @@ class ButtonOutlined extends StatelessWidget {
               ),
             ),
             icon != null && gravity == ButtonIconGravity.END
-                ? _buildIcon(icon)
+                ? _buildIcon(icon, themeData)
                 : SizedBox.shrink(),
           ],
         ),
@@ -81,7 +80,7 @@ class ButtonOutlined extends StatelessWidget {
     );
   }
 
-  Widget _buildIcon(icon) => Padding(
+  Widget _buildIcon(icon, themeData) => Padding(
         padding: EdgeInsets.symmetric(
           horizontal: getProportionateScreenWidth(kSpacingX8),
         ),
@@ -137,7 +136,6 @@ class ButtonPrimary extends StatelessWidget {
   final Color textColor;
   final double width;
   final IconData icon;
-  final ThemeData themeData;
   final Function onTap;
   final bool enabled;
   final ButtonIconGravity gravity;
@@ -145,7 +143,6 @@ class ButtonPrimary extends StatelessWidget {
   const ButtonPrimary({
     Key key,
     @required this.width,
-    @required this.themeData,
     @required this.onTap,
     @required this.label,
     this.gravity = ButtonIconGravity.NONE,
@@ -157,6 +154,7 @@ class ButtonPrimary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
     return InkWell(
       splashColor: themeData.splashColor,
       borderRadius:
@@ -180,7 +178,7 @@ class ButtonPrimary extends StatelessWidget {
               : MainAxisAlignment.spaceAround,
           children: [
             icon != null && gravity == ButtonIconGravity.START
-                ? _buildIcon(icon)
+                ? _buildIcon(icon, themeData)
                 : SizedBox.shrink(),
             Text(
               label.toUpperCase(),
@@ -189,7 +187,7 @@ class ButtonPrimary extends StatelessWidget {
               ),
             ),
             icon != null && gravity == ButtonIconGravity.END
-                ? _buildIcon(icon)
+                ? _buildIcon(icon, themeData)
                 : SizedBox.shrink(),
           ],
         ),
@@ -197,7 +195,7 @@ class ButtonPrimary extends StatelessWidget {
     );
   }
 
-  Widget _buildIcon(icon) => Padding(
+  Widget _buildIcon(icon, themeData) => Padding(
         padding: EdgeInsets.symmetric(
             horizontal: getProportionateScreenWidth(kSpacingX16)),
         child: Icon(

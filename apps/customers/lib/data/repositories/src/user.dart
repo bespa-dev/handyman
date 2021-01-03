@@ -7,8 +7,6 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:lite/domain/models/src/booking.dart';
-import 'package:lite/domain/models/src/review.dart';
 import 'package:lite/domain/models/src/user/artisan.dart';
 import 'package:lite/domain/models/src/user/user.dart';
 import 'package:lite/domain/repositories/repositories.dart';
@@ -65,50 +63,10 @@ class UserRepositoryImpl implements BaseUserRepository {
   }
 
   @override
-  Stream<List<BaseBooking>> observeBookingsForArtisan(String id) async* {
-    yield* _localDatasource.observeBookingsForArtisan(id);
-    _remoteDatasource.observeBookingsForArtisan(id).listen((event) async {
-      for (var value in event) {
-        if (value != null) await _localDatasource.updateBooking(booking: value);
-      }
-    });
-  }
-
-  @override
-  Stream<List<BaseBooking>> observeBookingsForCustomer(String id) async* {
-    yield* _localDatasource.observeBookingsForCustomer(id);
-    _remoteDatasource.observeBookingsForCustomer(id).listen((event) async {
-      for (var value in event) {
-        if (value != null) await _localDatasource.updateBooking(booking: value);
-      }
-    });
-  }
-
-  @override
   Stream<BaseUser> observeCustomerById({@required String id}) async* {
     yield* _localDatasource.observeCustomerById(id: id);
     _remoteDatasource.observeCustomerById(id: id).listen((event) async {
       if (event != null) await _localDatasource.updateUser(event);
-    });
-  }
-
-  @override
-  Stream<List<BaseReview>> observeReviewsByCustomer(String id) async* {
-    yield* _localDatasource.observeReviewsByCustomer(id);
-    _remoteDatasource.observeReviewsByCustomer(id).listen((event) async {
-      for (var value in event) {
-        if (value != null) await _localDatasource.updateReview(review: value);
-      }
-    });
-  }
-
-  @override
-  Stream<List<BaseReview>> observeReviewsForArtisan(String id) async* {
-    yield* _localDatasource.observeReviewsForArtisan(id);
-    _remoteDatasource.observeReviewsForArtisan(id).listen((event) async {
-      for (var value in event) {
-        if (value != null) await _localDatasource.updateReview(review: value);
-      }
     });
   }
 

@@ -8,6 +8,7 @@
  */
 
 import 'package:lite/data/entities/entities.dart';
+import 'package:lite/domain/models/models.dart';
 import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/domain/sources/sources.dart';
 import 'package:meta/meta.dart';
@@ -43,5 +44,25 @@ class ReviewRepositoryImpl implements BaseReviewRepository {
 
     await _localDatasource.sendReview(review: review);
     await _remoteDatasource.sendReview(review: review);
+  }
+
+  @override
+  Stream<List<BaseReview>> observeReviewsByCustomer(String id) async* {
+    yield* _localDatasource.observeReviewsByCustomer(id);
+    _remoteDatasource.observeReviewsByCustomer(id).listen((event) async {
+      for (var value in event) {
+        if (value != null) await _localDatasource.updateReview(review: value);
+      }
+    });
+  }
+
+  @override
+  Stream<List<BaseReview>> observeReviewsForArtisan(String id) async* {
+    yield* _localDatasource.observeReviewsForArtisan(id);
+    _remoteDatasource.observeReviewsForArtisan(id).listen((event) async {
+      for (var value in event) {
+        if (value != null) await _localDatasource.updateReview(review: value);
+      }
+    });
   }
 }

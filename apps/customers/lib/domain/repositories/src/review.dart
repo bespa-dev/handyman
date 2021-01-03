@@ -21,4 +21,10 @@ abstract class BaseReviewRepository implements Exposable {
     @required String artisan,
     @required double rating,
   });
+
+  /// Get [BaseReview] for [Artisan]
+  Stream<List<BaseReview>> observeReviewsForArtisan(String id);
+
+  /// Get [BaseReview] for [Customer] by [id]
+  Stream<List<BaseReview>> observeReviewsByCustomer(String id);
 }

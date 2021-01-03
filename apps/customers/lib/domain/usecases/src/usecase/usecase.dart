@@ -30,6 +30,11 @@ abstract class ObservableUseCase<T, P> extends UseCase<Stream<T>, P> {
   const ObservableUseCase();
 }
 
+/// A special type of [UseCase] that does not return any value and accepts no params.
+abstract class VoidableUseCase extends UseCase<void, void> {
+  const VoidableUseCase();
+}
+
 /// A special type of [UseCase] that does not return any value.
 /// It only preforms a task and reports either success or failure.
 /// A good candidate of this usecase if for logout and login functionalities

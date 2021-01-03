@@ -19,6 +19,12 @@ import 'package:lite/app/pages/pages.dart';
   generateNavigationHelperExtension: true,
   routes: <AutoRoute>[
     CustomRoute(page: SplashPage, initial: true),
+    CustomRoute(page: LoginPage),
+    CustomRoute(page: HomePage),
+    CustomRoute(page: RegisterPage),
+
+    /// keep at the bottom
+    CustomRoute(page: UnknownRoute, path: "*"),
   ],
 )
 class $Router {}

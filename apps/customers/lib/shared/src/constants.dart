@@ -19,10 +19,16 @@ import 'size_config.dart';
 /// Logger
 final logger = Logger(printer: PrettyPrinter(printTime: true));
 
-/// Defaults
-const kGeneralCategory = "bbe8a179-7797-4d87-b388-cf93125f490e";
-const kRatingStar = Entypo.star;
-const kUserImageNotFound = Icons.broken_image_outlined;
+void showSnackBarMessage(BuildContext context, {@required String message}) {
+  ScaffoldMessenger.of(context)
+    ..removeCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+}
 
 Widget buildFunctionalityNotAvailablePanel(BuildContext context) => Container(
       height: getProportionateScreenHeight(kSpacingX320),
@@ -96,9 +102,10 @@ const double kEmphasisHigh = 0.9;
 
 /// App
 const kAppName = "HandyMan Lite";
+const kAppNameShort = "HandyMan";
 const kAppSlogan = "Get some real work done";
 const kAppVersion = "v1.2.0";
-const kAppSloganDesc = "Find your service & book easily with $kAppName";
+const kAppSloganDesc = "Find & book your services easily with $kAppNameShort";
 const kArtisanReviewHelpDialogContent =
     "Sensitive data (like email addresses, phone numbers, user ids etc) will not be made public to customers on this platform.\nYour ratings are also based on the accumulated reviews by customers you have served over the last 6 months";
 const kPasswordHint =
@@ -112,6 +119,8 @@ const kFunctionalityUnavailable =
     "Functionality is currently unavailable. Try again after the next update. Thank you";
 const kCustomerString = "Customer";
 const kLogoAsset = "assets/logo/logo.svg";
+const kWelcomeAsset = "assets/wfh_2.png";
+const k404Asset = "assets/svg/404.svg";
 const kLogoDarkAsset = "assets/logo/logo_dark.svg";
 const kTimeSvgAsset = "assets/svg/time.svg";
 const kPeopleSvgAsset = "assets/svg/people.svg";
@@ -121,6 +130,14 @@ const kBackgroundAsset = "assets/bg/bg.webp";
 const kLoremText =
     "Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cursus sit amet dictum sit amet. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique";
 
+/// icons
+const kBackIcon = AntDesign.back;
+const kRatingStar = Entypo.star;
+const kMailIcon = Feather.mail;
+const kGoogleIcon = AntDesign.google;
+const kUserImageNotFound = Icons.link_off_outlined;
+const kArrowIcon = Icons.keyboard_backspace_outlined;
+
 /// [Algolia]
 const kAlgoliaAppId = "AIBRVBFA4W";
 const kAlgoliaKey = "604022a17d65f30d23e80a38f285be57";
@@ -129,6 +146,7 @@ const kAlgoliaKey = "604022a17d65f30d23e80a38f285be57";
 const kScaleDuration = const Duration(milliseconds: 350);
 const kTestDuration = const Duration(milliseconds: 2500);
 const kSheetDuration = const Duration(milliseconds: 850);
+const kSplashDuration = const Duration(milliseconds: 1550);
 
 /// Others
 const kScrollPhysics = const BouncingScrollPhysics();
@@ -171,9 +189,6 @@ const kPrimaryIconDarkColor = kWhiteColor;
 const kBodyTextColorLight = Color(0xFF232323);
 const kTitleTextColorLight = Color(0xFF131313);
 const kUnselectedLabelColorLight = Color(0xFF7C7C7C);
-
-// const kBodyTextColorDark = Color(0xFF7C7C7C);
-// const kUnselectedLabelColorDark = Color(0xFF5F6368);
 const kBodyTextColorDark = Color(0xFFDEDEDE);
 const kUnselectedLabelColorDark = Color(0xFFDEDEDE);
 const kTitleTextColorDark = Color(0xFFDEDEDE);

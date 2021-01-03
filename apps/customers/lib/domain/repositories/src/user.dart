@@ -15,18 +15,6 @@ abstract class BaseUserRepository implements Exposable {
   /// Update [BaseUser] profile information
   Future<void> updateUser({@required BaseUser user});
 
-  /// Get [Booking] for [Artisan] by [id]
-  Stream<List<BaseBooking>> observeBookingsForArtisan(String id);
-
-  /// Get [Booking] for [Customer] by [id]
-  Stream<List<BaseBooking>> observeBookingsForCustomer(String id);
-
-  /// Get [BaseReview] for [Artisan]
-  Stream<List<BaseReview>> observeReviewsForArtisan(String id);
-
-  /// Get [BaseReview] for [Customer] by [id]
-  Stream<List<BaseReview>> observeReviewsByCustomer(String id);
-
   /// observe current user
   Stream<BaseUser> currentUser();
 

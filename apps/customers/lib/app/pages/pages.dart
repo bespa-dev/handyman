@@ -7,4 +7,8 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+export 'src/home.dart';
+export 'src/login.dart';
 export 'src/splash.dart';
+export 'src/unknown.dart';
+export 'src/register.dart';

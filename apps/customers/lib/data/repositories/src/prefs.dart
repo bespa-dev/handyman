@@ -81,7 +81,10 @@ class PreferenceRepositoryImpl extends BasePreferenceRepository {
   }
 
   @override
-  Future<void> signOut() async {}
+  Future<void> signOut() async {
+    userId = null;
+    notifyListeners();
+  }
 
   @override
   void dispose() {

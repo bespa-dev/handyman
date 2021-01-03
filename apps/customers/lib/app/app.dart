@@ -7,10 +7,13 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/routes/routes.gr.dart' as gr;
 import 'package:lite/shared/shared.dart';
 
@@ -21,32 +24,52 @@ class LiteApp extends StatefulWidget {
 }
 
 class _LiteAppState extends State<LiteApp> {
+  final _prefsBloc = PrefsBloc(repo: Injection.get());
+
   @override
   void initState() {
     super.initState();
+
+    /// get current user's id
+    if (mounted) _prefsBloc.add(PrefsEvent.getUserIdEvent());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     if (mounted) _configureUI();
   }
 
   @override
+  void dispose() {
+    _prefsBloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: kAppName,
-      debugShowCheckedModeBanner: false,
-      theme: themeData(context),
-      darkTheme: darkThemeData(context),
-      builder: ExtendedNavigator<gr.Router>(
-        router: gr.Router(),
-        guards: [],
+    return BlocBuilder<PrefsBloc, BlocState>(
+      cubit: _prefsBloc,
+      builder: (_, state) => MaterialApp(
+        title: kAppName,
+        debugShowCheckedModeBanner: false,
+        theme: themeData(context),
+        darkTheme: darkThemeData(context),
+        builder: ExtendedNavigator<gr.Router>(
+          router: gr.Router(),
+          guards: [],
+        ),
       ),
     );
   }
 
   void _configureUI() {
+    logger.d("Dependencies updated for ${this.runtimeType}");
+
     final isLightTheme = Theme.of(context).brightness == Brightness.light;
 
     // Set orientation
-    if (defaultTargetPlatform == TargetPlatform.android ||
-        defaultTargetPlatform == TargetPlatform.iOS) {
+    if (Platform.isIOS || Platform.isAndroid) {
       SystemChrome.setSystemUIOverlayStyle(
         isLightTheme ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
       );

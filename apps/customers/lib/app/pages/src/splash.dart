@@ -7,8 +7,15 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:auto_route/auto_route.dart';
+import 'package:circular_reveal_animation/circular_reveal_animation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:lite/app/widgets/src/buttons.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lite/app/bloc/bloc.dart';
+import 'package:lite/app/routes/routes.gr.dart';
+import 'package:lite/app/widgets/widgets.dart';
+import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/shared/shared.dart';
 
 class SplashPage extends StatefulWidget {
@@ -16,62 +23,246 @@ class SplashPage extends StatefulWidget {
   _SplashPageState createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> {
+class _SplashPageState extends State<SplashPage>
+    with SingleTickerProviderStateMixin {
+  /// blocs
+  final _prefsBloc = PrefsBloc(repo: Injection.get());
+  final _authBloc = AuthBloc(repo: Injection.get());
+  final _userBloc = UserBloc(repo: Injection.get());
+
+  /// UI
+  AnimationController _animationController;
+  Animation<double> _animation;
+  bool _showPageContent = false, _isLoading = false;
+
+  @override
+  void dispose() {
+    _prefsBloc.close();
+    _authBloc.close();
+    _userBloc.close();
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
 
-    // logger.d(ServiceCategoryGroup.featured().name());
-    // logger.d(ServiceCategoryGroup.recent().name());
-    // logger.d(ServiceCategoryGroup.popular().name());
-    // logger.d(ServiceCategoryGroup.recommended().name());
-    // logger.d(ServiceCategoryGroup.mostRated().name());
+    if (mounted) {
+      /// setup animation
+      _animationController = AnimationController(
+        vsync: this,
+        duration: kSheetDuration,
+      );
+      _animation = CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeIn,
+      );
+
+      /// get current user's login state
+      _prefsBloc.add(PrefsEvent.getUserIdEvent());
+
+      /// observe auth state
+      _authBloc
+        ..add(AuthEvent.observeAuthStatetEvent())
+        ..add(AuthEvent.observeMessageEvent())
+        ..listen((state) {
+          if (state is SuccessState<Stream<AuthState>>) {
+            /// stream auth state
+            state.data.listen((event) {
+              if (event is AuthLoadingState) {
+                _isLoading = true;
+                if (mounted) setState(() {});
+              } else if (event is AuthFailedState) {
+                _isLoading = false;
+                if (mounted) setState(() {});
+                showSnackBarMessage(context,
+                    message: event.message ?? "Authentication failed");
+              } else if (event is AuthenticatedState) {
+                _isLoading = false;
+                if (mounted) setState(() {});
+                context.navigator
+                  ..popUntilRoot()
+                  ..pushHomePage();
+              }
+            });
+          } else if (state is SuccessState<Stream<String>>) {
+            /// stream messages
+            state.data.listen((message) {
+              showSnackBarMessage(context, message: message);
+            });
+          }
+        });
+
+      /// animate UI entry
+      _animateEntry();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     final kTheme = Theme.of(context);
+    // final lightTheme = kTheme.brightness == Brightness.light;
 
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(
-          kSpacingX24,
-          kSpacingX36,
-          kSpacingX24,
-          kSpacingX24,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Spacer(flex: 1),
-            Text(
-              kAppName,
-              textAlign: TextAlign.center,
-              style: kTheme.textTheme.headline4,
-            ),
-            SizedBox(height: kSpacingX8),
-            Text(
-              kAppSloganDesc,
-              textAlign: TextAlign.center,
-              style: kTheme.textTheme.subtitle1,
-            ),
-            Spacer(flex: 4),
-            Align(
-              alignment: Alignment.center,
-              child: ButtonPrimary(
-                width: SizeConfig.screenWidth * 0.85,
-                themeData: kTheme,
-                onTap: () async {
-                  /// fixme -> nav to register page
-                },
-                label: "Get Started",
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          /// base
+          Positioned.fill(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                kSpacingX24,
+                kSpacingX36,
+                kSpacingX24,
+                kSpacingX24,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    kAppName,
+                    textAlign: TextAlign.center,
+                    style: kTheme.textTheme.headline4,
+                  ),
+                  SizedBox(height: kSpacingX8),
+                  Text(
+                    kAppSloganDesc,
+                    textAlign: TextAlign.center,
+                    style: kTheme.textTheme.subtitle1,
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+
+          /// overlay
+          if (_showPageContent) ...{
+            Positioned.fill(
+              child: BlocBuilder<PrefsBloc, BlocState>(
+                cubit: _prefsBloc,
+                builder: (_, state) => CircularRevealAnimation(
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: kSpacingX24,
+                      vertical: kSpacingX56,
+                    ),
+                    color: kTheme.colorScheme.primary,
+                    child: SafeArea(
+                      top: true,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Welcome back...",
+                            style: kTheme.textTheme.headline6.copyWith(
+                              color: kTheme.colorScheme.onPrimary,
+                            ),
+                          ),
+                          SizedBox(height: kSpacingX8),
+                          Text(
+                            kAppSloganDesc,
+                            style: kTheme.textTheme.headline4.copyWith(
+                              color: kTheme.colorScheme.onPrimary,
+                            ),
+                          ),
+                          SizedBox(height: kSpacingX96),
+                          if (state is SuccessState<String> &&
+                              state.data != null) ...{
+                            Spacer(),
+                            ButtonPrimary(
+                              width: SizeConfig.screenWidth * 0.85,
+                              onTap: () => context.navigator
+                                ..popUntilRoot()
+                                ..pushHomePage(),
+                              label: "Explore",
+                              color: kTheme.colorScheme.onBackground,
+                              textColor: kTheme.colorScheme.background,
+                            ),
+                          } else ...{
+                            ButtonPrimary(
+                              width: SizeConfig.screenWidth * 0.85,
+                              onTap: () {
+                                _authBloc.add(AuthEvent.federatedOAuthEvent());
+                              },
+                              icon: kGoogleIcon,
+                              gravity: ButtonIconGravity.START,
+                              label: "Continue with Google",
+                              color: kTheme.colorScheme.onBackground,
+                              textColor: kTheme.colorScheme.background,
+                            ),
+                            SizedBox(height: kSpacingX12),
+                            ButtonPrimary(
+                              width: SizeConfig.screenWidth * 0.85,
+                              onTap: () => context.navigator.pushRegisterPage(),
+                              icon: kMailIcon,
+                              gravity: ButtonIconGravity.START,
+                              label: "Sign up with email",
+                              color: kTheme.colorScheme.background,
+                              textColor: kTheme.colorScheme.onBackground,
+                            ),
+                            if (_isLoading) ...{
+                              SizedBox(height: kSpacingX36),
+                              Loading(),
+                            },
+                            Spacer(),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: kSpacingX24,
+                              ),
+                              child: Text.rich(
+                                TextSpan(
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      context.navigator.pushLoginPage();
+                                    },
+                                  children: [
+                                    TextSpan(
+                                        text: "Already have an account?\t"),
+                                    TextSpan(
+                                      text: "Log in",
+                                      style: kTheme.textTheme.button.copyWith(
+                                        color: kTheme.colorScheme.secondary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                style: kTheme.textTheme.button.copyWith(
+                                  color: kTheme.colorScheme.onPrimary,
+                                ),
+                              ),
+                            ),
+                          }
+                        ],
+                      ),
+                    ),
+                  ),
+                  animation: _animation,
+                  centerAlignment: Alignment.bottomCenter,
+                ),
+              ),
+            ),
+
+            /// bottom action button
+          }
+        ],
       ),
     );
+  }
+
+  void _animateEntry() async {
+    await Future.delayed(kSplashDuration);
+    if (_animationController.status == AnimationStatus.forward ||
+        _animationController.status == AnimationStatus.completed) {
+      _animationController.reverse();
+    } else
+      _animationController.forward();
+
+    setState(() {
+      _showPageContent = !_showPageContent;
+    });
   }
 }
