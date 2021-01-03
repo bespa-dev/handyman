@@ -10,7 +10,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:handyman/app/widgets/widgets.dart' show ButtonOutlined;
 import 'package:handyman/shared/shared.dart';
 
 class UserProfileCard extends StatefulWidget {
@@ -97,15 +96,6 @@ class _UserProfileCardState extends State<UserProfileCard> {
                             widget.description[index],
                             style: themeData.textTheme.bodyText1,
                             textAlign: TextAlign.center,
-                          ),
-                          SizedBox(
-                              height:
-                                  getProportionateScreenHeight(kSpacingX12)),
-                          ButtonOutlined(
-                            width: kWidth * 0.3,
-                            onTap: () =>
-                                _showLearnMoreFor(widget.profiles[index]),
-                            label: "Learn more",
                           ),
                         ],
                       ),

@@ -18,9 +18,6 @@ import 'package:flutter_riverpod/all.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:hive/hive.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:jiffy/jiffy.dart';
 import 'package:handyman/data/entities/entities.dart';
 import 'package:handyman/data/repositories/repositories.dart';
 import 'package:handyman/data/sources/sources.dart';
@@ -28,6 +25,9 @@ import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/domain/repositories/repositories.dart';
 import 'package:handyman/domain/sources/sources.dart';
 import 'package:handyman/shared/shared.dart';
+import 'package:hive/hive.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// region Preferences
