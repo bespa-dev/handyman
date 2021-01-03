@@ -46,9 +46,8 @@ class Artisan extends BaseArtisan {
   final List<String> reports;
 
   @HiveField(7)
-  @JsonKey(name: "certified")
   @override
-  final bool isCertified;
+  bool get isCertified => rating >= 3;
 
   @HiveField(8)
   @JsonKey(name: "available")
@@ -108,7 +107,6 @@ class Artisan extends BaseArtisan {
     this.bookingsCount,
     this.requests,
     this.reports,
-    this.isCertified,
     this.isAvailable,
     this.isApproved,
     this.token,
@@ -161,7 +159,6 @@ class Artisan extends BaseArtisan {
         endWorkingHours: this.endWorkingHours,
         isApproved: this.isApproved,
         isAvailable: this.isAvailable,
-        isCertified: this.isCertified,
         reports: this.reports,
         requests: this.requests,
         startWorkingHours: this.startWorkingHours,

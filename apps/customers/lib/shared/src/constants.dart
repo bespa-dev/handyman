@@ -104,7 +104,8 @@ const double kEmphasisHigh = 0.9;
 /// App
 const kAppName = "HandyMan Lite";
 const kAppNameShort = "HandyMan";
-const kAppSlogan = "Get some real work done";
+const kAppSlogan =
+    "A mobile application to gather all handyman service providers on a single platform and introduce them to potential service seekers and compare between providers and hire the best quote";
 const kAppVersion = "v1.2.0";
 const kAppSloganDesc = "Find & book your services easily with $kAppNameShort";
 const kArtisanReviewHelpDialogContent =
@@ -127,7 +128,8 @@ const kTimeSvgAsset = "assets/svg/time.svg";
 const kPeopleSvgAsset = "assets/svg/people.svg";
 const kBookingSvgAsset = "assets/svg/booking.svg";
 const kAlgoliaSvgAsset = "assets/svg/algolia_blue_mark.svg";
-const kBackgroundAsset = "https://images.unsplash.com/photo-1454694220579-9d6672b1ec2a?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8aGFuZHltYW58ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60";
+const kBackgroundAsset =
+    "https://images.unsplash.com/photo-1454694220579-9d6672b1ec2a?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8aGFuZHltYW58ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60";
 const kLoremText =
     "Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cursus sit amet dictum sit amet. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique";
 
@@ -138,6 +140,7 @@ const kMailIcon = Feather.mail;
 const kGoogleIcon = AntDesign.google;
 const kUserImageNotFound = Icons.link_off_outlined;
 const kArrowIcon = Icons.arrow_right_alt_outlined;
+const kOptionsIcon = Entypo.dots_two_vertical;
 
 /// [Algolia]
 const kAlgoliaAppId = "AIBRVBFA4W";
@@ -146,7 +149,7 @@ const kAlgoliaKey = "604022a17d65f30d23e80a38f285be57";
 /// Durations
 const kScaleDuration = const Duration(milliseconds: 350);
 const kTestDuration = const Duration(milliseconds: 2500);
-const kSheetDuration = const Duration(milliseconds: 850);
+const kSheetDuration = const Duration(milliseconds: 550);
 const kSplashDuration = const Duration(milliseconds: 1550);
 
 /// Others
@@ -168,7 +171,8 @@ const kPrimaryColor = Color(0xFF0E37EA);
 const kSecondaryLightColor = Color(0xFFEBB609);
 const kErrorLightColor = Color(0xffE91E63);
 const kAccentLightColor = kSecondaryLightColor;
-const kBackgroundLightColor = Color(0xFFf1f0f2);
+const kBackgroundLightColor = Color(0xFFfafafa);
+// const kBackgroundLightColor = Color(0xFFf1f0f2);
 const kCardLightColor = Color(0xFFFFFFFF);
 
 const kPrimaryColorDark = Color(0xFF05050B);

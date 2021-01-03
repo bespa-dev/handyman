@@ -29,7 +29,7 @@ abstract class BaseArtisan extends BaseUser {
 
   List<String> reports;
 
-  bool isCertified;
+  bool get isCertified;
 
   bool isAvailable;
 

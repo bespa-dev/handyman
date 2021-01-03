@@ -7,15 +7,13 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-// import 'package:auto_route/auto_route.dart';
-// import 'package:flutter_icons/flutter_icons.dart';
-// import 'package:lite/app/routes/routes.gr.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:lite/app/bloc/bloc.dart';
+import 'package:lite/app/routes/routes.gr.dart';
 import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
@@ -108,21 +106,11 @@ class _ArtisansPageState extends State<ArtisansPage> {
                   expandedHeight: SizeConfig.screenHeight * 0.25,
                   flexibleSpace: FlexibleSpaceBar(
                     collapseMode: CollapseMode.parallax,
-                    stretchModes: [
-                      StretchMode.blurBackground,
-                      StretchMode.fadeTitle,
-                    ],
                     background: Stack(
                       fit: StackFit.expand,
                       children: [
                         Positioned.fill(
-                          child: CachedNetworkImage(
-                            imageUrl: kBackgroundAsset,
-                            fit: BoxFit.cover,
-                            placeholder: (_, __) => Container(
-                              color: kTheme.colorScheme.background,
-                            ),
-                          ),
+                          child: ImageView(imageUrl: kBackgroundAsset),
                         ),
                         Positioned.fill(
                           child: Container(
@@ -243,18 +231,17 @@ class _ArtisansPageState extends State<ArtisansPage> {
         cacheExtent: 200,
         itemBuilder: (_, index) {
           final artisan = data[index];
-          return InkWell(
-            onTap: () {
-              /// fixme -> nav to artisan's profile page
-            },
-            splashColor: kTheme.splashColor,
-            borderRadius: BorderRadius.circular(kSpacingX12),
-            child: Card(
-              clipBehavior: Clip.hardEdge,
-              elevation: kSpacingNone,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(kSpacingX12),
-              ),
+          return Card(
+            clipBehavior: Clip.hardEdge,
+            elevation: kSpacingNone,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(kSpacingX12),
+            ),
+            child: InkWell(
+              onTap: () =>
+                  context.navigator.pushArtisanInfoPage(artisan: artisan),
+              splashColor: kTheme.splashColor,
+              borderRadius: BorderRadius.circular(kSpacingX12),
               child: Container(
                 height: cardHeight,
                 width: cardWidth,
@@ -281,7 +268,7 @@ class _ArtisansPageState extends State<ArtisansPage> {
                               /// foreground
                               Positioned.fill(
                                 child: Container(
-                                  color: kTheme.colorScheme.onBackground
+                                  color: kTheme.colorScheme.background
                                       .withOpacity(kEmphasisMedium),
                                 ),
                               ),

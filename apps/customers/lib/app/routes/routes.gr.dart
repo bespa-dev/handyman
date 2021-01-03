@@ -20,7 +20,7 @@ class Routes {
   static const String requestPage = '/request-page';
   static const String homePage = '/home-page';
   static const String registerPage = '/register-page';
-  static const String unknownRoute = '*';
+  static const String unknownRoutePage = '*';
   static const all = <String>{
     splashPage,
     loginPage,
@@ -28,7 +28,7 @@ class Routes {
     requestPage,
     homePage,
     registerPage,
-    unknownRoute,
+    unknownRoutePage,
   };
 }
 
@@ -46,7 +46,7 @@ class Router extends RouterBase {
       generator: HomePageRouter(),
     ),
     RouteDef(Routes.registerPage, page: RegisterPage),
-    RouteDef(Routes.unknownRoute, page: UnknownRoute),
+    RouteDef(Routes.unknownRoutePage, page: UnknownRoutePage),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
@@ -98,9 +98,10 @@ class Router extends RouterBase {
         settings: data,
       );
     },
-    UnknownRoute: (data) {
+    UnknownRoutePage: (data) {
       return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => UnknownRoute(),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            UnknownRoutePage(),
         settings: data,
       );
     },
@@ -140,7 +141,8 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
 
   Future<dynamic> pushRegisterPage() => push<dynamic>(Routes.registerPage);
 
-  Future<dynamic> pushUnknownRoute() => push<dynamic>(Routes.unknownRoute);
+  Future<dynamic> pushUnknownRoutePage() =>
+      push<dynamic>(Routes.unknownRoutePage);
 }
 
 class HomePageRoutes {
@@ -149,12 +151,14 @@ class HomePageRoutes {
   static const String artisansPage = '/';
   static const String notificationsPage = '/notifications-page';
   static const String profilePage = '/profile-page';
+  static const String artisanInfoPage = '/artisan-info-page';
   static const all = <String>{
     bookingsPage,
     searchPage,
     artisansPage,
     notificationsPage,
     profilePage,
+    artisanInfoPage,
   };
 }
 
@@ -167,6 +171,7 @@ class HomePageRouter extends RouterBase {
     RouteDef(HomePageRoutes.artisansPage, page: ArtisansPage),
     RouteDef(HomePageRoutes.notificationsPage, page: NotificationsPage),
     RouteDef(HomePageRoutes.profilePage, page: ProfilePage),
+    RouteDef(HomePageRoutes.artisanInfoPage, page: ArtisanInfoPage),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
@@ -202,6 +207,17 @@ class HomePageRouter extends RouterBase {
         settings: data,
       );
     },
+    ArtisanInfoPage: (data) {
+      final args = data.getArgs<ArtisanInfoPageArguments>(nullOk: false);
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ArtisanInfoPage(
+          key: args.key,
+          artisan: args.artisan,
+        ),
+        settings: data,
+      );
+    },
   };
 }
 
@@ -223,6 +239,15 @@ extension HomePageRouterExtendedNavigatorStateX on ExtendedNavigatorState {
 
   Future<dynamic> pushProfilePage() =>
       push<dynamic>(HomePageRoutes.profilePage);
+
+  Future<dynamic> pushArtisanInfoPage({
+    Key key,
+    @required BaseArtisan artisan,
+  }) =>
+      push<dynamic>(
+        HomePageRoutes.artisanInfoPage,
+        arguments: ArtisanInfoPageArguments(key: key, artisan: artisan),
+      );
 }
 
 /// ************************************************************************
@@ -243,4 +268,11 @@ class RequestPageArguments {
   final Key key;
   final BaseArtisan artisan;
   RequestPageArguments({this.key, @required this.artisan});
+}
+
+/// ArtisanInfoPage arguments holder class
+class ArtisanInfoPageArguments {
+  final Key key;
+  final BaseArtisan artisan;
+  ArtisanInfoPageArguments({this.key, @required this.artisan});
 }

@@ -18,12 +18,12 @@ import 'package:lite/app/routes/routes.gr.dart' as gr;
 import 'package:lite/shared/shared.dart';
 
 /// application instance -> entry point
-class LiteApp extends StatefulWidget {
+class HandyManApp extends StatefulWidget {
   @override
-  _LiteAppState createState() => _LiteAppState();
+  _HandyManAppState createState() => _HandyManAppState();
 }
 
-class _LiteAppState extends State<LiteApp> {
+class _HandyManAppState extends State<HandyManApp> {
   final _prefsBloc = PrefsBloc(repo: Injection.get());
 
   @override

@@ -20,5 +20,5 @@ void main() async {
   /// initialize all dependencies
   await initAppDependencies();
 
-  runApp(ProviderScope(child: LiteApp()));
+  runApp(ProviderScope(child: HandyManApp()));
 }

@@ -31,12 +31,13 @@ import 'package:lite/app/pages/pages.dart';
         CustomRoute(page: ArtisansPage, path: "/"),
         CustomRoute(page: NotificationsPage),
         CustomRoute(page: ProfilePage),
+        CustomRoute(page: ArtisanInfoPage),
       ],
     ),
     CustomRoute(page: RegisterPage),
 
     /// keep at the bottom
-    CustomRoute(page: UnknownRoute, path: "*"),
+    CustomRoute(page: UnknownRoutePage, path: "*"),
   ],
 )
 class $Router {}

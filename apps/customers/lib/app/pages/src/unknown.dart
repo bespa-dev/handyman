@@ -13,12 +13,12 @@ import 'package:lite/app/routes/routes.gr.dart';
 import 'package:lite/app/widgets/src/buttons.dart';
 import 'package:lite/shared/shared.dart';
 
-class UnknownRoute extends StatefulWidget {
+class UnknownRoutePage extends StatefulWidget {
   @override
-  _UnknownRouteState createState() => _UnknownRouteState();
+  _UnknownRoutePageState createState() => _UnknownRoutePageState();
 }
 
-class _UnknownRouteState extends State<UnknownRoute> {
+class _UnknownRoutePageState extends State<UnknownRoutePage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);

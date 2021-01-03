@@ -41,7 +41,7 @@ class ObserveArtisanUseCase extends ObservableUseCase<BaseArtisan, String> {
   Future<UseCaseResult<Stream<BaseArtisan>>> execute(String userId) async {
     try {
       final person = _repo.observeArtisanById(id: userId);
-      return UseCaseResult<Stream<BaseArtisan>>.success(person);
+      return UseCaseResult<Stream<BaseArtisan>>.success(person.asBroadcastStream());
     } on Exception {
       return UseCaseResult.error(null);
     }
@@ -57,7 +57,7 @@ class ObserveCustomerUseCase extends ObservableUseCase<BaseUser, String> {
   Future<UseCaseResult<Stream<BaseUser>>> execute(String userId) async {
     try {
       final person = _repo.observeCustomerById(id: userId);
-      return UseCaseResult<Stream<BaseUser>>.success(person);
+      return UseCaseResult<Stream<BaseUser>>.success(person.asBroadcastStream());
     } on Exception {
       return UseCaseResult.error(null);
     }

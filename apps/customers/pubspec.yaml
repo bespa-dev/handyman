@@ -73,6 +73,7 @@ dependencies:
   contact_picker:
   geocoder:
   flutter_dotenv: ^2.1.0
+  md2_tab_indicator: ^1.0.2
 
 dev_dependencies:
   flutter_test:

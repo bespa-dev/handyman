@@ -7,6 +7,7 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+export 'src/artisan_info.dart';
 export 'src/artisans.dart';
 export 'src/bookings.dart';
 export 'src/conversation.dart';
