@@ -9,7 +9,6 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:circular_reveal_animation/circular_reveal_animation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lite/app/bloc/bloc.dart';
@@ -209,29 +208,31 @@ class _SplashPageState extends State<SplashPage>
                               Loading(),
                             },
                             Spacer(),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: kSpacingX24,
-                              ),
-                              child: Text.rich(
-                                TextSpan(
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      context.navigator.pushLoginPage();
-                                    },
-                                  children: [
+
+                            /// bottom action button
+                            Align(
+                              alignment: Alignment.bottomCenter,
+                              child: GestureDetector(
+                                onTap: () => context.navigator.pushLoginPage(),
+                                child: Container(
+                                  child: Text.rich(
                                     TextSpan(
-                                        text: "Already have an account?\t"),
-                                    TextSpan(
-                                      text: "Log in",
-                                      style: kTheme.textTheme.button.copyWith(
-                                        color: kTheme.colorScheme.secondary,
-                                      ),
+                                      children: [
+                                        TextSpan(
+                                            text: "Already have an account?\t"),
+                                        TextSpan(
+                                          text: "Log in",
+                                          style:
+                                              kTheme.textTheme.button.copyWith(
+                                            color: kTheme.colorScheme.secondary,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                style: kTheme.textTheme.button.copyWith(
-                                  color: kTheme.colorScheme.onPrimary,
+                                    style: kTheme.textTheme.button.copyWith(
+                                      color: kTheme.colorScheme.onPrimary,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -245,8 +246,6 @@ class _SplashPageState extends State<SplashPage>
                 ),
               ),
             ),
-
-            /// bottom action button
           }
         ],
       ),

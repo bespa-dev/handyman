@@ -15,7 +15,7 @@ import 'package:lite/app/pages/pages.dart';
 /// flutter packages pub run build_runner build --delete-conflicting-outputs
 /// flutter packages pub run build_runner watch --delete-conflicting-outputs
 @CustomAutoRouter(
-  transitionsBuilder: TransitionsBuilders.zoomIn,
+  transitionsBuilder: TransitionsBuilders.fadeIn,
   generateNavigationHelperExtension: true,
   routes: <AutoRoute>[
     CustomRoute(page: SplashPage, initial: true),
