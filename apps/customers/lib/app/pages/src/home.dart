@@ -28,13 +28,11 @@ class _HomePageState extends State<HomePage> {
   bool _isLoggedIn = false;
 
   /// blocs
-  final _authBloc = AuthBloc(repo: Injection.get());
   final _prefsBloc = PrefsBloc(repo: Injection.get());
   final _userBloc = UserBloc(repo: Injection.get());
 
   @override
   void dispose() {
-    _authBloc.close();
     _userBloc.close();
     _prefsBloc.close();
     super.dispose();
@@ -99,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                       .push(Routes.homePage + HomePageRoutes.searchPage);
                 },
               ),
-              if (state is SuccessState<Stream<BaseUser>>) ...{
+              if (_isLoggedIn && state is SuccessState<Stream<BaseUser>>) ...{
                 StreamBuilder<BaseUser>(
                     stream: state.data,
                     builder: (_, snapshot) {
