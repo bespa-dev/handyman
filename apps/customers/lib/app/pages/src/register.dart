@@ -93,15 +93,18 @@ class _RegisterPageState extends State<RegisterPage> {
           /// base
           Positioned.fill(
             child: Container(
-              color: kTheme.colorScheme.secondary,
+              color: kTheme.colorScheme.primary,
               padding: EdgeInsets.fromLTRB(
                 kSpacingX24,
                 kSpacingX36,
                 kSpacingX24,
-                kSpacingX48,
+                kSpacingNone,
               ),
               child: SingleChildScrollView(
-                padding: EdgeInsets.only(top: SizeConfig.screenHeight * 0.25),
+                padding: EdgeInsets.only(
+                  top: SizeConfig.screenHeight * 0.25,
+                  bottom: kSpacingX48,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -114,14 +117,14 @@ class _RegisterPageState extends State<RegisterPage> {
                           Text(
                             "Let\'s create your new account",
                             style: kTheme.textTheme.headline4.copyWith(
-                              color: kTheme.colorScheme.onSecondary,
+                              color: kTheme.colorScheme.onPrimary,
                             ),
                           ),
                           SizedBox(height: kSpacingX8),
                           Text(
                             "Enter your details below to get started",
                             style: kTheme.textTheme.headline6.copyWith(
-                              color: kTheme.colorScheme.onSecondary
+                              color: kTheme.colorScheme.onPrimary
                                   .withOpacity(kEmphasisMedium),
                             ),
                           ),
@@ -141,7 +144,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             keyboardType: TextInputType.name,
                             textInputAction: TextInputAction.next,
                             enabled: !_isLoading,
-                            color: kTheme.colorScheme.onSecondary,
+                            color: kTheme.colorScheme.onPrimary,
                             validator: (_) => _.isEmpty ? "Required" : null,
                           ),
                           TextFormInput(
@@ -149,17 +152,17 @@ class _RegisterPageState extends State<RegisterPage> {
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.next,
-                            color: kTheme.colorScheme.onSecondary,
+                            color: kTheme.colorScheme.onPrimary,
                             enabled: !_isLoading,
                             validator: (_) => _.isEmpty ? "Required" : null,
                           ),
                           PasswordInput(
                             labelText: "Password",
                             controller: _passwordController,
-                            iconColor: kTheme.colorScheme.onSecondary,
+                            iconColor: kTheme.colorScheme.onPrimary,
                             textInputAction: TextInputAction.done,
                             enabled: !_isLoading,
-                            color: kTheme.colorScheme.onSecondary,
+                            color: kTheme.colorScheme.onPrimary,
                             validator: (_) => _.isEmpty ? "Required" : null,
                             onFieldSubmitted: (_) => _validateAndSignUp(),
                           ),
@@ -168,7 +171,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     SizedBox(height: kSpacingX36),
                     if (_isLoading) ...{
-                      Loading(color: kTheme.colorScheme.primary),
+                      Loading(color: kTheme.colorScheme.secondary),
                     } else ...{
                       Center(
                         child: ButtonPrimary(
@@ -194,7 +197,7 @@ class _RegisterPageState extends State<RegisterPage> {
             left: kSpacingX16,
             child: IconButton(
               icon: Icon(kBackIcon),
-              color: kTheme.colorScheme.onSecondary,
+              color: kTheme.colorScheme.onPrimary,
               onPressed: () => context.navigator.pop(),
             ),
           ),

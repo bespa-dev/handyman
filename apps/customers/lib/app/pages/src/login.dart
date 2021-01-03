@@ -92,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
           /// base
           Positioned.fill(
             child: Container(
-              color: kTheme.colorScheme.secondary,
+              color: kTheme.colorScheme.primary,
               padding: EdgeInsets.fromLTRB(
                 kSpacingX24,
                 kSpacingX36,
@@ -113,14 +113,14 @@ class _LoginPageState extends State<LoginPage> {
                           Text(
                             "Let\'s sign you in",
                             style: kTheme.textTheme.headline4.copyWith(
-                              color: kTheme.colorScheme.onSecondary,
+                              color: kTheme.colorScheme.onPrimary,
                             ),
                           ),
                           SizedBox(height: kSpacingX8),
                           Text(
                             "You have been missed!",
                             style: kTheme.textTheme.headline5.copyWith(
-                              color: kTheme.colorScheme.onSecondary
+                              color: kTheme.colorScheme.onPrimary
                                   .withOpacity(kEmphasisMedium),
                             ),
                           ),
@@ -140,16 +140,15 @@ class _LoginPageState extends State<LoginPage> {
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.next,
                             enabled: !_isLoading,
-                            color: kTheme.colorScheme.onSecondary,
+                            color: kTheme.colorScheme.onPrimary,
                             validator: (_) => _.isEmpty ? "Required" : null,
                           ),
                           PasswordInput(
                             labelText: "Password",
                             controller: _passwordController,
-                            iconColor: kTheme.colorScheme.onSecondary,
                             textInputAction: TextInputAction.done,
                             enabled: !_isLoading,
-                            color: kTheme.colorScheme.onSecondary,
+                            color: kTheme.colorScheme.onPrimary,
                             validator: (_) => _.isEmpty ? "Required" : null,
                             onFieldSubmitted: (_) => _validateAndLogin(),
                           ),
@@ -158,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     SizedBox(height: kSpacingX36),
                     if (_isLoading) ...{
-                      Loading(color: kTheme.colorScheme.primary),
+                      Loading(color: kTheme.colorScheme.secondary),
                     } else ...{
                       Center(
                         child: ButtonPrimary(
@@ -184,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
             left: kSpacingX16,
             child: IconButton(
               icon: Icon(kBackIcon),
-              color: kTheme.colorScheme.onSecondary,
+              color: kTheme.colorScheme.onPrimary,
               onPressed: () => context.navigator.pop(),
             ),
           ),

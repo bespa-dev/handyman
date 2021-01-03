@@ -42,13 +42,11 @@ class TextFormInput extends TextFormField {
             helperText: helperText,
             suffixIcon: suffixIcon,
             enabled: enabled,
-            hintStyle: TextStyle(color: color ?? kBlackColor),
           ),
           focusNode: focusNode,
-          onFieldSubmitted: onFieldSubmitted ?? (_) {},
+          onFieldSubmitted: onFieldSubmitted,
           autofocus: autofocus,
           maxLines: maxLines,
-          style: TextStyle(color: color ?? kBlackColor),
         );
 }
 
@@ -80,9 +78,7 @@ class PasswordInput extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() {
-    return _PasswordInputState();
-  }
+  State<PasswordInput> createState() => _PasswordInputState();
 }
 
 class _PasswordInputState extends State<PasswordInput> {
@@ -101,6 +97,7 @@ class _PasswordInputState extends State<PasswordInput> {
       validator: widget.validator,
       obscureText: _obscure,
       maxLines: 1,
+      color: widget.color,
       suffixIcon: IconButton(
         icon: Icon(
           _obscure ? Feather.eye : Feather.eye_off,

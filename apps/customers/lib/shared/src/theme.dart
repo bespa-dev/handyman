@@ -30,12 +30,29 @@ ThemeData themeData(BuildContext context) => ThemeData(
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(kSpacingX16),
+          borderRadius: BorderRadius.circular(kSpacingX8),
         ),
         backgroundColor: kSecondaryLightColor,
       ),
       inputDecorationTheme: InputDecorationTheme(
-        border: UnderlineInputBorder(),
+        focusColor: kPrimaryColor,
+        border: InputBorder.none,
+        labelStyle: TextStyle(
+          color: kBlackColor,
+          fontFamily: _kBodyFontFamily,
+        ),
+        hintStyle: TextStyle(
+          color: kPrimaryColor,
+          fontFamily: _kBodyFontFamily,
+          fontWeight: FontWeight.normal,
+        ),
+        suffixStyle: TextStyle(
+          color: kPrimaryColor,
+          fontFamily: _kBodyFontFamily,
+          fontWeight: FontWeight.normal,
+        ),
+        fillColor: kCardLightColor,
+        filled: true,
       ),
       tabBarTheme: TabBarTheme(
         labelColor: kPrimaryColor,
@@ -52,7 +69,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
         surface: kWhiteColor,
         primary: kPrimaryColor,
       ),
-      backgroundColor: /*Colors.white*/ kBackgroundLightColor,
+      backgroundColor: kBackgroundLightColor,
       iconTheme: IconThemeData(color: kPrimaryIconLightColor),
       accentIconTheme: IconThemeData(color: kAccentIconLightColor),
       primaryIconTheme: IconThemeData(color: kPrimaryIconLightColor),
