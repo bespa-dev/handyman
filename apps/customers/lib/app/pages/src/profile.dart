@@ -52,24 +52,21 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final kTheme = Theme.of(context);
-    return ExpandedAppBarContainer(
-      title: "Profile",
-      child: BlocBuilder<UserBloc, BlocState>(
-        cubit: _userBloc,
-        builder: (_, state) => state is SuccessState<Stream<BaseUser>>
-            ? StreamBuilder<BaseUser>(
-                stream: state.data,
-                builder: (_, snapshot) {
-                  if (_currentUser == null) _currentUser = snapshot.data;
-                  return Center(
-                    child: Text(
-                      _currentUser?.name ?? "No username",
-                      style: kTheme.textTheme.headline5,
-                    ),
-                  );
-                })
-            : Loading(),
-      ),
+    return BlocBuilder<UserBloc, BlocState>(
+      cubit: _userBloc,
+      builder: (_, state) => state is SuccessState<Stream<BaseUser>>
+          ? StreamBuilder<BaseUser>(
+              stream: state.data,
+              builder: (_, snapshot) {
+                if (_currentUser == null) _currentUser = snapshot.data;
+                return Center(
+                  child: Text(
+                    _currentUser?.name ?? "No username",
+                    style: kTheme.textTheme.headline5,
+                  ),
+                );
+              })
+          : Loading(),
     );
   }
 }

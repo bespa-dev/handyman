@@ -18,7 +18,6 @@ final _kBodyFontFamily = GoogleFonts.rubik().fontFamily;
 
 /// Light theme
 ThemeData themeData(BuildContext context) => ThemeData(
-      platform: TargetPlatform.iOS,
       selectedRowColor: kSecondaryLightColor,
       appBarTheme: appBarTheme,
       disabledColor: kDisabledColor,
@@ -123,8 +122,6 @@ ThemeData themeData(BuildContext context) => ThemeData(
 
 /// Dark theme
 ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
-      platform: TargetPlatform.iOS,
-      // shadowColor: kShadowDarkColor,
       selectedRowColor: kSecondaryDarkColor,
       errorColor: kErrorDarkColor,
       appBarTheme: appBarTheme,

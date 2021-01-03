@@ -97,14 +97,16 @@ class ButtonIconOnly extends StatelessWidget {
   final Function onPressed;
   final Color color;
   final Color iconColor;
+  final double radius;
 
-  const ButtonIconOnly(
-      {Key key,
-      @required this.icon,
-      @required this.onPressed,
-      this.color,
-      this.iconColor})
-      : super(key: key);
+  const ButtonIconOnly({
+    Key key,
+    @required this.icon,
+    @required this.onPressed,
+    this.color,
+    this.iconColor,
+    this.radius = kSpacingX48,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -113,14 +115,14 @@ class ButtonIconOnly extends StatelessWidget {
     return InkWell(
       splashColor: themeData.splashColor,
       onTap: onPressed,
-      borderRadius: BorderRadius.circular(kToolbarHeight),
+      borderRadius: BorderRadius.circular(radius),
       child: Container(
-        height: kToolbarHeight,
-        width: kToolbarHeight,
+        height: radius,
+        width: radius,
         padding: const EdgeInsets.all(kSpacingX4),
         decoration: BoxDecoration(
           border: Border.all(color: color ?? themeData.colorScheme.primary),
-          borderRadius: BorderRadius.circular(kToolbarHeight),
+          borderRadius: BorderRadius.circular(radius),
         ),
         alignment: Alignment.center,
         clipBehavior: Clip.hardEdge,

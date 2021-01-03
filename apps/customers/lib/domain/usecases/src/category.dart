@@ -13,35 +13,37 @@ import 'package:lite/domain/repositories/repositories.dart';
 import 'usecase/result.dart';
 import 'usecase/usecase.dart';
 
-class GetCategoriesUseCase
+class ObserveCategoriesUseCase
     extends ObservableUseCase<List<BaseServiceCategory>, ServiceCategoryGroup> {
   final BaseCategoryRepository _repo;
 
-  const GetCategoriesUseCase(this._repo);
+  const ObserveCategoriesUseCase(this._repo);
 
   @override
   Future<UseCaseResult<Stream<List<BaseServiceCategory>>>> execute(
       ServiceCategoryGroup group) async {
     try {
       var stream = _repo.observeCategories(categoryGroup: group);
-      return UseCaseResult<Stream<List<BaseServiceCategory>>>.success(stream);
+      return UseCaseResult<Stream<List<BaseServiceCategory>>>.success(
+          stream.asBroadcastStream());
     } on Exception {
       return UseCaseResult.error("Failed to get categories");
     }
   }
 }
 
-class GetCategoryByIdUseCase
+class ObserveCategoryByIdUseCase
     extends ObservableUseCase<BaseServiceCategory, String> {
   final BaseCategoryRepository _repo;
 
-  const GetCategoryByIdUseCase(this._repo);
+  const ObserveCategoryByIdUseCase(this._repo);
 
   @override
   Future<UseCaseResult<Stream<BaseServiceCategory>>> execute(String id) async {
     try {
       var stream = _repo.observeCategoryById(id: id);
-      return UseCaseResult<Stream<BaseServiceCategory>>.success(stream);
+      return UseCaseResult<Stream<BaseServiceCategory>>.success(
+          stream.asBroadcastStream());
     } on Exception {
       return UseCaseResult.error("Failed to get categories");
     }

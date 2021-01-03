@@ -24,7 +24,8 @@ class ObserveAllArtisansUseCase
       String category) async {
     try {
       final artisans = _repo.observeArtisans(category: category);
-      return UseCaseResult<Stream<List<BaseArtisan>>>.success(artisans);
+      return UseCaseResult<Stream<List<BaseArtisan>>>.success(
+          artisans.asBroadcastStream());
     } on Exception {
       return UseCaseResult.error(null);
     }

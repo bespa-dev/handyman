@@ -181,40 +181,51 @@ class _SplashPageState extends State<SplashPage>
                           if (state is SuccessState<String> &&
                               state.data != null) ...{
                             Spacer(),
-                            ButtonPrimary(
-                              width: SizeConfig.screenWidth * 0.85,
-                              onTap: () => context.navigator
-                                ..popUntilRoot()
-                                ..pushHomePage(),
-                              label: "Explore",
-                              color: kTheme.colorScheme.onBackground,
-                              textColor: kTheme.colorScheme.background,
-                            ),
+                            Align(
+                              alignment: Alignment.center,
+                              child: ButtonPrimary(
+                                width: SizeConfig.screenWidth * 0.85,
+                                onTap: () => context.navigator
+                                  ..popUntilRoot()
+                                  ..pushHomePage(),
+                                label: "Explore",
+                                color: kTheme.colorScheme.onBackground,
+                                textColor: kTheme.colorScheme.background,
+                              ),
+                            )
                           } else ...{
-                            ButtonPrimary(
-                              width: SizeConfig.screenWidth * 0.85,
-                              onTap: () {
-                                _authBloc.add(AuthEvent.federatedOAuthEvent());
-                              },
-                              icon: kGoogleIcon,
-                              gravity: ButtonIconGravity.START,
-                              label: "Continue with Google",
-                              color: kTheme.colorScheme.onBackground,
-                              textColor: kTheme.colorScheme.background,
+                            Align(
+                              alignment: Alignment.center,
+                              child: ButtonPrimary(
+                                width: SizeConfig.screenWidth * 0.85,
+                                onTap: () {
+                                  _authBloc
+                                      .add(AuthEvent.federatedOAuthEvent());
+                                },
+                                icon: kGoogleIcon,
+                                gravity: ButtonIconGravity.START,
+                                label: "Continue with Google",
+                                color: kTheme.colorScheme.onBackground,
+                                textColor: kTheme.colorScheme.background,
+                              ),
                             ),
                             SizedBox(height: kSpacingX12),
-                            ButtonPrimary(
-                              width: SizeConfig.screenWidth * 0.85,
-                              onTap: () => context.navigator.pushRegisterPage(),
-                              icon: kMailIcon,
-                              gravity: ButtonIconGravity.START,
-                              label: "Sign up with email",
-                              color: lightTheme
-                                  ? kTheme.colorScheme.background
-                                  : kTheme.colorScheme.secondary,
-                              textColor: lightTheme
-                                  ? kTheme.colorScheme.onBackground
-                                  : kTheme.colorScheme.onSecondary,
+                            Align(
+                              alignment: Alignment.center,
+                              child: ButtonPrimary(
+                                width: SizeConfig.screenWidth * 0.85,
+                                onTap: () =>
+                                    context.navigator.pushRegisterPage(),
+                                icon: kMailIcon,
+                                gravity: ButtonIconGravity.START,
+                                label: "Sign up with email",
+                                color: lightTheme
+                                    ? kTheme.colorScheme.background
+                                    : kTheme.colorScheme.secondary,
+                                textColor: lightTheme
+                                    ? kTheme.colorScheme.onBackground
+                                    : kTheme.colorScheme.onSecondary,
+                              ),
                             ),
                             if (_isLoading) ...{
                               SizedBox(height: kSpacingX36),
