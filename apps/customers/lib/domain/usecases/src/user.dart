@@ -13,16 +13,82 @@ import 'package:lite/domain/repositories/repositories.dart';
 import 'usecase/result.dart';
 import 'usecase/usecase.dart';
 
-class ObserveUserUseCase extends ObservableUseCase<BaseArtisan, String> {
+class ObserveAllArtisansUseCase
+    extends ObservableUseCase<List<BaseArtisan>, String> {
   final BaseUserRepository _repo;
 
-  const ObserveUserUseCase(this._repo);
+  const ObserveAllArtisansUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<Stream<List<BaseArtisan>>>> execute(
+      String category) async {
+    try {
+      final artisans = _repo.observeArtisans(category: category);
+      return UseCaseResult<Stream<List<BaseArtisan>>>.success(artisans);
+    } on Exception {
+      return UseCaseResult.error(null);
+    }
+  }
+}
+
+class ObserveArtisanUseCase extends ObservableUseCase<BaseArtisan, String> {
+  final BaseUserRepository _repo;
+
+  const ObserveArtisanUseCase(this._repo);
 
   @override
   Future<UseCaseResult<Stream<BaseArtisan>>> execute(String userId) async {
     try {
       final person = _repo.observeArtisanById(id: userId);
       return UseCaseResult<Stream<BaseArtisan>>.success(person);
+    } on Exception {
+      return UseCaseResult.error(null);
+    }
+  }
+}
+
+class ObserveCustomerUseCase extends ObservableUseCase<BaseUser, String> {
+  final BaseUserRepository _repo;
+
+  const ObserveCustomerUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<Stream<BaseUser>>> execute(String userId) async {
+    try {
+      final person = _repo.observeCustomerById(id: userId);
+      return UseCaseResult<Stream<BaseUser>>.success(person);
+    } on Exception {
+      return UseCaseResult.error(null);
+    }
+  }
+}
+
+class GetCustomerUseCase extends UseCase<BaseUser, String> {
+  final BaseUserRepository _repo;
+
+  const GetCustomerUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<BaseUser>> execute(String userId) async {
+    try {
+      final person = await _repo.getCustomerById(id: userId);
+      return UseCaseResult<BaseUser>.success(person);
+    } on Exception {
+      return UseCaseResult.error(null);
+    }
+  }
+}
+
+class GetArtisanUseCase extends UseCase<BaseArtisan, String> {
+  final BaseUserRepository _repo;
+
+  const GetArtisanUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<BaseArtisan>> execute(String userId) async {
+    try {
+      final person = await _repo.getArtisanById(id: userId);
+      return UseCaseResult<BaseArtisan>.success(person);
     } on Exception {
       return UseCaseResult.error(null);
     }

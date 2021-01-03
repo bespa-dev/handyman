@@ -8,9 +8,12 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:lite/app/bloc/bloc.dart';
+import 'package:lite/app/widgets/src/loaders.dart';
 import 'package:lite/app/widgets/src/user_avatar.dart';
+import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 
 class HomePage extends StatefulWidget {
@@ -52,8 +55,8 @@ class _HomePageState extends State<HomePage> {
           }
         });
 
-      _authBloc.add(AuthEvent.authSignOutEvent());
-      _prefsBloc.add(PrefsEvent.getUserIdEvent());
+      /// observe current user
+      _userBloc.add(UserEvent.currentUserEvent());
     }
   }
 
@@ -62,35 +65,55 @@ class _HomePageState extends State<HomePage> {
     SizeConfig().init(context);
     _kTheme = Theme.of(context);
 
-    return Scaffold(
-      body: Center(
-        child: Text(kAppName),
-      ),
-      bottomNavigationBar: Container(
-        height: getProportionateScreenHeight(kSpacingX56),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            IconButton(
-              icon: Icon(Feather.home),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Feather.bell),
-              onPressed: () {},
-            ),
-            GestureDetector(
-              child: SizedBox(
-                height: kSpacingX48,
-                width: kSpacingX48,
-                child: UserAvatar(
-                  url: "",
-                  isCircular: true,
-                ),
+    return BlocBuilder<UserBloc, BlocState>(
+      cubit: _userBloc,
+      builder: (_, state) => Scaffold(
+        body: state is SuccessState<Stream<BaseUser>>
+            ? StreamBuilder<BaseUser>(
+                stream: state.data,
+                builder: (context, snapshot) {
+                  return Center(
+                    child: Text(kAppName),
+                  );
+                })
+            : Loading(),
+        bottomNavigationBar: Container(
+          height: getProportionateScreenHeight(kSpacingX56),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: Icon(Feather.home),
+                onPressed: () {
+                  /// todo -> nav to home
+                },
               ),
-            ),
-          ],
+              IconButton(
+                icon: Icon(Feather.bell),
+                onPressed: () {
+                  /// todo -> nav to notifications
+                },
+              ),
+              if (state is SuccessState<Stream<BaseUser>>) ...{
+                StreamBuilder<BaseUser>(
+                    stream: state.data,
+                    builder: (_, snapshot) {
+                      final user = snapshot.data;
+                      return GestureDetector(
+                        child: SizedBox(
+                          height: kSpacingX48,
+                          width: kSpacingX48,
+                          child: UserAvatar(
+                            url: user?.avatar,
+                            isCircular: true,
+                          ),
+                        ),
+                      );
+                    }),
+              },
+            ],
+          ),
         ),
       ),
     );

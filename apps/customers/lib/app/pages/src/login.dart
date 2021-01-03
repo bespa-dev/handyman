@@ -7,10 +7,12 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:flutter/material.dart';
-import 'package:lite/shared/shared.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
+import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/routes/routes.gr.dart';
+import 'package:lite/domain/repositories/repositories.dart';
+import 'package:lite/shared/shared.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -18,6 +20,58 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  /// blocs
+  final _authBloc = AuthBloc(repo: Injection.get());
+  final _userBloc = UserBloc(repo: Injection.get());
+
+  /// UI
+  ThemeData kTheme;
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _userBloc.close();
+    _authBloc.close();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    /// observe auth state
+    _authBloc
+      ..add(AuthEvent.observeAuthStatetEvent())
+      ..add(AuthEvent.observeMessageEvent())
+      ..listen((state) {
+        if (state is SuccessState<Stream<AuthState>>) {
+          /// stream auth state
+          state.data.listen((event) {
+            if (event is AuthLoadingState) {
+              _isLoading = true;
+              if (mounted) setState(() {});
+            } else if (event is AuthFailedState) {
+              _isLoading = false;
+              if (mounted) setState(() {});
+              showSnackBarMessage(context,
+                  message: event.message ?? "Authentication failed");
+            } else if (event is AuthenticatedState) {
+              _isLoading = false;
+              if (mounted) setState(() {});
+              context.navigator
+                ..popUntilRoot()
+                ..pushHomePage();
+            }
+          });
+        } else if (state is SuccessState<Stream<String>>) {
+          /// stream messages
+          state.data.listen((message) {
+            showSnackBarMessage(context, message: message);
+          });
+        }
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     final kTheme = Theme.of(context);

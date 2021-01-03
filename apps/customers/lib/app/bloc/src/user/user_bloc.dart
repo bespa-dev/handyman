@@ -11,7 +11,9 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:lite/app/bloc/bloc.dart';
+import 'package:lite/domain/models/models.dart';
 import 'package:lite/domain/repositories/repositories.dart';
+import 'package:lite/domain/usecases/usecases.dart';
 import 'package:meta/meta.dart';
 
 import 'user_event.dart';
@@ -44,12 +46,50 @@ class UserBloc extends Bloc<UserEvent, BlocState> {
 
     try {
       if (event is CurrentUserEvent) {
+        var result = await ObserveCurrentUserUseCase(_repo).execute(null);
+        if (result is UseCaseResultSuccess<Stream<BaseUser>>) {
+          yield BlocState<Stream<BaseUser>>.successState(data: result.value);
+        } else
+          throw Exception();
       } else if (event is UpdateUserEvent) {
+        var result = await UpdateUserUseCase(_repo).execute(event.user);
+        if (result is UseCaseResultSuccess) {
+          yield BlocState.successState();
+        } else
+          throw Exception();
       } else if (event is GetArtisanByIdEvent) {
+        var result = await GetArtisanUseCase(_repo).execute(event.id);
+        if (result is UseCaseResultSuccess<BaseArtisan>) {
+          yield BlocState<BaseArtisan>.successState(data: result.value);
+        } else
+          throw Exception();
       } else if (event is ObserveArtisanByIdEvent) {
+        var result = await ObserveArtisanUseCase(_repo).execute(event.id);
+        if (result is UseCaseResultSuccess<Stream<BaseArtisan>>) {
+          yield BlocState<Stream<BaseArtisan>>.successState(data: result.value);
+        } else
+          throw Exception();
       } else if (event is GetCustomerByIdEvent) {
+        var result = await GetCustomerUseCase(_repo).execute(event.id);
+        if (result is UseCaseResultSuccess<BaseUser>) {
+          yield BlocState<BaseUser>.successState(data: result.value);
+        } else
+          throw Exception();
       } else if (event is ObserveCustomerByIdEvent) {
-      } else if (event is ObserveArtisansEvent) {}
+        var result = await ObserveCustomerUseCase(_repo).execute(event.id);
+        if (result is UseCaseResultSuccess<Stream<BaseUser>>) {
+          yield BlocState<Stream<BaseUser>>.successState(data: result.value);
+        } else
+          throw Exception();
+      } else if (event is ObserveArtisansEvent) {
+        var result =
+            await ObserveAllArtisansUseCase(_repo).execute(event.category);
+        if (result is UseCaseResultSuccess<Stream<List<BaseArtisan>>>) {
+          yield BlocState<Stream<List<BaseArtisan>>>.successState(
+              data: result.value);
+        } else
+          throw Exception();
+      }
     } on Exception catch (ex) {
       yield BlocState.errorState(failure: ex.toString());
     }
