@@ -20,8 +20,11 @@ import 'package:lite/app/pages/pages.dart';
   routes: <AutoRoute>[
     CustomRoute(page: SplashPage, initial: true),
     CustomRoute(page: LoginPage),
+    CustomRoute(page: ConversationPage),
+    CustomRoute(page: RequestPage),
     CustomRoute(
       page: HomePage,
+      transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
       children: <AutoRoute>[
         CustomRoute(page: BookingsPage),
         CustomRoute(page: SearchPage),

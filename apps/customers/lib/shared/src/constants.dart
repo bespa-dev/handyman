@@ -68,6 +68,7 @@ Future getMapStyle({bool isLightTheme = false}) async =>
 const double kSpacingNone = 0.0;
 const double kSpacingX2 = 2.0;
 const double kSpacingX4 = 4.0;
+const double kSpacingX6 = 6.0;
 const double kSpacingX8 = 8.0;
 const double kSpacingX12 = 12.0;
 const double kSpacingX16 = 16.0;
@@ -167,8 +168,8 @@ const kPrimaryColor = Color(0xFF0E37EA);
 const kSecondaryLightColor = Color(0xFFEBB609);
 const kErrorLightColor = Color(0xffE91E63);
 const kAccentLightColor = kSecondaryLightColor;
-const kBackgroundLightColor = kWhiteColor;
-const kCardLightColor = kWhiteColor;
+const kBackgroundLightColor = Color(0xFFf1f0f2);
+const kCardLightColor = Color(0xFFFFFFFF);
 
 const kPrimaryColorDark = Color(0xFF05050B);
 const kSecondaryDarkColor = Color(0xFF8AC185);

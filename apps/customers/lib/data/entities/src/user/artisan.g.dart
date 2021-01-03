@@ -18,11 +18,13 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
     };
     return Artisan(
       id: fields[10] as String,
+      rating: fields[17] as double,
       createdAt: fields[11] as String,
       businessId: fields[0] as String,
       category: fields[1] as String,
-      startWorkingHours: fields[2] as int,
-      endWorkingHours: fields[3] as int,
+      categoryGroup: fields[18] as String,
+      startWorkingHours: fields[2] as String,
+      endWorkingHours: fields[3] as String,
       bookingsCount: fields[4] as int,
       requests: (fields[5] as List)?.cast<String>(),
       reports: (fields[6] as List)?.cast<String>(),
@@ -40,7 +42,7 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
   @override
   void write(BinaryWriter writer, Artisan obj) {
     writer
-      ..writeByte(17)
+      ..writeByte(19)
       ..writeByte(0)
       ..write(obj.businessId)
       ..writeByte(1)
@@ -74,7 +76,11 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
       ..writeByte(15)
       ..write(obj.email)
       ..writeByte(16)
-      ..write(obj.name);
+      ..write(obj.name)
+      ..writeByte(17)
+      ..write(obj.rating)
+      ..writeByte(18)
+      ..write(obj.categoryGroup);
   }
 
   @override
@@ -95,17 +101,19 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
 Artisan _$ArtisanFromJson(Map<String, dynamic> json) {
   return Artisan(
     id: json['id'] as String,
+    rating: (json['rating'] as num)?.toDouble(),
     createdAt: json['created_at'] as String,
     businessId: json['business_id'] as String,
     category: json['category'] as String,
-    startWorkingHours: json['start_working_hours'] as int,
-    endWorkingHours: json['end_working_hours'] as int,
+    categoryGroup: json['category_group'] as String,
+    startWorkingHours: json['start_working_hours'] as String,
+    endWorkingHours: json['end_working_hours'] as String,
     bookingsCount: json['bookings_count'] as int,
     requests: (json['requests'] as List)?.map((e) => e as String)?.toList(),
     reports: (json['reports'] as List)?.map((e) => e as String)?.toList(),
-    isCertified: json['is_certified'] as bool,
-    isAvailable: json['is_available'] as bool,
-    isApproved: json['is_approved'] as bool,
+    isCertified: json['certified'] as bool,
+    isAvailable: json['available'] as bool,
+    isApproved: json['approved'] as bool,
     token: json['token'] as String,
     phone: json['phone'] as String,
     avatar: json['avatar'] as String,
@@ -122,9 +130,9 @@ Map<String, dynamic> _$ArtisanToJson(Artisan instance) => <String, dynamic>{
       'bookings_count': instance.bookingsCount,
       'requests': instance.requests,
       'reports': instance.reports,
-      'is_certified': instance.isCertified,
-      'is_available': instance.isAvailable,
-      'is_approved': instance.isApproved,
+      'certified': instance.isCertified,
+      'available': instance.isAvailable,
+      'approved': instance.isApproved,
       'id': instance.id,
       'created_at': instance.createdAt,
       'token': instance.token,
@@ -132,4 +140,6 @@ Map<String, dynamic> _$ArtisanToJson(Artisan instance) => <String, dynamic>{
       'avatar': instance.avatar,
       'email': instance.email,
       'name': instance.name,
+      'rating': instance.rating,
+      'category_group': instance.categoryGroup,
     };

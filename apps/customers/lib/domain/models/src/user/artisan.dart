@@ -15,11 +15,15 @@ abstract class BaseArtisan extends BaseUser {
 
   String category;
 
-  int startWorkingHours;
+  String categoryGroup;
 
-  int endWorkingHours;
+  String startWorkingHours;
+
+  String endWorkingHours;
 
   int bookingsCount;
+
+  double rating;
 
   List<String> requests;
 

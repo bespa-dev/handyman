@@ -7,12 +7,13 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'dart:math';
-
+// import 'package:auto_route/auto_route.dart';
+// import 'package:flutter_icons/flutter_icons.dart';
+// import 'package:lite/app/routes/routes.gr.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/widgets/widgets.dart';
@@ -25,8 +26,13 @@ class ArtisansPage extends StatefulWidget {
 }
 
 class _ArtisansPageState extends State<ArtisansPage> {
+  /// blocs
   final _artisansBloc = UserBloc(repo: Injection.get());
   final _categoryBloc = CategoryBloc(repo: Injection.get());
+
+  /// UI
+  ThemeData kTheme;
+  Stream<List<BaseArtisan>> _artisanStream = Stream.empty();
 
   @override
   void dispose() {
@@ -41,8 +47,15 @@ class _ArtisansPageState extends State<ArtisansPage> {
 
     if (mounted) {
       /// fetch all featured artisans
-      _artisansBloc.add(UserEvent.observeArtisansEvent(
-          category: ServiceCategoryGroup.featured().name()));
+      _artisansBloc
+        ..add(UserEvent.observeArtisansEvent(
+            category: ServiceCategoryGroup.featured().name()))
+        ..listen((state) {
+          if (state is SuccessState<Stream<List<BaseArtisan>>>) {
+            _artisanStream = state.data;
+            if (mounted) setState(() {});
+          }
+        });
 
       /// fetch all categories
       _categoryBloc.add(
@@ -54,10 +67,7 @@ class _ArtisansPageState extends State<ArtisansPage> {
 
   @override
   Widget build(BuildContext context) {
-    final kTheme = Theme.of(context);
-
-    final cardWidth = kSpacingX230;
-
+    kTheme = Theme.of(context);
     return BlocBuilder<CategoryBloc, BlocState>(
       cubit: _categoryBloc,
       builder: (_, categoryState) => StreamBuilder<List<BaseServiceCategory>>(
@@ -70,7 +80,6 @@ class _ArtisansPageState extends State<ArtisansPage> {
             return CustomScrollView(
               slivers: [
                 SliverAppBar(
-                  // centerTitle: true,
                   toolbarHeight: kToolbarHeight,
                   toolbarTextStyle: kTheme.appBarTheme.textTheme.headline6,
                   textTheme: kTheme.appBarTheme.textTheme,
@@ -89,11 +98,14 @@ class _ArtisansPageState extends State<ArtisansPage> {
                         ),
                       ],
                     ),
+                    style: kTheme.textTheme.headline6.copyWith(
+                      color: kTheme.colorScheme.onBackground,
+                    ),
                   ),
                   centerTitle: false,
                   pinned: true,
                   backgroundColor: kTheme.colorScheme.background,
-                  expandedHeight: SizeConfig.screenHeight * 0.2,
+                  expandedHeight: SizeConfig.screenHeight * 0.25,
                   flexibleSpace: FlexibleSpaceBar(
                     collapseMode: CollapseMode.parallax,
                     stretchModes: [
@@ -152,126 +164,24 @@ class _ArtisansPageState extends State<ArtisansPage> {
                       ),
 
                       /// artisans
-                      BlocBuilder<UserBloc, BlocState>(
-                        cubit: _artisansBloc,
-                        builder: (_, state) => state
-                                is SuccessState<Stream<List<BaseArtisan>>>
-                            ? StreamBuilder(
-                                initialData: [],
-                                stream: state.data,
-                                builder: (_, snapshot) {
-                                  return snapshot.connectionState ==
-                                          ConnectionState.waiting
-                                      ? Loading()
-                                      : snapshot.hasData
-                                          ? Container(
-                                              margin: EdgeInsets.only(
-                                                top: kSpacingX12,
-                                              ),
-                                              height:
-                                                  SizeConfig.screenHeight * 0.3,
-                                              width: SizeConfig.screenWidth,
-                                              color:
-                                                  kTheme.colorScheme.background,
-                                              child: ListView.separated(
-                                                addAutomaticKeepAlives: true,
-                                                clipBehavior: Clip.hardEdge,
-                                                shrinkWrap: true,
-                                                cacheExtent: 200,
-                                                itemBuilder: (_, index) {
-                                                  return InkWell(
-                                                    onTap: () {
-                                                      /// fixme -> nav to artisan's profile page
-                                                    },
-                                                    splashColor:
-                                                        kTheme.splashColor,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            kSpacingX12),
-                                                    child: Container(
-                                                      height: SizeConfig
-                                                              .screenHeight *
-                                                          0.3,
-                                                      width: cardWidth,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.primaries[
-                                                            Random()
-                                                                .nextInt(12)],
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                    kSpacingX12),
-                                                      ),
-                                                      clipBehavior:
-                                                          Clip.hardEdge,
-                                                      padding: EdgeInsets.only(
-                                                        bottom: kSpacingX8,
-                                                        right: kSpacingX12,
-                                                      ),
-                                                      child: Stack(
-                                                        children: [
-                                                          Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .end,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .end,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  ButtonIconOnly(
-                                                                    icon: Entypo
-                                                                        .message,
-                                                                    onPressed:
-                                                                        () {},
-                                                                  ),
-                                                                  SizedBox(
-                                                                      width:
-                                                                          kSpacingX8),
-                                                                  ButtonIconOnly(
-                                                                    icon: Feather
-                                                                        .user_plus,
-                                                                    onPressed:
-                                                                        () {},
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                                itemCount: /*snapshot.data.length*/ 10,
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                padding: EdgeInsets.only(
-                                                  left: kSpacingX12,
-                                                  right: kSpacingX36,
-                                                ),
-                                                separatorBuilder: (_, __) =>
-                                                    SizedBox(
-                                                        width: kSpacingX16),
-                                              ),
-                                            )
-                                          : SizedBox.shrink();
-                                },
-                              )
-                            : SizedBox.shrink(),
+                      StreamBuilder<List<BaseArtisan>>(
+                        initialData: [],
+                        stream: _artisanStream,
+                        builder: (_, snapshot) {
+                          return snapshot.connectionState ==
+                                  ConnectionState.waiting
+                              ? Loading()
+                              : snapshot.hasData
+                                  ? _buildArtisanCard(snapshot.data)
+                                  : SizedBox.shrink();
+                        },
                       ),
                     ],
                     addAutomaticKeepAlives: true,
                   ),
                 ),
 
+                /// categories' list header
                 SliverList(
                   delegate: SliverChildListDelegate.fixed(
                     [
@@ -302,7 +212,7 @@ class _ArtisansPageState extends State<ArtisansPage> {
                   ),
                 ),
 
-                /// categories
+                /// categories' list content
                 SliverGrid.count(
                   crossAxisCount: 2,
                   children: [
@@ -316,6 +226,169 @@ class _ArtisansPageState extends State<ArtisansPage> {
               ],
             );
           }),
+    );
+  }
+
+  Widget _buildArtisanCard(List<BaseArtisan> data) {
+    final cardWidth = kSpacingX230;
+    final cardHeight = SizeConfig.screenHeight * 0.3;
+
+    return Container(
+      margin: EdgeInsets.only(top: kSpacingX12),
+      height: SizeConfig.screenHeight * 0.3,
+      width: SizeConfig.screenWidth,
+      child: ListView.separated(
+        addAutomaticKeepAlives: true,
+        clipBehavior: Clip.hardEdge,
+        cacheExtent: 200,
+        itemBuilder: (_, index) {
+          final artisan = data[index];
+          return InkWell(
+            onTap: () {
+              /// fixme -> nav to artisan's profile page
+            },
+            splashColor: kTheme.splashColor,
+            borderRadius: BorderRadius.circular(kSpacingX12),
+            child: Card(
+              clipBehavior: Clip.hardEdge,
+              elevation: kSpacingNone,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(kSpacingX12),
+              ),
+              child: Container(
+                height: cardHeight,
+                width: cardWidth,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(kSpacingX12),
+                ),
+                child: Stack(
+                  children: [
+                    /// background
+                    Column(
+                      children: [
+                        Flexible(
+                          flex: 2,
+                          child: Stack(
+                            children: [
+                              /// background
+                              Positioned.fill(
+                                child: ImageView(
+                                  imageUrl: artisan.avatar,
+                                  showErrorIcon: false,
+                                ),
+                              ),
+
+                              /// foreground
+                              Positioned.fill(
+                                child: Container(
+                                  color: kTheme.colorScheme.onBackground
+                                      .withOpacity(kEmphasisMedium),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Flexible(
+                          flex: 3,
+                          child: Container(
+                            color: kTheme.cardColor,
+                            width: cardWidth,
+                            padding: EdgeInsets.only(
+                              left: kSpacingX8,
+                              top: kSpacingX12,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: kSpacingX8,
+                                  width: kSpacingX8,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: artisan.isAvailable
+                                        ? kGreenColor
+                                        : kTheme.colorScheme.error,
+                                  ),
+                                ),
+                                SizedBox(width: kSpacingX4),
+                                Text(
+                                  artisan.isAvailable ? "Online" : "Offline",
+                                  style: kTheme.textTheme.caption,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    /// content
+                    Positioned(
+                      top: cardHeight * 0.25,
+                      bottom: kSpacingX12,
+                      left: kSpacingNone,
+                      right: kSpacingNone,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          UserAvatar(
+                            url: artisan.avatar,
+                            radius: kSpacingX56,
+                          ),
+                          SizedBox(height: kSpacingX16),
+                          Text(
+                            artisan.name ?? "No username",
+                            style: kTheme.textTheme.headline6,
+                          ),
+                          SizedBox(height: kSpacingX6),
+                          BlocBuilder<CategoryBloc, BlocState>(
+                            cubit: CategoryBloc(repo: Injection.get())
+                              ..add(
+                                CategoryEvent.observeCategoryById(
+                                    id: artisan.category),
+                              ),
+                            builder: (_, userCategoryState) =>
+                                StreamBuilder<BaseServiceCategory>(
+                                    stream: userCategoryState is SuccessState<
+                                            Stream<BaseServiceCategory>>
+                                        ? userCategoryState.data
+                                        : Stream.empty(),
+                                    builder: (_, __) {
+                                      return Text(
+                                        __.hasData ? __.data.name : "...",
+                                        style: kTheme.textTheme.bodyText1,
+                                      );
+                                    }),
+                          ),
+                          SizedBox(width: kSpacingX8),
+                          RatingBarIndicator(
+                            itemBuilder: (_, index) => Icon(
+                              kRatingStar,
+                              color: kAmberColor,
+                            ),
+                            itemCount: 5,
+                            itemSize: kSpacingX16,
+                            rating: artisan.rating,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+        itemCount: data.length,
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.only(
+          left: kSpacingX12,
+          right: kSpacingX36,
+        ),
+        separatorBuilder: (_, __) => SizedBox(width: kSpacingX8),
+      ),
     );
   }
 }

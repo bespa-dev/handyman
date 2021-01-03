@@ -43,24 +43,25 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     if (mounted) {
-      /// observe current user id
+      /// observe current user's id
       _prefsBloc
         ..add(PrefsEvent.getUserIdEvent())
         ..listen((state) {
           if (state is SuccessState<String>) {
             _isLoggedIn = state.data != null && state.data.isNotEmpty;
             if (mounted) setState(() {});
+
+            /// observe current user
+            _userBloc
+              ..add(UserEvent.currentUserEvent())
+              ..listen((state) {
+                if (state is SuccessState<Stream<BaseUser>>) {
+                  if (mounted) setState(() {});
+                }
+              });
           }
         });
     }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    /// observe current user
-    _userBloc.add(UserEvent.currentUserEvent());
   }
 
   @override
@@ -72,18 +73,18 @@ class _HomePageState extends State<HomePage> {
       cubit: _userBloc,
       builder: (_, state) => Scaffold(
         body: SafeArea(
-          top: true,
+          top: false,
           bottom: true,
           child: ExtendedNavigator(),
         ),
         bottomNavigationBar: Container(
-          height: getProportionateScreenHeight(kSpacingX72),
+          height: getProportionateScreenHeight(kSpacingX64),
           decoration: BoxDecoration(
             color: _kTheme.colorScheme.background,
           ),
           child: Column(
             children: [
-              Divider(),
+              Divider(height: kSpacingX2),
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -93,8 +94,8 @@ class _HomePageState extends State<HomePage> {
                       icon: Icon(Feather.home),
                       color: _kTheme.colorScheme.onBackground,
                       onPressed: () {
-                        context.navigator
-                            .push(Routes.homePage + HomePageRoutes.artisansPage);
+                        context.navigator.push(
+                            Routes.homePage + HomePageRoutes.artisansPage);
                       },
                     ),
                     IconButton(
@@ -105,15 +106,16 @@ class _HomePageState extends State<HomePage> {
                             .push(Routes.homePage + HomePageRoutes.searchPage);
                       },
                     ),
-                    if (_isLoggedIn && state is SuccessState<Stream<BaseUser>>) ...{
+                    if (_isLoggedIn &&
+                        state is SuccessState<Stream<BaseUser>>) ...{
                       StreamBuilder<BaseUser>(
                           stream: state.data,
                           builder: (_, snapshot) {
                             final user = snapshot.data;
                             return GestureDetector(
                               onTap: () {
-                                context.navigator.push(
-                                    Routes.homePage + HomePageRoutes.profilePage);
+                                context.navigator.push(Routes.homePage +
+                                    HomePageRoutes.profilePage);
                               },
                               child: SizedBox(
                                 height: kSpacingX36,
@@ -130,16 +132,16 @@ class _HomePageState extends State<HomePage> {
                       icon: Icon(Feather.bell),
                       color: _kTheme.colorScheme.onBackground,
                       onPressed: () {
-                        context.navigator
-                            .push(Routes.homePage + HomePageRoutes.notificationsPage);
+                        context.navigator.push(
+                            Routes.homePage + HomePageRoutes.notificationsPage);
                       },
                     ),
                     IconButton(
                       icon: Icon(Feather.briefcase),
                       color: _kTheme.colorScheme.onBackground,
                       onPressed: () {
-                        context.navigator
-                            .push(Routes.homePage + HomePageRoutes.bookingsPage);
+                        context.navigator.push(
+                            Routes.homePage + HomePageRoutes.bookingsPage);
                       },
                     ),
                   ],

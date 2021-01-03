@@ -27,11 +27,11 @@ class Artisan extends BaseArtisan {
 
   @HiveField(2)
   @override
-  final int startWorkingHours;
+  final String startWorkingHours;
 
   @HiveField(3)
   @override
-  final int endWorkingHours;
+  final String endWorkingHours;
 
   @HiveField(4)
   @override
@@ -46,14 +46,17 @@ class Artisan extends BaseArtisan {
   final List<String> reports;
 
   @HiveField(7)
+  @JsonKey(name: "certified")
   @override
   final bool isCertified;
 
   @HiveField(8)
+  @JsonKey(name: "available")
   @override
   final bool isAvailable;
 
   @HiveField(9)
+  @JsonKey(name: "approved")
   @override
   final bool isApproved;
 
@@ -85,11 +88,21 @@ class Artisan extends BaseArtisan {
   @override
   final String name;
 
+  @HiveField(17)
+  @override
+  final double rating;
+
+  @HiveField(18)
+  @override
+  final String categoryGroup;
+
   Artisan({
     this.id,
+    this.rating,
     this.createdAt,
     this.businessId,
     this.category,
+    this.categoryGroup,
     this.startWorkingHours,
     this.endWorkingHours,
     this.bookingsCount,
@@ -141,6 +154,8 @@ class Artisan extends BaseArtisan {
         id: this.id,
         createdAt: this.createdAt,
         category: this.category,
+        rating: this.rating,
+        categoryGroup: this.categoryGroup,
         bookingsCount: this.bookingsCount,
         businessId: this.businessId,
         endWorkingHours: this.endWorkingHours,

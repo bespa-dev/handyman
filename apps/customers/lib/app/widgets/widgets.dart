@@ -13,6 +13,7 @@ export 'src/buttons.dart';
 export 'src/category_card.dart';
 export 'src/emergency_ping_button.dart';
 export 'src/fields.dart';
+export 'src/image.dart';
 export 'src/loaders.dart';
 export 'src/menu_icon.dart';
 export 'src/page_indicator.dart';

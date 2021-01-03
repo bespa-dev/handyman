@@ -8,6 +8,7 @@
  */
 
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/routes/routes.gr.dart';
 import 'package:lite/app/widgets/widgets.dart';
+import 'package:lite/domain/models/models.dart';
 import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/shared/shared.dart';
 
@@ -29,6 +31,7 @@ class _SplashPageState extends State<SplashPage>
   final _prefsBloc = PrefsBloc(repo: Injection.get());
   final _authBloc = AuthBloc(repo: Injection.get());
   final _userBloc = UserBloc(repo: Injection.get());
+  final _categoryBloc = CategoryBloc(repo: Injection.get());
 
   /// UI
   AnimationController _animationController;
@@ -40,6 +43,7 @@ class _SplashPageState extends State<SplashPage>
     _prefsBloc.close();
     _authBloc.close();
     _userBloc.close();
+    _categoryBloc.close();
     _animationController.dispose();
     super.dispose();
   }
@@ -141,6 +145,8 @@ class _SplashPageState extends State<SplashPage>
                     textAlign: TextAlign.center,
                     style: kTheme.textTheme.subtitle1,
                   ),
+                  SizedBox(height: kSpacingX64),
+                  Loading(color: kTheme.colorScheme.primary),
                 ],
               ),
             ),
@@ -277,15 +283,34 @@ class _SplashPageState extends State<SplashPage>
   }
 
   void _animateEntry() async {
-    await Future.delayed(kSplashDuration);
-    if (_animationController.status == AnimationStatus.forward ||
-        _animationController.status == AnimationStatus.completed) {
-      _animationController.reverse();
-    } else
-      _animationController.forward();
+    /// get all featured artisans
+    _userBloc.add(UserEvent.observeArtisansEvent(
+        category: ServiceCategoryGroup.featured().name()));
 
-    setState(() {
-      _showPageContent = !_showPageContent;
-    });
+    /// cache all category images for faster load times
+    _categoryBloc
+      ..add(CategoryEvent.observeAllCategories(
+          group: ServiceCategoryGroup.featured()))
+      ..listen((state) async {
+        if (state is SuccessState<Stream<List<BaseServiceCategory>>>) {
+          var list = await state.data.single;
+          list.forEach((element) async {
+            await precacheImage(
+                CachedNetworkImageProvider(element.avatar), context);
+          });
+
+          await Future.delayed(kSplashDuration);
+          if (_animationController.status == AnimationStatus.forward ||
+              _animationController.status == AnimationStatus.completed) {
+            _animationController.reverse();
+          } else
+            _animationController.forward();
+
+          if (mounted)
+            setState(() {
+              _showPageContent = !_showPageContent;
+            });
+        }
+      });
   }
 }

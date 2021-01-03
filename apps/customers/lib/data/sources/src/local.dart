@@ -144,7 +144,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   @override
   Stream<List<BaseArtisan>> observeArtisans({String category}) async* {
     yield artisanBox.values
-        // .where((item) => item.category.contains(category))
+        .where((item) => item.categoryGroup.contains(category))
         .toList();
   }
 
@@ -243,6 +243,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
       await customerBox.put(user.id, user);
     } else if (user is Artisan) {
       await artisanBox.put(user.id, user);
+      notifyListeners();
     }
   }
 

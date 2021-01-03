@@ -137,7 +137,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   Stream<List<BaseArtisan>> observeArtisans({String category}) async* {
     yield* firestore
         .collection(RefUtils.kArtisanRef)
-        .where("category", isEqualTo: category)
+        .where("category_group", isEqualTo: category)
         .snapshots()
         .map((event) =>
             event.docs.map((e) => Artisan.fromJson(e.data())).toList());
