@@ -10,7 +10,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:lite/app/routes/routes.gr.dart';
-import 'package:lite/app/widgets/src/buttons.dart';
+import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/shared/shared.dart';
 
 class UnknownRoutePage extends StatefulWidget {

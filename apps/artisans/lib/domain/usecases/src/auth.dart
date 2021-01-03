@@ -16,14 +16,14 @@ import 'usecase/usecase.dart';
 
 /// google sign in
 class FederatedAuthUseCase extends NoParamsUseCase<BaseUser> {
-  final BaseAuthRepository repo;
+  final BaseAuthRepository _repo;
 
-  const FederatedAuthUseCase({@required this.repo});
+  const FederatedAuthUseCase(this._repo);
 
   @override
   Future<UseCaseResult<BaseUser>> execute(_) async {
     try {
-      final person = await repo.signInWithFederatedOAuth();
+      final person = await _repo.signInWithFederatedOAuth();
       return UseCaseResult<BaseUser>.success(person);
     } on Exception {
       return UseCaseResult.error(null);
@@ -41,9 +41,9 @@ class EmailPasswordSignInUseCase
   @override
   Future<UseCaseResult<void>> execute(params) async {
     try {
-      await _repo.signInWithEmailAndPassword(
+      var user = await _repo.signInWithEmailAndPassword(
           email: params.email, password: params.password);
-      return UseCaseResult.success();
+      return UseCaseResult<BaseUser>.success(user);
     } on Exception catch (ex) {
       return UseCaseResult.error(ex.toString());
     }
@@ -60,11 +60,11 @@ class EmailPasswordSignUpUseCase
   @override
   Future<UseCaseResult<void>> execute(params) async {
     try {
-      await _repo.createUserWithEmailAndPassword(
+      var user = await _repo.createUserWithEmailAndPassword(
           username: params.username,
           email: params.email,
           password: params.password);
-      return UseCaseResult.success();
+      return UseCaseResult<BaseUser>.success(user);
     } on Exception catch (ex) {
       return UseCaseResult.error(ex.toString());
     }
@@ -88,6 +88,7 @@ class ResetPasswordUseCase extends CompletableUseCase<String> {
   }
 }
 
+/// sign out
 class SignOutUseCase extends CompletableUseCase<void> {
   final BaseAuthRepository _repo;
 
@@ -101,6 +102,32 @@ class SignOutUseCase extends CompletableUseCase<void> {
     } on Exception catch (ex) {
       return UseCaseResult.error(ex.toString());
     }
+  }
+}
+
+/// auth state
+class ObserveAuthStateUseCase extends ObservableUseCase<AuthState, void> {
+  final BaseAuthRepository _repo;
+
+  const ObserveAuthStateUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<Stream<AuthState>>> execute(_) async {
+    return UseCaseResult<Stream<AuthState>>.success(
+        _repo.onAuthStateChanged.asBroadcastStream());
+  }
+}
+
+/// message state
+class ObserveAuthMessageUseCase extends ObservableUseCase<String, void> {
+  final BaseAuthRepository _repo;
+
+  const ObserveAuthMessageUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<Stream<String>>> execute(_) async {
+    return UseCaseResult<Stream<String>>.success(
+        _repo.onMessageChanged.asBroadcastStream());
   }
 }
 

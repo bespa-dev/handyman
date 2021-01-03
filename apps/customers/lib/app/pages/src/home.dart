@@ -13,7 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/routes/routes.gr.dart';
-import 'package:lite/app/widgets/src/user_avatar.dart';
+import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 

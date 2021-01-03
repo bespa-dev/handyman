@@ -12,6 +12,5 @@ import 'package:handyman/domain/models/models.dart' show BaseModel;
 /// base gallery class
 abstract class BaseGallery extends BaseModel {
   String userId;
-
   String imageUrl;
 }

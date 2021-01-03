@@ -16,13 +16,17 @@ part 'auth.super.dart';
 @superEnum
 enum _AuthState {
   @object
-  Initial,
+  AuthInitialState,
   @object
-  Loading,
+  AuthLoadingState,
   @object
-  Authenticated,
+  AuthSuccessState,
+  @Data(fields: [DataField<BaseUser>("user")])
+  AuthenticatedState,
+  @Data(fields: [DataField<String>("message", required: false)])
+  AuthFailedState,
   @object
-  Failed,
+  AuthInvalidCredentialsState,
 }
 
 /// base authentication repository class

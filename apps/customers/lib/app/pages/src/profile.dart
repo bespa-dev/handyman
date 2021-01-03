@@ -10,8 +10,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lite/app/bloc/bloc.dart';
-import 'package:lite/app/widgets/src/app_bar.dart';
-import 'package:lite/app/widgets/src/loaders.dart';
+import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 

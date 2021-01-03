@@ -20,5 +20,5 @@ abstract class BaseBooking extends BaseModel {
   LocationMetadata position;
   double cost;
   double progress;
-  int dueDate;
+  String dueDate;
 }

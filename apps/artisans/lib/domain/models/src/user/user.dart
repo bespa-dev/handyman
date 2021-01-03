@@ -16,4 +16,12 @@ abstract class BaseUser extends BaseModel {
   String avatar;
   String token;
   String phone;
+
+  BaseUser copyWith({
+    String name,
+    String email,
+    String avatar,
+    String token,
+    String phone,
+  });
 }

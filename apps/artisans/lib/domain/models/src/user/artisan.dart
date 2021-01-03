@@ -15,15 +15,25 @@ abstract class BaseArtisan extends BaseUser {
 
   String category;
 
-  int startWorkingHours;
+  String categoryGroup;
 
-  int endWorkingHours;
+  String startWorkingHours;
+
+  String endWorkingHours;
 
   int bookingsCount;
+
+  double rating;
 
   List<String> requests;
 
   List<String> reports;
+
+  bool get isCertified;
+
+  bool isAvailable;
+
+  bool isApproved;
 
   int get requestsCount;
 
@@ -34,10 +44,4 @@ abstract class BaseArtisan extends BaseUser {
   int get completedBookingsCount;
 
   int get cancelledBookingsCount;
-
-  bool get isCertified;
-
-  bool get isAvailable;
-
-  bool get isApproved;
 }

@@ -19,11 +19,16 @@ import 'size_config.dart';
 /// Logger
 final logger = Logger(printer: PrettyPrinter(printTime: true));
 
-/// Defaults
-const kGeneralCategory = "bbe8a179-7797-4d87-b388-cf93125f490e";
-const kGoogleApiKey = "AIzaSyByvL9jc4UvlhILkhAZs7ZrQP68LwWDgFg";
-const kRatingStar = Entypo.star;
-const kUserImageNotFound = Icons.broken_image_outlined;
+void showSnackBarMessage(BuildContext context, {@required String message}) {
+  ScaffoldMessenger.of(context)
+    ..removeCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+}
 
 Widget buildFunctionalityNotAvailablePanel(BuildContext context) => Container(
       height: getProportionateScreenHeight(kSpacingX320),
@@ -63,6 +68,7 @@ Future getMapStyle({bool isLightTheme = false}) async =>
 const double kSpacingNone = 0.0;
 const double kSpacingX2 = 2.0;
 const double kSpacingX4 = 4.0;
+const double kSpacingX6 = 6.0;
 const double kSpacingX8 = 8.0;
 const double kSpacingX12 = 12.0;
 const double kSpacingX16 = 16.0;
@@ -97,9 +103,11 @@ const double kEmphasisHigh = 0.9;
 
 /// App
 const kAppName = "HandyMan Lite";
-const kAppSlogan = "Get some real work done";
+const kAppNameShort = "HandyMan";
+const kAppSlogan =
+    "A mobile application to gather all handyman service providers on a single platform and introduce them to potential service seekers and compare between providers and hire the best quote";
 const kAppVersion = "v1.2.0";
-const kAppSloganDesc = "Find your service & book easily with $kAppName";
+const kAppSloganDesc = "Find & book your services easily with $kAppNameShort";
 const kArtisanReviewHelpDialogContent =
     "Sensitive data (like email addresses, phone numbers, user ids etc) will not be made public to customers on this platform.\nYour ratings are also based on the accumulated reviews by customers you have served over the last 6 months";
 const kPasswordHint =
@@ -113,14 +121,26 @@ const kFunctionalityUnavailable =
     "Functionality is currently unavailable. Try again after the next update. Thank you";
 const kCustomerString = "Customer";
 const kLogoAsset = "assets/logo/logo.svg";
+const kWelcomeAsset = "assets/wfh_2.png";
+const k404Asset = "assets/svg/404.svg";
 const kLogoDarkAsset = "assets/logo/logo_dark.svg";
 const kTimeSvgAsset = "assets/svg/time.svg";
 const kPeopleSvgAsset = "assets/svg/people.svg";
 const kBookingSvgAsset = "assets/svg/booking.svg";
 const kAlgoliaSvgAsset = "assets/svg/algolia_blue_mark.svg";
-const kBackgroundAsset = "assets/bg/bg.webp";
+const kBackgroundAsset =
+    "https://images.unsplash.com/photo-1454694220579-9d6672b1ec2a?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8aGFuZHltYW58ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60";
 const kLoremText =
     "Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cursus sit amet dictum sit amet. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique";
+
+/// icons
+const kBackIcon = AntDesign.back;
+const kRatingStar = Entypo.star;
+const kMailIcon = Feather.mail;
+const kGoogleIcon = AntDesign.google;
+const kUserImageNotFound = Icons.link_off_outlined;
+const kArrowIcon = Icons.arrow_right_alt_outlined;
+const kOptionsIcon = Entypo.dots_two_vertical;
 
 /// [Algolia]
 const kAlgoliaAppId = "AIBRVBFA4W";
@@ -129,7 +149,8 @@ const kAlgoliaKey = "604022a17d65f30d23e80a38f285be57";
 /// Durations
 const kScaleDuration = const Duration(milliseconds: 350);
 const kTestDuration = const Duration(milliseconds: 2500);
-const kSheetDuration = const Duration(milliseconds: 850);
+const kSheetDuration = const Duration(milliseconds: 550);
+const kSplashDuration = const Duration(milliseconds: 1550);
 
 /// Others
 const kScrollPhysics = const BouncingScrollPhysics();
@@ -145,20 +166,17 @@ const kChatBackgroundDark = Color(0xFF222222);
 const kTransparent = Colors.transparent;
 const kPlaceholderColor = Color(0x70000000);
 const kDisabledColor = Color(0xFF666666);
-// const kDisabledColorDark = Color(0x1f000000);
 
-// const kPrimaryColor = Color(0xFF5d1049);
-// const kSecondaryLightColor = Color(0xFFe30425);
 const kPrimaryColor = Color(0xFF0E37EA);
 const kSecondaryLightColor = Color(0xFFEBB609);
 const kErrorLightColor = Color(0xffE91E63);
 const kAccentLightColor = kSecondaryLightColor;
-const kBackgroundLightColor = kWhiteColor;
-const kCardLightColor = kWhiteColor;
+const kBackgroundLightColor = Color(0xFFfafafa);
+// const kBackgroundLightColor = Color(0xFFf1f0f2);
+const kCardLightColor = Color(0xFFFFFFFF);
 
-const kPrimaryColorDark = Color(0xFF9BA1F6);
-// const kPrimaryColorDark = Color(0xFFFF7597);
-const kSecondaryDarkColor = Color(0xFF9BA1F6);
+const kPrimaryColorDark = Color(0xFF05050B);
+const kSecondaryDarkColor = Color(0xFF8AC185);
 const kErrorDarkColor = Color(0xffEC407A);
 const kAccentDarkColor = kWhiteColor;
 const kCardDarkColor = Color(0xff212529);
@@ -176,9 +194,6 @@ const kPrimaryIconDarkColor = kWhiteColor;
 const kBodyTextColorLight = Color(0xFF232323);
 const kTitleTextColorLight = Color(0xFF131313);
 const kUnselectedLabelColorLight = Color(0xFF7C7C7C);
-
-// const kBodyTextColorDark = Color(0xFF7C7C7C);
-// const kUnselectedLabelColorDark = Color(0xFF5F6368);
 const kBodyTextColorDark = Color(0xFFDEDEDE);
 const kUnselectedLabelColorDark = Color(0xFFDEDEDE);
 const kTitleTextColorDark = Color(0xFFDEDEDE);

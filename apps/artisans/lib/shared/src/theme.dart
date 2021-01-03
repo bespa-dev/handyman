@@ -13,15 +13,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'constants.dart';
 
 /// Fonts
-final _kTitleFontFamily = GoogleFonts.comfortaa().fontFamily;
+final _kTitleFontFamily = GoogleFonts.poppins().fontFamily;
 final _kBodyFontFamily = GoogleFonts.rubik().fontFamily;
 
 /// Light theme
 ThemeData themeData(BuildContext context) => ThemeData(
-      platform: TargetPlatform.iOS,
       selectedRowColor: kSecondaryLightColor,
       appBarTheme: appBarTheme,
-      // shadowColor: kShadowColor,
       disabledColor: kDisabledColor,
       errorColor: kErrorLightColor,
       toggleableActiveColor: kPrimaryColor,
@@ -31,12 +29,29 @@ ThemeData themeData(BuildContext context) => ThemeData(
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(kSpacingX16),
+          borderRadius: BorderRadius.circular(kSpacingX8),
         ),
         backgroundColor: kSecondaryLightColor,
       ),
       inputDecorationTheme: InputDecorationTheme(
-        border: UnderlineInputBorder(),
+        focusColor: kPrimaryColor,
+        border: InputBorder.none,
+        labelStyle: TextStyle(
+          color: kBlackColor,
+          fontFamily: _kBodyFontFamily,
+        ),
+        hintStyle: TextStyle(
+          color: kPrimaryColor,
+          fontFamily: _kBodyFontFamily,
+          fontWeight: FontWeight.normal,
+        ),
+        suffixStyle: TextStyle(
+          color: kPrimaryColor,
+          fontFamily: _kBodyFontFamily,
+          fontWeight: FontWeight.normal,
+        ),
+        fillColor: kCardLightColor,
+        filled: true,
       ),
       tabBarTheme: TabBarTheme(
         labelColor: kPrimaryColor,
@@ -53,7 +68,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
         surface: kWhiteColor,
         primary: kPrimaryColor,
       ),
-      backgroundColor: /*Colors.white*/ kBackgroundLightColor,
+      backgroundColor: kBackgroundLightColor,
       iconTheme: IconThemeData(color: kPrimaryIconLightColor),
       accentIconTheme: IconThemeData(color: kAccentIconLightColor),
       primaryIconTheme: IconThemeData(color: kPrimaryIconLightColor),
@@ -76,11 +91,11 @@ ThemeData themeData(BuildContext context) => ThemeData(
             fontWeight: FontWeight.w600),
         headline5: TextStyle(
             color: kTitleTextColorLight,
-            fontFamily: _kBodyFontFamily,
+            fontFamily: _kTitleFontFamily,
             fontWeight: FontWeight.w600),
         headline6: TextStyle(
             color: kTitleTextColorLight,
-            fontFamily: _kBodyFontFamily,
+            fontFamily: _kTitleFontFamily,
             fontSize: 18,
             fontWeight: FontWeight.w500),
         bodyText1:
@@ -107,8 +122,6 @@ ThemeData themeData(BuildContext context) => ThemeData(
 
 /// Dark theme
 ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
-      platform: TargetPlatform.iOS,
-      // shadowColor: kShadowDarkColor,
       selectedRowColor: kSecondaryDarkColor,
       errorColor: kErrorDarkColor,
       appBarTheme: appBarTheme,
@@ -141,6 +154,8 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
         secondary: kSecondaryDarkColor,
         surface: kSurfaceDarkColor,
         primary: kPrimaryColorDark,
+        background: kBackgroundDarkColor,
+        onPrimary: kWhiteColor,
       ),
       backgroundColor: kBackgroundDarkColor,
       iconTheme: IconThemeData(color: kPrimaryIconDarkColor),
@@ -166,11 +181,11 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
             fontWeight: FontWeight.w600),
         headline5: TextStyle(
             color: kTitleTextColorDark,
-            fontFamily: _kBodyFontFamily,
+            fontFamily: _kTitleFontFamily,
             fontWeight: FontWeight.w600),
         headline6: TextStyle(
             color: kTitleTextColorDark,
-            fontFamily: _kBodyFontFamily,
+            fontFamily: _kTitleFontFamily,
             fontSize: 18,
             fontWeight: FontWeight.w500),
         bodyText1:
