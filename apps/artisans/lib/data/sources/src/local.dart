@@ -11,13 +11,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:handyman/data/entities/entities.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/domain/repositories/repositories.dart';
 import 'package:handyman/domain/sources/sources.dart';
 import 'package:handyman/shared/shared.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:meta/meta.dart';
 
 /// Read more -> https://docs.hivedb.dev/
@@ -145,6 +145,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   Stream<List<BaseArtisan>> observeArtisans({String category}) async* {
     yield artisanBox.values
         .where((item) => item.categoryGroup.contains(category))
+        .where((item) => item.id != prefsRepo.userId)
         .toList();
   }
 

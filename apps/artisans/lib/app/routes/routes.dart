@@ -24,7 +24,6 @@ import 'package:handyman/app/pages/pages.dart';
     CustomRoute(page: RequestPage),
     CustomRoute(
       page: HomePage,
-      transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
       children: <AutoRoute>[
         CustomRoute(page: BookingsPage),
         CustomRoute(page: SearchPage),

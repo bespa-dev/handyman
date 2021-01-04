@@ -7,7 +7,6 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:auto_route/auto_route.dart';
 import 'package:auto_route/auto_route_annotations.dart';
 import 'package:lite/app/pages/pages.dart';
 
@@ -15,7 +14,6 @@ import 'package:lite/app/pages/pages.dart';
 /// flutter packages pub run build_runner build --delete-conflicting-outputs
 /// flutter packages pub run build_runner watch --delete-conflicting-outputs
 @CustomAutoRouter(
-  transitionsBuilder: TransitionsBuilders.fadeIn,
   generateNavigationHelperExtension: true,
   routes: <AutoRoute>[
     CustomRoute(page: SplashPage, initial: true),
@@ -24,7 +22,6 @@ import 'package:lite/app/pages/pages.dart';
     CustomRoute(page: RequestPage),
     CustomRoute(
       page: HomePage,
-      transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
       children: <AutoRoute>[
         CustomRoute(page: BookingsPage),
         CustomRoute(page: SearchPage),

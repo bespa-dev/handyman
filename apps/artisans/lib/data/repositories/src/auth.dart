@@ -44,7 +44,7 @@ class AuthRepositoryImpl implements BaseAuthRepository {
       UserCredential credential) async {
     var firebaseUser = credential.user;
 
-    var user = await _userRepo.getCustomerById(id: firebaseUser.uid);
+    var user = await _userRepo.getArtisanById(id: firebaseUser.uid);
     if (user == null) {
       var timestamp = DateTime.now().toIso8601String();
       final newUser = Artisan(

@@ -88,7 +88,6 @@ class Router extends RouterBase {
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) => HomePage(),
         settings: data,
-        transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
       );
     },
     RegisterPage: (data) {

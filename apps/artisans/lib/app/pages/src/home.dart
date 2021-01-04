@@ -106,6 +106,14 @@ class _HomePageState extends State<HomePage> {
                             .push(Routes.homePage + HomePageRoutes.searchPage);
                       },
                     ),
+                    IconButton(
+                      icon: Icon(Feather.bell),
+                      color: _kTheme.colorScheme.onBackground,
+                      onPressed: () {
+                        context.navigator.push(
+                            Routes.homePage + HomePageRoutes.notificationsPage);
+                      },
+                    ),
                     if (_isLoggedIn &&
                         state is SuccessState<Stream<BaseUser>>) ...{
                       StreamBuilder<BaseUser>(
@@ -128,22 +136,6 @@ class _HomePageState extends State<HomePage> {
                             );
                           }),
                     },
-                    IconButton(
-                      icon: Icon(Feather.bell),
-                      color: _kTheme.colorScheme.onBackground,
-                      onPressed: () {
-                        context.navigator.push(
-                            Routes.homePage + HomePageRoutes.notificationsPage);
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(Feather.briefcase),
-                      color: _kTheme.colorScheme.onBackground,
-                      onPressed: () {
-                        context.navigator.push(
-                            Routes.homePage + HomePageRoutes.bookingsPage);
-                      },
-                    ),
                   ],
                 ),
               ),

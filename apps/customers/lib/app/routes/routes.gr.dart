@@ -7,7 +7,6 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/models/models.dart';
@@ -89,7 +88,6 @@ class Router extends RouterBase {
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) => HomePage(),
         settings: data,
-        transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
       );
     },
     RegisterPage: (data) {
