@@ -68,8 +68,7 @@ class _LoginPageState extends State<LoginPage> {
               if (mounted) {
                 setState(() {});
                 context.navigator
-                  ..popUntilRoot()
-                  ..pushHomePage();
+                    .pushAndRemoveUntil(Routes.homePage, (route) => false);
               }
             }
           });

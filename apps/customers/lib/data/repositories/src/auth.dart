@@ -40,7 +40,6 @@ class AuthRepositoryImpl implements BaseAuthRepository {
         _messaging = messaging,
         _userRepo = userRepo;
 
-  /// fixme -> change to "Artisan" for artisan app
   Future<BaseUser> _getOrCreateUserFromCredential(
       UserCredential credential) async {
     var firebaseUser = credential.user;
