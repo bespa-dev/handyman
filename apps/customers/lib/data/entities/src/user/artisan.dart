@@ -10,6 +10,7 @@
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lite/domain/models/models.dart';
+import 'package:meta/meta.dart';
 
 part 'artisan.g.dart';
 
@@ -96,24 +97,24 @@ class Artisan extends BaseArtisan {
   final String categoryGroup;
 
   Artisan({
-    this.id,
-    this.rating,
-    this.createdAt,
-    this.businessId,
-    this.category,
-    this.categoryGroup,
-    this.startWorkingHours,
-    this.endWorkingHours,
-    this.bookingsCount,
-    this.requests,
-    this.reports,
-    this.isAvailable,
-    this.isApproved,
-    this.token,
-    this.phone,
-    this.avatar,
-    this.email,
-    this.name,
+    @required this.id,
+    @required this.createdAt,
+    @required this.businessId,
+    @required this.category,
+    @required this.categoryGroup,
+    @required this.startWorkingHours,
+    @required this.endWorkingHours,
+    @required this.name,
+    @required this.token,
+    @required this.phone,
+    @required this.avatar,
+    @required this.email,
+    this.rating = 2.5,
+    this.bookingsCount = 0,
+    this.requests = const [],
+    this.reports = const [],
+    this.isAvailable = false,
+    this.isApproved = false,
   });
 
   @override
@@ -141,31 +142,42 @@ class Artisan extends BaseArtisan {
       _$ArtisanFromJson(json);
 
   @override
-  BaseUser copyWith({
+  BaseArtisan copyWith({
     String name,
     String email,
     String avatar,
     String token,
     String phone,
+    String category,
+    String businessId,
+    String categoryGroup,
+    String startWorkingHours,
+    String endWorkingHours,
+    double rating,
+    bool isAvailable,
+    bool isApproved,
+    int bookingsCount,
+    List<String> requests,
+    List<String> reports,
   }) =>
       Artisan(
-        id: this.id,
-        createdAt: this.createdAt,
-        category: this.category,
-        rating: this.rating,
-        categoryGroup: this.categoryGroup,
-        bookingsCount: this.bookingsCount,
-        businessId: this.businessId,
-        endWorkingHours: this.endWorkingHours,
-        isApproved: this.isApproved,
-        isAvailable: this.isAvailable,
-        reports: this.reports,
-        requests: this.requests,
-        startWorkingHours: this.startWorkingHours,
+        name: name ?? this.name,
+        email: email ?? this.email,
+        avatar: avatar ?? this.avatar,
         token: token ?? this.token,
         phone: phone ?? this.phone,
-        avatar: avatar ?? this.avatar,
-        email: email ?? this.email,
-        name: name ?? this.name,
+        category: category ?? this.category,
+        businessId: businessId ?? this.businessId,
+        categoryGroup: categoryGroup ?? this.categoryGroup,
+        startWorkingHours: startWorkingHours ?? this.startWorkingHours,
+        endWorkingHours: endWorkingHours ?? this.endWorkingHours,
+        rating: rating ?? this.rating,
+        isAvailable: isAvailable ?? this.isAvailable,
+        isApproved: isApproved ?? this.isApproved,
+        bookingsCount: bookingsCount ?? this.bookingsCount,
+        requests: requests ?? this.requests,
+        reports: reports ?? this.reports,
+        id: this.id,
+        createdAt: this.createdAt,
       );
 }

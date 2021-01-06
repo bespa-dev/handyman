@@ -163,7 +163,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           PasswordInput(
                             labelText: "Password",
                             controller: _passwordController,
-                            iconColor: kTheme.colorScheme.onPrimary,
                             textInputAction: TextInputAction.done,
                             enabled: !_isLoading,
                             color: kTheme.colorScheme.onPrimary,

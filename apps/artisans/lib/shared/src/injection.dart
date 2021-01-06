@@ -189,6 +189,7 @@ final _hiveDatasourceProvider = ChangeNotifierProvider.family<
     reviewBox: Hive.box<Review>(RefUtils.kReviewRef),
     artisanBox: Hive.box<Artisan>(RefUtils.kArtisanRef),
     customerBox: Hive.box<Customer>(RefUtils.kCustomerRef),
+    businessBox: Hive.box<Business>(RefUtils.kBusinessRef),
   );
 });
 

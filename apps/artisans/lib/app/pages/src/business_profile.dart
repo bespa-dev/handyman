@@ -52,10 +52,9 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
   @override
   void dispose() {
     _businessBloc.close();
+    _storageBloc.close();
     super.dispose();
   }
-
-
 
   @override
   Widget build(BuildContext context) {

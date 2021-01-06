@@ -89,4 +89,8 @@ abstract class BaseRemoteDatasource {
 
   /// Request [Booking] for an [Artisan]
   Future<void> requestBooking({@required BaseBooking booking});
+
+  Future<List<BaseBusiness>> getBusinessesForArtisan({@required String artisan});
+
+  Future<void> updateBusiness({@required BaseBusiness business});
 }

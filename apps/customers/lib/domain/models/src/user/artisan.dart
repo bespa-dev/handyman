@@ -44,4 +44,23 @@ abstract class BaseArtisan extends BaseUser {
   int get completedBookingsCount;
 
   int get cancelledBookingsCount;
+
+  BaseArtisan copyWith({
+    String name,
+    String email,
+    String avatar,
+    String token,
+    String phone,
+    String category,
+    String businessId,
+    String categoryGroup,
+    String startWorkingHours,
+    String endWorkingHours,
+    double rating,
+    bool isAvailable,
+    bool isApproved,
+    int bookingsCount,
+    List<String> requests,
+    List<String> reports,
+  });
 }

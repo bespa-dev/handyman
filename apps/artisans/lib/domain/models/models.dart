@@ -18,3 +18,4 @@ export 'src/payload/payload.dart'; // done
 export 'src/review.dart'; // done
 export 'src/user/artisan.dart'; // done
 export 'src/user/user.dart'; // done
+export 'src/business.dart'; // done

@@ -16,4 +16,15 @@ abstract class BaseBusinessRepository implements Exposable {
     @required String userId,
     @required List<String> images,
   });
+
+  Future<List<BaseBusiness>> getBusinessesForArtisan(
+      {@required String artisan});
+
+  Future<void> uploadBusiness({
+    @required String docUrl,
+    @required String name,
+    @required String artisan,
+    @required double lat,
+    @required double lng,
+  });
 }

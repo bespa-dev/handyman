@@ -267,4 +267,22 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
           .set(item.toJson(), SetOptions(merge: true));
     }
   }
+
+  @override
+  Future<List<BaseBusiness>> getBusinessesForArtisan(
+      {@required String artisan}) async {
+    var snapshot = await firestore
+        .collection(RefUtils.kBusinessRef)
+        .where("artisan_id", isEqualTo: artisan)
+        .get();
+    return snapshot.docs.map((e) => Business.fromJson(e.data())).toList();
+  }
+
+  @override
+  Future<void> updateBusiness({@required BaseBusiness business}) async {
+    await firestore
+        .collection(RefUtils.kBusinessRef)
+        .doc(business.id)
+        .set(business.toJson(), SetOptions(merge: true));
+  }
 }

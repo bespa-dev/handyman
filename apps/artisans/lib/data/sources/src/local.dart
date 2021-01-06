@@ -33,7 +33,8 @@ Future registerHiveDatabase() async {
     ..registerAdapter(GalleryAdapter())
     ..registerAdapter(ReviewAdapter())
     ..registerAdapter(ArtisanAdapter())
-    ..registerAdapter(CustomerAdapter());
+    ..registerAdapter(CustomerAdapter())
+    ..registerAdapter(BusinessAdapter());
 
   /// open boxes
   await Hive.openBox<Booking>(RefUtils.kBookingRef);
@@ -43,6 +44,7 @@ Future registerHiveDatabase() async {
   await Hive.openBox<Review>(RefUtils.kReviewRef);
   await Hive.openBox<Artisan>(RefUtils.kArtisanRef);
   await Hive.openBox<Customer>(RefUtils.kCustomerRef);
+  await Hive.openBox<Business>(RefUtils.kBusinessRef);
 }
 
 class HiveLocalDatasource extends BaseLocalDatasource {
@@ -54,6 +56,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   final Box<Gallery> galleryBox;
   final Box<Conversation> conversationBox;
   final Box<ServiceCategory> categoryBox;
+  final Box<Business> businessBox;
 
   HiveLocalDatasource({
     @required this.prefsRepo,
@@ -64,6 +67,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
     @required this.galleryBox,
     @required this.conversationBox,
     @required this.categoryBox,
+    @required this.businessBox,
   }) {
     /// load initial data from assets
     _performInitLoad();
@@ -251,4 +255,13 @@ class HiveLocalDatasource extends BaseLocalDatasource {
       await galleryBox.put(value.id, value);
     }
   }
+
+  @override
+  Future<List<BaseBusiness>> getBusinessesForArtisan(
+          {@required String artisan}) async =>
+      businessBox.values.where((item) => item.artisanId == artisan).toList();
+
+  @override
+  Future<void> updateBusiness({@required BaseBusiness business}) async =>
+      await businessBox.put(business.id, business);
 }

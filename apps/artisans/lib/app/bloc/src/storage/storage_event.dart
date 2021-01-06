@@ -4,7 +4,10 @@ part 'storage_event.super.dart';
 
 @superEnum
 enum _StorageEvent {
-  @generic
-  @Data(fields: [DataField<Generic>("file")])
+  @Data(fields: [
+    DataField<String>("path"),
+    DataField<String>("filePath"),
+    DataField<bool>("isImage"),
+  ])
   UploadFile,
 }

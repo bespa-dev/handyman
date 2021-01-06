@@ -41,4 +41,38 @@ class BusinessRepositoryImpl implements BaseBusinessRepository {
     await _localDatasource.uploadBusinessPhotos(galleryItems: items);
     await _remoteDatasource.uploadBusinessPhotos(galleryItems: items);
   }
+
+  @override
+  Future<List<BaseBusiness>> getBusinessesForArtisan(
+      {@required String artisan}) async {
+    final businesses =
+        await _remoteDatasource.getBusinessesForArtisan(artisan: artisan);
+    for (var value in businesses) {
+      if (value != null) await _localDatasource.updateBusiness(business: value);
+    }
+    return _localDatasource.getBusinessesForArtisan(artisan: artisan);
+  }
+
+  @override
+  Future<void> uploadBusiness({
+    @required String docUrl,
+    @required String name,
+    @required String artisan,
+    @required double lat,
+    @required double lng,
+  }) async {
+    final business = Business(
+      id: Uuid().v4(),
+      createdAt: DateTime.now().toIso8601String(),
+      docUrl: docUrl,
+      artisanId: artisan,
+      name: name,
+      location: LocationMetadata(
+        lat: lat,
+        lng: lng,
+      ),
+    );
+    await _localDatasource.updateBusiness(business: business);
+    await _remoteDatasource.updateBusiness(business: business);
+  }
 }

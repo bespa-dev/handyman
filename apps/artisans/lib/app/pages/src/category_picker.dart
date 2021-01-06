@@ -1,8 +1,8 @@
-import 'package:auto_route/auto_route.dart';
+// import 'package:auto_route/auto_route.dart';
+// import 'package:handyman/app/routes/routes.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:handyman/app/bloc/bloc.dart';
-import 'package:handyman/app/routes/routes.gr.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
@@ -42,27 +42,15 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
       ..listen((userIdState) {
         if (userIdState is SuccessState<String> && userIdState.data != null) {
           /// get artisan by id
-          _userBloc
-            ..add(UserEvent.getArtisanByIdEvent(id: userIdState.data))
-            ..listen((state) {
-              if (state is SuccessState<BaseArtisan>) {
-                _currentUser = state.data;
-                if (mounted) setState(() {});
-              }
-            });
+          _userBloc.add(UserEvent.getArtisanByIdEvent(id: userIdState.data));
         }
       });
 
     /// user update status
     _userBloc.listen((state) {
-      if (state is SuccessState<void>) {
-        _isLoading = false;
+      if (state is SuccessState<BaseArtisan>) {
+        _currentUser = state.data;
         if (mounted) setState(() {});
-        logger.d("Updated user");
-        context.navigator.pushAndRemoveUntil(
-          Routes.businessProfilePage,
-          (route) => false,
-        );
       } else if (state is LoadingState) {
         _isLoading = true;
         if (mounted) setState(() {});
@@ -89,100 +77,106 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
         backgroundColor: kTheme.colorScheme.primary,
         body: SafeArea(
           child: _isLoading
-          ? Loading()
-          : Stack(
-            children: [
-              /// content
-              Positioned.fill(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: kSpacingX24,
-                    horizontal: kSpacingX12,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Select your favorite service",
-                        style: kTheme.textTheme.headline4.copyWith(
-                          color: kTheme.colorScheme.onPrimary,
+              ? Loading()
+              : Stack(
+                  children: [
+                    /// content
+                    Positioned.fill(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: kSpacingX24,
+                          horizontal: kSpacingX12,
                         ),
-                      ),
-                      SizedBox(height: kSpacingX4),
-                      Text(
-                        "Select some of your favorite services to help us connect you to more customers",
-                        style: kTheme.textTheme.bodyText2.copyWith(
-                          color: kTheme.colorScheme.onPrimary,
-                        ),
-                      ),
-                      SizedBox(height: kSpacingX16),
-                      if (state is SuccessState<
-                          Stream<List<BaseServiceCategory>>>) ...{
-                        Expanded(
-                          child: StreamBuilder<List<BaseServiceCategory>>(
-                            stream: state.data,
-                            initialData: [],
-                            builder: (_, snapshot) => SelectableGridCategory(
-                              categories: snapshot.data,
-                              selected: _selectedCategory,
-                              onSelected: (item) {
-                                _selectedCategory = item.id;
-                                setState(() {});
-                              },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Select your favorite service",
+                              style: kTheme.textTheme.headline4.copyWith(
+                                color: kTheme.colorScheme.onPrimary,
+                              ),
                             ),
-                          ),
+                            SizedBox(height: kSpacingX4),
+                            Text(
+                              "Select some of your favorite services to help us connect you to more customers",
+                              style: kTheme.textTheme.bodyText2.copyWith(
+                                color: kTheme.colorScheme.onPrimary,
+                              ),
+                            ),
+                            SizedBox(height: kSpacingX16),
+                            if (state is SuccessState<
+                                Stream<List<BaseServiceCategory>>>) ...{
+                              Expanded(
+                                child: StreamBuilder<List<BaseServiceCategory>>(
+                                  stream: state.data,
+                                  initialData: [],
+                                  builder: (_, snapshot) =>
+                                      SelectableGridCategory(
+                                    categories: snapshot.data,
+                                    selected: _selectedCategory,
+                                    onSelected: (item) {
+                                      _selectedCategory = item.id;
+                                      setState(() {});
+                                    },
+                                  ),
+                                ),
+                              ),
+                            } else ...{
+                              Loading(color: kTheme.colorScheme.secondary),
+                            }
+                          ],
                         ),
-                      } else ...{
-                        Loading(color: kTheme.colorScheme.secondary),
-                      }
-                    ],
-                  ),
-                ),
-              ),
+                      ),
+                    ),
 
-              /// action button
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: InkWell(
-                  splashColor: kTheme.splashColor,
-                  onTap: () {
-                    logger.d("services -> $_selectedCategory");
-                    if (_selectedCategory == null)
-                      showSnackBarMessage(context,
-                          message: "Please select a service first");
-                    else
-                      _userBloc
-                          .add(UserEvent.updateUserEvent(user: _currentUser));
-                  },
-                  child: Container(
-                    width: SizeConfig.screenWidth,
-                    alignment: Alignment.center,
-                    height: kToolbarHeight,
-                    decoration: BoxDecoration(
-                      color: kTheme.colorScheme.secondary,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Next",
-                          style: kTheme.textTheme.button.copyWith(
-                            color: kTheme.colorScheme.onSecondary,
+                    /// action button
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: InkWell(
+                        splashColor: kTheme.splashColor,
+                        onTap: () {
+                          logger.d("services -> $_selectedCategory");
+                          if (_selectedCategory == null)
+                            showSnackBarMessage(context,
+                                message: "Please select a service first");
+                          else {
+                            final updatedUser = _currentUser.copyWith(
+
+                            );
+                            logger.d("Updated user -> $updatedUser");
+                            // _userBloc.add(
+                            //     UserEvent.updateUserEvent(user: _currentUser.copyWith(),));
+                          }
+                        },
+                        child: Container(
+                          width: SizeConfig.screenWidth,
+                          alignment: Alignment.center,
+                          height: kToolbarHeight,
+                          decoration: BoxDecoration(
+                            color: kTheme.colorScheme.secondary,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Next",
+                                style: kTheme.textTheme.button.copyWith(
+                                  color: kTheme.colorScheme.onSecondary,
+                                ),
+                              ),
+                              SizedBox(width: kSpacingX12),
+                              Icon(
+                                kArrowIcon,
+                                color: kTheme.colorScheme.onSecondary,
+                              ),
+                            ],
                           ),
                         ),
-                        SizedBox(width: kSpacingX12),
-                        Icon(
-                          kArrowIcon,
-                          color: kTheme.colorScheme.onSecondary,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ),
-            ],
-          ),
         ),
       ),
     );
