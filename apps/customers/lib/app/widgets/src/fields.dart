@@ -17,6 +17,7 @@ class TextFormInput extends TextFormField {
     String hintText = '',
     String helperText = '',
     TextInputType keyboardType = TextInputType.text,
+    TextCapitalization textCapitalization = TextCapitalization.none,
     TextInputAction textInputAction,
     TextEditingController controller,
     bool enabled,
@@ -29,25 +30,25 @@ class TextFormInput extends TextFormField {
     int maxLines = 1,
     Color color,
   }) : super(
-          keyboardType: keyboardType,
-          textInputAction: textInputAction,
-          controller: controller,
-          enabled: enabled,
-          validator: validator,
-          obscureText: obscureText,
-          textCapitalization: TextCapitalization.words,
-          decoration: InputDecoration(
-            labelText: labelText,
-            hintText: hintText,
-            helperText: helperText,
-            suffixIcon: suffixIcon,
-            enabled: enabled,
-          ),
-          focusNode: focusNode,
-          onFieldSubmitted: onFieldSubmitted,
-          autofocus: autofocus,
-          maxLines: maxLines,
-        );
+    keyboardType: keyboardType,
+    textInputAction: textInputAction,
+    controller: controller,
+    enabled: enabled,
+    validator: validator,
+    obscureText: obscureText,
+    textCapitalization: textCapitalization,
+    decoration: InputDecoration(
+      labelText: labelText,
+      hintText: hintText,
+      helperText: helperText,
+      suffixIcon: suffixIcon,
+      enabled: enabled,
+    ),
+    focusNode: focusNode,
+    onFieldSubmitted: onFieldSubmitted,
+    autofocus: autofocus,
+    maxLines: maxLines,
+  );
 }
 
 class PasswordInput extends StatefulWidget {

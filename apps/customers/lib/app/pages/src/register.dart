@@ -144,6 +144,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             keyboardType: TextInputType.name,
                             textInputAction: TextInputAction.next,
                             enabled: !_isLoading,
+                            textCapitalization: TextCapitalization.words,
                             color: kTheme.colorScheme.onPrimary,
                             validator: (_) => _.isEmpty ? "Required" : null,
                           ),

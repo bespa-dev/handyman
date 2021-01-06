@@ -24,6 +24,7 @@ import 'package:handyman/app/pages/pages.dart';
     CustomRoute(page: RequestPage),
     CustomRoute(page: CategoryPickerPage),
     CustomRoute(page: BusinessProfilePage),
+    CustomRoute(page: CategoryDetailsPage),
     CustomRoute(
       page: HomePage,
       children: <AutoRoute>[

@@ -7,25 +7,42 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:handyman/app/routes/routes.gr.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
 
 class GridCategoryCardItem extends StatefulWidget {
   final BaseServiceCategory category;
+  final bool isSelectable;
+  final Function(String) onSelected;
 
-  const GridCategoryCardItem({Key key, @required this.category})
-      : super(key: key);
+  const GridCategoryCardItem({
+    Key key,
+    @required this.category,
+    this.isSelectable = false,
+    this.onSelected,
+  }) : super(key: key);
 
   @override
   _GridCategoryCardItemState createState() => _GridCategoryCardItemState();
 }
 
 class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
+  bool _isSelected = false;
+
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final kTheme = Theme.of(context);
+    final selectedColor = kGreenColor.withOpacity(kEmphasisHigh);
+    final selectedTextColor =
+        kTheme.colorScheme.onPrimary.withOpacity(kEmphasisHigh);
+    final unselectedColor =
+        kTheme.colorScheme.background.withOpacity(kEmphasisMedium);
+    final unselectedTextColor =
+        kTheme.colorScheme.onBackground.withOpacity(kEmphasisMedium);
 
     return Card(
       shape: RoundedRectangleBorder(
@@ -33,13 +50,23 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
           getProportionateScreenWidth(kSpacingX12),
         ),
       ),
-      color: themeData.cardColor,
+      color: kTheme.cardColor,
       clipBehavior: Clip.hardEdge,
       child: InkWell(
         borderRadius:
             BorderRadius.circular(getProportionateScreenWidth(kSpacingX12)),
         onTap: () {
-          /// fixme -> nav to category details page
+          if (widget.isSelectable) {
+            setState(() {
+              _isSelected = !_isSelected;
+            });
+            if (widget.onSelected != null) {
+              widget.onSelected(widget.category.id);
+            }
+          } else {
+            context.navigator
+                .pushCategoryDetailsPage(category: widget.category);
+          }
         },
         child: Stack(
           children: [
@@ -64,16 +91,16 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
               bottom: kSpacingNone,
               child: Container(
                 decoration: BoxDecoration(
-                  color: themeData.scaffoldBackgroundColor
-                      .withOpacity(kOpacityX70),
+                  color: _isSelected ? selectedColor : unselectedColor,
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   widget.category.name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: themeData.textTheme.button.copyWith(
-                    color: themeData.textTheme.bodyText1.color,
+                  style: kTheme.textTheme.button.copyWith(
+                    color:
+                        _isSelected ? selectedTextColor : unselectedTextColor,
                   ),
                 ),
               ),

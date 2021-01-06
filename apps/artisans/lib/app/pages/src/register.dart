@@ -68,8 +68,7 @@ class _RegisterPageState extends State<RegisterPage> {
               _isLoading = false;
               if (mounted) {
                 setState(() {});
-                context.navigator
-                    .pushAndRemoveUntil(
+                context.navigator.pushAndRemoveUntil(
                     Routes.categoryPickerPage, (route) => false);
               }
             }
@@ -158,7 +157,6 @@ class _RegisterPageState extends State<RegisterPage> {
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.next,
                             color: kTheme.colorScheme.onPrimary,
-                            textCapitalization: TextCapitalization.none,
                             enabled: !_isLoading,
                             validator: (_) => _.isEmpty ? "Required" : null,
                           ),

@@ -20,4 +20,13 @@ extension ListX on List<dynamic> {
     if (this == null) return;
     if (this.contains(item)) this.remove(item);
   }
+
+  /// remove an [item] to an existing [List] if it does not already contain it
+  void toggleAddOrRemove(dynamic item) {
+    if (this == null) return;
+    if (this.contains(item))
+      this.remove(item);
+    else
+      this.add(item);
+  }
 }

@@ -19,6 +19,7 @@ class Routes {
   static const String requestPage = '/request-page';
   static const String categoryPickerPage = '/category-picker-page';
   static const String businessProfilePage = '/business-profile-page';
+  static const String categoryDetailsPage = '/category-details-page';
   static const String homePage = '/home-page';
   static const String registerPage = '/register-page';
   static const String unknownRoutePage = '*';
@@ -29,6 +30,7 @@ class Routes {
     requestPage,
     categoryPickerPage,
     businessProfilePage,
+    categoryDetailsPage,
     homePage,
     registerPage,
     unknownRoutePage,
@@ -45,6 +47,7 @@ class Router extends RouterBase {
     RouteDef(Routes.requestPage, page: RequestPage),
     RouteDef(Routes.categoryPickerPage, page: CategoryPickerPage),
     RouteDef(Routes.businessProfilePage, page: BusinessProfilePage),
+    RouteDef(Routes.categoryDetailsPage, page: CategoryDetailsPage),
     RouteDef(
       Routes.homePage,
       page: HomePage,
@@ -104,6 +107,17 @@ class Router extends RouterBase {
         settings: data,
       );
     },
+    CategoryDetailsPage: (data) {
+      final args = data.getArgs<CategoryDetailsPageArguments>(nullOk: false);
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            CategoryDetailsPage(
+          key: args.key,
+          category: args.category,
+        ),
+        settings: data,
+      );
+    },
     HomePage: (data) {
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) => HomePage(),
@@ -160,6 +174,15 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
 
   Future<dynamic> pushBusinessProfilePage() =>
       push<dynamic>(Routes.businessProfilePage);
+
+  Future<dynamic> pushCategoryDetailsPage({
+    Key key,
+    @required BaseServiceCategory category,
+  }) =>
+      push<dynamic>(
+        Routes.categoryDetailsPage,
+        arguments: CategoryDetailsPageArguments(key: key, category: category),
+      );
 
   Future<dynamic> pushHomePage() => push<dynamic>(Routes.homePage);
 
@@ -292,6 +315,13 @@ class RequestPageArguments {
   final Key key;
   final BaseArtisan artisan;
   RequestPageArguments({this.key, @required this.artisan});
+}
+
+/// CategoryDetailsPage arguments holder class
+class CategoryDetailsPageArguments {
+  final Key key;
+  final BaseServiceCategory category;
+  CategoryDetailsPageArguments({this.key, @required this.category});
 }
 
 /// ArtisanInfoPage arguments holder class

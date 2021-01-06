@@ -36,7 +36,7 @@ class TextFormInput extends TextFormField {
           enabled: enabled,
           validator: validator,
           obscureText: obscureText,
-          textCapitalization: TextCapitalization.words,
+          textCapitalization: textCapitalization,
           decoration: InputDecoration(
             labelText: labelText,
             hintText: hintText,

@@ -1,8 +1,9 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:handyman/app/bloc/bloc.dart';
-import 'package:handyman/app/routes/routes.gr.dart';
-import 'package:handyman/domain/repositories/repositories.dart';
+import 'package:handyman/app/widgets/src/category_card.dart';
+import 'package:handyman/app/widgets/widgets.dart';
+import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
 
 class CategoryPickerPage extends StatefulWidget {
@@ -12,23 +13,18 @@ class CategoryPickerPage extends StatefulWidget {
 
 class _CategoryPickerPageState extends State<CategoryPickerPage> {
   /// blocs
-  final _authBloc = AuthBloc(repo: Injection.get());
   final _userBloc = UserBloc(repo: Injection.get());
+  final _categoryBloc = CategoryBloc(repo: Injection.get());
 
   /// UI
   ThemeData kTheme;
   bool _isLoading = false;
-
-  /// form
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController(),
-      _nameController = TextEditingController(),
-      _passwordController = TextEditingController();
+  List<String> _selectedCategories = [];
 
   @override
   void dispose() {
     _userBloc.close();
-    _authBloc.close();
+    _categoryBloc.close();
     super.dispose();
   }
 
@@ -36,50 +32,121 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
   void initState() {
     super.initState();
 
-    /// observe auth state
-    _authBloc
-      ..add(AuthEvent.observeAuthStatetEvent())
-      ..add(AuthEvent.observeMessageEvent())
-      ..listen((state) {
-        if (state is SuccessState<Stream<AuthState>>) {
-          /// stream auth state
-          state.data.listen((event) {
-            if (event is AuthLoadingState) {
-              _isLoading = true;
-              if (mounted) setState(() {});
-            } else if (event is AuthFailedState) {
-              _isLoading = false;
-              if (mounted) {
-                setState(() {});
-                showSnackBarMessage(context,
-                    message: event.message ?? "Authentication failed");
-              }
-            } else if (event is AuthenticatedState) {
-              _isLoading = false;
-              if (mounted) {
-                setState(() {});
-                context.navigator.pushAndRemoveUntil(
-                    Routes.businessProfilePage, (route) => false);
-              }
-            }
-          });
-        } else if (state is SuccessState<Stream<String>>) {
-          /// stream messages
-          state.data.listen((message) {
-            if (mounted) showSnackBarMessage(context, message: message);
-          });
-        }
-      });
+    /// observe categories
+    _categoryBloc.add(
+      CategoryEvent.observeAllCategories(
+        group: ServiceCategoryGroup.featured(),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     kTheme = Theme.of(context);
-    return Scaffold(
-      body: Center(
-        child: Text(
-          "Category picker",
-          style: kTheme.textTheme.headline4,
+    return BlocBuilder<CategoryBloc, BlocState>(
+      cubit: _categoryBloc,
+      builder: (_, state) => Scaffold(
+        backgroundColor: kTheme.colorScheme.primary,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              /// content
+              Positioned.fill(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: kSpacingX24,
+                    horizontal: kSpacingX12,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Select your favorite service",
+                        style: kTheme.textTheme.headline4.copyWith(
+                          color: kTheme.colorScheme.onPrimary,
+                        ),
+                      ),
+                      SizedBox(height: kSpacingX4),
+                      Text(
+                        "Select some of your favorite services to help us connect you to more customers",
+                        style: kTheme.textTheme.bodyText2.copyWith(
+                          color: kTheme.colorScheme.onPrimary,
+                        ),
+                      ),
+                      SizedBox(height: kSpacingX16),
+                      if (state is SuccessState<
+                          Stream<List<BaseServiceCategory>>>) ...{
+                        Expanded(
+                          child: StreamBuilder<List<BaseServiceCategory>>(
+                            stream: state.data,
+                            initialData: [],
+                            builder: (_, snapshot) => GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2),
+                              itemCount: snapshot.data.length,
+                              itemBuilder: (_, index) {
+                                final category = snapshot.data[index];
+                                return GridCategoryCardItem(
+                                  category: category,
+                                  isSelectable: true,
+                                  onSelected: (item) {
+                                    _selectedCategories.addIfDoesNotExist(item);
+                                    setState(() {});
+                                  },
+                                );
+                              },
+                              padding: EdgeInsets.only(bottom: kSpacingX36),
+                              addAutomaticKeepAlives: false,
+                              cacheExtent: 100,
+                            ),
+                          ),
+                        ),
+                      } else ...{
+                        Loading(color: kTheme.colorScheme.secondary),
+                      }
+                    ],
+                  ),
+                ),
+              ),
+
+              /// action button
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: InkWell(
+                  splashColor: kTheme.splashColor,
+                  onTap: () {
+                    logger.d("services -> $_selectedCategories");
+                  },
+                  child: Container(
+                    width: SizeConfig.screenWidth,
+                    alignment: Alignment.center,
+                    height: kToolbarHeight,
+                    decoration: BoxDecoration(
+                      color: kTheme.colorScheme.secondary,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Next",
+                          style: kTheme.textTheme.button.copyWith(
+                            color: kTheme.colorScheme.onSecondary,
+                          ),
+                        ),
+                        SizedBox(width: kSpacingX12),
+                        Icon(
+                          kArrowIcon,
+                          color: kTheme.colorScheme.onSecondary,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
