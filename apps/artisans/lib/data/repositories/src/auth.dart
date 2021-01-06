@@ -171,6 +171,11 @@ class AuthRepositoryImpl implements BaseAuthRepository {
     try {
       _onAuthStateChangedController.add(AuthState.authLoadingState());
       var account = await _googleSignIn.signIn();
+      if (account == null) {
+        _onAuthStateChangedController
+            .add(AuthState.authFailedState(message: "Sign in was cancelled"));
+        return null;
+      }
       var authentication = await account.authentication;
       var credential =
           await _auth.signInWithCredential(GoogleAuthProvider.credential(

@@ -18,6 +18,7 @@ class Routes {
   static const String conversationPage = '/conversation-page';
   static const String requestPage = '/request-page';
   static const String categoryPickerPage = '/category-picker-page';
+  static const String businessProfilePage = '/business-profile-page';
   static const String homePage = '/home-page';
   static const String registerPage = '/register-page';
   static const String unknownRoutePage = '*';
@@ -27,6 +28,7 @@ class Routes {
     conversationPage,
     requestPage,
     categoryPickerPage,
+    businessProfilePage,
     homePage,
     registerPage,
     unknownRoutePage,
@@ -42,6 +44,7 @@ class Router extends RouterBase {
     RouteDef(Routes.conversationPage, page: ConversationPage),
     RouteDef(Routes.requestPage, page: RequestPage),
     RouteDef(Routes.categoryPickerPage, page: CategoryPickerPage),
+    RouteDef(Routes.businessProfilePage, page: BusinessProfilePage),
     RouteDef(
       Routes.homePage,
       page: HomePage,
@@ -91,6 +94,13 @@ class Router extends RouterBase {
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) =>
             CategoryPickerPage(),
+        settings: data,
+      );
+    },
+    BusinessProfilePage: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            BusinessProfilePage(),
         settings: data,
       );
     },
@@ -147,6 +157,9 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
 
   Future<dynamic> pushCategoryPickerPage() =>
       push<dynamic>(Routes.categoryPickerPage);
+
+  Future<dynamic> pushBusinessProfilePage() =>
+      push<dynamic>(Routes.businessProfilePage);
 
   Future<dynamic> pushHomePage() => push<dynamic>(Routes.homePage);
 

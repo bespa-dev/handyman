@@ -127,12 +127,6 @@ class _SplashPageState extends State<SplashPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Image(
-                  //   image: Svg(
-                  //     lightTheme ? kLogoAsset : kLogoDarkAsset,
-                  //   ),
-                  // ),
-                  // SizedBox(height: kSpacingX36),
                   Text(
                     kAppName,
                     textAlign: TextAlign.center,

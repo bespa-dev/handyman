@@ -158,6 +158,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.next,
                             color: kTheme.colorScheme.onPrimary,
+                            textCapitalization: TextCapitalization.none,
                             enabled: !_isLoading,
                             validator: (_) => _.isEmpty ? "Required" : null,
                           ),

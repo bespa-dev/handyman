@@ -212,19 +212,20 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: kSpacingX24),
+                    SizedBox(height: kSpacingX8),
                     if (_isLoading) ...{
                       Loading(color: kTheme.colorScheme.secondary),
                     } else ...{
                       Center(
                         child: ButtonPrimary(
-                          width: SizeConfig.screenWidth * 0.85,
+                          width: SizeConfig.screenWidth * 0.9,
                           onTap: () => _validateAndLogin(),
                           label: "Sign in",
                           gravity: ButtonIconGravity.END,
                           icon: kArrowIcon,
                           color: lightTheme
-                              ? kTheme.colorScheme.background.withOpacity(kEmphasisHigh)
+                              ? kTheme.colorScheme.background
+                                  .withOpacity(kEmphasisHigh)
                               : kTheme.colorScheme.secondary,
                           textColor: lightTheme
                               ? kTheme.colorScheme.onBackground
@@ -233,6 +234,33 @@ class _LoginPageState extends State<LoginPage> {
                       )
                     }
                   ],
+                ),
+              ),
+            ),
+          ),
+
+          /// action button
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: GestureDetector(
+              onTap: () => context.navigator.pushRegisterPage(),
+              child: Container(
+                margin: EdgeInsets.only(bottom: kSpacingX16),
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(text: "Don\'t have an account?\t"),
+                      TextSpan(
+                        text: "Sign up here",
+                        style: kTheme.textTheme.button.copyWith(
+                          color: kTheme.colorScheme.secondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  style: kTheme.textTheme.button.copyWith(
+                    color: kTheme.colorScheme.onPrimary,
+                  ),
                 ),
               ),
             ),
