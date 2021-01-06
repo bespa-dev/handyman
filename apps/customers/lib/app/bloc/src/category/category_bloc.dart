@@ -7,7 +7,6 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:bloc/bloc.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/domain/repositories/repositories.dart';
@@ -16,13 +15,12 @@ import 'package:meta/meta.dart';
 
 import 'category_event.dart';
 
-class CategoryBloc extends Bloc<CategoryEvent, BlocState> {
+class CategoryBloc extends BaseBloc<CategoryEvent> {
   final BaseCategoryRepository _repo;
 
   CategoryBloc({@required BaseCategoryRepository repo})
       : assert(repo != null),
-        _repo = repo,
-        super(BlocState.initialState());
+        _repo = repo;
 
   @override
   Stream<BlocState> mapEventToState(CategoryEvent event) async* {

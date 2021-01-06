@@ -9,7 +9,6 @@
 
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/domain/repositories/repositories.dart';
@@ -18,13 +17,12 @@ import 'package:meta/meta.dart';
 
 import 'user_event.dart';
 
-class UserBloc extends Bloc<UserEvent, BlocState> {
+class UserBloc extends BaseBloc<UserEvent> {
   final BaseUserRepository _repo;
 
   UserBloc({@required BaseUserRepository repo})
       : assert(repo != null),
-        _repo = repo,
-        super(BlocState.initialState());
+        _repo = repo;
 
   @override
   Stream<BlocState> mapEventToState(

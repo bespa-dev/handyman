@@ -9,7 +9,6 @@
 
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/domain/models/models.dart' show BaseUser;
 import 'package:lite/domain/repositories/repositories.dart';
@@ -18,13 +17,12 @@ import 'package:meta/meta.dart';
 
 import 'auth_event.dart';
 
-class AuthBloc extends Bloc<AuthEvent, BlocState> {
+class AuthBloc extends BaseBloc<AuthEvent> {
   final BaseAuthRepository _repo;
 
   AuthBloc({@required BaseAuthRepository repo})
       : assert(repo != null),
-        _repo = repo,
-        super(BlocState.initialState());
+        _repo = repo;
 
   @override
   Stream<BlocState> mapEventToState(
