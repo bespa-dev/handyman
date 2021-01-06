@@ -23,4 +23,7 @@ class LocationMetadata {
       _$LocationMetadataFromJson(json);
 
   Map<String, dynamic> toJson() => _$LocationMetadataToJson(this);
+
+  @override
+  String toString() => this.toJson().toString();
 }

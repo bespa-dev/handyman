@@ -47,8 +47,8 @@ class BusinessBloc extends BaseBloc<BusinessEvent> {
           lng: event.lng,
         ),
       );
-      if (result is UseCaseResultSuccess) {
-        yield BlocState.successState();
+      if (result is UseCaseResultSuccess<String>) {
+        yield BlocState<String>.successState(data: result.value);
       } else
         yield BlocState.errorState(
             failure: "Failed to upload business details");

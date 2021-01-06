@@ -29,6 +29,7 @@ class TextFormInput extends TextFormField {
     bool autofocus = false,
     int maxLines = 1,
     Color color,
+    Color cursorColor,
   }) : super(
           keyboardType: keyboardType,
           textInputAction: textInputAction,
@@ -37,6 +38,7 @@ class TextFormInput extends TextFormField {
           validator: validator,
           obscureText: obscureText,
           textCapitalization: textCapitalization,
+          cursorColor: cursorColor,
           decoration: InputDecoration(
             labelText: labelText,
             hintText: hintText,

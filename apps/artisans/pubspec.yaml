@@ -41,13 +41,14 @@ dependencies:
   flutter_staggered_grid_view: ^0.3.0
   flutter_svg_provider: ^0.1.6
   flutter_video_compress: ^0.3.7+8
-  geolocator: ^5.3.2+2
+  geolocator: ^6.0.0+4
   google_fonts: ^1.1.0
   google_sign_in: ^4.5.1
   hive: ^1.4.4+1
   hive_flutter: ^0.3.1
   image_cropper: ^1.2.1
   image_picker: ^0.6.1+10
+  file_picker: ^2.1.5
   google_maps_flutter: ^1.0.6
   flutter_google_places: ^0.2.6
   intl: ^0.16.1
@@ -74,6 +75,8 @@ dependencies:
   table_calendar: ^2.2.3
   flutter_rating_bar:
   contact_picker:
+  google_maps_webservice:
+  google_maps_place_picker: ^1.0.1
   geocoder:
   flutter_dotenv: ^2.1.0
 

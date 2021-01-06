@@ -51,23 +51,23 @@ class GetBusinessesForArtisanUseCase
 }
 
 class UploadBusinessUseCase
-    extends CompletableUseCase<UploadBusinessUseCaseParams> {
+    extends UseCase<String, UploadBusinessUseCaseParams> {
   final BaseBusinessRepository _repo;
 
   UploadBusinessUseCase(this._repo);
 
   @override
-  Future<UseCaseResult<void>> execute(
+  Future<UseCaseResult<String>> execute(
       UploadBusinessUseCaseParams params) async {
     try {
-      await _repo.uploadBusiness(
+      final id = await _repo.uploadBusiness(
         docUrl: params.docUrl,
         name: params.name,
         artisan: params.artisan,
         lat: params.lat,
         lng: params.lng,
       );
-      return UseCaseResult.success();
+      return UseCaseResult<String>.success(id);
     } on Exception {
       return UseCaseResult.error();
     }

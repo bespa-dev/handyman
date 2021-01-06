@@ -7,7 +7,6 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:bloc/bloc.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/domain/repositories/repositories.dart';

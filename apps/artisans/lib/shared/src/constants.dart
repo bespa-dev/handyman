@@ -13,13 +13,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:handyman/shared/shared.dart';
 
 import 'size_config.dart';
 
 /// Logger
 final logger = Logger(printer: PrettyPrinter(printTime: true));
 
-void showSnackBarMessage(BuildContext context, {@required String message}) {
+void showSnackBarMessage(
+  BuildContext context, {
+  @required String message,
+  SnackBarDuration duration,
+}) {
+  duration ??= SnackBarDuration.shortLength();
+  logger.d(duration);
   ScaffoldMessenger.of(context)
     ..removeCurrentSnackBar()
     ..showSnackBar(
@@ -134,6 +141,7 @@ const kLoremText =
 
 /// icons
 const kBackIcon = AntDesign.back;
+const kPlusIcon = Feather.plus;
 const kRatingStar = Entypo.star;
 const kMailIcon = Feather.mail;
 const kGoogleIcon = AntDesign.google;
@@ -144,12 +152,6 @@ const kOptionsIcon = Entypo.dots_two_vertical;
 /// [Algolia]
 const kAlgoliaAppId = "AIBRVBFA4W";
 const kAlgoliaKey = "604022a17d65f30d23e80a38f285be57";
-
-/// Durations
-const kScaleDuration = const Duration(milliseconds: 350);
-const kTestDuration = const Duration(milliseconds: 2500);
-const kSheetDuration = const Duration(milliseconds: 550);
-const kSplashDuration = const Duration(milliseconds: 1550);
 
 /// Others
 const kScrollPhysics = const BouncingScrollPhysics();

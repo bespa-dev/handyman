@@ -54,7 +54,7 @@ class BusinessRepositoryImpl implements BaseBusinessRepository {
   }
 
   @override
-  Future<void> uploadBusiness({
+  Future<String> uploadBusiness({
     @required String docUrl,
     @required String name,
     @required String artisan,
@@ -74,5 +74,6 @@ class BusinessRepositoryImpl implements BaseBusinessRepository {
     );
     await _localDatasource.updateBusiness(business: business);
     await _remoteDatasource.updateBusiness(business: business);
+    return business.id;
   }
 }

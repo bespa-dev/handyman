@@ -40,8 +40,8 @@ class AuthRepositoryImpl implements BaseAuthRepository {
         _messaging = messaging,
         _userRepo = userRepo;
 
-  Future<BaseUser> _getOrCreateUserFromCredential(
-      UserCredential credential) async {
+  Future<BaseUser> _getOrCreateUserFromCredential(UserCredential credential,
+      {String forcedUsername}) async {
     var firebaseUser = credential.user;
 
     var user = await _userRepo.getArtisanById(id: firebaseUser.uid);
@@ -51,17 +51,12 @@ class AuthRepositoryImpl implements BaseAuthRepository {
         id: firebaseUser.uid,
         email: firebaseUser.email,
         createdAt: timestamp,
-        name: firebaseUser.displayName,
+        name: forcedUsername ?? firebaseUser.displayName,
         phone: firebaseUser.phoneNumber,
         token: await _messaging.getToken(),
         avatar: firebaseUser.photoURL,
-        categoryGroup: ServiceCategoryGroup.featured().name(),
-        // mechanic default
-        category: "8ecf642d-429f-4b51-805b-0678a9af8e28",
         startWorkingHours: timestamp,
         endWorkingHours: timestamp,
-        // no business id set at registration
-        businessId: "",
       );
       await _userRepo.updateUser(user: newUser);
       _prefsRepo.userId = newUser.id;
@@ -99,7 +94,8 @@ class AuthRepositoryImpl implements BaseAuthRepository {
       var credential = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       await _auth.currentUser.updateProfile(displayName: username);
-      return _getOrCreateUserFromCredential(credential);
+      return _getOrCreateUserFromCredential(credential,
+          forcedUsername: username);
     } on Exception catch (ex) {
       _onAuthStateChangedController.add(
           AuthState.authFailedState(message: "Unable to create new user\n$ex"));

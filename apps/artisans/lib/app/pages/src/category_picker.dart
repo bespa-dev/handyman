@@ -56,7 +56,7 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
       } else if (state is SuccessState<void>) {
         if (mounted) {
           showSnackBarMessage(context, message: "Profile updated successfully");
-          context.navigator.popAndPush(Routes.businessProfilePage);
+          context.navigator.pushBusinessProfilePage();
         }
       } else if (state is ErrorState) {
         if (mounted)

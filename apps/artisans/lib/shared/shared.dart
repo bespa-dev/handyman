@@ -12,5 +12,6 @@ export 'src/extensions.dart'; // done
 export 'src/injection.dart';
 export 'src/size_config.dart'; // done
 export 'src/theme.dart'; // done
-export 'src/utils.dart';
-export 'src/validators.dart';
+export 'src/utils.dart';  // done
+export 'src/validators.dart'; // done
+export 'src/duration/duration.dart';  // done

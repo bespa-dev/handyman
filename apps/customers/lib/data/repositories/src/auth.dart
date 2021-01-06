@@ -40,8 +40,8 @@ class AuthRepositoryImpl implements BaseAuthRepository {
         _messaging = messaging,
         _userRepo = userRepo;
 
-  Future<BaseUser> _getOrCreateUserFromCredential(
-      UserCredential credential) async {
+  Future<BaseUser> _getOrCreateUserFromCredential(UserCredential credential,
+      {String forcedUsername}) async {
     var firebaseUser = credential.user;
 
     var user = await _userRepo.getCustomerById(id: firebaseUser.uid);
@@ -50,7 +50,7 @@ class AuthRepositoryImpl implements BaseAuthRepository {
         id: firebaseUser.uid,
         email: firebaseUser.email,
         createdAt: DateTime.now().toIso8601String(),
-        name: firebaseUser.displayName,
+        name: forcedUsername ?? firebaseUser.displayName,
         phone: firebaseUser.phoneNumber,
         token: await _messaging.getToken(),
         avatar: firebaseUser.photoURL,
@@ -91,7 +91,8 @@ class AuthRepositoryImpl implements BaseAuthRepository {
       var credential = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       await _auth.currentUser.updateProfile(displayName: username);
-      return _getOrCreateUserFromCredential(credential);
+      return _getOrCreateUserFromCredential(credential,
+          forcedUsername: username);
     } on Exception catch (ex) {
       _onAuthStateChangedController.add(
           AuthState.authFailedState(message: "Unable to create new user\n$ex"));

@@ -20,7 +20,7 @@ abstract class BaseBusinessRepository implements Exposable {
   Future<List<BaseBusiness>> getBusinessesForArtisan(
       {@required String artisan});
 
-  Future<void> uploadBusiness({
+  Future<String> uploadBusiness({
     @required String docUrl,
     @required String name,
     @required String artisan,

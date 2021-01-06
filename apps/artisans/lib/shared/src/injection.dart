@@ -16,7 +16,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:geocoder/geocoder.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:handyman/data/entities/entities.dart';
 import 'package:handyman/data/repositories/repositories.dart';
@@ -100,9 +99,7 @@ final _galleryRepositoryProvider =
 @Exposed()
 final _locationRepositoryProvider = Provider<BaseLocationRepository>((_) {
   final geocoding = Geocoder.local;
-  final locatorService = Geolocator();
-  return LocationRepositoryImpl(
-      locatorService: locatorService, geocoding: geocoding);
+  return LocationRepositoryImpl(geocoding: geocoding);
 });
 
 final _reviewRepositoryProvider =
