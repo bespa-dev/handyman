@@ -10,6 +10,7 @@
 export 'src/artisan_info.dart';
 export 'src/artisans.dart';
 export 'src/bookings.dart';
+export 'src/category_details.dart';
 export 'src/conversation.dart';
 export 'src/home.dart';
 export 'src/login.dart';
@@ -20,4 +21,3 @@ export 'src/request.dart';
 export 'src/search.dart';
 export 'src/splash.dart';
 export 'src/unknown.dart';
-export 'src/category_details.dart';

@@ -146,15 +146,18 @@ class _SplashPageState extends State<SplashPage>
                             color: kTheme.colorScheme.onPrimary,
                           ),
                         ),
-                        SizedBox(height: kSpacingX8),
-                        Text(
-                          "Sign up takes only 2 minutes",
-                          textAlign: TextAlign.center,
-                          style: kTheme.textTheme.bodyText2.copyWith(
-                            color: kTheme.colorScheme.onPrimary
-                                .withOpacity(kEmphasisMedium),
+                        if (state is SuccessState<String> &&
+                            state.data == null) ...{
+                          SizedBox(height: kSpacingX8),
+                          Text(
+                            "Sign up takes only 2 minutes",
+                            textAlign: TextAlign.center,
+                            style: kTheme.textTheme.bodyText2.copyWith(
+                              color: kTheme.colorScheme.onPrimary
+                                  .withOpacity(kEmphasisMedium),
+                            ),
                           ),
-                        ),
+                        },
                         Spacer(),
                         if (state is SuccessState<String> &&
                             state.data != null) ...{
@@ -190,7 +193,8 @@ class _SplashPageState extends State<SplashPage>
                               onTap: () => context.navigator.pushLoginPage(),
                               label: "Sign in",
                               color: lightTheme
-                                  ? kTheme.colorScheme.background.withOpacity(kEmphasisHigh)
+                                  ? kTheme.colorScheme.background
+                                      .withOpacity(kEmphasisHigh)
                                   : kTheme.colorScheme.secondary,
                               textColor: lightTheme
                                   ? kTheme.colorScheme.onBackground
