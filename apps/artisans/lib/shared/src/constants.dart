@@ -11,11 +11,9 @@ import 'package:algolia/algolia.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:handyman/shared/shared.dart';
 import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:handyman/shared/shared.dart';
-
-import 'size_config.dart';
 
 /// Logger
 final logger = Logger(printer: PrettyPrinter(printTime: true));
@@ -33,38 +31,16 @@ void showSnackBarMessage(
       SnackBar(
         content: Text(message),
         behavior: SnackBarBehavior.floating,
+        duration: Duration(
+          seconds: duration is ShortLength
+              ? 5
+              : duration is LongLength
+                  ? 10
+                  : 1200,
+        ),
       ),
     );
 }
-
-Widget buildFunctionalityNotAvailablePanel(BuildContext context) => Container(
-      height: getProportionateScreenHeight(kSpacingX320),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            Entypo.feather,
-            size: getProportionateScreenHeight(kSpacingX96),
-            color: Theme.of(context).colorScheme.onBackground,
-          ),
-          SizedBox(height: getProportionateScreenHeight(kSpacingX24)),
-          Text(
-            "Functionality currently not available",
-            style: Theme.of(context).textTheme.subtitle1,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
-          Text(
-            "Grab a beverage and check back later!",
-            style: Theme.of(context).textTheme.bodyText2.copyWith(
-                  color: Theme.of(context).disabledColor,
-                ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
 
 /// Sets map style
 Future getMapStyle({bool isLightTheme = false}) async =>

@@ -163,7 +163,7 @@ class _SplashPageState extends State<SplashPage>
                             child: ButtonPrimary(
                               width: SizeConfig.screenWidth * 0.85,
                               onTap: () => context.navigator.pushAndRemoveUntil(
-                                Routes.categoryPickerPage,  /// fixme -> homePage
+                                Routes.homePage,
                                 (route) => false,
                               ),
                               label: "Explore",

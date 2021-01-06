@@ -10,8 +10,7 @@ enum _BusinessEvent {
     DataField<String>("docUrl"),
     DataField<String>("name"),
     DataField<String>("artisan"),
-    DataField<double>("lat"),
-    DataField<double>("lng"),
+    DataField<String>("location"),
   ])
   UploadBusiness,
 }

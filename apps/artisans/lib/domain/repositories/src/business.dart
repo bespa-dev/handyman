@@ -24,7 +24,6 @@ abstract class BaseBusinessRepository implements Exposable {
     @required String docUrl,
     @required String name,
     @required String artisan,
-    @required double lat,
-    @required double lng,
+    @required String location,
   });
 }

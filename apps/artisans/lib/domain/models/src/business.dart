@@ -4,12 +4,12 @@ abstract class BaseBusiness extends BaseModel {
   String docUrl;
   String artisanId;
   String name;
-  LocationMetadata location;
+  String location;
 
   BaseBusiness copyWith({
     String docUrl,
     String artisanId,
     String name,
-    LocationMetadata location,
+    String location,
   });
 }

@@ -18,8 +18,7 @@ abstract class BusinessEvent extends Equatable {
       {@required String docUrl,
       @required String name,
       @required String artisan,
-      @required double lat,
-      @required double lng}) = UploadBusiness.create;
+      @required String location}) = UploadBusiness.create;
 
   final _BusinessEvent _type;
 
@@ -134,16 +133,14 @@ abstract class UploadBusiness extends BusinessEvent {
       {@required this.docUrl,
       @required this.name,
       @required this.artisan,
-      @required this.lat,
-      @required this.lng})
+      @required this.location})
       : super(_BusinessEvent.UploadBusiness);
 
   factory UploadBusiness.create(
       {@required String docUrl,
       @required String name,
       @required String artisan,
-      @required double lat,
-      @required double lng}) = _UploadBusinessImpl;
+      @required String location}) = _UploadBusinessImpl;
 
   final String docUrl;
 
@@ -151,14 +148,12 @@ abstract class UploadBusiness extends BusinessEvent {
 
   final String artisan;
 
-  final double lat;
-
-  final double lng;
+  final String location;
 
   /// Creates a copy of this UploadBusiness but with the given fields
   /// replaced with the new values.
   UploadBusiness copyWith(
-      {String docUrl, String name, String artisan, double lat, double lng});
+      {String docUrl, String name, String artisan, String location});
 }
 
 @immutable
@@ -167,9 +162,8 @@ class _UploadBusinessImpl extends UploadBusiness {
       {@required this.docUrl,
       @required this.name,
       @required this.artisan,
-      @required this.lat,
-      @required this.lng})
-      : super(docUrl: docUrl, name: name, artisan: artisan, lat: lat, lng: lng);
+      @required this.location})
+      : super(docUrl: docUrl, name: name, artisan: artisan, location: location);
 
   @override
   final String docUrl;
@@ -181,28 +175,23 @@ class _UploadBusinessImpl extends UploadBusiness {
   final String artisan;
 
   @override
-  final double lat;
-
-  @override
-  final double lng;
+  final String location;
 
   @override
   _UploadBusinessImpl copyWith(
           {Object docUrl = superEnum,
           Object name = superEnum,
           Object artisan = superEnum,
-          Object lat = superEnum,
-          Object lng = superEnum}) =>
+          Object location = superEnum}) =>
       _UploadBusinessImpl(
         docUrl: docUrl == superEnum ? this.docUrl : docUrl as String,
         name: name == superEnum ? this.name : name as String,
         artisan: artisan == superEnum ? this.artisan : artisan as String,
-        lat: lat == superEnum ? this.lat : lat as double,
-        lng: lng == superEnum ? this.lng : lng as double,
+        location: location == superEnum ? this.location : location as String,
       );
   @override
   String toString() =>
-      'UploadBusiness(docUrl: ${this.docUrl}, name: ${this.name}, artisan: ${this.artisan}, lat: ${this.lat}, lng: ${this.lng})';
+      'UploadBusiness(docUrl: ${this.docUrl}, name: ${this.name}, artisan: ${this.artisan}, location: ${this.location})';
   @override
-  List<Object> get props => [docUrl, name, artisan, lat, lng];
+  List<Object> get props => [docUrl, name, artisan, location];
 }

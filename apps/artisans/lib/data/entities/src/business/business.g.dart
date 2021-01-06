@@ -22,7 +22,7 @@ class BusinessAdapter extends TypeAdapter<Business> {
       docUrl: fields[2] as String,
       artisanId: fields[3] as String,
       name: fields[4] as String,
-      location: fields[5] as LocationMetadata,
+      location: fields[5] as String,
     );
   }
 
@@ -66,9 +66,7 @@ Business _$BusinessFromJson(Map<String, dynamic> json) {
     docUrl: json['doc_url'] as String,
     artisanId: json['artisan_id'] as String,
     name: json['name'] as String,
-    location: json['location'] == null
-        ? null
-        : LocationMetadata.fromJson(json['location'] as Map<String, dynamic>),
+    location: json['location'] as String,
   );
 }
 

@@ -33,7 +33,7 @@ class StorageBloc extends BaseBloc<StorageEvent> {
       );
 
       if (result is UseCaseResultSuccess<String>) {
-        yield BlocState.successState(data: result.value);
+        yield BlocState<String>.successState(data: result.value);
       } else
         yield BlocState.errorState(failure: "Failed to upload media file");
     }

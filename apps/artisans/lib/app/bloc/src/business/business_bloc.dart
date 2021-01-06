@@ -43,8 +43,7 @@ class BusinessBloc extends BaseBloc<BusinessEvent> {
           docUrl: event.docUrl,
           artisan: event.artisan,
           name: event.name,
-          lat: event.lat,
-          lng: event.lng,
+          location: event.location,
         ),
       );
       if (result is UseCaseResultSuccess<String>) {

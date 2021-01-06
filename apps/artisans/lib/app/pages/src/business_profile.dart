@@ -7,9 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/routes/routes.gr.dart';
-import 'package:handyman/app/widgets/src/fields.dart';
+import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
 
@@ -41,7 +42,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
   final _formKey = GlobalKey<FormState>();
 
   /// Location
-  LatLng _location, _initialLocation;
+  LatLng _initialLocation;
 
   /// User
   BaseArtisan _currentUser;
@@ -55,6 +56,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
       _userBloc.listen((state) {
         if (state is SuccessState<BaseArtisan>) {
           _currentUser = state.data;
+          logger.i("Current user -> $_currentUser");
           if (mounted) setState(() {});
         } else if (state is SuccessState<void>) {
           if (mounted) {
@@ -94,7 +96,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
             showSnackBarMessage(context,
                 message: "Failed to save business information");
           }
-        } else if (state is SuccessState<String>) {
+        } else if (state is SuccessState) {
           _isLoading = false;
           if (mounted) {
             setState(() {});
@@ -114,6 +116,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
 
       /// storage upload progress
       _storageBloc.listen((state) {
+        logger.i(state.runtimeType);
         if (state is LoadingState) {
           _isLoading = true;
           if (mounted) setState(() {});
@@ -126,18 +129,9 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
           }
         } else if (state is SuccessState<String>) {
           _docUrl = state.data;
+          _isLoading = false;
           if (mounted) setState(() {});
-
-          /// save business document
-          _businessBloc.add(
-            BusinessEvent.uploadBusiness(
-              docUrl: _docUrl,
-              name: _nameController.text?.trim(),
-              artisan: _userId,
-              lat: _location.latitude,
-              lng: _location.longitude,
-            ),
-          );
+          logger.i("Document upload complete");
         }
       });
 
@@ -146,6 +140,9 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
         ..add(PrefsEvent.getUserIdEvent())
         ..listen((userIdState) {
           if (userIdState is SuccessState<String> && userIdState.data != null) {
+            _userId = userIdState.data;
+            if (mounted) setState(() {});
+
             /// get artisan by id
             _userBloc.add(UserEvent.getArtisanByIdEvent(id: userIdState.data));
           }
@@ -177,13 +174,21 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
       _businessDocument = File(result.files.single.path);
       _fileName = result.names.single.trim();
       if (mounted) setState(() {});
+
+      /// perform upload
+      _storageBloc.add(
+        StorageEvent.uploadFile(
+          path: _timestamp,
+          filePath: _businessDocument.absolute.path,
+          isImage: false,
+        ),
+      );
     }
   }
 
   /// pick user's location
   void _pickLocation() async {
     var apiKey = DotEnv().env["mapsKey"];
-    logger.d(apiKey);
 
     Navigator.push(
       context,
@@ -191,11 +196,19 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
         builder: (context) => PlacePicker(
           apiKey: apiKey,
           onPlacePicked: (result) {
-            logger.i(result.name);
+            _locationName = result.name;
             Navigator.of(context).pop();
+            if (mounted) setState(() {});
           },
           initialPosition: _initialLocation,
           useCurrentLocation: true,
+          enableMyLocationButton: true,
+          enableMapTypeButton: false,
+          initialMapType: MapType.normal,
+          usePinPointingSearch: true,
+          forceAndroidLocationManager: Platform.isAndroid,
+          searchingText: "Search business address",
+          autocompleteComponents: [Component(Component.country, "gh")],
         ),
       ),
     );
@@ -212,142 +225,153 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
         body: Stack(
           children: [
             /// content
-            Positioned.fill(
-              top: kSpacingX96,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  kSpacingX24,
-                  kSpacingNone,
-                  kSpacingX24,
-                  kSpacingX8,
-                ),
-                child: Column(
-                  // mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Business Profile",
-                      style: kTheme.textTheme.headline4.copyWith(
-                        color: kTheme.colorScheme.onPrimary,
-                      ),
-                    ),
-                    SizedBox(height: kSpacingX8),
-                    Text(
-                      "Complete your business profile details by uploading a supporting document for approval",
-                      style: kTheme.textTheme.bodyText1.copyWith(
-                        color: kTheme.colorScheme.onPrimary,
-                      ),
-                    ),
-                    SizedBox(height: kSpacingX48),
-
-                    /// business name
-                    Form(
-                      key: _formKey,
-                      child: TextFormInput(
-                        labelText: "Business name",
-                        controller: _nameController,
-                        cursorColor: kTheme.colorScheme.onPrimary,
-                        validator: (_) => _.isEmpty ? "Name is required" : null,
-                        textCapitalization: TextCapitalization.words,
-                        enabled: !_isLoading,
-                      ),
-                    ),
-
-                    /// business doc
-                    Card(
-                      child: ListTile(
-                        onTap: _pickDocument,
-                        title: Text("Upload Business Document"),
-                        subtitle: Text(
-                          _fileName == null
-                              ? "This is required for approval"
-                              : _fileName,
-                        ),
-                        trailing: Icon(
-                          kArrowIcon,
-                          color: kTheme.colorScheme.onBackground,
+            if (_isLoading) ...{
+              Loading(),
+            } else ...{
+              Positioned.fill(
+                top: kSpacingX96,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    kSpacingX24,
+                    kSpacingNone,
+                    kSpacingX24,
+                    kSpacingX8,
+                  ),
+                  child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Business Profile",
+                        style: kTheme.textTheme.headline4.copyWith(
+                          color: kTheme.colorScheme.onPrimary,
                         ),
                       ),
-                    ),
-
-                    /// business location
-                    Card(
-                      child: ListTile(
-                        onTap: _pickLocation,
-                        title: Text("Business Location"),
-                        subtitle: Text(
-                          _locationName == null
-                              ? "This is required for approval"
-                              : _locationName,
-                        ),
-                        trailing: Icon(
-                          kArrowIcon,
-                          color: kTheme.colorScheme.onBackground,
+                      SizedBox(height: kSpacingX8),
+                      Text(
+                        "Complete your business profile details by uploading a supporting document for approval",
+                        style: kTheme.textTheme.bodyText1.copyWith(
+                          color: kTheme.colorScheme.onPrimary,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                      SizedBox(height: kSpacingX48),
 
-            if (_docUrl != null && _location != null) ...{
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: InkWell(
-                  splashColor: kTheme.splashColor,
-                  onTap: () {
-                    if (!_formKey.currentState.validate()) return;
-                    _formKey.currentState.save();
-
-                    /// perform upload
-                    _storageBloc.add(
-                      StorageEvent.uploadFile(
-                        path: _timestamp,
-                        filePath: _businessDocument.absolute.path,
-                        isImage: false,
+                      /// business name
+                      Form(
+                        key: _formKey,
+                        child: TextFormInput(
+                          labelText: "Business name",
+                          controller: _nameController,
+                          cursorColor: kTheme.colorScheme.onPrimary,
+                          validator: (_) =>
+                              _.isEmpty ? "Name is required" : null,
+                          textCapitalization: TextCapitalization.words,
+                          enabled: !_isLoading,
+                        ),
                       ),
-                    );
-                  },
-                  child: Container(
-                    width: SizeConfig.screenWidth,
-                    alignment: Alignment.center,
-                    height: kToolbarHeight,
-                    decoration: BoxDecoration(
-                      color: kTheme.colorScheme.secondary,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Save & Continue",
-                          style: kTheme.textTheme.button.copyWith(
-                            color: kTheme.colorScheme.onSecondary,
+
+                      /// business doc
+                      Card(
+                        child: ListTile(
+                          onTap: _pickDocument,
+                          title: Text("Upload Business Document"),
+                          subtitle: Text(
+                            _fileName == null
+                                ? "This is required for approval"
+                                : _fileName,
+                          ),
+                          trailing: Icon(
+                            kArrowIcon,
+                            color: kTheme.colorScheme.onBackground,
                           ),
                         ),
-                        SizedBox(width: kSpacingX12),
-                        Icon(
-                          kArrowIcon,
-                          color: kTheme.colorScheme.onSecondary,
+                      ),
+
+                      /// business location
+                      Card(
+                        child: ListTile(
+                          onTap: _pickLocation,
+                          title: Text("Business Location"),
+                          subtitle: Text(
+                            _locationName == null
+                                ? "This is required for approval"
+                                : _locationName,
+                          ),
+                          trailing: Icon(
+                            kArrowIcon,
+                            color: kTheme.colorScheme.onBackground,
+                          ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            },
 
-            /// back button
-            Positioned(
-              top: kSpacingX36,
-              left: kSpacingX16,
-              child: IconButton(
-                icon: Icon(kBackIcon),
-                color: kTheme.colorScheme.onPrimary,
-                onPressed: () => context.navigator.pop(),
+              /// back button
+              Positioned(
+                top: kSpacingX36,
+                left: kSpacingX16,
+                child: IconButton(
+                  icon: Icon(kBackIcon),
+                  color: kTheme.colorScheme.onPrimary,
+                  onPressed: () => context.navigator.pop(),
+                ),
               ),
-            ),
+
+              if (_locationName != null &&
+                  _businessDocument != null &&
+                  _docUrl != null) ...{
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: InkWell(
+                    splashColor: kTheme.splashColor,
+                    onTap: () {
+                      if (!_formKey.currentState.validate()) return;
+                      _formKey.currentState.save();
+                      // setState(() {
+                      //   _isLoading = true;
+                      // });
+
+                      /// save business
+                      _businessBloc.add(
+                        BusinessEvent.uploadBusiness(
+                          docUrl: _docUrl,
+                          name: _nameController.text?.trim(),
+                          artisan: _userId,
+                          location: _locationName,
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: SizeConfig.screenWidth,
+                      alignment: Alignment.center,
+                      height: kToolbarHeight,
+                      decoration: BoxDecoration(
+                        color: kTheme.colorScheme.secondary,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Save & Continue",
+                            style: kTheme.textTheme.button.copyWith(
+                              color: kTheme.colorScheme.onSecondary,
+                            ),
+                          ),
+                          SizedBox(width: kSpacingX12),
+                          Icon(
+                            kArrowIcon,
+                            color: kTheme.colorScheme.onSecondary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              },
+            },
           ],
         ),
       ),

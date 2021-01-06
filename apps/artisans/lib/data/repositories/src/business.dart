@@ -11,6 +11,7 @@ import 'package:handyman/data/entities/entities.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/domain/repositories/repositories.dart';
 import 'package:handyman/domain/sources/sources.dart';
+import 'package:handyman/shared/shared.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
@@ -58,8 +59,7 @@ class BusinessRepositoryImpl implements BaseBusinessRepository {
     @required String docUrl,
     @required String name,
     @required String artisan,
-    @required double lat,
-    @required double lng,
+    @required String location,
   }) async {
     final business = Business(
       id: Uuid().v4(),
@@ -67,10 +67,7 @@ class BusinessRepositoryImpl implements BaseBusinessRepository {
       docUrl: docUrl,
       artisanId: artisan,
       name: name,
-      location: LocationMetadata(
-        lat: lat,
-        lng: lng,
-      ),
+      location: location,
     );
     await _localDatasource.updateBusiness(business: business);
     await _remoteDatasource.updateBusiness(business: business);

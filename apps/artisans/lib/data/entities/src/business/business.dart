@@ -30,7 +30,7 @@ class Business extends BaseBusiness {
 
   @HiveField(5)
   @override
-  final LocationMetadata location;
+  final String location;
 
   Business({
     @required this.id,
@@ -55,7 +55,7 @@ class Business extends BaseBusiness {
     String docUrl,
     String artisanId,
     String name,
-    LocationMetadata location,
+    String location,
   }) =>
       Business(
         id: this.id,

@@ -64,8 +64,7 @@ class UploadBusinessUseCase
         docUrl: params.docUrl,
         name: params.name,
         artisan: params.artisan,
-        lat: params.lat,
-        lng: params.lng,
+        location: params.location,
       );
       return UseCaseResult<String>.success(id);
     } on Exception {
@@ -86,14 +85,12 @@ class UploadBusinessUseCaseParams {
   final String docUrl;
   final String artisan;
   final String name;
-  final double lat;
-  final double lng;
+  final String location;
 
   const UploadBusinessUseCaseParams({
     @required this.docUrl,
     @required this.artisan,
     @required this.name,
-    @required this.lat,
-    @required this.lng,
+    @required this.location,
   });
 }
