@@ -13,6 +13,7 @@ import 'package:handyman/app/widgets/src/fields.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
 
+/// https://pub.dev/packages/google_maps_place_picker
 class BusinessProfilePage extends StatefulWidget {
   @override
   _BusinessProfilePageState createState() => _BusinessProfilePageState();
@@ -188,7 +189,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
       context,
       MaterialPageRoute(
         builder: (context) => PlacePicker(
-          apiKey: apiKey, // Put YOUR OWN KEY here.
+          apiKey: apiKey,
           onPlacePicked: (result) {
             logger.i(result.name);
             Navigator.of(context).pop();
