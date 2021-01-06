@@ -1,8 +1,10 @@
 // import 'package:auto_route/auto_route.dart';
 // import 'package:handyman/app/routes/routes.gr.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:handyman/app/bloc/bloc.dart';
+import 'package:handyman/app/routes/routes.gr.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
@@ -51,12 +53,14 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
       if (state is SuccessState<BaseArtisan>) {
         _currentUser = state.data;
         if (mounted) setState(() {});
-      } else if (state is LoadingState) {
-        _isLoading = true;
-        if (mounted) setState(() {});
-      } else {
-        _isLoading = false;
-        if (mounted) setState(() {});
+      } else if (state is SuccessState<void>) {
+        if (mounted) {
+          showSnackBarMessage(context, message: "Profile updated successfully");
+          context.navigator.popAndPush(Routes.businessProfilePage);
+        }
+      } else if (state is ErrorState) {
+        if (mounted)
+          showSnackBarMessage(context, message: "Failed to update profile");
       }
     });
 
@@ -135,17 +139,22 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
                       child: InkWell(
                         splashColor: kTheme.splashColor,
                         onTap: () {
-                          logger.d("services -> $_selectedCategory");
                           if (_selectedCategory == null)
                             showSnackBarMessage(context,
                                 message: "Please select a service first");
                           else {
                             final updatedUser = _currentUser.copyWith(
-
+                              category: _selectedCategory,
+                              categoryGroup:
+                                  ServiceCategoryGroup.featured().name(),
                             );
-                            logger.d("Updated user -> $updatedUser");
-                            // _userBloc.add(
-                            //     UserEvent.updateUserEvent(user: _currentUser.copyWith(),));
+
+                            /// update user profile information
+                            _userBloc.add(UserEvent.updateUserEvent(
+                              user: updatedUser,
+                            ));
+                            showSnackBarMessage(context,
+                                message: "Updating profile");
                           }
                         },
                         child: Container(
