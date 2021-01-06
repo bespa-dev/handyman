@@ -17,6 +17,7 @@ class TextFormInput extends TextFormField {
     String hintText = '',
     String helperText = '',
     TextInputType keyboardType = TextInputType.text,
+    TextCapitalization textCapitalization = TextCapitalization.none,
     TextInputAction textInputAction,
     TextEditingController controller,
     bool enabled,

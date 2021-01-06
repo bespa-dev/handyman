@@ -112,7 +112,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       fit: BoxFit.cover,
                       width: SizeConfig.screenWidth,
                     ),
-                    SizedBox(height: kSpacingX16),
+                    SizedBox(height: kSpacingX36),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Column(
@@ -135,7 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: kSpacingX42),
+                    SizedBox(height: kSpacingX24),
                     Form(
                       key: _formKey,
                       child: Column(
@@ -148,6 +148,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             keyboardType: TextInputType.name,
                             textInputAction: TextInputAction.next,
                             enabled: !_isLoading,
+                            textCapitalization: TextCapitalization.words,
                             color: kTheme.colorScheme.onPrimary,
                             validator: (_) => _.isEmpty ? "Required" : null,
                           ),
@@ -214,13 +215,16 @@ class _RegisterPageState extends State<RegisterPage> {
   void _validateAndSignUp() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      _authBloc.add(
-        AuthEvent.emailSignUpEvent(
-          username: _nameController.text?.trim(),
-          email: _emailController.text?.trim(),
-          password: _passwordController.text?.trim(),
-        ),
-      );
+
+      /// todo -> validate & sign up
+      // _authBloc.add(
+      //   AuthEvent.emailSignUpEvent(
+      //     username: _nameController.text?.trim(),
+      //     email: _emailController.text?.trim(),
+      //     password: _passwordController.text?.trim(),
+      //   ),
+      // );
+      context.navigator.pushCategoryPickerPage();
     }
   }
 }

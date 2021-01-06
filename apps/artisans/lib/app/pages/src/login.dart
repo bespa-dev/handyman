@@ -111,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                       fit: BoxFit.cover,
                       width: SizeConfig.screenWidth,
                     ),
-                    SizedBox(height: kSpacingX8),
+                    SizedBox(height: kSpacingX36),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Column(
@@ -142,12 +142,8 @@ class _LoginPageState extends State<LoginPage> {
                         onTap: () =>
                             _authBloc.add(AuthEvent.federatedOAuthEvent()),
                         label: "Sign in with Google",
-                        color: lightTheme
-                            ? kTheme.colorScheme.background.withOpacity(kEmphasisHigh)
-                            : kTheme.colorScheme.secondary,
-                        textColor: lightTheme
-                            ? kTheme.colorScheme.onBackground
-                            : kTheme.colorScheme.onSecondary,
+                        color: kTheme.colorScheme.onBackground,
+                        textColor: kTheme.colorScheme.background,
                         icon: kGoogleIcon,
                         gravity: ButtonIconGravity.START,
                       ),
@@ -227,8 +223,12 @@ class _LoginPageState extends State<LoginPage> {
                           label: "Sign in",
                           gravity: ButtonIconGravity.END,
                           icon: kArrowIcon,
-                          color: kTheme.colorScheme.onBackground,
-                          textColor: kTheme.colorScheme.background,
+                          color: lightTheme
+                              ? kTheme.colorScheme.background.withOpacity(kEmphasisHigh)
+                              : kTheme.colorScheme.secondary,
+                          textColor: lightTheme
+                              ? kTheme.colorScheme.onBackground
+                              : kTheme.colorScheme.onSecondary,
                         ),
                       )
                     }
