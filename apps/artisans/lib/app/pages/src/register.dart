@@ -215,15 +215,13 @@ class _RegisterPageState extends State<RegisterPage> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      /// todo -> validate & sign up
-      // _authBloc.add(
-      //   AuthEvent.emailSignUpEvent(
-      //     username: _nameController.text?.trim(),
-      //     email: _emailController.text?.trim(),
-      //     password: _passwordController.text?.trim(),
-      //   ),
-      // );
-      context.navigator.pushCategoryPickerPage();
+      _authBloc.add(
+        AuthEvent.emailSignUpEvent(
+          username: _nameController.text?.trim(),
+          email: _emailController.text?.trim(),
+          password: _passwordController.text?.trim(),
+        ),
+      );
     }
   }
 }

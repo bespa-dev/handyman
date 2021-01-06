@@ -9,7 +9,6 @@
 
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/domain/repositories/repositories.dart';
 import 'package:handyman/domain/usecases/usecases.dart';
@@ -17,13 +16,12 @@ import 'package:meta/meta.dart';
 
 import 'prefs_event.dart';
 
-class PrefsBloc extends Bloc<PrefsEvent, BlocState> {
+class PrefsBloc extends BaseBloc<PrefsEvent> {
   final BasePreferenceRepository _repo;
 
   PrefsBloc({@required BasePreferenceRepository repo})
       : assert(repo != null),
-        _repo = repo,
-        super(BlocState.initialState());
+        _repo = repo;
 
   @override
   Stream<BlocState> mapEventToState(

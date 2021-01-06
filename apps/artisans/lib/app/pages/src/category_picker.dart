@@ -1,7 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:handyman/app/bloc/bloc.dart';
-import 'package:handyman/app/widgets/src/category_card.dart';
+import 'package:handyman/app/routes/routes.gr.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
@@ -14,16 +15,19 @@ class CategoryPickerPage extends StatefulWidget {
 class _CategoryPickerPageState extends State<CategoryPickerPage> {
   /// blocs
   final _userBloc = UserBloc(repo: Injection.get());
+  final _prefsBloc = PrefsBloc(repo: Injection.get());
   final _categoryBloc = CategoryBloc(repo: Injection.get());
 
   /// UI
   ThemeData kTheme;
+  String _selectedCategory;
+  BaseArtisan _currentUser;
   bool _isLoading = false;
-  List<String> _selectedCategories = [];
 
   @override
   void dispose() {
     _userBloc.close();
+    _prefsBloc.close();
     _categoryBloc.close();
     super.dispose();
   }
@@ -31,6 +35,42 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
   @override
   void initState() {
     super.initState();
+
+    /// get user id
+    _prefsBloc
+      ..add(PrefsEvent.getUserIdEvent())
+      ..listen((userIdState) {
+        if (userIdState is SuccessState<String> && userIdState.data != null) {
+          /// get artisan by id
+          _userBloc
+            ..add(UserEvent.getArtisanByIdEvent(id: userIdState.data))
+            ..listen((state) {
+              if (state is SuccessState<BaseArtisan>) {
+                _currentUser = state.data;
+                if (mounted) setState(() {});
+              }
+            });
+        }
+      });
+
+    /// user update status
+    _userBloc.listen((state) {
+      if (state is SuccessState<void>) {
+        _isLoading = false;
+        if (mounted) setState(() {});
+        logger.d("Updated user");
+        context.navigator.pushAndRemoveUntil(
+          Routes.businessProfilePage,
+          (route) => false,
+        );
+      } else if (state is LoadingState) {
+        _isLoading = true;
+        if (mounted) setState(() {});
+      } else {
+        _isLoading = false;
+        if (mounted) setState(() {});
+      }
+    });
 
     /// observe categories
     _categoryBloc.add(
@@ -48,7 +88,9 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
       builder: (_, state) => Scaffold(
         backgroundColor: kTheme.colorScheme.primary,
         body: SafeArea(
-          child: Stack(
+          child: _isLoading
+          ? Loading()
+          : Stack(
             children: [
               /// content
               Positioned.fill(
@@ -80,25 +122,13 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
                           child: StreamBuilder<List<BaseServiceCategory>>(
                             stream: state.data,
                             initialData: [],
-                            builder: (_, snapshot) => GridView.builder(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2),
-                              itemCount: snapshot.data.length,
-                              itemBuilder: (_, index) {
-                                final category = snapshot.data[index];
-                                return GridCategoryCardItem(
-                                  category: category,
-                                  isSelectable: true,
-                                  onSelected: (item) {
-                                    _selectedCategories.addIfDoesNotExist(item);
-                                    setState(() {});
-                                  },
-                                );
+                            builder: (_, snapshot) => SelectableGridCategory(
+                              categories: snapshot.data,
+                              selected: _selectedCategory,
+                              onSelected: (item) {
+                                _selectedCategory = item.id;
+                                setState(() {});
                               },
-                              padding: EdgeInsets.only(bottom: kSpacingX36),
-                              addAutomaticKeepAlives: false,
-                              cacheExtent: 100,
                             ),
                           ),
                         ),
@@ -116,7 +146,13 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
                 child: InkWell(
                   splashColor: kTheme.splashColor,
                   onTap: () {
-                    logger.d("services -> $_selectedCategories");
+                    logger.d("services -> $_selectedCategory");
+                    if (_selectedCategory == null)
+                      showSnackBarMessage(context,
+                          message: "Please select a service first");
+                    else
+                      _userBloc
+                          .add(UserEvent.updateUserEvent(user: _currentUser));
                   },
                   child: Container(
                     width: SizeConfig.screenWidth,

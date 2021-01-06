@@ -17,12 +17,14 @@ import 'package:handyman/shared/shared.dart';
 class GridCategoryCardItem extends StatefulWidget {
   final BaseServiceCategory category;
   final bool isSelectable;
-  final Function(String) onSelected;
+  final bool isSelected;
+  final Function(BaseServiceCategory) onSelected;
 
   const GridCategoryCardItem({
     Key key,
     @required this.category,
     this.isSelectable = false,
+    this.isSelected = false,
     this.onSelected,
   }) : super(key: key);
 
@@ -31,8 +33,6 @@ class GridCategoryCardItem extends StatefulWidget {
 }
 
 class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
-  bool _isSelected = false;
-
   @override
   Widget build(BuildContext context) {
     final kTheme = Theme.of(context);
@@ -57,11 +57,8 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
             BorderRadius.circular(getProportionateScreenWidth(kSpacingX12)),
         onTap: () {
           if (widget.isSelectable) {
-            setState(() {
-              _isSelected = !_isSelected;
-            });
             if (widget.onSelected != null) {
-              widget.onSelected(widget.category.id);
+              widget.onSelected(widget.category);
             }
           } else {
             context.navigator
@@ -91,7 +88,7 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
               bottom: kSpacingNone,
               child: Container(
                 decoration: BoxDecoration(
-                  color: _isSelected ? selectedColor : unselectedColor,
+                  color: widget.isSelected ? selectedColor : unselectedColor,
                 ),
                 alignment: Alignment.center,
                 child: Text(
@@ -99,8 +96,9 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: kTheme.textTheme.button.copyWith(
-                    color:
-                        _isSelected ? selectedTextColor : unselectedTextColor,
+                    color: widget.isSelected
+                        ? selectedTextColor
+                        : unselectedTextColor,
                   ),
                 ),
               ),
@@ -110,4 +108,44 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
       ),
     );
   }
+}
+
+class SelectableGridCategory extends StatefulWidget {
+  final List<BaseServiceCategory> categories;
+  final Function(BaseServiceCategory) onSelected;
+  final String selected;
+
+  const SelectableGridCategory({
+    Key key,
+    @required this.categories,
+    @required this.onSelected,
+    @required this.selected,
+  }) : super(key: key);
+
+  @override
+  _SelectableGridCategoryState createState() => _SelectableGridCategoryState();
+}
+
+class _SelectableGridCategoryState extends State<SelectableGridCategory> {
+  @override
+  Widget build(BuildContext context) => GridView.builder(
+        gridDelegate:
+            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        itemCount: widget.categories.length,
+        itemBuilder: (_, index) {
+          final category = widget.categories[index];
+          return GridCategoryCardItem(
+            category: category,
+            isSelectable: true,
+            isSelected: widget.selected == category.id,
+            onSelected: (item) {
+              widget.onSelected(item);
+              setState(() {});
+            },
+          );
+        },
+        padding: EdgeInsets.only(bottom: kSpacingX36),
+        addAutomaticKeepAlives: false,
+        cacheExtent: 100,
+      );
 }

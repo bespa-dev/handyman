@@ -239,12 +239,8 @@ class HiveLocalDatasource extends BaseLocalDatasource {
 
   @override
   Future<void> updateUser(BaseUser user) async {
-    if (user is Customer) {
-      await customerBox.put(user.id, user);
-    } else if (user is Artisan) {
-      await artisanBox.put(user.id, user);
-      notifyListeners();
-    }
+    await customerBox.put(user.id, user);
+    notifyListeners();
   }
 
   @override

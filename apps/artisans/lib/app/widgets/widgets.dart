@@ -7,7 +7,6 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-export 'src/account_selector.dart';
 export 'src/app_bar.dart';
 export 'src/buttons.dart';
 export 'src/category_card.dart';

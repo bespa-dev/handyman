@@ -254,8 +254,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
 
   @override
   Future<void> updateUser(BaseUser user) async => await firestore
-      .collection(
-          user is Artisan ? RefUtils.kArtisanRef : RefUtils.kCustomerRef)
+      .collection(RefUtils.kCustomerRef)
       .doc(user.id)
       .set(user.toJson(), SetOptions(merge: true));
 
