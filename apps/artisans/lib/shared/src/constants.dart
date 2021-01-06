@@ -120,6 +120,7 @@ const kBackIcon = AntDesign.back;
 const kPlusIcon = Feather.plus;
 const kRatingStar = Entypo.star;
 const kMailIcon = Feather.mail;
+const kEditIcon = Feather.edit_2;
 const kGoogleIcon = AntDesign.google;
 const kUserImageNotFound = Icons.link_off_outlined;
 const kArrowIcon = Icons.arrow_right_alt_outlined;

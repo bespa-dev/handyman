@@ -16,6 +16,10 @@ import 'package:handyman/shared/shared.dart';
 
 /// https://pub.dev/packages/google_maps_place_picker
 class BusinessProfilePage extends StatefulWidget {
+  final BaseBusiness business;
+
+  const BusinessProfilePage({Key key, this.business}) : super(key: key);
+
   @override
   _BusinessProfilePageState createState() => _BusinessProfilePageState();
 }
@@ -52,6 +56,9 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
     super.initState();
 
     if (mounted) {
+      _nameController.text = widget.business?.name;
+      _locationName = widget.business?.location;
+
       /// user update status
       _userBloc.listen((state) {
         if (state is SuccessState<BaseArtisan>) {
@@ -110,6 +117,8 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                   ),
                 ),
               );
+            else
+              context.navigator.pop();
           }
         }
       });
@@ -178,7 +187,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
       /// perform upload
       _storageBloc.add(
         StorageEvent.uploadFile(
-          path: _timestamp,
+          path: widget.business == null ? _timestamp : widget.business.id,
           filePath: _businessDocument.absolute.path,
           isImage: false,
         ),
@@ -329,19 +338,27 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                     onTap: () {
                       if (!_formKey.currentState.validate()) return;
                       _formKey.currentState.save();
-                      // setState(() {
-                      //   _isLoading = true;
-                      // });
 
                       /// save business
-                      _businessBloc.add(
-                        BusinessEvent.uploadBusiness(
-                          docUrl: _docUrl,
-                          name: _nameController.text?.trim(),
-                          artisan: _userId,
-                          location: _locationName,
-                        ),
-                      );
+                      if (widget.business == null)
+                        _businessBloc.add(
+                          BusinessEvent.uploadBusiness(
+                            docUrl: _docUrl,
+                            name: _nameController.text?.trim(),
+                            artisan: _userId,
+                            location: _locationName,
+                          ),
+                        );
+                      else {
+                        _businessBloc.add(BusinessEvent.updateBusiness(
+                          business: widget.business.copyWith(
+                            docUrl: _docUrl,
+                            name: _nameController.text?.trim(),
+                            artisanId: _userId,
+                            location: _locationName,
+                          ),
+                        ));
+                      }
                     },
                     child: Container(
                       width: SizeConfig.screenWidth,

@@ -6,6 +6,9 @@ part 'business_event.super.dart';
 enum _BusinessEvent {
   @Data(fields: [DataField<String>("artisanId")])
   GetBusinessesForArtisan,
+  @generic
+  @Data(fields: [DataField<Generic>("business")])
+  UpdateBusiness,
   @Data(fields: [
     DataField<String>("docUrl"),
     DataField<String>("name"),

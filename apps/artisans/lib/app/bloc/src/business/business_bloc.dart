@@ -23,6 +23,7 @@ class BusinessBloc extends BaseBloc<BusinessEvent> {
     yield* event.when(
       getBusinessesForArtisan: (e) => _mapEventToState(e),
       uploadBusiness: (e) => _mapEventToState(e),
+      updateBusiness: (e) => _mapEventToState(e),
     );
   }
 
@@ -33,7 +34,7 @@ class BusinessBloc extends BaseBloc<BusinessEvent> {
       final result =
           await GetBusinessesForArtisanUseCase(_repo).execute(event.artisanId);
       if (result is UseCaseResultSuccess<List<BaseBusiness>>) {
-        yield BlocState.successState(data: result.value);
+        yield BlocState<List<BaseBusiness>>.successState(data: result.value);
       } else
         yield BlocState.errorState(
             failure: "No businesses registered under this artisan");
@@ -51,6 +52,12 @@ class BusinessBloc extends BaseBloc<BusinessEvent> {
       } else
         yield BlocState.errorState(
             failure: "Failed to upload business details");
+    } else if (event is UpdateBusiness) {
+      final result = await UpdateBusinessUseCase(_repo).execute(event.business);
+      if (result is UseCaseResultSuccess)
+        yield BlocState.successState();
+      else
+        BlocState.errorState(failure: "Failed to update business model");
     }
   }
 }

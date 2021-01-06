@@ -8,27 +8,33 @@ part of 'business_event.dart';
 // **************************************************************************
 
 @immutable
-abstract class BusinessEvent extends Equatable {
+abstract class BusinessEvent<T> extends Equatable {
   const BusinessEvent(this._type);
 
   factory BusinessEvent.getBusinessesForArtisan({@required String artisanId}) =
-      GetBusinessesForArtisan.create;
+      GetBusinessesForArtisan<T>.create;
+
+  factory BusinessEvent.updateBusiness({@required T business}) =
+      UpdateBusiness<T>.create;
 
   factory BusinessEvent.uploadBusiness(
       {@required String docUrl,
       @required String name,
       @required String artisan,
-      @required String location}) = UploadBusiness.create;
+      @required String location}) = UploadBusiness<T>.create;
 
   final _BusinessEvent _type;
 
   /// The [when] method is the equivalent to pattern matching.
   /// Its prototype depends on the _BusinessEvent [_type]s defined.
   R when<R extends Object>(
-      {@required R Function(GetBusinessesForArtisan) getBusinessesForArtisan,
-      @required R Function(UploadBusiness) uploadBusiness}) {
+      {@required R Function(GetBusinessesForArtisan<T>) getBusinessesForArtisan,
+      @required R Function(UpdateBusiness<T>) updateBusiness,
+      @required R Function(UploadBusiness<T>) uploadBusiness}) {
     assert(() {
-      if (getBusinessesForArtisan == null || uploadBusiness == null) {
+      if (getBusinessesForArtisan == null ||
+          updateBusiness == null ||
+          uploadBusiness == null) {
         throw 'check for all possible cases';
       }
       return true;
@@ -36,6 +42,8 @@ abstract class BusinessEvent extends Equatable {
     switch (this._type) {
       case _BusinessEvent.GetBusinessesForArtisan:
         return getBusinessesForArtisan(this as GetBusinessesForArtisan);
+      case _BusinessEvent.UpdateBusiness:
+        return updateBusiness(this as UpdateBusiness);
       case _BusinessEvent.UploadBusiness:
         return uploadBusiness(this as UploadBusiness);
     }
@@ -47,9 +55,10 @@ abstract class BusinessEvent extends Equatable {
   /// On the other hand, it adds an extra orElse required parameter,
   /// for fallback behavior.
   R whenOrElse<R extends Object>(
-      {R Function(GetBusinessesForArtisan) getBusinessesForArtisan,
-      R Function(UploadBusiness) uploadBusiness,
-      @required R Function(BusinessEvent) orElse}) {
+      {R Function(GetBusinessesForArtisan<T>) getBusinessesForArtisan,
+      R Function(UpdateBusiness<T>) updateBusiness,
+      R Function(UploadBusiness<T>) uploadBusiness,
+      @required R Function(BusinessEvent<T>) orElse}) {
     assert(() {
       if (orElse == null) {
         throw 'Missing orElse case';
@@ -60,6 +69,9 @@ abstract class BusinessEvent extends Equatable {
       case _BusinessEvent.GetBusinessesForArtisan:
         if (getBusinessesForArtisan == null) break;
         return getBusinessesForArtisan(this as GetBusinessesForArtisan);
+      case _BusinessEvent.UpdateBusiness:
+        if (updateBusiness == null) break;
+        return updateBusiness(this as UpdateBusiness);
       case _BusinessEvent.UploadBusiness:
         if (uploadBusiness == null) break;
         return uploadBusiness(this as UploadBusiness);
@@ -70,10 +82,13 @@ abstract class BusinessEvent extends Equatable {
   /// The [whenPartial] method is equivalent to [whenOrElse],
   /// but non-exhaustive.
   void whenPartial(
-      {void Function(GetBusinessesForArtisan) getBusinessesForArtisan,
-      void Function(UploadBusiness) uploadBusiness}) {
+      {void Function(GetBusinessesForArtisan<T>) getBusinessesForArtisan,
+      void Function(UpdateBusiness<T>) updateBusiness,
+      void Function(UploadBusiness<T>) uploadBusiness}) {
     assert(() {
-      if (getBusinessesForArtisan == null && uploadBusiness == null) {
+      if (getBusinessesForArtisan == null &&
+          updateBusiness == null &&
+          uploadBusiness == null) {
         throw 'provide at least one branch';
       }
       return true;
@@ -82,6 +97,9 @@ abstract class BusinessEvent extends Equatable {
       case _BusinessEvent.GetBusinessesForArtisan:
         if (getBusinessesForArtisan == null) break;
         return getBusinessesForArtisan(this as GetBusinessesForArtisan);
+      case _BusinessEvent.UpdateBusiness:
+        if (updateBusiness == null) break;
+        return updateBusiness(this as UpdateBusiness);
       case _BusinessEvent.UploadBusiness:
         if (uploadBusiness == null) break;
         return uploadBusiness(this as UploadBusiness);
@@ -93,22 +111,22 @@ abstract class BusinessEvent extends Equatable {
 }
 
 @immutable
-abstract class GetBusinessesForArtisan extends BusinessEvent {
+abstract class GetBusinessesForArtisan<T> extends BusinessEvent<T> {
   const GetBusinessesForArtisan({@required this.artisanId})
       : super(_BusinessEvent.GetBusinessesForArtisan);
 
   factory GetBusinessesForArtisan.create({@required String artisanId}) =
-      _GetBusinessesForArtisanImpl;
+      _GetBusinessesForArtisanImpl<T>;
 
   final String artisanId;
 
   /// Creates a copy of this GetBusinessesForArtisan but with the given fields
   /// replaced with the new values.
-  GetBusinessesForArtisan copyWith({String artisanId});
+  GetBusinessesForArtisan<T> copyWith({String artisanId});
 }
 
 @immutable
-class _GetBusinessesForArtisanImpl extends GetBusinessesForArtisan {
+class _GetBusinessesForArtisanImpl<T> extends GetBusinessesForArtisan<T> {
   const _GetBusinessesForArtisanImpl({@required this.artisanId})
       : super(artisanId: artisanId);
 
@@ -116,7 +134,7 @@ class _GetBusinessesForArtisanImpl extends GetBusinessesForArtisan {
   final String artisanId;
 
   @override
-  _GetBusinessesForArtisanImpl copyWith({Object artisanId = superEnum}) =>
+  _GetBusinessesForArtisanImpl<T> copyWith({Object artisanId = superEnum}) =>
       _GetBusinessesForArtisanImpl(
         artisanId:
             artisanId == superEnum ? this.artisanId : artisanId as String,
@@ -128,7 +146,41 @@ class _GetBusinessesForArtisanImpl extends GetBusinessesForArtisan {
 }
 
 @immutable
-abstract class UploadBusiness extends BusinessEvent {
+abstract class UpdateBusiness<T> extends BusinessEvent<T> {
+  const UpdateBusiness({@required this.business})
+      : super(_BusinessEvent.UpdateBusiness);
+
+  factory UpdateBusiness.create({@required T business}) =
+      _UpdateBusinessImpl<T>;
+
+  final T business;
+
+  /// Creates a copy of this UpdateBusiness but with the given fields
+  /// replaced with the new values.
+  UpdateBusiness<T> copyWith({T business});
+}
+
+@immutable
+class _UpdateBusinessImpl<T> extends UpdateBusiness<T> {
+  const _UpdateBusinessImpl({@required this.business})
+      : super(business: business);
+
+  @override
+  final T business;
+
+  @override
+  _UpdateBusinessImpl<T> copyWith({Object business = superEnum}) =>
+      _UpdateBusinessImpl(
+        business: business == superEnum ? this.business : business as T,
+      );
+  @override
+  String toString() => 'UpdateBusiness(business: ${this.business})';
+  @override
+  List<Object> get props => [business];
+}
+
+@immutable
+abstract class UploadBusiness<T> extends BusinessEvent<T> {
   const UploadBusiness(
       {@required this.docUrl,
       @required this.name,
@@ -140,7 +192,7 @@ abstract class UploadBusiness extends BusinessEvent {
       {@required String docUrl,
       @required String name,
       @required String artisan,
-      @required String location}) = _UploadBusinessImpl;
+      @required String location}) = _UploadBusinessImpl<T>;
 
   final String docUrl;
 
@@ -152,12 +204,12 @@ abstract class UploadBusiness extends BusinessEvent {
 
   /// Creates a copy of this UploadBusiness but with the given fields
   /// replaced with the new values.
-  UploadBusiness copyWith(
+  UploadBusiness<T> copyWith(
       {String docUrl, String name, String artisan, String location});
 }
 
 @immutable
-class _UploadBusinessImpl extends UploadBusiness {
+class _UploadBusinessImpl<T> extends UploadBusiness<T> {
   const _UploadBusinessImpl(
       {@required this.docUrl,
       @required this.name,
@@ -178,7 +230,7 @@ class _UploadBusinessImpl extends UploadBusiness {
   final String location;
 
   @override
-  _UploadBusinessImpl copyWith(
+  _UploadBusinessImpl<T> copyWith(
           {Object docUrl = superEnum,
           Object name = superEnum,
           Object artisan = superEnum,

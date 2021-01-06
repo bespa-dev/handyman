@@ -26,4 +26,6 @@ abstract class BaseBusinessRepository implements Exposable {
     @required String artisan,
     @required String location,
   });
+
+  Future<void> updateBusiness({@required BaseBusiness business});
 }

@@ -101,9 +101,15 @@ class Router extends RouterBase {
       );
     },
     BusinessProfilePage: (data) {
+      final args = data.getArgs<BusinessProfilePageArguments>(
+        orElse: () => BusinessProfilePageArguments(),
+      );
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            BusinessProfilePage(),
+            BusinessProfilePage(
+          key: args.key,
+          business: args.business,
+        ),
         settings: data,
       );
     },
@@ -172,8 +178,14 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
   Future<dynamic> pushCategoryPickerPage() =>
       push<dynamic>(Routes.categoryPickerPage);
 
-  Future<dynamic> pushBusinessProfilePage() =>
-      push<dynamic>(Routes.businessProfilePage);
+  Future<dynamic> pushBusinessProfilePage({
+    Key key,
+    BaseBusiness business,
+  }) =>
+      push<dynamic>(
+        Routes.businessProfilePage,
+        arguments: BusinessProfilePageArguments(key: key, business: business),
+      );
 
   Future<dynamic> pushCategoryDetailsPage({
     Key key,
@@ -195,14 +207,14 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
 class HomePageRoutes {
   static const String bookingsPage = '/bookings-page';
   static const String searchPage = '/search-page';
-  static const String artisansPage = '/';
+  static const String dashboardPage = '/';
   static const String notificationsPage = '/notifications-page';
   static const String profilePage = '/profile-page';
   static const String artisanInfoPage = '/artisan-info-page';
   static const all = <String>{
     bookingsPage,
     searchPage,
-    artisansPage,
+    dashboardPage,
     notificationsPage,
     profilePage,
     artisanInfoPage,
@@ -215,7 +227,7 @@ class HomePageRouter extends RouterBase {
   final _routes = <RouteDef>[
     RouteDef(HomePageRoutes.bookingsPage, page: BookingsPage),
     RouteDef(HomePageRoutes.searchPage, page: SearchPage),
-    RouteDef(HomePageRoutes.artisansPage, page: ArtisansPage),
+    RouteDef(HomePageRoutes.dashboardPage, page: DashboardPage),
     RouteDef(HomePageRoutes.notificationsPage, page: NotificationsPage),
     RouteDef(HomePageRoutes.profilePage, page: ProfilePage),
     RouteDef(HomePageRoutes.artisanInfoPage, page: ArtisanInfoPage),
@@ -235,9 +247,10 @@ class HomePageRouter extends RouterBase {
         settings: data,
       );
     },
-    ArtisansPage: (data) {
+    DashboardPage: (data) {
       return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => ArtisansPage(),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            DashboardPage(),
         settings: data,
       );
     },
@@ -278,8 +291,8 @@ extension HomePageRouterExtendedNavigatorStateX on ExtendedNavigatorState {
 
   Future<dynamic> pushSearchPage() => push<dynamic>(HomePageRoutes.searchPage);
 
-  Future<dynamic> pushArtisansPage() =>
-      push<dynamic>(HomePageRoutes.artisansPage);
+  Future<dynamic> pushDashboardPage() =>
+      push<dynamic>(HomePageRoutes.dashboardPage);
 
   Future<dynamic> pushNotificationsPage() =>
       push<dynamic>(HomePageRoutes.notificationsPage);
@@ -315,6 +328,13 @@ class RequestPageArguments {
   final Key key;
   final BaseArtisan artisan;
   RequestPageArguments({this.key, @required this.artisan});
+}
+
+/// BusinessProfilePage arguments holder class
+class BusinessProfilePageArguments {
+  final Key key;
+  final BaseBusiness business;
+  BusinessProfilePageArguments({this.key, this.business});
 }
 
 /// CategoryDetailsPage arguments holder class

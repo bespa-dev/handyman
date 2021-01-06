@@ -16,7 +16,7 @@ abstract class BaseUserRepository implements Exposable {
   Future<void> updateUser({@required BaseUser user});
 
   /// observe current user
-  Stream<BaseUser> currentUser();
+  Stream<BaseArtisan> currentUser();
 
   /// Get all [BaseArtisan]
   Stream<List<BaseArtisan>> observeArtisans({@required String category});

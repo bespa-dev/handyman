@@ -30,7 +30,7 @@ import 'package:handyman/app/pages/pages.dart';
       children: <AutoRoute>[
         CustomRoute(page: BookingsPage),
         CustomRoute(page: SearchPage),
-        CustomRoute(page: ArtisansPage, path: "/"),
+        CustomRoute(page: DashboardPage, path: "/"),
         CustomRoute(page: NotificationsPage),
         CustomRoute(page: ProfilePage),
         CustomRoute(page: ArtisanInfoPage),

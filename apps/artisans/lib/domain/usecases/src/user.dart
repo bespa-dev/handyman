@@ -96,17 +96,17 @@ class GetArtisanUseCase extends UseCase<BaseArtisan, String> {
   }
 }
 
-/// streams live updates from the currently logged in [BaseUser] entity
-class ObserveCurrentUserUseCase extends ObservableUseCase<BaseUser, void> {
+/// streams live updates from the currently logged in [BaseArtisan] entity
+class ObserveCurrentUserUseCase extends ObservableUseCase<BaseArtisan, void> {
   final BaseUserRepository _repo;
 
   const ObserveCurrentUserUseCase(this._repo);
 
   @override
-  Future<UseCaseResult<Stream<BaseUser>>> execute(_) async {
+  Future<UseCaseResult<Stream<BaseArtisan>>> execute(_) async {
     try {
       final personStream = _repo.currentUser();
-      return UseCaseResult<Stream<BaseUser>>.success(
+      return UseCaseResult<Stream<BaseArtisan>>.success(
           personStream.asBroadcastStream());
     } on Exception catch (ex) {
       return UseCaseResult.error(ex.toString());

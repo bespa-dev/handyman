@@ -52,13 +52,7 @@ class _HomePageState extends State<HomePage> {
             if (mounted) setState(() {});
 
             /// observe current user
-            _userBloc
-              ..add(UserEvent.currentUserEvent())
-              ..listen((state) {
-                if (state is SuccessState<Stream<BaseUser>>) {
-                  if (mounted) setState(() {});
-                }
-              });
+            _userBloc.add(UserEvent.currentUserEvent());
           }
         });
     }
@@ -95,7 +89,7 @@ class _HomePageState extends State<HomePage> {
                       color: _kTheme.colorScheme.onBackground,
                       onPressed: () {
                         context.navigator.push(
-                            Routes.homePage + HomePageRoutes.artisansPage);
+                            Routes.homePage + HomePageRoutes.dashboardPage);
                       },
                     ),
                     IconButton(
@@ -115,8 +109,8 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                     if (_isLoggedIn &&
-                        state is SuccessState<Stream<BaseUser>>) ...{
-                      StreamBuilder<BaseUser>(
+                        state is SuccessState<Stream<BaseArtisan>>) ...{
+                      StreamBuilder<BaseArtisan>(
                           stream: state.data,
                           builder: (_, snapshot) {
                             final user = snapshot.data;

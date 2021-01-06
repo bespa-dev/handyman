@@ -50,8 +50,7 @@ class GetBusinessesForArtisanUseCase
   }
 }
 
-class UploadBusinessUseCase
-    extends UseCase<String, UploadBusinessUseCaseParams> {
+class UploadBusinessUseCase extends UseCase<String, UploadBusinessUseCaseParams> {
   final BaseBusinessRepository _repo;
 
   UploadBusinessUseCase(this._repo);
@@ -67,6 +66,22 @@ class UploadBusinessUseCase
         location: params.location,
       );
       return UseCaseResult<String>.success(id);
+    } on Exception {
+      return UseCaseResult.error();
+    }
+  }
+}
+
+class UpdateBusinessUseCase extends CompletableUseCase<BaseBusiness> {
+  final BaseBusinessRepository _repo;
+
+  UpdateBusinessUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<void>> execute(BaseBusiness business) async {
+    try {
+      await _repo.updateBusiness(business: business);
+      return UseCaseResult.success();
     } on Exception {
       return UseCaseResult.error();
     }

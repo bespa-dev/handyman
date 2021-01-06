@@ -24,7 +24,7 @@ class UserRepositoryImpl implements BaseUserRepository {
         _remoteDatasource = remote;
 
   @override
-  Stream<BaseUser> currentUser() async* {
+  Stream<BaseArtisan> currentUser() async* {
     yield* _localDatasource.currentUser();
     _remoteDatasource.currentUser().listen((event) async {
       if (event != null) await _localDatasource.updateUser(event);

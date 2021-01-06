@@ -11,7 +11,6 @@ import 'package:handyman/data/entities/entities.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/domain/repositories/repositories.dart';
 import 'package:handyman/domain/sources/sources.dart';
-import 'package:handyman/shared/shared.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
@@ -72,5 +71,11 @@ class BusinessRepositoryImpl implements BaseBusinessRepository {
     await _localDatasource.updateBusiness(business: business);
     await _remoteDatasource.updateBusiness(business: business);
     return business.id;
+  }
+
+  @override
+  Future<void> updateBusiness({@required BaseBusiness business}) async {
+    await _localDatasource.updateBusiness(business: business);
+    await _remoteDatasource.updateBusiness(business: business);
   }
 }

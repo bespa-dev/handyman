@@ -13,7 +13,7 @@ import 'package:meta/meta.dart';
 /// base remote datasource class
 abstract class BaseRemoteDatasource {
   /// observe current user
-  Stream<BaseUser> currentUser();
+  Stream<BaseArtisan> currentUser();
 
   /// Get all [BaseArtisan]
   Stream<List<BaseArtisan>> observeArtisans({@required String category});
