@@ -11,6 +11,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/routes/routes.gr.dart';
@@ -68,152 +69,154 @@ class _ArtisansPageState extends State<ArtisansPage> {
     kTheme = Theme.of(context);
     return BlocBuilder<CategoryBloc, BlocState>(
       cubit: _categoryBloc,
-      builder: (_, categoryState) => StreamBuilder<List<BaseServiceCategory>>(
-          initialData: [],
-          stream:
-              categoryState is SuccessState<Stream<List<BaseServiceCategory>>>
-                  ? categoryState.data
-                  : Stream.empty(),
-          builder: (_, categoriesSnapshot) {
-            return CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  toolbarHeight: kToolbarHeight,
-                  toolbarTextStyle: kTheme.appBarTheme.textTheme.headline6,
-                  textTheme: kTheme.appBarTheme.textTheme,
-                  leading: Image(
-                    image: Svg(kLogoAsset),
-                    height: kSpacingX36,
-                    width: kSpacingX36,
+      builder: (_, categoryState) => AnimationLimiter(
+        child: StreamBuilder<List<BaseServiceCategory>>(
+            initialData: [],
+            stream:
+                categoryState is SuccessState<Stream<List<BaseServiceCategory>>>
+                    ? categoryState.data
+                    : Stream.empty(),
+            builder: (_, categoriesSnapshot) {
+              return CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    toolbarHeight: kToolbarHeight,
+                    toolbarTextStyle: kTheme.appBarTheme.textTheme.headline6,
+                    textTheme: kTheme.appBarTheme.textTheme,
+                    leading: Image(
+                      image: Svg(kLogoAsset),
+                      height: kSpacingX36,
+                      width: kSpacingX36,
+                    ),
+                    title: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(text: "$kAppName\n"),
+                          TextSpan(
+                            text: kAppVersion,
+                            style: kTheme.textTheme.caption,
+                          ),
+                        ],
+                      ),
+                      style: kTheme.textTheme.headline6.copyWith(
+                        color: kTheme.colorScheme.onBackground,
+                      ),
+                    ),
+                    centerTitle: false,
+                    pinned: true,
+                    backgroundColor: kTheme.colorScheme.background,
+                    expandedHeight: SizeConfig.screenHeight * 0.25,
+                    flexibleSpace: FlexibleSpaceBar(
+                      collapseMode: CollapseMode.parallax,
+                      background: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Positioned.fill(
+                            child: ImageView(imageUrl: kBackgroundAsset),
+                          ),
+                          Positioned.fill(
+                            child: Container(
+                              color: kTheme.colorScheme.background
+                                  .withOpacity(kEmphasisLow),
+                            ),
+                          ),
+                        ],
+                      ),
+                      titlePadding: EdgeInsets.zero,
+                    ),
                   ),
-                  title: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(text: "$kAppName\n"),
-                        TextSpan(
-                          text: kAppVersion,
-                          style: kTheme.textTheme.caption,
+
+                  /// artisans' list
+                  SliverList(
+                    delegate: SliverChildListDelegate.fixed(
+                      <Widget>[
+                        /// artisans header
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: kSpacingX16,
+                            top: kSpacingX12,
+                          ),
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                    text: "Most Popular\n",
+                                    style: kTheme.textTheme.headline5),
+                                TextSpan(
+                                    text: "Artisans available",
+                                    style: kTheme.textTheme.bodyText2.copyWith(
+                                      color: kTheme.colorScheme.onBackground
+                                          .withOpacity(kEmphasisLow),
+                                    )),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        /// artisans
+                        StreamBuilder<List<BaseArtisan>>(
+                          initialData: [],
+                          stream: _artisanStream,
+                          builder: (_, snapshot) {
+                            return snapshot.connectionState ==
+                                    ConnectionState.waiting
+                                ? Loading()
+                                : snapshot.hasData
+                                    ? _buildArtisanCard(snapshot.data)
+                                    : SizedBox.shrink();
+                          },
+                        ),
+                      ],
+                      addAutomaticKeepAlives: true,
+                    ),
+                  ),
+
+                  /// categories' list header
+                  SliverList(
+                    delegate: SliverChildListDelegate.fixed(
+                      [
+                        /// header
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: kSpacingX24,
+                            left: kSpacingX16,
+                            bottom: kSpacingX16,
+                          ),
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                    text: "Services available\n",
+                                    style: kTheme.textTheme.headline5),
+                                TextSpan(
+                                    text: kAppSloganDesc,
+                                    style: kTheme.textTheme.bodyText2.copyWith(
+                                      color: kTheme.colorScheme.onBackground
+                                          .withOpacity(kEmphasisLow),
+                                    )),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                    style: kTheme.textTheme.headline6.copyWith(
-                      color: kTheme.colorScheme.onBackground,
-                    ),
                   ),
-                  centerTitle: false,
-                  pinned: true,
-                  backgroundColor: kTheme.colorScheme.background,
-                  expandedHeight: SizeConfig.screenHeight * 0.25,
-                  flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.parallax,
-                    background: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Positioned.fill(
-                          child: ImageView(imageUrl: kBackgroundAsset),
-                        ),
-                        Positioned.fill(
-                          child: Container(
-                            color: kTheme.colorScheme.background
-                                .withOpacity(kEmphasisLow),
-                          ),
-                        ),
-                      ],
-                    ),
-                    titlePadding: EdgeInsets.zero,
-                  ),
-                ),
 
-                /// artisans' list
-                SliverList(
-                  delegate: SliverChildListDelegate.fixed(
-                    <Widget>[
-                      /// artisans header
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: kSpacingX16,
-                          top: kSpacingX12,
-                        ),
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                  text: "Most Popular\n",
-                                  style: kTheme.textTheme.headline5),
-                              TextSpan(
-                                  text: "Artisans available",
-                                  style: kTheme.textTheme.bodyText2.copyWith(
-                                    color: kTheme.colorScheme.onBackground
-                                        .withOpacity(kEmphasisLow),
-                                  )),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      /// artisans
-                      StreamBuilder<List<BaseArtisan>>(
-                        initialData: [],
-                        stream: _artisanStream,
-                        builder: (_, snapshot) {
-                          return snapshot.connectionState ==
-                                  ConnectionState.waiting
-                              ? Loading()
-                              : snapshot.hasData
-                                  ? _buildArtisanCard(snapshot.data)
-                                  : SizedBox.shrink();
-                        },
-                      ),
-                    ],
-                    addAutomaticKeepAlives: true,
-                  ),
-                ),
-
-                /// categories' list header
-                SliverList(
-                  delegate: SliverChildListDelegate.fixed(
-                    [
-                      /// header
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: kSpacingX24,
-                          left: kSpacingX16,
-                          bottom: kSpacingX16,
-                        ),
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                  text: "Services available\n",
-                                  style: kTheme.textTheme.headline5),
-                              TextSpan(
-                                  text: kAppSloganDesc,
-                                  style: kTheme.textTheme.bodyText2.copyWith(
-                                    color: kTheme.colorScheme.onBackground
-                                        .withOpacity(kEmphasisLow),
-                                  )),
-                            ],
-                          ),
-                        ),
-                      ),
+                  /// categories' list content
+                  SliverGrid.count(
+                    crossAxisCount: 2,
+                    children: [
+                      ...categoriesSnapshot.data
+                          .map(
+                            (e) => GridCategoryCardItem(category: e),
+                          )
+                          .toList()
                     ],
                   ),
-                ),
-
-                /// categories' list content
-                SliverGrid.count(
-                  crossAxisCount: 2,
-                  children: [
-                    ...categoriesSnapshot.data
-                        .map(
-                          (e) => GridCategoryCardItem(category: e),
-                        )
-                        .toList()
-                  ],
-                ),
-              ],
-            );
-          }),
+                ],
+              );
+            }),
+      ),
     );
   }
 

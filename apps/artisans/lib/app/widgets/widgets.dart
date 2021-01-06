@@ -8,6 +8,7 @@
  */
 
 export 'src/app_bar.dart';
+export 'src/artisan_card.dart';
 export 'src/buttons.dart';
 export 'src/category_card.dart';
 export 'src/emergency_ping_button.dart';
