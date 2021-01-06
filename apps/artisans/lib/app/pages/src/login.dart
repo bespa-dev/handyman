@@ -84,6 +84,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final kTheme = Theme.of(context);
+    final lightTheme = kTheme.brightness == Brightness.light;
 
     return Scaffold(
       body: Stack(
@@ -99,11 +100,18 @@ class _LoginPageState extends State<LoginPage> {
                 kSpacingX48,
               ),
               child: SingleChildScrollView(
-                padding: EdgeInsets.only(top: SizeConfig.screenHeight * 0.4),
+                padding: EdgeInsets.only(top: kSpacingX36),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    Image.asset(
+                      kLoginAsset,
+                      height: SizeConfig.screenHeight * 0.25,
+                      fit: BoxFit.cover,
+                      width: SizeConfig.screenWidth,
+                    ),
+                    SizedBox(height: kSpacingX8),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Column(
@@ -118,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                           SizedBox(height: kSpacingX8),
                           Text(
                             "You have been missed!",
-                            style: kTheme.textTheme.headline5.copyWith(
+                            style: kTheme.textTheme.headline6.copyWith(
                               color: kTheme.colorScheme.onPrimary
                                   .withOpacity(kEmphasisMedium),
                             ),
@@ -126,7 +134,61 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: kSpacingX64),
+                    SizedBox(height: kSpacingX24),
+                    Align(
+                      alignment: Alignment.center,
+                      child: ButtonPrimary(
+                        width: SizeConfig.screenWidth * 0.9,
+                        onTap: () =>
+                            _authBloc.add(AuthEvent.federatedOAuthEvent()),
+                        label: "Sign in with Google",
+                        color: lightTheme
+                            ? kTheme.colorScheme.background.withOpacity(kEmphasisHigh)
+                            : kTheme.colorScheme.secondary,
+                        textColor: lightTheme
+                            ? kTheme.colorScheme.onBackground
+                            : kTheme.colorScheme.onSecondary,
+                        icon: kGoogleIcon,
+                        gravity: ButtonIconGravity.START,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: kSpacingX12,
+                        vertical: kSpacingX16,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              color: kTheme.colorScheme.onPrimary
+                                  .withOpacity(kEmphasisLow),
+                              thickness: 1,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: kSpacingX6,
+                            ),
+                            child: Text(
+                              "Or",
+                              style: kTheme.textTheme.headline6.copyWith(
+                                color: kTheme.colorScheme.onPrimary
+                                    .withOpacity(kEmphasisMedium),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Divider(
+                              color: kTheme.colorScheme.onPrimary
+                                  .withOpacity(kEmphasisLow),
+                              thickness: 1,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     Form(
                       key: _formKey,
                       child: Column(
@@ -154,7 +216,7 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: kSpacingX36),
+                    SizedBox(height: kSpacingX24),
                     if (_isLoading) ...{
                       Loading(color: kTheme.colorScheme.secondary),
                     } else ...{

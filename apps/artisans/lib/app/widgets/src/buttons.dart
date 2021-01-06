@@ -64,7 +64,7 @@ class ButtonOutlined extends StatelessWidget {
                 ? _buildIcon(icon, themeData)
                 : SizedBox.shrink(),
             Text(
-              label.toUpperCase(),
+              label,
               style: themeData.textTheme.button.copyWith(
                 color: enabled
                     ? themeData.colorScheme.primary
@@ -183,7 +183,7 @@ class ButtonPrimary extends StatelessWidget {
                 ? _buildIcon(icon, themeData)
                 : SizedBox.shrink(),
             Text(
-              label.toUpperCase(),
+              label,
               style: themeData.textTheme.button.copyWith(
                 color: textColor ?? themeData.colorScheme.onPrimary,
               ),
@@ -236,7 +236,7 @@ class ButtonClear extends FlatButton {
                 horizontal: getProportionateScreenWidth(kSpacingX8),
                 vertical: getProportionateScreenHeight(kSpacingX8)),
             child: Text(
-              text.toUpperCase(),
+              text,
               style: themeData.textTheme.button.copyWith(
                 color: textColor == null || !enabled
                     ? themeData.colorScheme.primary

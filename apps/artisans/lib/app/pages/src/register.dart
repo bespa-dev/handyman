@@ -70,7 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 setState(() {});
                 context.navigator
                     .pushAndRemoveUntil(
-                    Routes.homePage, (route) => false);
+                    Routes.categoryPickerPage, (route) => false);
               }
             }
           });
@@ -101,14 +101,18 @@ class _RegisterPageState extends State<RegisterPage> {
                 kSpacingNone,
               ),
               child: SingleChildScrollView(
-                padding: EdgeInsets.only(
-                  top: SizeConfig.screenHeight * 0.25,
-                  bottom: kSpacingX48,
-                ),
+                padding: EdgeInsets.only(top: kSpacingX36),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    Image.asset(
+                      kRegisterAsset,
+                      height: SizeConfig.screenHeight * 0.25,
+                      fit: BoxFit.cover,
+                      width: SizeConfig.screenWidth,
+                    ),
+                    SizedBox(height: kSpacingX16),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Column(
@@ -131,7 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: kSpacingX64),
+                    SizedBox(height: kSpacingX42),
                     Form(
                       key: _formKey,
                       child: Column(
