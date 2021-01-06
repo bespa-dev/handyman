@@ -20,3 +20,4 @@ export 'src/request.dart';
 export 'src/search.dart';
 export 'src/splash.dart';
 export 'src/unknown.dart';
+export 'src/category_details.dart';

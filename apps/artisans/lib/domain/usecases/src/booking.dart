@@ -14,10 +14,46 @@ import 'package:meta/meta.dart';
 import 'usecase/result.dart';
 import 'usecase/usecase.dart';
 
-class GetBookingByIdUseCase extends ObservableUseCase<BaseBooking, String> {
+class ObserveBookingForArtisanUseCase
+    extends ObservableUseCase<List<BaseBooking>, String> {
   final BaseBookingRepository _repo;
 
-  const GetBookingByIdUseCase(this._repo);
+  const ObserveBookingForArtisanUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<Stream<List<BaseBooking>>>> execute(String id) async {
+    try {
+      var stream = _repo.observeBookingsForArtisan(id);
+      return UseCaseResult<Stream<List<BaseBooking>>>.success(
+          stream.asBroadcastStream());
+    } on Exception {
+      return UseCaseResult.error("Cannot get booking by id -> $id");
+    }
+  }
+}
+
+class ObserveBookingForCustomerUseCase
+    extends ObservableUseCase<List<BaseBooking>, String> {
+  final BaseBookingRepository _repo;
+
+  const ObserveBookingForCustomerUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<Stream<List<BaseBooking>>>> execute(String id) async {
+    try {
+      var stream = _repo.observeBookingsForCustomer(id);
+      return UseCaseResult<Stream<List<BaseBooking>>>.success(
+          stream.asBroadcastStream());
+    } on Exception {
+      return UseCaseResult.error("Cannot get booking by id -> $id");
+    }
+  }
+}
+
+class ObserveBookingByIdUseCase extends ObservableUseCase<BaseBooking, String> {
+  final BaseBookingRepository _repo;
+
+  const ObserveBookingByIdUseCase(this._repo);
 
   @override
   Future<UseCaseResult<Stream<BaseBooking>>> execute(String id) async {

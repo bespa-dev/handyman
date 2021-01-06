@@ -28,6 +28,7 @@ class _DashboardPageState extends State<DashboardPage> {
   final _businessBloc = BusinessBloc(repo: Injection.get());
   final _prefsBloc = PrefsBloc(repo: Injection.get());
   final _locationBloc = LocationBloc(repo: Injection.get());
+  final _bookingBloc = BookingBloc(repo: Injection.get());
 
   /// UI
   ThemeData kTheme;
@@ -42,6 +43,7 @@ class _DashboardPageState extends State<DashboardPage> {
     _businessBloc.close();
     _prefsBloc.close();
     _locationBloc.close();
+    _bookingBloc.close();
     super.dispose();
   }
 
@@ -62,11 +64,16 @@ class _DashboardPageState extends State<DashboardPage> {
         ..add(PrefsEvent.getUserIdEvent())
         ..listen((state) {
           if (state is SuccessState<String>) {
-            /// fetch business profile
-            if (state.data != null)
+            if (state.data != null) {
+              /// fetch business profile
               _businessBloc
                 ..add(BusinessEvent.getBusinessesForArtisan(
                     artisanId: state.data));
+
+              /// fetch bookings for artisan
+              _bookingBloc
+                  .add(BookingEvent.observeBookingForArtisan(id: state.data));
+            }
           }
         });
     }

@@ -16,6 +16,7 @@ class Routes {
   static const String splashPage = '/';
   static const String loginPage = '/login-page';
   static const String conversationPage = '/conversation-page';
+  static const String categoryDetailsPage = '/category-details-page';
   static const String requestPage = '/request-page';
   static const String homePage = '/home-page';
   static const String registerPage = '/register-page';
@@ -24,6 +25,7 @@ class Routes {
     splashPage,
     loginPage,
     conversationPage,
+    categoryDetailsPage,
     requestPage,
     homePage,
     registerPage,
@@ -38,6 +40,7 @@ class Router extends RouterBase {
     RouteDef(Routes.splashPage, page: SplashPage),
     RouteDef(Routes.loginPage, page: LoginPage),
     RouteDef(Routes.conversationPage, page: ConversationPage),
+    RouteDef(Routes.categoryDetailsPage, page: CategoryDetailsPage),
     RouteDef(Routes.requestPage, page: RequestPage),
     RouteDef(
       Routes.homePage,
@@ -70,6 +73,17 @@ class Router extends RouterBase {
           key: args.key,
           recipientId: args.recipientId,
           recipient: args.recipient,
+        ),
+        settings: data,
+      );
+    },
+    CategoryDetailsPage: (data) {
+      final args = data.getArgs<CategoryDetailsPageArguments>(nullOk: false);
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            CategoryDetailsPage(
+          key: args.key,
+          category: args.category,
         ),
         settings: data,
       );
@@ -124,6 +138,15 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
         Routes.conversationPage,
         arguments: ConversationPageArguments(
             key: key, recipientId: recipientId, recipient: recipient),
+      );
+
+  Future<dynamic> pushCategoryDetailsPage({
+    Key key,
+    @required BaseServiceCategory category,
+  }) =>
+      push<dynamic>(
+        Routes.categoryDetailsPage,
+        arguments: CategoryDetailsPageArguments(key: key, category: category),
       );
 
   Future<dynamic> pushRequestPage({
@@ -259,6 +282,13 @@ class ConversationPageArguments {
   final BaseUser recipient;
   ConversationPageArguments(
       {this.key, @required this.recipientId, this.recipient});
+}
+
+/// CategoryDetailsPage arguments holder class
+class CategoryDetailsPageArguments {
+  final Key key;
+  final BaseServiceCategory category;
+  CategoryDetailsPageArguments({this.key, @required this.category});
 }
 
 /// RequestPage arguments holder class

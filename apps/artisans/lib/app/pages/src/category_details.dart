@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:handyman/domain/models/models.dart';
 
+/// todo -> complete this page
 class CategoryDetailsPage extends StatefulWidget {
   final BaseServiceCategory category;
 

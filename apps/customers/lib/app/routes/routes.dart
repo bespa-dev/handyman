@@ -19,6 +19,7 @@ import 'package:lite/app/pages/pages.dart';
     CustomRoute(page: SplashPage, initial: true),
     CustomRoute(page: LoginPage),
     CustomRoute(page: ConversationPage),
+    CustomRoute(page: CategoryDetailsPage),
     CustomRoute(page: RequestPage),
     CustomRoute(
       page: HomePage,

@@ -17,3 +17,7 @@ export 'src/prefs/prefs_bloc.dart';
 export 'src/prefs/prefs_event.dart';
 export 'src/user/user_bloc.dart';
 export 'src/user/user_event.dart';
+export 'src/booking/booking_bloc.dart';
+export 'src/booking/booking_event.dart';
+export 'src/location/location_bloc.dart';
+export 'src/location/location_event.dart';

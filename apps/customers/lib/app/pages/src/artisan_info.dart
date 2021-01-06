@@ -111,7 +111,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  artisan.name,
+                                  artisan.name ?? "No username",
                                   style: kTheme.textTheme.headline5,
                                 ),
                                 BlocBuilder<CategoryBloc, BlocState>(
@@ -263,7 +263,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
 
     logger.d("Report -> $report");
     if (mounted && report != null)
-      showSnackBarMessage(context, message: "${widget.artisan.name} reported");
+      showSnackBarMessage(context, message: "${widget.artisan.name ?? "Artisan"} reported");
 
     /// todo -> send report to server
   }
