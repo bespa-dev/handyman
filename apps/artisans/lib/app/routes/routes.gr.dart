@@ -20,6 +20,7 @@ class Routes {
   static const String categoryPickerPage = '/category-picker-page';
   static const String businessProfilePage = '/business-profile-page';
   static const String categoryDetailsPage = '/category-details-page';
+  static const String imagePreviewPage = '/image-preview-page';
   static const String homePage = '/home-page';
   static const String registerPage = '/register-page';
   static const String unknownRoutePage = '*';
@@ -31,6 +32,7 @@ class Routes {
     categoryPickerPage,
     businessProfilePage,
     categoryDetailsPage,
+    imagePreviewPage,
     homePage,
     registerPage,
     unknownRoutePage,
@@ -48,6 +50,7 @@ class Router extends RouterBase {
     RouteDef(Routes.categoryPickerPage, page: CategoryPickerPage),
     RouteDef(Routes.businessProfilePage, page: BusinessProfilePage),
     RouteDef(Routes.categoryDetailsPage, page: CategoryDetailsPage),
+    RouteDef(Routes.imagePreviewPage, page: ImagePreviewPage),
     RouteDef(
       Routes.homePage,
       page: HomePage,
@@ -124,6 +127,17 @@ class Router extends RouterBase {
         settings: data,
       );
     },
+    ImagePreviewPage: (data) {
+      final args = data.getArgs<ImagePreviewPageArguments>(nullOk: false);
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ImagePreviewPage(
+          key: args.key,
+          url: args.url,
+        ),
+        settings: data,
+      );
+    },
     HomePage: (data) {
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) => HomePage(),
@@ -194,6 +208,15 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
       push<dynamic>(
         Routes.categoryDetailsPage,
         arguments: CategoryDetailsPageArguments(key: key, category: category),
+      );
+
+  Future<dynamic> pushImagePreviewPage({
+    Key key,
+    @required String url,
+  }) =>
+      push<dynamic>(
+        Routes.imagePreviewPage,
+        arguments: ImagePreviewPageArguments(key: key, url: url),
       );
 
   Future<dynamic> pushHomePage() => push<dynamic>(Routes.homePage);
@@ -342,6 +365,13 @@ class CategoryDetailsPageArguments {
   final Key key;
   final BaseServiceCategory category;
   CategoryDetailsPageArguments({this.key, @required this.category});
+}
+
+/// ImagePreviewPage arguments holder class
+class ImagePreviewPageArguments {
+  final Key key;
+  final String url;
+  ImagePreviewPageArguments({this.key, @required this.url});
 }
 
 /// ArtisanInfoPage arguments holder class

@@ -43,6 +43,7 @@ class AuthRepositoryImpl implements BaseAuthRepository {
   Future<BaseUser> _getOrCreateUserFromCredential(UserCredential credential,
       {String forcedUsername}) async {
     var firebaseUser = credential.user;
+    final username = firebaseUser.displayName ?? forcedUsername;
 
     var user = await _userRepo.getCustomerById(id: firebaseUser.uid);
     if (user == null) {
@@ -50,7 +51,7 @@ class AuthRepositoryImpl implements BaseAuthRepository {
         id: firebaseUser.uid,
         email: firebaseUser.email,
         createdAt: DateTime.now().toIso8601String(),
-        name: forcedUsername ?? firebaseUser.displayName,
+        name: username,
         phone: firebaseUser.phoneNumber,
         token: await _messaging.getToken(),
         avatar: firebaseUser.photoURL,

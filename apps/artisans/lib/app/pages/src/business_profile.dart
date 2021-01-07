@@ -13,6 +13,7 @@ import 'package:handyman/app/routes/routes.gr.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
+import 'package:uuid/uuid.dart';
 
 /// https://pub.dev/packages/google_maps_place_picker
 class BusinessProfilePage extends StatefulWidget {
@@ -37,8 +38,13 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
   ThemeData kTheme;
 
   /// Business
-  File _businessDocument;
-  String _fileName, _locationName, _userId, _docUrl;
+  File _businessDocument, _birthCertDoc, _nationalIdDoc;
+  String _busFileName,
+      _birthCertFileName,
+      _idFileName,
+      _locationName,
+      _userId,
+      _docUrl;
   final _timestamp = DateTime.now().millisecondsSinceEpoch.toString();
 
   /// Form
@@ -114,6 +120,8 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                 UserEvent.updateUserEvent(
                   user: _currentUser.copyWith(
                     businessId: state.data,
+                    birthCert: _birthCertFileName,
+                    nationalId: _idFileName,
                   ),
                 ),
               );
@@ -170,28 +178,76 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
   }
 
   /// pick file from docs
-  void _pickDocument() async {
+  void _pickDocument({
+    bool birthCert = false,
+    bool nationalId = false,
+  }) async {
     FilePickerResult result = await FilePicker.platform.pickFiles(
-      allowedExtensions: ["pdf", "docx", "doc"], // only document files
+      allowedExtensions: ["pdf"], // only pdf document files
       allowCompression: true,
       type: FileType.custom,
       withData: true,
     );
 
     if (result != null) {
-      /// get business document
-      _businessDocument = File(result.files.single.path);
-      _fileName = result.names.single.trim();
-      if (mounted) setState(() {});
+      final file = File(result.files.single.path);
+      if (nationalId) {
+        /// get id document
+        _nationalIdDoc = file;
+        _idFileName = result.names.single.trim();
+        if (mounted) setState(() {});
 
-      /// perform upload
-      _storageBloc.add(
-        StorageEvent.uploadFile(
-          path: widget.business == null ? _timestamp : widget.business.id,
-          filePath: _businessDocument.absolute.path,
-          isImage: false,
-        ),
-      );
+        /// perform upload
+        StorageBloc(repo: Injection.get())
+          ..add(
+            StorageEvent.uploadFile(
+              path: Uuid().v4(),
+              filePath: _nationalIdDoc.absolute.path,
+              isImage: false,
+            ),
+          )
+          ..listen((state) {
+            if (state is SuccessState<String>) {
+              _idFileName = state.data;
+              if (mounted) setState(() {});
+            }
+          });
+      } else if (birthCert) {
+        /// get birth cert document
+        _birthCertDoc = file;
+        _birthCertFileName = result.names.single.trim();
+        if (mounted) setState(() {});
+
+        /// perform upload
+        StorageBloc(repo: Injection.get())
+          ..add(
+            StorageEvent.uploadFile(
+              path: Uuid().v4(),
+              filePath: _birthCertDoc.absolute.path,
+              isImage: false,
+            ),
+          )
+          ..listen((state) {
+            if (state is SuccessState<String>) {
+              _birthCertFileName = state.data;
+              if (mounted) setState(() {});
+            }
+          });
+      } else {
+        /// get business document
+        _businessDocument = file;
+        _busFileName = result.names.single.trim();
+        if (mounted) setState(() {});
+
+        /// perform upload
+        _storageBloc.add(
+          StorageEvent.uploadFile(
+            path: widget.business == null ? _timestamp : widget.business.id,
+            filePath: _businessDocument.absolute.path,
+            isImage: false,
+          ),
+        );
+      }
     }
   }
 
@@ -239,7 +295,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
             } else ...{
               Positioned.fill(
                 top: kSpacingX96,
-                child: Padding(
+                child: SingleChildScrollView(
                   padding: EdgeInsets.fromLTRB(
                     kSpacingX24,
                     kSpacingNone,
@@ -285,12 +341,47 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                           onTap: _pickDocument,
                           title: Text("Upload Business Document"),
                           subtitle: Text(
-                            _fileName == null
-                                ? "This is required for approval"
-                                : _fileName,
+                            _busFileName == null
+                                ? "This is required for approval (Only PDFs supported)"
+                                : "File uploaded",
                           ),
+                          dense: true,
                           trailing: Icon(
-                            kArrowIcon,
+                            _busFileName == null ? kArrowIcon : kDoneIcon,
+                            color: kTheme.colorScheme.onBackground,
+                          ),
+                        ),
+                      ),
+
+                      Card(
+                        child: ListTile(
+                          onTap: () => _pickDocument(birthCert: true),
+                          title: Text("Upload Birth Certificate"),
+                          subtitle: Text(
+                            _birthCertFileName == null
+                                ? "This is required for approval (Only PDFs supported)"
+                                : "File uploaded",
+                          ),
+                          dense: true,
+                          trailing: Icon(
+                            _birthCertFileName == null ? kArrowIcon : kDoneIcon,
+                            color: kTheme.colorScheme.onBackground,
+                          ),
+                        ),
+                      ),
+
+                      Card(
+                        child: ListTile(
+                          onTap: () => _pickDocument(nationalId: true),
+                          title: Text("Upload National ID"),
+                          subtitle: Text(
+                            _idFileName == null
+                                ? "This is required for approval (Only PDFs supported)"
+                                : "File uploaded",
+                          ),
+                          dense: true,
+                          trailing: Icon(
+                            _idFileName == null ? kArrowIcon : kDoneIcon,
                             color: kTheme.colorScheme.onBackground,
                           ),
                         ),
@@ -306,8 +397,9 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                                 ? "This is required for approval"
                                 : _locationName,
                           ),
+                          dense: true,
                           trailing: Icon(
-                            kArrowIcon,
+                            _locationName == null ? kArrowIcon : kDoneIcon,
                             color: kTheme.colorScheme.onBackground,
                           ),
                         ),

@@ -27,6 +27,8 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
       avatar: fields[14] as String,
       email: fields[15] as String,
       businessId: fields[0] as String,
+      birthCert: fields[19] as String,
+      nationalId: fields[20] as String,
       category: fields[1] as String,
       categoryGroup: fields[18] as String,
       rating: fields[17] as double,
@@ -41,7 +43,7 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
   @override
   void write(BinaryWriter writer, Artisan obj) {
     writer
-      ..writeByte(19)
+      ..writeByte(21)
       ..writeByte(0)
       ..write(obj.businessId)
       ..writeByte(1)
@@ -78,6 +80,10 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
       ..write(obj.rating)
       ..writeByte(18)
       ..write(obj.categoryGroup)
+      ..writeByte(19)
+      ..write(obj.birthCert)
+      ..writeByte(20)
+      ..write(obj.nationalId)
       ..writeByte(7)
       ..write(obj.isCertified);
   }
@@ -109,6 +115,8 @@ Artisan _$ArtisanFromJson(Map<String, dynamic> json) {
     avatar: json['avatar'] as String,
     email: json['email'] as String,
     businessId: json['business_id'] as String,
+    birthCert: json['birth_cert'] as String,
+    nationalId: json['national_id'] as String,
     category: json['category'] as String,
     categoryGroup: json['category_group'] as String,
     rating: (json['rating'] as num)?.toDouble(),
@@ -139,4 +147,6 @@ Map<String, dynamic> _$ArtisanToJson(Artisan instance) => <String, dynamic>{
       'name': instance.name,
       'rating': instance.rating,
       'category_group': instance.categoryGroup,
+      'birth_cert': instance.birthCert,
+      'national_id': instance.nationalId,
     };

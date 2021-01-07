@@ -66,6 +66,7 @@ class ImageView extends StatelessWidget {
                   clipBehavior: Clip.hardEdge,
                   child: InteractiveViewer(
                     scaleEnabled: isInteractive,
+                    panEnabled: isInteractive,
                     child: useImageProvider
                         ? Image.network(
                             imageUrl,

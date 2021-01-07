@@ -100,9 +100,7 @@ final _galleryRepositoryProvider =
 @Exposed()
 final _locationRepositoryProvider = Provider<BaseLocationRepository>((_) {
   final geocoding = Geocoder.local;
-  final locatorService = Geolocator();
-  return LocationRepositoryImpl(
-      locatorService: locatorService, geocoding: geocoding);
+  return LocationRepositoryImpl(geocoding: geocoding);
 });
 
 final _reviewRepositoryProvider =

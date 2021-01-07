@@ -97,7 +97,6 @@ class HiveLocalDatasource extends BaseLocalDatasource {
 
   @override
   Stream<BaseArtisan> currentUser() async* {
-    if (!prefsRepo.isLoggedIn) return;
     var artisan = artisanBox.get(prefsRepo.userId);
     yield artisan;
     notifyListeners();

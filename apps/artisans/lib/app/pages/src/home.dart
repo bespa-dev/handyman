@@ -78,59 +78,62 @@ class _HomePageState extends State<HomePage> {
           ),
           child: Column(
             children: [
-              Divider(height: kSpacingX2),
               Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: Icon(Feather.home),
-                      color: _kTheme.colorScheme.onBackground,
-                      onPressed: () {
-                        context.navigator.push(
-                            Routes.homePage + HomePageRoutes.dashboardPage);
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(Feather.search),
-                      color: _kTheme.colorScheme.onBackground,
-                      onPressed: () {
-                        context.navigator
-                            .push(Routes.homePage + HomePageRoutes.searchPage);
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(Feather.bell),
-                      color: _kTheme.colorScheme.onBackground,
-                      onPressed: () {
-                        context.navigator.push(
-                            Routes.homePage + HomePageRoutes.notificationsPage);
-                      },
-                    ),
-                    if (_isLoggedIn &&
-                        state is SuccessState<Stream<BaseArtisan>>) ...{
-                      StreamBuilder<BaseArtisan>(
-                          stream: state.data,
-                          builder: (_, snapshot) {
-                            final user = snapshot.data;
-                            return GestureDetector(
-                              onTap: () {
-                                context.navigator.push(Routes.homePage +
-                                    HomePageRoutes.profilePage);
-                              },
-                              child: SizedBox(
-                                height: kSpacingX36,
-                                width: kSpacingX36,
-                                child: UserAvatar(
-                                  url: user?.avatar,
-                                  isCircular: true,
+                child: Material(
+                  type: MaterialType.card,
+                  elevation: kSpacingX2,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: Icon(Feather.home),
+                        color: _kTheme.colorScheme.onBackground,
+                        onPressed: () {
+                          context.navigator.push(
+                              Routes.homePage + HomePageRoutes.dashboardPage);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Feather.search),
+                        color: _kTheme.colorScheme.onBackground,
+                        onPressed: () {
+                          context.navigator
+                              .push(Routes.homePage + HomePageRoutes.searchPage);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Feather.bell),
+                        color: _kTheme.colorScheme.onBackground,
+                        onPressed: () {
+                          context.navigator.push(
+                              Routes.homePage + HomePageRoutes.notificationsPage);
+                        },
+                      ),
+                      if (_isLoggedIn &&
+                          state is SuccessState<Stream<BaseArtisan>>) ...{
+                        StreamBuilder<BaseArtisan>(
+                            stream: state.data,
+                            builder: (_, snapshot) {
+                              final user = snapshot.data;
+                              return GestureDetector(
+                                onTap: () {
+                                  context.navigator.push(Routes.homePage +
+                                      HomePageRoutes.profilePage);
+                                },
+                                child: SizedBox(
+                                  height: kSpacingX36,
+                                  width: kSpacingX36,
+                                  child: UserAvatar(
+                                    url: user?.avatar,
+                                    isCircular: true,
+                                  ),
                                 ),
-                              ),
-                            );
-                          }),
-                    },
-                  ],
+                              );
+                            }),
+                      },
+                    ],
+                  ),
                 ),
               ),
             ],

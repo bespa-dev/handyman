@@ -15,18 +15,14 @@ import 'package:lite/domain/repositories/repositories.dart';
 import 'package:meta/meta.dart';
 
 class LocationRepositoryImpl implements BaseLocationRepository {
-  final Geolocator _geolocator;
   final Geocoding _geocoding;
 
-  LocationRepositoryImpl({
-    @required Geolocator locatorService,
-    @required Geocoding geocoding,
-  })  : _geolocator = locatorService,
-        _geocoding = geocoding;
+  LocationRepositoryImpl({@required Geocoding geocoding})
+      : _geocoding = geocoding;
 
   @override
   Future<LocationMetadata> getCurrentLocation() async {
-    var position = await _geolocator.getCurrentPosition();
+    var position = await Geolocator.getCurrentPosition();
     return LocationMetadata(lat: position.latitude, lng: position.longitude);
   }
 
@@ -39,7 +35,7 @@ class LocationRepositoryImpl implements BaseLocationRepository {
 
   @override
   Stream<LocationMetadata> observeCurrentLocation() async* {
-    yield* _geolocator.getPositionStream().map(
+    yield* Geolocator.getPositionStream().map(
         (event) => LocationMetadata(lat: event.latitude, lng: event.longitude));
   }
 }

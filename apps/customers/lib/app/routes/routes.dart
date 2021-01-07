@@ -21,6 +21,7 @@ import 'package:lite/app/pages/pages.dart';
     CustomRoute(page: ConversationPage),
     CustomRoute(page: CategoryDetailsPage),
     CustomRoute(page: RequestPage),
+    CustomRoute(page: ImagePreviewPage),
     CustomRoute(
       page: HomePage,
       children: <AutoRoute>[

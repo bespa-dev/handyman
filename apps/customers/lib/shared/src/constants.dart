@@ -100,6 +100,7 @@ const double kOpacityX90 = 0.9;
 const double kEmphasisLow = 0.38;
 const double kEmphasisMedium = 0.67;
 const double kEmphasisHigh = 0.9;
+const double kBlurSigma = 5.0;
 
 /// App
 const kAppName = "HandyMan Lite";
@@ -146,12 +147,6 @@ const kOptionsIcon = Entypo.dots_two_vertical;
 /// [Algolia]
 const kAlgoliaAppId = "AIBRVBFA4W";
 const kAlgoliaKey = "604022a17d65f30d23e80a38f285be57";
-
-/// Durations
-const kScaleDuration = const Duration(milliseconds: 350);
-const kTestDuration = const Duration(milliseconds: 2500);
-const kSheetDuration = const Duration(milliseconds: 550);
-const kSplashDuration = const Duration(milliseconds: 1550);
 
 /// Others
 const kScrollPhysics = const BouncingScrollPhysics();

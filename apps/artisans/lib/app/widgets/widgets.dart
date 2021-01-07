@@ -19,3 +19,4 @@ export 'src/menu_icon.dart';
 export 'src/page_indicator.dart';
 export 'src/sign_out_button.dart';
 export 'src/user_avatar.dart';
+export 'src/dialogs.dart';

@@ -79,6 +79,7 @@ dependencies:
   google_maps_place_picker: ^1.0.1
   geocoder:
   flutter_dotenv: ^2.1.0
+  day_night_time_picker:
 
 dev_dependencies:
   flutter_test:

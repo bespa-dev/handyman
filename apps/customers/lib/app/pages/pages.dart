@@ -13,6 +13,7 @@ export 'src/bookings.dart';
 export 'src/category_details.dart';
 export 'src/conversation.dart';
 export 'src/home.dart';
+export 'src/image_preview.dart';
 export 'src/login.dart';
 export 'src/notifications.dart';
 export 'src/profile.dart';

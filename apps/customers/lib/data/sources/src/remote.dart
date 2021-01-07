@@ -57,7 +57,6 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
 
   @override
   Stream<BaseUser> currentUser() async* {
-    if (!prefsRepo.isLoggedIn) return;
     var snapshots = firestore
         .collection(RefUtils.kCustomerRef)
         .doc(prefsRepo.userId)

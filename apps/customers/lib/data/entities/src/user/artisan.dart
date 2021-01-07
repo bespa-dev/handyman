@@ -96,6 +96,15 @@ class Artisan extends BaseArtisan {
   @override
   final String categoryGroup;
 
+  @HiveField(19)
+  @override
+  final String birthCert;
+
+  @HiveField(20)
+  @override
+  final String nationalId;
+
+
   Artisan({
     @required this.id,
     @required this.createdAt,
@@ -107,6 +116,8 @@ class Artisan extends BaseArtisan {
     @required this.avatar,
     @required this.email,
     this.businessId,
+    this.birthCert,
+    this.nationalId,
     this.category,
     this.categoryGroup,
     this.rating = 2.5,
@@ -150,6 +161,8 @@ class Artisan extends BaseArtisan {
     String phone,
     String category,
     String businessId,
+    String birthCert,
+    String nationalId,
     String categoryGroup,
     String startWorkingHours,
     String endWorkingHours,
@@ -161,22 +174,24 @@ class Artisan extends BaseArtisan {
     List<String> reports,
   }) =>
       Artisan(
-        name: name ?? this.name,
-        email: email ?? this.email,
-        avatar: avatar ?? this.avatar,
-        token: token ?? this.token,
-        phone: phone ?? this.phone,
-        category: category ?? this.category,
-        businessId: businessId ?? this.businessId,
-        categoryGroup: categoryGroup ?? this.categoryGroup,
-        startWorkingHours: startWorkingHours ?? this.startWorkingHours,
-        endWorkingHours: endWorkingHours ?? this.endWorkingHours,
-        rating: rating ?? this.rating,
-        isAvailable: isAvailable ?? this.isAvailable,
-        isApproved: isApproved ?? this.isApproved,
-        bookingsCount: bookingsCount ?? this.bookingsCount,
-        requests: requests ?? this.requests,
-        reports: reports ?? this.reports,
+        name: name ??= this.name,
+        email: email ??= this.email,
+        avatar: avatar ??= this.avatar,
+        token: token ??= this.token,
+        phone: phone ??= this.phone,
+        birthCert: birthCert ?? this.birthCert,
+        nationalId: nationalId ?? this.nationalId,
+        category: category ??= this.category,
+        businessId: businessId ??= this.businessId,
+        categoryGroup: categoryGroup ??= this.categoryGroup,
+        startWorkingHours: startWorkingHours ??= this.startWorkingHours,
+        endWorkingHours: endWorkingHours ??= this.endWorkingHours,
+        rating: rating ??= this.rating,
+        isAvailable: isAvailable ??= this.isAvailable,
+        isApproved: isApproved ??= this.isApproved,
+        bookingsCount: bookingsCount ??= this.bookingsCount,
+        requests: requests ??= this.requests,
+        reports: reports ??= this.reports,
         id: this.id,
         createdAt: this.createdAt,
       );

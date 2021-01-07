@@ -18,6 +18,7 @@ class Routes {
   static const String conversationPage = '/conversation-page';
   static const String categoryDetailsPage = '/category-details-page';
   static const String requestPage = '/request-page';
+  static const String imagePreviewPage = '/image-preview-page';
   static const String homePage = '/home-page';
   static const String registerPage = '/register-page';
   static const String unknownRoutePage = '*';
@@ -27,6 +28,7 @@ class Routes {
     conversationPage,
     categoryDetailsPage,
     requestPage,
+    imagePreviewPage,
     homePage,
     registerPage,
     unknownRoutePage,
@@ -42,6 +44,7 @@ class Router extends RouterBase {
     RouteDef(Routes.conversationPage, page: ConversationPage),
     RouteDef(Routes.categoryDetailsPage, page: CategoryDetailsPage),
     RouteDef(Routes.requestPage, page: RequestPage),
+    RouteDef(Routes.imagePreviewPage, page: ImagePreviewPage),
     RouteDef(
       Routes.homePage,
       page: HomePage,
@@ -94,6 +97,17 @@ class Router extends RouterBase {
         pageBuilder: (context, animation, secondaryAnimation) => RequestPage(
           key: args.key,
           artisan: args.artisan,
+        ),
+        settings: data,
+      );
+    },
+    ImagePreviewPage: (data) {
+      final args = data.getArgs<ImagePreviewPageArguments>(nullOk: false);
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ImagePreviewPage(
+          key: args.key,
+          url: args.url,
         ),
         settings: data,
       );
@@ -156,6 +170,15 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
       push<dynamic>(
         Routes.requestPage,
         arguments: RequestPageArguments(key: key, artisan: artisan),
+      );
+
+  Future<dynamic> pushImagePreviewPage({
+    Key key,
+    @required String url,
+  }) =>
+      push<dynamic>(
+        Routes.imagePreviewPage,
+        arguments: ImagePreviewPageArguments(key: key, url: url),
       );
 
   Future<dynamic> pushHomePage() => push<dynamic>(Routes.homePage);
@@ -296,6 +319,13 @@ class RequestPageArguments {
   final Key key;
   final BaseArtisan artisan;
   RequestPageArguments({this.key, @required this.artisan});
+}
+
+/// ImagePreviewPage arguments holder class
+class ImagePreviewPageArguments {
+  final Key key;
+  final String url;
+  ImagePreviewPageArguments({this.key, @required this.url});
 }
 
 /// ArtisanInfoPage arguments holder class

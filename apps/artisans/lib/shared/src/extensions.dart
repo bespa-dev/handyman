@@ -7,6 +7,8 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:flutter/material.dart';
+
 /// extensions on list
 extension ListX on List<dynamic> {
   /// add an [item] to an existing [List] if it does not already contain it
@@ -28,5 +30,18 @@ extension ListX on List<dynamic> {
       this.remove(item);
     else
       this.add(item);
+  }
+}
+
+extension DateTimeExtensionX on DateTime {
+  TimeOfDay toTimeOfDay() {
+    return TimeOfDay(hour: this.hour, minute: this.minute);
+  }
+}
+
+extension TimeOfDayExtensionX on TimeOfDay {
+  DateTime toDateTime() {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day, this.hour, this.minute);
   }
 }

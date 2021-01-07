@@ -83,6 +83,7 @@ const double kOpacityX90 = 0.9;
 const double kEmphasisLow = 0.38;
 const double kEmphasisMedium = 0.67;
 const double kEmphasisHigh = 0.9;
+const double kBlurSigma = 5.0;
 
 /// App
 const kAppName = "HandyMan Pro";
@@ -123,6 +124,7 @@ const kMailIcon = Feather.mail;
 const kEditIcon = Feather.edit_2;
 const kGoogleIcon = AntDesign.google;
 const kEmptyIcon = Entypo.bucket;
+const kDoneIcon = Icons.done;
 const kUserImageNotFound = Icons.link_off_outlined;
 const kArrowIcon = Icons.arrow_right_alt_outlined;
 const kOptionsIcon = Entypo.dots_two_vertical;

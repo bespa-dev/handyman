@@ -41,7 +41,7 @@ dependencies:
   flutter_staggered_grid_view: ^0.3.0
   flutter_svg_provider: ^0.1.6
   flutter_video_compress: ^0.3.7+8
-  geolocator: ^5.3.2+2
+  geolocator: ^6.0.0+4
   google_fonts: ^1.1.0
   google_sign_in: ^4.5.1
   hive: ^1.4.4+1
@@ -71,8 +71,11 @@ dependencies:
   circular_reveal_animation: ^1.1.5
   flutter_rating_bar:
   contact_picker:
+  google_maps_webservice:
+  google_maps_place_picker: ^1.0.1
   geocoder:
   flutter_dotenv: ^2.1.0
+  day_night_time_picker:
 
 dev_dependencies:
   flutter_test:
