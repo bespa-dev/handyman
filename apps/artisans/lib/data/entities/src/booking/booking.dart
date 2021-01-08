@@ -10,6 +10,7 @@
 import 'package:handyman/domain/models/models.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:meta/meta.dart';
 
 part 'booking.g.dart';
 
@@ -65,18 +66,18 @@ class Booking extends BaseBooking {
   final String currentState;
 
   Booking({
-    this.id,
-    this.createdAt,
-    this.customerId,
-    this.artisanId,
-    this.category,
-    this.imageUrl,
-    this.description,
-    this.position,
-    this.cost,
-    this.progress,
-    this.dueDate,
-    this.currentState,
+    @required this.id,
+    @required this.createdAt,
+    @required this.customerId,
+    @required this.artisanId,
+    @required this.category,
+    @required this.imageUrl,
+    @required this.description,
+    @required this.position,
+    @required this.dueDate,
+    @required this.currentState,
+    this.cost = 0.0,
+    this.progress = 0.0,
   });
 
   @override
