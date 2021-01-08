@@ -7,9 +7,9 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:handyman/domain/models/models.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:handyman/domain/models/models.dart';
 
 part 'booking.g.dart';
 
@@ -60,6 +60,10 @@ class Booking extends BaseBooking {
   @override
   final String createdAt;
 
+  @HiveField(11)
+  @override
+  final String currentState;
+
   Booking({
     this.id,
     this.createdAt,
@@ -72,6 +76,7 @@ class Booking extends BaseBooking {
     this.cost,
     this.progress,
     this.dueDate,
+    this.currentState,
   });
 
   @override
@@ -82,4 +87,32 @@ class Booking extends BaseBooking {
 
   @override
   Map<String, dynamic> toJson() => _$BookingToJson(this);
+
+  @override
+  BaseBooking copyWith({
+    String customerId,
+    String artisanId,
+    String category,
+    String imageUrl,
+    String description,
+    LocationMetadata position,
+    double cost,
+    double progress,
+    String dueDate,
+    String currentState,
+  }) =>
+      Booking(
+        id: this.id,
+        createdAt: this.createdAt,
+        customerId: customerId ?? this.customerId,
+        artisanId: artisanId ?? this.artisanId,
+        category: category ?? this.category,
+        imageUrl: imageUrl ?? this.imageUrl,
+        description: description ?? this.description,
+        position: position ?? this.position,
+        cost: cost ?? this.cost,
+        progress: progress ?? this.progress,
+        dueDate: dueDate ?? this.dueDate,
+        currentState: currentState ?? this.currentState,
+      );
 }

@@ -8,7 +8,7 @@
  */
 
 export 'src/base.dart'; // done
-export 'src/booking.dart'; // done
+export 'src/booking/booking.dart'; // done
 export 'src/category/category.dart'; // done
 export 'src/conversation/conversation.dart'; // done
 export 'src/exposables/exposed.dart'; // done

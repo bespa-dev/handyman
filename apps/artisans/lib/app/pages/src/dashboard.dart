@@ -7,11 +7,12 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/bloc/bloc.dart';
-import 'package:handyman/app/pages/pages.dart';
+import 'package:handyman/app/routes/routes.gr.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
@@ -139,6 +140,19 @@ class _DashboardPageState extends State<DashboardPage> {
             delegate: SliverChildListDelegate.fixed(
               [
                 if (businessState is SuccessState<List<BaseBusiness>>) ...{
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: kSpacingX12,
+                      left: kSpacingX16,
+                    ),
+                    child: Text(
+                      "My Business profile",
+                      style: kTheme.textTheme.headline6.copyWith(
+                        color: kTheme.colorScheme.onBackground
+                            .withOpacity(kEmphasisMedium),
+                      ),
+                    ),
+                  ),
                   Container(
                     constraints: BoxConstraints(
                       minWidth: SizeConfig.screenWidth,
@@ -204,18 +218,12 @@ class _DashboardPageState extends State<DashboardPage> {
                                         ),
                                       ],
                                     ),
-
-                                    /// fixme -> find a workaround for nested routes
                                     IconButton(
                                       icon: Icon(kEditIcon),
                                       iconSize: kSpacingX16,
-                                      onPressed: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => BusinessProfilePage(
-                                            business: model,
-                                          ),
-                                        ),
+                                      onPressed: () => context.navigator
+                                          .pushBusinessProfilePage(
+                                        business: model,
                                       ),
                                     ),
                                   ],
@@ -229,9 +237,22 @@ class _DashboardPageState extends State<DashboardPage> {
                       itemCount: businessState.data.length,
                     ),
                   ),
-                } else ...{
-                  Loading(),
                 },
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: kSpacingX24,
+                    left: kSpacingX16,
+                    bottom: kSpacingX16,
+                  ),
+                  child: Text(
+                    "Income Breakdown",
+                    style: kTheme.textTheme.headline6.copyWith(
+                      color: kTheme.colorScheme.onBackground
+                          .withOpacity(kEmphasisMedium),
+                    ),
+                  ),
+                ),
+                Row(),
               ],
             ),
           ),

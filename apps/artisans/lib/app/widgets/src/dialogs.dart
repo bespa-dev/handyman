@@ -116,6 +116,8 @@ class ReplyMessageDialog extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: hintText,
                   border: InputBorder.none,
+                  fillColor: kTheme.disabledColor,
+                  filled: true,
                 ),
               ),
             ),

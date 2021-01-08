@@ -89,7 +89,8 @@ dev_dependencies:
   logger: ^0.9.4
   auto_route_generator: ^0.6.8
   build_runner: ^1.10.10
-  flutter_launcher_icons: ^0.7.4
+  flutter_launcher_icons: ^0.7.5
+  flutter_launcher_name: ^0.0.1
   hive_generator: ^0.8.2
   super_enum_generator: ^0.6.0
   json_serializable: ^3.2.0

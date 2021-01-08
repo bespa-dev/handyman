@@ -19,25 +19,37 @@ import 'package:handyman/app/pages/pages.dart';
   generateNavigationHelperExtension: true,
   routes: <AutoRoute>[
     CustomRoute(page: SplashPage, initial: true),
+
+    /// region auth
     CustomRoute(page: LoginPage),
-    CustomRoute(page: ConversationPage),
-    CustomRoute(page: RequestPage),
-    CustomRoute(page: CategoryPickerPage),
-    CustomRoute(page: BusinessProfilePage),
-    CustomRoute(page: CategoryDetailsPage),
-    CustomRoute(page: ImagePreviewPage),
-    CustomRoute(
-      page: HomePage,
-      children: <AutoRoute>[
-        CustomRoute(page: BookingsPage),
-        CustomRoute(page: SearchPage),
-        CustomRoute(page: DashboardPage, path: "/"),
-        CustomRoute(page: NotificationsPage),
-        CustomRoute(page: ProfilePage),
-        CustomRoute(page: ArtisanInfoPage),
-      ],
-    ),
     CustomRoute(page: RegisterPage),
+    CustomRoute(page: BusinessProfilePage),
+    CustomRoute(page: CategoryPickerPage),
+
+    /// endregion
+
+    /// region conversation
+    CustomRoute(page: ConversationPage),
+
+    /// endregion
+
+    /// region booking
+    CustomRoute(page: RequestPage),
+    CustomRoute(page: BookingsPage),
+    CustomRoute(page: CategoryDetailsPage),
+
+    /// endregion
+
+    /// region others
+    CustomRoute(page: NotificationsPage),
+    CustomRoute(page: ImagePreviewPage),
+    CustomRoute(page: HomePage),
+    CustomRoute(page: ProfilePage),
+    CustomRoute(page: DashboardPage),
+    CustomRoute(page: SearchPage),
+    CustomRoute(page: ArtisanInfoPage),
+
+    /// endregion
 
     /// keep at the bottom
     CustomRoute(page: UnknownRoutePage, path: "*"),
