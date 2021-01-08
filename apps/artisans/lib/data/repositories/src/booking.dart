@@ -73,7 +73,7 @@ class BookingRepositoryImpl implements BaseBookingRepository {
       String category,
       String description,
       String image,
-      LocationMetadata metadata}) async {
+      BaseLocationMetadata metadata}) async {
     final now = DateTime.now();
     var booking = Booking(
       id: Uuid().v4(),
@@ -82,6 +82,7 @@ class BookingRepositoryImpl implements BaseBookingRepository {
       customerId: customer,
       artisanId: artisan,
       cost: 12.99,
+      currentState: BookingState.pending().name(),
 
       /// fixme -> resolve prices for each service request
       description: description,

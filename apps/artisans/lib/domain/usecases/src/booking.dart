@@ -181,7 +181,7 @@ class RequestBookingParams {
   final String category;
   final String description;
   final String image;
-  final LocationMetadata metadata;
+  final BaseLocationMetadata metadata;
 
   const RequestBookingParams({
     this.artisan,

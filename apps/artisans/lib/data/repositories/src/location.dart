@@ -10,6 +10,7 @@
 import 'package:geocoder/geocoder.dart' show Coordinates;
 import 'package:geocoder/services/base.dart' show Geocoding;
 import 'package:geolocator/geolocator.dart';
+import 'package:handyman/data/entities/entities.dart';
 import 'package:handyman/domain/models/src/location/location.dart';
 import 'package:handyman/domain/repositories/repositories.dart';
 import 'package:meta/meta.dart';
@@ -22,20 +23,20 @@ class LocationRepositoryImpl implements BaseLocationRepository {
   }) : _geocoding = geocoding;
 
   @override
-  Future<LocationMetadata> getCurrentLocation() async {
+  Future<BaseLocationMetadata> getCurrentLocation() async {
     var position = await Geolocator.getCurrentPosition();
     return LocationMetadata(lat: position.latitude, lng: position.longitude);
   }
 
   @override
-  Future<String> getLocationName({LocationMetadata metadata}) async {
+  Future<String> getLocationName({BaseLocationMetadata metadata}) async {
     final addresses = await _geocoding
         .findAddressesFromCoordinates(Coordinates(metadata.lat, metadata.lng));
     return addresses.first?.addressLine ?? "Unknown location";
   }
 
   @override
-  Stream<LocationMetadata> observeCurrentLocation() async* {
+  Stream<BaseLocationMetadata> observeCurrentLocation() async* {
     yield* Geolocator.getPositionStream().map(
         (event) => LocationMetadata(lat: event.latitude, lng: event.longitude));
   }

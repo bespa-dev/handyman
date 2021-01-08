@@ -15,3 +15,4 @@ export 'src/review/review.dart'; // done
 export 'src/user/artisan.dart'; // done
 export 'src/user/customer.dart'; // done
 export 'src/business/business.dart';  // done
+export 'src/location/location.dart';  // done

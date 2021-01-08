@@ -25,10 +25,10 @@ class BookingAdapter extends TypeAdapter<Booking> {
       imageUrl: fields[3] as String,
       description: fields[4] as String,
       position: fields[5] as LocationMetadata,
-      cost: fields[6] as double,
-      progress: fields[7] as double,
       dueDate: fields[8] as String,
       currentState: fields[11] as String,
+      cost: fields[6] as double,
+      progress: fields[7] as double,
     );
   }
 
@@ -89,10 +89,10 @@ Booking _$BookingFromJson(Map<String, dynamic> json) {
     position: json['position'] == null
         ? null
         : LocationMetadata.fromJson(json['position'] as Map<String, dynamic>),
-    cost: (json['cost'] as num)?.toDouble(),
-    progress: (json['progress'] as num)?.toDouble(),
     dueDate: json['due_date'] as String,
     currentState: json['current_state'] as String,
+    cost: (json['cost'] as num)?.toDouble(),
+    progress: (json['progress'] as num)?.toDouble(),
   );
 }
 

@@ -13,16 +13,16 @@ import 'package:handyman/domain/repositories/repositories.dart';
 import 'usecase/result.dart';
 import 'usecase/usecase.dart';
 
-class GetCurrentLocationUseCase extends NoParamsUseCase<LocationMetadata> {
+class GetCurrentLocationUseCase extends NoParamsUseCase<BaseLocationMetadata> {
   final BaseLocationRepository _repo;
 
   const GetCurrentLocationUseCase(this._repo);
 
   @override
-  Future<UseCaseResult<LocationMetadata>> execute(_) async {
+  Future<UseCaseResult<BaseLocationMetadata>> execute(_) async {
     try {
       var metadata = await _repo.getCurrentLocation();
-      return UseCaseResult<LocationMetadata>.success(metadata);
+      return UseCaseResult<BaseLocationMetadata>.success(metadata);
     } on Exception {
       return UseCaseResult.error("Failed to get current user location");
     }
@@ -30,16 +30,16 @@ class GetCurrentLocationUseCase extends NoParamsUseCase<LocationMetadata> {
 }
 
 class ObserveCurrentLocationUseCase
-    extends ObservableUseCase<LocationMetadata, void> {
+    extends ObservableUseCase<BaseLocationMetadata, void> {
   final BaseLocationRepository _repo;
 
   const ObserveCurrentLocationUseCase(this._repo);
 
   @override
-  Future<UseCaseResult<Stream<LocationMetadata>>> execute(_) async {
+  Future<UseCaseResult<Stream<BaseLocationMetadata>>> execute(_) async {
     try {
       var stream = _repo.observeCurrentLocation();
-      return UseCaseResult<Stream<LocationMetadata>>.success(
+      return UseCaseResult<Stream<BaseLocationMetadata>>.success(
           stream.asBroadcastStream());
     } on Exception {
       return UseCaseResult.error("Failed to get current user location");
@@ -47,7 +47,7 @@ class ObserveCurrentLocationUseCase
   }
 }
 
-class GetLocationNameUseCase extends UseCase<String, LocationMetadata> {
+class GetLocationNameUseCase extends UseCase<String, BaseLocationMetadata> {
   final BaseLocationRepository _repo;
 
   const GetLocationNameUseCase(this._repo);

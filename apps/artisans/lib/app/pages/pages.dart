@@ -8,6 +8,7 @@
  */
 
 export 'src/artisan_info.dart';
+export 'src/booking_details.dart';
 export 'src/bookings.dart';
 export 'src/business_profile.dart';
 export 'src/category_details.dart';

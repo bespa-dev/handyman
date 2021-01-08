@@ -7,6 +7,7 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:handyman/data/entities/entities.dart' show LocationMetadata;
 import 'package:handyman/domain/models/models.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -16,7 +17,7 @@ part 'booking.g.dart';
 
 @HiveType(typeId: 0)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class Booking extends BaseBooking {
+class Booking extends BaseBooking<LocationMetadata> {
   @HiveField(0)
   @override
   final String customerId;
@@ -96,7 +97,7 @@ class Booking extends BaseBooking {
     String category,
     String imageUrl,
     String description,
-    LocationMetadata position,
+    BaseLocationMetadata position,
     double cost,
     double progress,
     String dueDate,

@@ -90,7 +90,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
       _locationBloc
         ..add(LocationEvent.getCurrentLocation())
         ..listen((state) {
-          if (state is SuccessState<LocationMetadata>) {
+          if (state is SuccessState<BaseLocationMetadata>) {
             _initialLocation = LatLng(state.data.lat, state.data.lng);
             logger.d("Location -> ${state.data}");
             if (mounted) setState(() {});

@@ -25,7 +25,7 @@ abstract class BaseBookingRepository implements Exposable {
     @required String category,
     @required String description,
     @required String image,
-    @required LocationMetadata metadata,
+    @required BaseLocationMetadata metadata,
   });
 
   Future<void> updateBooking({@required BaseBooking booking});

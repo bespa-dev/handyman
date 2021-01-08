@@ -8,7 +8,7 @@
  */
 
 import 'package:handyman/domain/models/models.dart'
-    show BaseModel, LocationMetadata;
+    show BaseModel, BaseLocationMetadata;
 import 'package:super_enum/super_enum.dart';
 
 part 'booking.super.dart';
@@ -24,13 +24,13 @@ enum _BookingState {
 }
 
 /// base bookings class
-abstract class BaseBooking extends BaseModel {
+abstract class BaseBooking<M> extends BaseModel {
   String customerId;
   String artisanId;
   String category;
   String imageUrl;
   String description;
-  LocationMetadata position;
+  M position;
   double cost;
   double progress;
   String dueDate;
@@ -42,7 +42,7 @@ abstract class BaseBooking extends BaseModel {
     String category,
     String imageUrl,
     String description,
-    LocationMetadata position,
+    BaseLocationMetadata position,
     double cost,
     double progress,
     String dueDate,

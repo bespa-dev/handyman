@@ -9,6 +9,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:handyman/data/entities/entities.dart';
@@ -34,7 +35,8 @@ Future registerHiveDatabase() async {
     ..registerAdapter(ReviewAdapter())
     ..registerAdapter(ArtisanAdapter())
     ..registerAdapter(CustomerAdapter())
-    ..registerAdapter(BusinessAdapter());
+    ..registerAdapter(BusinessAdapter())
+    ..registerAdapter(LocationMetadataAdapter());
 
   /// open boxes
   await Hive.openBox<Booking>(RefUtils.kBookingRef);
@@ -75,13 +77,24 @@ class HiveLocalDatasource extends BaseLocalDatasource {
 
   void _performInitLoad() async {
     /// decode categories from json
-    var source = await rootBundle.loadString("assets/categories.json");
-    var decoded = jsonDecode(source) as List;
-    for (var json in decoded) {
+    var categorySource = await rootBundle.loadString("assets/categories.json");
+    var decodedCategories = jsonDecode(categorySource) as List;
+    for (var json in decodedCategories) {
       final item = ServiceCategory.fromJson(json);
 
       /// put each one into box
       await categoryBox.put(item.id, item);
+    }
+
+    if (!kReleaseMode) {
+      var requestsSource = await rootBundle.loadString("assets/requests.json");
+      var decodedRequests = jsonDecode(requestsSource) as List;
+      for (var json in decodedRequests) {
+        final item = Booking.fromJson(json);
+
+        /// put each one into box
+        await bookingBox.put(item.id, item);
+      }
     }
   }
 

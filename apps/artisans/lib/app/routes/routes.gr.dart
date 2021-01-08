@@ -22,6 +22,7 @@ class Routes {
   static const String requestPage = '/request-page';
   static const String bookingsPage = '/bookings-page';
   static const String categoryDetailsPage = '/category-details-page';
+  static const String bookingDetailsPage = '/booking-details-page';
   static const String notificationsPage = '/notifications-page';
   static const String imagePreviewPage = '/image-preview-page';
   static const String homePage = '/home-page';
@@ -40,6 +41,7 @@ class Routes {
     requestPage,
     bookingsPage,
     categoryDetailsPage,
+    bookingDetailsPage,
     notificationsPage,
     imagePreviewPage,
     homePage,
@@ -64,6 +66,7 @@ class Router extends RouterBase {
     RouteDef(Routes.requestPage, page: RequestPage),
     RouteDef(Routes.bookingsPage, page: BookingsPage),
     RouteDef(Routes.categoryDetailsPage, page: CategoryDetailsPage),
+    RouteDef(Routes.bookingDetailsPage, page: BookingDetailsPage),
     RouteDef(Routes.notificationsPage, page: NotificationsPage),
     RouteDef(Routes.imagePreviewPage, page: ImagePreviewPage),
     RouteDef(Routes.homePage, page: HomePage),
@@ -149,6 +152,18 @@ class Router extends RouterBase {
             CategoryDetailsPage(
           key: args.key,
           category: args.category,
+        ),
+        settings: data,
+      );
+    },
+    BookingDetailsPage: (data) {
+      final args = data.getArgs<BookingDetailsPageArguments>(nullOk: false);
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            BookingDetailsPage(
+          key: args.key,
+          booking: args.booking,
+          customer: args.customer,
         ),
         settings: data,
       );
@@ -271,6 +286,17 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
         arguments: CategoryDetailsPageArguments(key: key, category: category),
       );
 
+  Future<dynamic> pushBookingDetailsPage({
+    Key key,
+    @required BaseBooking<dynamic> booking,
+    @required BaseUser customer,
+  }) =>
+      push<dynamic>(
+        Routes.bookingDetailsPage,
+        arguments: BookingDetailsPageArguments(
+            key: key, booking: booking, customer: customer),
+      );
+
   Future<dynamic> pushNotificationsPage() =>
       push<dynamic>(Routes.notificationsPage);
 
@@ -336,6 +362,15 @@ class CategoryDetailsPageArguments {
   final Key key;
   final BaseServiceCategory category;
   CategoryDetailsPageArguments({this.key, @required this.category});
+}
+
+/// BookingDetailsPage arguments holder class
+class BookingDetailsPageArguments {
+  final Key key;
+  final BaseBooking<dynamic> booking;
+  final BaseUser customer;
+  BookingDetailsPageArguments(
+      {this.key, @required this.booking, @required this.customer});
 }
 
 /// ImagePreviewPage arguments holder class

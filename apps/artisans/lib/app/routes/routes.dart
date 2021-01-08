@@ -37,6 +37,7 @@ import 'package:handyman/app/pages/pages.dart';
     CustomRoute(page: RequestPage),
     CustomRoute(page: BookingsPage),
     CustomRoute(page: CategoryDetailsPage),
+    CustomRoute(page: BookingDetailsPage),
 
     /// endregion
 
