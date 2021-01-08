@@ -8,9 +8,14 @@
  */
 
 import 'package:handyman/domain/models/models.dart';
+import 'package:handyman/domain/repositories/repositories.dart';
+import 'package:handyman/domain/sources/src/local.dart';
+import 'package:handyman/domain/sources/src/remote.dart';
 import 'package:meta/meta.dart';
 
-abstract class BaseCategoryRepository implements Exposable {
+abstract class BaseCategoryRepository extends BaseRepository {
+  const BaseCategoryRepository(BaseLocalDatasource local, BaseRemoteDatasource remote) : super(local, remote);
+
   /// Get all [BaseServiceCategory]
   Stream<List<BaseServiceCategory>> observeCategories({
     @required ServiceCategoryGroup categoryGroup,

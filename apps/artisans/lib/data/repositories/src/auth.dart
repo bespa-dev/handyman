@@ -18,7 +18,7 @@ import 'package:handyman/domain/repositories/repositories.dart';
 import 'package:handyman/shared/shared.dart';
 import 'package:meta/meta.dart';
 
-class AuthRepositoryImpl implements BaseAuthRepository {
+class AuthRepositoryImpl extends BaseAuthRepository {
   final GoogleSignIn _googleSignIn;
   final FirebaseAuth _auth;
   final BasePreferenceRepository _prefsRepo;

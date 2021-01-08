@@ -8,9 +8,14 @@
  */
 
 import 'package:handyman/domain/models/models.dart';
+import 'package:handyman/domain/repositories/repositories.dart';
+import 'package:handyman/domain/sources/src/local.dart';
+import 'package:handyman/domain/sources/src/remote.dart';
 import 'package:meta/meta.dart';
 
-abstract class BaseReviewRepository implements Exposable {
+abstract class BaseReviewRepository extends BaseRepository {
+  const BaseReviewRepository(BaseLocalDatasource local, BaseRemoteDatasource remote) : super(local, remote);
+
   /// Delete a [CustomerReview] by [id]
   Future<void> deleteReviewById({@required String id});
 

@@ -8,9 +8,14 @@
  */
 
 import 'package:handyman/domain/models/models.dart';
+import 'package:handyman/domain/repositories/repositories.dart';
+import 'package:handyman/domain/sources/src/local.dart';
+import 'package:handyman/domain/sources/src/remote.dart';
 import 'package:meta/meta.dart';
 
-abstract class BaseBusinessRepository implements Exposable {
+abstract class BaseBusinessRepository extends BaseRepository {
+  const BaseBusinessRepository(BaseLocalDatasource local, BaseRemoteDatasource remote) : super(local, remote);
+
   /// Upload business [images]
   Future<void> uploadBusinessPhotos({
     @required String userId,

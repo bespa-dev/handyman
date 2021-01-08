@@ -60,7 +60,6 @@ final _bookingRepositoryProvider =
   return BookingRepositoryImpl(local: local, remote: remote);
 });
 
-@Exposed()
 final _businessRepositoryProvider =
     Provider.family<BaseBusinessRepository, BasePreferenceRepository>(
         (_, prefs) {
@@ -113,12 +112,13 @@ final _reviewRepositoryProvider =
 final _searchRepositoryProvider =
     Provider.family<BaseSearchRepository, BasePreferenceRepository>((_, prefs) {
   var local = _.read(_localDatasourceProvider(prefs));
+  var remote = _.read(_remoteDatasourceProvider(prefs));
   final dotenv = DotEnv();
   final algolia = Algolia.init(
     applicationId: dotenv.env['applicationId'],
     apiKey: dotenv.env['apiKey'],
   );
-  return SearchRepositoryImpl(local: local, algolia: algolia);
+  return SearchRepositoryImpl(local: local, remote: remote, algolia: algolia);
 });
 
 @Exposed()
@@ -127,7 +127,6 @@ final _storageRepositoryProvider =
   return _.watch(_firebaseStorageRepositoryProvider);
 });
 
-@Exposed()
 final _userRepositoryProvider =
     Provider.family<BaseUserRepository, BasePreferenceRepository>((_, prefs) {
   var local = _.read(_localDatasourceProvider(prefs));
@@ -245,7 +244,7 @@ class Injection {
     for (var value in _repos) {
       if (value is R) return value as R;
     }
-    return null;
+    throw Exception("Unknown repository for -> ${R.runtimeType}");
   }
 }
 

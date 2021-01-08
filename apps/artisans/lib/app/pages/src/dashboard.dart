@@ -96,7 +96,7 @@ class _DashboardPageState extends State<DashboardPage> {
             initialData: [],
             builder: (_, snapshot) {
               final bookings = snapshot.data;
-              logger.d(bookings);
+
               return CustomScrollView(
                 slivers: [
                   /// app bar
@@ -147,10 +147,10 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                   ),
 
-                  /// business
                   SliverList(
                     delegate: SliverChildListDelegate.fixed(
                       [
+                        /// business
                         if (businessState
                             is SuccessState<List<BaseBusiness>>) ...{
                           Padding(
@@ -276,7 +276,13 @@ class _DashboardPageState extends State<DashboardPage> {
                             ),
                           ),
                         ),
-                        Row(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            
+                          ],
+                        ),
 
                         if (bookingState
                             is SuccessState<Stream<List<BaseBooking>>>) ...{

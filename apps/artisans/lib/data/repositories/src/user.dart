@@ -13,66 +13,63 @@ import 'package:handyman/domain/repositories/repositories.dart';
 import 'package:handyman/domain/sources/sources.dart';
 import 'package:meta/meta.dart';
 
-class UserRepositoryImpl implements BaseUserRepository {
-  final BaseLocalDatasource _localDatasource;
-  final BaseRemoteDatasource _remoteDatasource;
+class UserRepositoryImpl extends BaseUserRepository {
 
-  UserRepositoryImpl({
+  const UserRepositoryImpl({
     @required BaseLocalDatasource local,
     @required BaseRemoteDatasource remote,
-  })  : _localDatasource = local,
-        _remoteDatasource = remote;
+  }) : super(local, remote);
 
   @override
   Stream<BaseArtisan> currentUser() async* {
-    yield* _localDatasource.currentUser();
-    _remoteDatasource.currentUser().listen((event) async {
-      if (event != null) await _localDatasource.updateUser(event);
+    yield* local.currentUser();
+    remote.currentUser().listen((event) async {
+      if (event != null) await local.updateUser(event);
     });
   }
 
   @override
   Future<BaseArtisan> getArtisanById({@required String id}) async {
-    var artisan = await _localDatasource.getArtisanById(id: id);
-    return artisan ??= await _remoteDatasource.getArtisanById(id: id);
+    var artisan = await local.getArtisanById(id: id);
+    return artisan ??= await remote.getArtisanById(id: id);
   }
 
   @override
   Future<BaseUser> getCustomerById({@required String id}) async {
-    var customer = await _localDatasource.getCustomerById(id: id);
-    return customer ??= await _remoteDatasource.getCustomerById(id: id);
+    var customer = await local.getCustomerById(id: id);
+    return customer ??= await remote.getCustomerById(id: id);
   }
 
   @override
   Stream<BaseArtisan> observeArtisanById({@required String id}) async* {
-    yield* _localDatasource.observeArtisanById(id: id);
-    _remoteDatasource.observeArtisanById(id: id).listen((event) async {
-      if (event != null) await _localDatasource.updateUser(event);
+    yield* local.observeArtisanById(id: id);
+    remote.observeArtisanById(id: id).listen((event) async {
+      if (event != null) await local.updateUser(event);
     });
   }
 
   @override
   Stream<List<BaseArtisan>> observeArtisans(
       {@required String category}) async* {
-    yield* _localDatasource.observeArtisans(category: category);
-    _remoteDatasource.observeArtisans(category: category).listen((event) async {
+    yield* local.observeArtisans(category: category);
+    remote.observeArtisans(category: category).listen((event) async {
       for (var value in event) {
-        if (value != null) await _localDatasource.updateUser(value);
+        if (value != null) await local.updateUser(value);
       }
     });
   }
 
   @override
   Stream<BaseUser> observeCustomerById({@required String id}) async* {
-    yield* _localDatasource.observeCustomerById(id: id);
-    _remoteDatasource.observeCustomerById(id: id).listen((event) async {
-      if (event != null) await _localDatasource.updateUser(event);
+    yield* local.observeCustomerById(id: id);
+    remote.observeCustomerById(id: id).listen((event) async {
+      if (event != null) await local.updateUser(event);
     });
   }
 
   @override
   Future<void> updateUser({@required BaseUser user}) async {
-    await _localDatasource.updateUser(user);
-    await _remoteDatasource.updateUser(user);
+    await local.updateUser(user);
+    await remote.updateUser(user);
   }
 }

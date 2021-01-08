@@ -14,54 +14,48 @@ import 'package:handyman/domain/sources/sources.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
-class BookingRepositoryImpl implements BaseBookingRepository {
-  final BaseLocalDatasource _localDatasource;
-  final BaseRemoteDatasource _remoteDatasource;
-
-  BookingRepositoryImpl({
+class BookingRepositoryImpl extends BaseBookingRepository {
+  const BookingRepositoryImpl({
     @required BaseLocalDatasource local,
     @required BaseRemoteDatasource remote,
-  })  : _localDatasource = local,
-        _remoteDatasource = remote;
+  }) : super(local, remote);
 
   @override
   Stream<List<BaseBooking>> bookingsForCustomerAndArtisan(
       {@required String customerId, @required String artisanId}) async* {
-    yield* _localDatasource.bookingsForCustomerAndArtisan(
-        customerId, artisanId);
-    _remoteDatasource
+    yield* local.bookingsForCustomerAndArtisan(customerId, artisanId);
+    remote
         .bookingsForCustomerAndArtisan(customerId, artisanId)
         .listen((event) async {
       for (var value in event) {
-        if (value != null) await _localDatasource.updateBooking(booking: value);
+        if (value != null) await local.updateBooking(booking: value);
       }
     });
   }
 
   @override
   Future<void> deleteBooking({BaseBooking booking}) async {
-    await _localDatasource.deleteBooking(booking: booking);
-    await _remoteDatasource.deleteBooking(booking: booking);
+    await local.deleteBooking(booking: booking);
+    await remote.deleteBooking(booking: booking);
   }
 
   @override
   Stream<BaseBooking> getBookingById({String id}) async* {
-    yield* _localDatasource.getBookingById(id: id);
-    _remoteDatasource.getBookingById(id: id).listen((event) async {
-      if (event != null) await _localDatasource.updateBooking(booking: event);
+    yield* local.getBookingById(id: id);
+    remote.getBookingById(id: id).listen((event) async {
+      if (event != null) await local.updateBooking(booking: event);
     });
   }
 
   @override
   Stream<List<BaseBooking>> getBookingsByDueDate(
       {String dueDate, String artisanId}) async* {
-    yield* _localDatasource.getBookingsByDueDate(
-        dueDate: dueDate, artisanId: artisanId);
-    _remoteDatasource
+    yield* local.getBookingsByDueDate(dueDate: dueDate, artisanId: artisanId);
+    remote
         .getBookingsByDueDate(dueDate: dueDate, artisanId: artisanId)
         .listen((event) async {
       for (var value in event) {
-        if (value != null) await _localDatasource.updateBooking(booking: value);
+        if (value != null) await local.updateBooking(booking: value);
       }
     });
   }
@@ -97,32 +91,32 @@ class BookingRepositoryImpl implements BaseBookingRepository {
         now.minute,
       ).toIso8601String(),
     );
-    await _localDatasource.requestBooking(booking: booking);
-    await _remoteDatasource.requestBooking(booking: booking);
+    await local.requestBooking(booking: booking);
+    await remote.requestBooking(booking: booking);
   }
 
   @override
   Future<void> updateBooking({BaseBooking booking}) async {
-    await _localDatasource.updateBooking(booking: booking);
-    await _remoteDatasource.updateBooking(booking: booking);
+    await local.updateBooking(booking: booking);
+    await remote.updateBooking(booking: booking);
   }
 
   @override
   Stream<List<BaseBooking>> observeBookingsForArtisan(String id) async* {
-    yield* _localDatasource.observeBookingsForArtisan(id);
-    _remoteDatasource.observeBookingsForArtisan(id).listen((event) async {
+    yield* local.observeBookingsForArtisan(id);
+    remote.observeBookingsForArtisan(id).listen((event) async {
       for (var value in event) {
-        if (value != null) await _localDatasource.updateBooking(booking: value);
+        if (value != null) await local.updateBooking(booking: value);
       }
     });
   }
 
   @override
   Stream<List<BaseBooking>> observeBookingsForCustomer(String id) async* {
-    yield* _localDatasource.observeBookingsForCustomer(id);
-    _remoteDatasource.observeBookingsForCustomer(id).listen((event) async {
+    yield* local.observeBookingsForCustomer(id);
+    remote.observeBookingsForCustomer(id).listen((event) async {
       for (var value in event) {
-        if (value != null) await _localDatasource.updateBooking(booking: value);
+        if (value != null) await local.updateBooking(booking: value);
       }
     });
   }

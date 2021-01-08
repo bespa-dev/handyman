@@ -8,6 +8,7 @@
  */
 
 export 'src/auth/auth.dart'; // done
+export 'src/base_repo.dart'; // done
 export 'src/booking.dart'; // done
 export 'src/business.dart'; // done
 export 'src/category.dart'; // done

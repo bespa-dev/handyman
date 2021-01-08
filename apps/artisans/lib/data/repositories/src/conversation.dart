@@ -15,27 +15,23 @@ import 'package:handyman/domain/sources/sources.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
-class ConversationRepositoryImpl implements BaseConversationRepository {
-  final BaseLocalDatasource _localDatasource;
-  final BaseRemoteDatasource _remoteDatasource;
-
-  ConversationRepositoryImpl({
+class ConversationRepositoryImpl extends BaseConversationRepository {
+  const ConversationRepositoryImpl({
     @required BaseLocalDatasource local,
     @required BaseRemoteDatasource remote,
-  })  : _localDatasource = local,
-        _remoteDatasource = remote;
+  }) : super(local, remote);
 
   @override
   Stream<List<BaseConversation>> observeConversation(
       {String sender, String recipient}) async* {
-    yield* _localDatasource.observeConversation(
+    yield* local.observeConversation(
         sender: sender, recipient: recipient);
-    _remoteDatasource
+    remote
         .observeConversation(sender: sender, recipient: recipient)
         .listen((event) async {
       for (var value in event) {
         if (value != null)
-          await _localDatasource.sendMessage(conversation: value);
+          await local.sendMessage(conversation: value);
       }
     });
   }
@@ -55,7 +51,7 @@ class ConversationRepositoryImpl implements BaseConversationRepository {
       format: type.name(),
     );
 
-    await _localDatasource.sendMessage(conversation: conversation);
-    await _remoteDatasource.sendMessage(conversation: conversation);
+    await local.sendMessage(conversation: conversation);
+    await remote.sendMessage(conversation: conversation);
   }
 }

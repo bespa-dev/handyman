@@ -69,24 +69,24 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   }
 
   @override
-  Future<void> deleteBooking({BaseBooking booking}) async => await firestore
+  Future<void> deleteBooking({@required BaseBooking booking}) async => await firestore
       .collection(RefUtils.kBookingRef)
       .doc(booking.id)
       .set(booking.toJson(), SetOptions(merge: true));
 
   @override
-  Future<void> deleteReviewById({String id}) async =>
+  Future<void> deleteReviewById({@required String id}) async =>
       await firestore.collection(RefUtils.kReviewRef).doc(id).delete();
 
   @override
-  Future<BaseArtisan> getArtisanById({String id}) async {
+  Future<BaseArtisan> getArtisanById({@required String id}) async {
     var snapshot =
         await firestore.collection(RefUtils.kArtisanRef).doc(id).get();
     return snapshot.exists ? Artisan.fromJson(snapshot.data()) : null;
   }
 
   @override
-  Stream<BaseBooking> getBookingById({String id}) async* {
+  Stream<BaseBooking> getBookingById({@required String id}) async* {
     yield* firestore
         .collection(RefUtils.kBookingRef)
         .doc(id)
@@ -96,7 +96,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
 
   @override
   Stream<List<BaseBooking>> getBookingsByDueDate(
-      {String dueDate, String artisanId}) async* {
+      {@required String dueDate, @required String artisanId}) async* {
     yield* firestore
         .collection(RefUtils.kBookingRef)
         .where("due_date", isLessThanOrEqualTo: dueDate)
@@ -107,14 +107,15 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   }
 
   @override
-  Future<BaseUser> getCustomerById({String id}) async {
+  Future<BaseUser> getCustomerById({@required String id}) async {
     var snapshot =
         await firestore.collection(RefUtils.kCustomerRef).doc(id).get();
     return snapshot.exists ? Customer.fromJson(snapshot.data()) : null;
   }
 
   @override
-  Stream<List<BaseGallery>> getPhotosForArtisan({String userId}) async* {
+  Stream<List<BaseGallery>> getPhotosForArtisan(
+      {@required String userId}) async* {
     yield* firestore
         .collection(RefUtils.kGalleryRef)
         .where("user_id", isEqualTo: userId)
@@ -124,7 +125,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   }
 
   @override
-  Stream<BaseArtisan> observeArtisanById({String id}) async* {
+  Stream<BaseArtisan> observeArtisanById({@required String id}) async* {
     yield* firestore
         .collection(RefUtils.kArtisanRef)
         .doc(id)
@@ -133,7 +134,8 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   }
 
   @override
-  Stream<List<BaseArtisan>> observeArtisans({String category}) async* {
+  Stream<List<BaseArtisan>> observeArtisans(
+      {@required String category}) async* {
     yield* firestore
         .collection(RefUtils.kArtisanRef)
         .where("category_group", isEqualTo: category)
@@ -174,7 +176,8 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   }
 
   @override
-  Stream<BaseServiceCategory> observeCategoryById({String id}) async* {
+  Stream<BaseServiceCategory> observeCategoryById(
+      {@required String id}) async* {
     yield* firestore
         .collection(RefUtils.kCategoryRef)
         .doc(id)
@@ -184,7 +187,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
 
   @override
   Stream<List<BaseConversation>> observeConversation(
-      {String sender, String recipient}) async* {
+      {@required String sender, @required String recipient}) async* {
     yield* firestore
         .collection(RefUtils.kConversationRef)
         .where("author", isLessThanOrEqualTo: sender)
@@ -195,7 +198,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   }
 
   @override
-  Stream<BaseUser> observeCustomerById({String id}) async* {
+  Stream<BaseUser> observeCustomerById({@required String id}) async* {
     yield* firestore
         .collection(RefUtils.kCustomerRef)
         .doc(id)
@@ -231,7 +234,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
           .set(booking.toJson(), SetOptions(merge: true));
 
   @override
-  Future<void> sendMessage({BaseConversation conversation}) async =>
+  Future<void> sendMessage({@required BaseConversation conversation}) async =>
       await firestore
           .collection(RefUtils.kConversationRef)
           .doc(conversation.id)
@@ -258,7 +261,8 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
       .set(user.toJson(), SetOptions(merge: true));
 
   @override
-  Future<void> uploadBusinessPhotos({List<BaseGallery> galleryItems}) async {
+  Future<void> uploadBusinessPhotos(
+      {@required List<BaseGallery> galleryItems}) async {
     for (var item in galleryItems) {
       await firestore
           .collection(RefUtils.kGalleryRef)

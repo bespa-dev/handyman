@@ -8,10 +8,15 @@
  */
 
 import 'package:handyman/domain/models/models.dart';
+import 'package:handyman/domain/repositories/repositories.dart';
+import 'package:handyman/domain/sources/src/local.dart';
+import 'package:handyman/domain/sources/src/remote.dart';
 import 'package:meta/meta.dart';
 
 /// base user repository class
-abstract class BaseUserRepository implements Exposable {
+abstract class BaseUserRepository extends BaseRepository {
+  const BaseUserRepository(BaseLocalDatasource local, BaseRemoteDatasource remote) : super(local, remote);
+
   /// Update [BaseUser] profile information
   Future<void> updateUser({@required BaseUser user});
 

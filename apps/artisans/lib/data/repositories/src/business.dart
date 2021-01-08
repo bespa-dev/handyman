@@ -14,15 +14,11 @@ import 'package:handyman/domain/sources/sources.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
-class BusinessRepositoryImpl implements BaseBusinessRepository {
-  final BaseLocalDatasource _localDatasource;
-  final BaseRemoteDatasource _remoteDatasource;
-
-  BusinessRepositoryImpl({
+class BusinessRepositoryImpl extends BaseBusinessRepository {
+  const BusinessRepositoryImpl({
     @required BaseLocalDatasource local,
     @required BaseRemoteDatasource remote,
-  })  : _localDatasource = local,
-        _remoteDatasource = remote;
+  }) : super(local, remote);
 
   @override
   Future<void> uploadBusinessPhotos(
@@ -38,19 +34,19 @@ class BusinessRepositoryImpl implements BaseBusinessRepository {
       items.add(gallery);
     }
 
-    await _localDatasource.uploadBusinessPhotos(galleryItems: items);
-    await _remoteDatasource.uploadBusinessPhotos(galleryItems: items);
+    await local.uploadBusinessPhotos(galleryItems: items);
+    await remote.uploadBusinessPhotos(galleryItems: items);
   }
 
   @override
   Future<List<BaseBusiness>> getBusinessesForArtisan(
       {@required String artisan}) async {
     final businesses =
-        await _remoteDatasource.getBusinessesForArtisan(artisan: artisan);
+        await remote.getBusinessesForArtisan(artisan: artisan);
     for (var value in businesses) {
-      if (value != null) await _localDatasource.updateBusiness(business: value);
+      if (value != null) await local.updateBusiness(business: value);
     }
-    return _localDatasource.getBusinessesForArtisan(artisan: artisan);
+    return local.getBusinessesForArtisan(artisan: artisan);
   }
 
   @override
@@ -68,14 +64,14 @@ class BusinessRepositoryImpl implements BaseBusinessRepository {
       name: name,
       location: location,
     );
-    await _localDatasource.updateBusiness(business: business);
-    await _remoteDatasource.updateBusiness(business: business);
+    await local.updateBusiness(business: business);
+    await remote.updateBusiness(business: business);
     return business.id;
   }
 
   @override
   Future<void> updateBusiness({@required BaseBusiness business}) async {
-    await _localDatasource.updateBusiness(business: business);
-    await _remoteDatasource.updateBusiness(business: business);
+    await local.updateBusiness(business: business);
+    await remote.updateBusiness(business: business);
   }
 }

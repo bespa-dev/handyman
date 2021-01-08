@@ -14,20 +14,16 @@ import 'package:handyman/domain/sources/sources.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
-class ReviewRepositoryImpl implements BaseReviewRepository {
-  final BaseLocalDatasource _localDatasource;
-  final BaseRemoteDatasource _remoteDatasource;
-
-  ReviewRepositoryImpl({
+class ReviewRepositoryImpl extends BaseReviewRepository {
+  const ReviewRepositoryImpl({
     @required BaseLocalDatasource local,
     @required BaseRemoteDatasource remote,
-  })  : _localDatasource = local,
-        _remoteDatasource = remote;
+  }) : super(local, remote);
 
   @override
   Future<void> deleteReviewById({String id}) async {
-    await _localDatasource.deleteReviewById(id: id);
-    await _remoteDatasource.deleteReviewById(id: id);
+    await local.deleteReviewById(id: id);
+    await remote.deleteReviewById(id: id);
   }
 
   @override
@@ -42,26 +38,26 @@ class ReviewRepositoryImpl implements BaseReviewRepository {
       rating: rating,
     );
 
-    await _localDatasource.sendReview(review: review);
-    await _remoteDatasource.sendReview(review: review);
+    await local.sendReview(review: review);
+    await remote.sendReview(review: review);
   }
 
   @override
   Stream<List<BaseReview>> observeReviewsByCustomer(String id) async* {
-    yield* _localDatasource.observeReviewsByCustomer(id);
-    _remoteDatasource.observeReviewsByCustomer(id).listen((event) async {
+    yield* local.observeReviewsByCustomer(id);
+    remote.observeReviewsByCustomer(id).listen((event) async {
       for (var value in event) {
-        if (value != null) await _localDatasource.updateReview(review: value);
+        if (value != null) await local.updateReview(review: value);
       }
     });
   }
 
   @override
   Stream<List<BaseReview>> observeReviewsForArtisan(String id) async* {
-    yield* _localDatasource.observeReviewsForArtisan(id);
-    _remoteDatasource.observeReviewsForArtisan(id).listen((event) async {
+    yield* local.observeReviewsForArtisan(id);
+    remote.observeReviewsForArtisan(id).listen((event) async {
       for (var value in event) {
-        if (value != null) await _localDatasource.updateReview(review: value);
+        if (value != null) await local.updateReview(review: value);
       }
     });
   }

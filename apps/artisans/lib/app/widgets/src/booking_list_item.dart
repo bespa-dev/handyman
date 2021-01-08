@@ -47,7 +47,7 @@ class _BookingListItemState extends State<BookingListItem> {
         decoration: BoxDecoration(),
         padding: EdgeInsets.symmetric(horizontal: kSpacingX16),
         margin: EdgeInsets.only(bottom: kSpacingX12),
-        child: userState is SuccessState<BaseUser>
+        child: userState is SuccessState<BaseArtisan>
             ? InkWell(
                 onTap: () => context.navigator.push(
                   Routes.bookingDetailsPage,

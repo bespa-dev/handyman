@@ -8,9 +8,14 @@
  */
 
 import 'package:handyman/domain/models/models.dart';
+import 'package:handyman/domain/repositories/repositories.dart';
+import 'package:handyman/domain/sources/src/local.dart';
+import 'package:handyman/domain/sources/src/remote.dart';
 import 'package:meta/meta.dart';
 
-abstract class BaseBookingRepository implements Exposable {
+abstract class BaseBookingRepository extends BaseRepository {
+  const BaseBookingRepository(BaseLocalDatasource local, BaseRemoteDatasource remote) : super(local, remote);
+
   /// Get [BaseBooking] by [id]
   Stream<BaseBooking> getBookingById({String id});
 
