@@ -28,7 +28,7 @@ class LocationBloc extends BaseBloc<LocationEvent> {
     if (event is GetCurrentLocation) {
       var result = await GetCurrentLocationUseCase(_repo).execute(null);
       if (result is UseCaseResultSuccess<BaseLocationMetadata>)
-        yield BlocState.successState(data: result.value);
+        yield BlocState<BaseLocationMetadata>.successState(data: result.value);
       else
         yield BlocState.errorState(failure: "Cannot get current location");
     } else if (event is ObserveCurrentLocation) {

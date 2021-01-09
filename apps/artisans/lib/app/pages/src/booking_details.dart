@@ -28,10 +28,12 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
   /// blocs
   final _bookingBloc = BookingBloc(repo: Injection.get());
   final _updateBookingBloc = BookingBloc(repo: Injection.get());
+  final _locationBloc = LocationBloc(repo: Injection.get());
 
   /// UI
   ThemeData kTheme;
   GoogleMapController _mapController;
+  String _mapUrl;
 
   /// setup map details
   void _setupMap() async {
@@ -53,6 +55,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
   void dispose() {
     _bookingBloc.close();
     _updateBookingBloc.close();
+    _locationBloc.close();
     super.dispose();
   }
 
@@ -63,6 +66,24 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
     if (mounted) {
       /// observe current booking
       _bookingBloc.add(BookingEvent.observeBookingById(id: widget.booking.id));
+
+      /// get current location of user
+      _locationBloc
+        ..add(LocationEvent.getCurrentLocation())
+        ..listen((state) {
+          if (state is SuccessState<BaseLocationMetadata>) {
+            final origin = "${state.data.lat},${state.data.lng}";
+            final destination =
+                "${widget.booking.position.lat},${widget.booking.position.lng}";
+            logger.i("Route -> $origin => $destination");
+
+            /// https://developers.google.com/maps/documentation/urls/get-started#forming-the-url
+            _mapUrl = Uri.encodeFull(
+                "https://www.google.com/maps/dir/?api=1&origin=$origin&destination=$destination");
+            logger.d(_mapUrl);
+            if (mounted) setState(() {});
+          }
+        });
     }
   }
 
@@ -70,7 +91,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
   Widget build(BuildContext context) {
     kTheme = Theme.of(context);
     final stateTextColor =
-        kTheme.colorScheme.onBackground.withOpacity(kEmphasisMedium);
+        kTheme.colorScheme.onSecondary.withOpacity(kEmphasisMedium);
 
     return BlocBuilder(
       cubit: _bookingBloc,
@@ -92,6 +113,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                 : booking.isComplete
                     ? kGreenColor.withOpacity(kEmphasisLow)
                     : kTheme.colorScheme.error.withOpacity(kEmphasisLow);
+
             return Scaffold(
               body: SafeArea(
                 top: false,
@@ -195,7 +217,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                                     decoration: BoxDecoration(
                                       color: kTheme.colorScheme.onBackground,
                                       borderRadius:
-                                          BorderRadius.circular(kSpacingX4),
+                                          BorderRadius.circular(kSpacingX8),
                                     ),
                                     clipBehavior: Clip.hardEdge,
                                     child: GoogleMap(
@@ -211,10 +233,12 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                                       myLocationButtonEnabled: false,
                                       myLocationEnabled: false,
                                       tiltGesturesEnabled: true,
+                                      onTap: (_) => launchUrl(url: _mapUrl),
                                       markers: <Marker>{
                                         Marker(
                                           markerId: MarkerId(booking.id),
                                           position: bookingPosition,
+                                          onTap: () => launchUrl(url: _mapUrl),
                                         ),
                                       },
                                       onMapCreated: (controller) async {
@@ -347,9 +371,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                           height: kToolbarHeight,
                           width: SizeConfig.screenWidth,
                           decoration: BoxDecoration(
-                            color: booking.isCancelled || booking.isComplete
-                                ? kTheme.colorScheme.onBackground
-                                : kTheme.colorScheme.secondary,
+                            color:  kTheme.colorScheme.secondary,
                           ),
                           clipBehavior: Clip.hardEdge,
                           alignment: Alignment.center,

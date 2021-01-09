@@ -186,6 +186,7 @@ const kShadowDarkColor = Color(0xFF7C7C7C);
 
 /// launch [url]
 Future<void> launchUrl({@required String url}) async {
+  logger.d("Launching -> $url");
   if (await canLaunch(url)) {
     await launch(url);
   }
