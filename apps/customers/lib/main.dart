@@ -14,6 +14,11 @@ import 'package:lite/shared/shared.dart';
 
 /// This mobile app was developed using the The Flutter Clean Architecture
 /// Read more -> https://pub.dev/documentation/flutter_clean_architecture/latest/
+///
+/// Fix for release build error
+/// https://stackoverflow.com/questions/63766058/flutter-issues-with-release-mode-only-apk-builds
+/// flutter pub run flutter_launcher_icons:main
+/// flutter pub run flutter_launcher_name:main
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

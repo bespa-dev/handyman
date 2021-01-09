@@ -207,23 +207,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                   top: kSpacingX24,
                                   bottom: kSpacingX12,
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      "Personal profile",
-                                      style:
-                                          kTheme.textTheme.headline6.copyWith(
-                                        color: kTheme.colorScheme.onBackground
-                                            .withOpacity(kEmphasisMedium),
-                                      ),
-                                    ),
-                                    SizedBox(height: kSpacingX2),
-                                    Divider(
-                                      endIndent: SizeConfig.screenWidth * 0.7,
-                                    ),
-                                  ],
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Personal profile",
+                                  textAlign: TextAlign.start,
+                                  style:
+                                      kTheme.textTheme.headline6.copyWith(
+                                    color: kTheme.colorScheme.onBackground
+                                        .withOpacity(kEmphasisMedium),
+                                  ),
                                 ),
                               ),
 

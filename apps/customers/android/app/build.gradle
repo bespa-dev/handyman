@@ -69,6 +69,11 @@ android {
         }
     }
 
+    lintOptions {
+        disable 'InvalidPackage'
+        checkReleaseBuilds false
+    }
+
     buildTypes {
         debug {
             signingConfig signingConfigs.release
@@ -76,8 +81,16 @@ android {
         profile {
             signingConfig signingConfigs.release
         }
+
         release {
             signingConfig signingConfigs.release
+
+            profile {
+                matchingFallbacks = ['debug', 'release']
+            }
+            minifyEnabled true
+            useProguard true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
