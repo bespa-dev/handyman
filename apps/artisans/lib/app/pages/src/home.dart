@@ -110,96 +110,93 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     _kTheme = Theme.of(context);
 
-    return WillPopScope(
-      onWillPop: () => _backPressed(_navStates[_currentPage]),
-      child: BlocBuilder<UserBloc, BlocState>(
-        cubit: _userBloc,
-        builder: (_, state) => Scaffold(
-          body: SafeArea(
-            top: _navStates[_currentPage] == _dashboardNavKey ||
-                _navStates[_currentPage] == _profileNavKey,
-            bottom: true,
-            child: IndexedStack(
-              index: _currentPage,
-              children: [
-                Navigator(
-                  key: _dashboardNavKey,
-                  onGenerateRoute: (route) => MaterialPageRoute(
-                      settings: route, builder: (__) => DashboardPage()),
-                ),
-                Navigator(
-                  key: _searchNavKey,
-                  onGenerateRoute: (route) => MaterialPageRoute(
-                      settings: route, builder: (__) => SearchPage()),
-                ),
-                Navigator(
-                  key: _notificationsNavKey,
-                  onGenerateRoute: (route) => MaterialPageRoute(
-                      settings: route, builder: (__) => NotificationsPage()),
-                ),
-                Navigator(
-                  key: _profileNavKey,
-                  onGenerateRoute: (route) => MaterialPageRoute(
-                      settings: route, builder: (__) => ProfilePage()),
-                ),
-              ],
-            ),
+    return BlocBuilder<UserBloc, BlocState>(
+      cubit: _userBloc,
+      builder: (_, state) => Scaffold(
+        body: SafeArea(
+          top: _navStates[_currentPage] == _dashboardNavKey ||
+              _navStates[_currentPage] == _profileNavKey,
+          bottom: true,
+          child: IndexedStack(
+            index: _currentPage,
+            children: [
+              Navigator(
+                key: _dashboardNavKey,
+                onGenerateRoute: (route) => MaterialPageRoute(
+                    settings: route, builder: (__) => DashboardPage()),
+              ),
+              Navigator(
+                key: _searchNavKey,
+                onGenerateRoute: (route) => MaterialPageRoute(
+                    settings: route, builder: (__) => SearchPage()),
+              ),
+              Navigator(
+                key: _notificationsNavKey,
+                onGenerateRoute: (route) => MaterialPageRoute(
+                    settings: route, builder: (__) => NotificationsPage()),
+              ),
+              Navigator(
+                key: _profileNavKey,
+                onGenerateRoute: (route) => MaterialPageRoute(
+                    settings: route, builder: (__) => ProfilePage()),
+              ),
+            ],
           ),
-          bottomNavigationBar: Container(
-            height: getProportionateScreenHeight(kSpacingX64),
-            decoration: BoxDecoration(
-              color: _kTheme.colorScheme.background,
-            ),
-            child: Column(
-              children: [
-                Expanded(
-                  child: Material(
-                    type: MaterialType.card,
-                    elevation: kSpacingX2,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          icon: Icon(Feather.home),
-                          color: _kTheme.colorScheme.onBackground,
-                          onPressed: () => _onTabPressed(0),
-                        ),
-                        IconButton(
-                          icon: Icon(Feather.search),
-                          color: _kTheme.colorScheme.onBackground,
-                          onPressed: () => _onTabPressed(1),
-                        ),
-                        IconButton(
-                          icon: Icon(Feather.bell),
-                          color: _kTheme.colorScheme.onBackground,
-                          onPressed: () => _onTabPressed(2),
-                        ),
-                        if (_isLoggedIn &&
-                            state is SuccessState<Stream<BaseArtisan>>) ...{
-                          StreamBuilder<BaseArtisan>(
-                              stream: state.data,
-                              builder: (_, snapshot) {
-                                final user = snapshot.data;
-                                return GestureDetector(
-                                  onTap: () => _onTabPressed(3),
-                                  child: SizedBox(
-                                    height: kSpacingX36,
-                                    width: kSpacingX36,
-                                    child: UserAvatar(
-                                      url: user?.avatar,
-                                      isCircular: true,
-                                    ),
+        ),
+        bottomNavigationBar: Container(
+          height: getProportionateScreenHeight(kSpacingX64),
+          decoration: BoxDecoration(
+            color: _kTheme.colorScheme.background,
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: Material(
+                  type: MaterialType.card,
+                  elevation: kSpacingX2,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: Icon(Feather.home),
+                        color: _kTheme.colorScheme.onBackground,
+                        onPressed: () => _onTabPressed(0),
+                      ),
+                      IconButton(
+                        icon: Icon(Feather.search),
+                        color: _kTheme.colorScheme.onBackground,
+                        onPressed: () => _onTabPressed(1),
+                      ),
+                      IconButton(
+                        icon: Icon(Feather.bell),
+                        color: _kTheme.colorScheme.onBackground,
+                        onPressed: () => _onTabPressed(2),
+                      ),
+                      if (_isLoggedIn &&
+                          state is SuccessState<Stream<BaseArtisan>>) ...{
+                        StreamBuilder<BaseArtisan>(
+                            stream: state.data,
+                            builder: (_, snapshot) {
+                              final user = snapshot.data;
+                              return GestureDetector(
+                                onTap: () => _onTabPressed(3),
+                                child: SizedBox(
+                                  height: kSpacingX36,
+                                  width: kSpacingX36,
+                                  child: UserAvatar(
+                                    url: user?.avatar,
+                                    isCircular: true,
                                   ),
-                                );
-                              }),
-                        },
-                      ],
-                    ),
+                                ),
+                              );
+                            }),
+                      },
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

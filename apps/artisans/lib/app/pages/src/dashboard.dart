@@ -107,6 +107,9 @@ class _DashboardPageState extends State<DashboardPage> {
                     toolbarTextStyle: kTheme.appBarTheme.textTheme.headline6,
                     textTheme: kTheme.appBarTheme.textTheme,
                     leading: GestureDetector(
+                      onTap: () {
+                        /// todo -> add action to logo
+                      },
                       child: Image(
                         image: Svg(kLogoAsset),
                         height: kSpacingX36,

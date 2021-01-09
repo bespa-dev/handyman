@@ -109,10 +109,10 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                 LatLng(booking.position.lat, booking.position.lng);
 
             final stateBgColor = booking.isPending
-                ? kAmberColor.withOpacity(kEmphasisLow)
+                ? kAmberColor.withOpacity(kEmphasisMedium)
                 : booking.isComplete
-                    ? kGreenColor.withOpacity(kEmphasisLow)
-                    : kTheme.colorScheme.error.withOpacity(kEmphasisLow);
+                    ? kGreenColor.withOpacity(kEmphasisMedium)
+                    : kTheme.colorScheme.error.withOpacity(kEmphasisMedium);
 
             return Scaffold(
               body: SafeArea(

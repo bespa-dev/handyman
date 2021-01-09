@@ -202,6 +202,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ],
                               ),
 
+                              /// personal info
                               Container(
                                 padding: EdgeInsets.only(
                                   top: kSpacingX24,
@@ -211,8 +212,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 child: Text(
                                   "Personal profile",
                                   textAlign: TextAlign.start,
-                                  style:
-                                      kTheme.textTheme.headline6.copyWith(
+                                  style: kTheme.textTheme.headline6.copyWith(
                                     color: kTheme.colorScheme.onBackground
                                         .withOpacity(kEmphasisMedium),
                                   ),
@@ -374,6 +374,24 @@ class _ProfilePageState extends State<ProfilePage> {
                                   trailing: Icon(kEditIcon, size: kSpacingX16),
                                 ),
                               ),
+
+                              ///
+                              Container(
+                                padding: EdgeInsets.only(
+                                  top: kSpacingX16,
+                                  bottom: kSpacingX12,
+                                ),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Business Profile",
+                                  textAlign: TextAlign.start,
+                                  style: kTheme.textTheme.headline6.copyWith(
+                                    color: kTheme.colorScheme.onBackground
+                                        .withOpacity(kEmphasisMedium),
+                                  ),
+                                ),
+                              ),
+
                               SizedBox(height: kSpacingX64),
                               ButtonPrimary(
                                 width: SizeConfig.screenWidth * 0.85,
@@ -407,10 +425,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   /// profile image options
   void _showOptionsSheet() async {
-    await showSlidingBottomSheet(context, builder: (context) {
+    final sheetController = SheetController();
+    await showSlidingBottomSheet(context, builder: (ctx) {
       return SlidingSheetDialog(
         elevation: kSpacingX8,
         cornerRadius: kSpacingX16,
+        controller: sheetController,
         snapSpec: const SnapSpec(
           snap: true,
           snappings: [0.4, 0.7, 1.0],
@@ -421,16 +441,14 @@ class _ProfilePageState extends State<ProfilePage> {
           return Container(
             height: kSpacingX56,
             width: SizeConfig.screenWidth,
-            color: kTheme.colorScheme.primary,
+            color: kTheme.cardColor,
             alignment: Alignment.center,
-            child: Center(
-              child: Container(
-                width: kSpacingX36,
-                height: kSpacingX4,
-                decoration: BoxDecoration(
-                  color: kTheme.colorScheme.onPrimary.withOpacity(kEmphasisLow),
-                  borderRadius: BorderRadius.circular(kSpacingX24),
-                ),
+            child: Container(
+              width: kSpacingX36,
+              height: kSpacingX4,
+              decoration: BoxDecoration(
+                color: kTheme.colorScheme.onBackground.withOpacity(kEmphasisLow),
+                borderRadius: BorderRadius.circular(kSpacingX24),
               ),
             ),
           );
@@ -438,7 +456,7 @@ class _ProfilePageState extends State<ProfilePage> {
         builder: (context, state) {
           return Material(
             type: MaterialType.transparency,
-            color: kTheme.cardColor,
+            color: kTheme.colorScheme.background,
             child: Container(
               height: SizeConfig.screenHeight * 0.18,
               width: SizeConfig.screenWidth,
@@ -447,15 +465,15 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   ListTile(
                     onTap: () {
-                      context.navigator
-                        ..pop()
-                        ..pushImagePreviewPage(url: _currentUser?.avatar);
+                      sheetController.hide();
+                      ctx.navigator
+                          .pushImagePreviewPage(url: _currentUser?.avatar);
                     },
                     title: Text("View picture"),
                   ),
                   ListTile(
                     onTap: () {
-                      context.navigator.pop();
+                      sheetController.hide();
                       _pickAvatar();
                     },
                     title: Text("Update profile picture"),

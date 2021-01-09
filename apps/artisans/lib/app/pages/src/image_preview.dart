@@ -10,8 +10,6 @@ class ImagePreviewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kTheme = Theme.of(context);
-
     return Scaffold(
       body: Stack(
         children: [

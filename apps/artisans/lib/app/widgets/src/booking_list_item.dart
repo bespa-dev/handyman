@@ -43,9 +43,9 @@ class _BookingListItemState extends State<BookingListItem> {
     final stateTextColor =
         kTheme.colorScheme.onBackground.withOpacity(kEmphasisMedium);
     final stateBgColor = widget.booking.isPending
-        ? kAmberColor.withOpacity(kEmphasisLow)
+        ? kAmberColor.withOpacity(kEmphasisMedium)
         : widget.booking.isComplete
-            ? kGreenColor.withOpacity(kEmphasisLow)
+            ? kGreenColor.withOpacity(kEmphasisMedium)
             : kTheme.colorScheme.error.withOpacity(kEmphasisLow);
 
     return BlocBuilder<UserBloc, BlocState>(
@@ -73,7 +73,7 @@ class _BookingListItemState extends State<BookingListItem> {
                     ),
                     padding: EdgeInsets.symmetric(
                       vertical: kSpacingX8,
-                      horizontal: kSpacingX4,
+                      horizontal: kSpacingX8,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -143,7 +143,7 @@ class _BookingListItemState extends State<BookingListItem> {
                             Container(
                               height: kSpacingX24,
                               margin:
-                                  EdgeInsets.symmetric(horizontal: kSpacingX8),
+                                  EdgeInsets.only(left: kSpacingX8),
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 color: stateBgColor,
