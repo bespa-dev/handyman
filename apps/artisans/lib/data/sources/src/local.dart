@@ -87,14 +87,14 @@ class HiveLocalDatasource extends BaseLocalDatasource {
     }
 
     if (!kReleaseMode) {
-      var requestsSource = await rootBundle.loadString("assets/requests.json");
-      var decodedRequests = jsonDecode(requestsSource) as List;
-      for (var json in decodedRequests) {
-        final item = Booking.fromJson(json);
-
-        /// put each one into box
-        await bookingBox.put(item.id, item);
-      }
+      // var requestsSource = await rootBundle.loadString("assets/requests.json");
+      // var decodedRequests = jsonDecode(requestsSource) as List;
+      // for (var json in decodedRequests) {
+      //   final item = Booking.fromJson(json);
+      //
+      //   /// put each one into box
+      //   await bookingBox.put(item.id, item);
+      // }
     }
   }
 

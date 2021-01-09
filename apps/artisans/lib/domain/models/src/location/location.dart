@@ -7,7 +7,11 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:meta/meta.dart';
+
 class BaseLocationMetadata {
-  double lat;
-  double lng;
+  final double lat;
+  final double lng;
+
+  const BaseLocationMetadata({@required this.lat, @required this.lng});
 }

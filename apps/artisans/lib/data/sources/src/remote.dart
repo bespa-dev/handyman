@@ -69,10 +69,11 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   }
 
   @override
-  Future<void> deleteBooking({@required BaseBooking booking}) async => await firestore
-      .collection(RefUtils.kBookingRef)
-      .doc(booking.id)
-      .set(booking.toJson(), SetOptions(merge: true));
+  Future<void> deleteBooking({@required BaseBooking booking}) async =>
+      await firestore
+          .collection(RefUtils.kBookingRef)
+          .doc(booking.id)
+          .set(booking.toJson(), SetOptions(merge: true));
 
   @override
   Future<void> deleteReviewById({@required String id}) async =>
@@ -91,7 +92,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
         .collection(RefUtils.kBookingRef)
         .doc(id)
         .snapshots()
-        .map((event) => Booking.fromJson(event.data()));
+        .map((event) => event.exists ? Booking.fromJson(event.data()) : null);
   }
 
   @override

@@ -9,12 +9,14 @@
 
 import 'package:handyman/data/entities/entities.dart' show LocationMetadata;
 import 'package:handyman/domain/models/models.dart';
+import 'package:handyman/shared/shared.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 part 'booking.g.dart';
 
+// 'position': instance.position.toJson(),
 @HiveType(typeId: 0)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class Booking extends BaseBooking<LocationMetadata> {
@@ -74,15 +76,31 @@ class Booking extends BaseBooking<LocationMetadata> {
     @required this.category,
     @required this.imageUrl,
     @required this.description,
-    @required this.position,
     @required this.dueDate,
     @required this.currentState,
+    this.position = const LocationMetadata(lat: 5.644, lng: -0.122),
     this.cost = 0.0,
     this.progress = 0.0,
   });
 
   @override
   get model => this;
+
+  @override
+  bool get hasImage => imageUrl != null && imageUrl.isNotEmpty;
+
+  @override
+  bool get isDue =>
+      compareTime(dueDate, DateTime.now().toIso8601String()).isNegative;
+
+  @override
+  bool get isPending => currentState == BookingState.pending().name();
+
+  @override
+  bool get isComplete => currentState == BookingState.complete().name();
+
+  @override
+  bool get isCancelled => currentState == BookingState.cancelled().name();
 
   factory Booking.fromJson(Map<String, dynamic> json) =>
       _$BookingFromJson(json);

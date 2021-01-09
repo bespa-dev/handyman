@@ -208,9 +208,11 @@ String parseFromTimestamp(
               : Jiffy.unix(timestamp.millisecondsSinceEpoch).yMMMd;
 }
 
-int compareTime(String first, String second) {
-  return DateTime.tryParse(first).compareTo(DateTime.tryParse(second));
-}
+int compareTime(String first, String second) =>
+    DateTime.tryParse(first).compareTo(DateTime.tryParse(second));
+
+String countDownFrom(String first) =>
+    Jiffy.unix(DateTime.tryParse(first).millisecondsSinceEpoch).fromNow();
 
 /// endregion
 

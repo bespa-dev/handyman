@@ -16,7 +16,7 @@ part 'booking.super.dart';
 @superEnum
 enum _BookingState {
   @object
-  Paid,
+  Complete,
   @object
   Pending,
   @object
@@ -35,6 +35,12 @@ abstract class BaseBooking<M> extends BaseModel {
   double progress;
   String dueDate;
   String currentState;
+
+  bool get hasImage;
+  bool get isDue;
+  bool get isPending;
+  bool get isComplete;
+  bool get isCancelled;
 
   BaseBooking copyWith({
     String customerId,

@@ -43,9 +43,8 @@ void showSnackBarMessage(
 }
 
 /// Sets map style
-Future getMapStyle({bool isLightTheme = false}) async =>
-    await rootBundle.loadString(
-        isLightTheme ? "assets/map_style.json" : "assets/dark_map_style.json");
+Future getMapStyle({@required bool isLightTheme}) async => await rootBundle.loadString(
+    isLightTheme ? "assets/map_style.json" : "assets/dark_map_style.json");
 
 /// Dimensions
 const double kSpacingNone = 0.0;
@@ -57,6 +56,8 @@ const double kSpacingX12 = 12.0;
 const double kSpacingX16 = 16.0;
 const double kSpacingX20 = 20.0;
 const double kSpacingX24 = 24.0;
+const double kSpacingX28 = 28.0;
+const double kSpacingX32 = 32.0;
 const double kSpacingX36 = 36.0;
 const double kSpacingX42 = 42.0;
 const double kSpacingX48 = 48.0;
@@ -128,6 +129,7 @@ const kDoneIcon = Icons.done;
 const kUserImageNotFound = Icons.link_off_outlined;
 const kArrowIcon = Icons.arrow_right_alt_outlined;
 const kOptionsIcon = Entypo.dots_two_vertical;
+const kThreeDotsOptionsIcon = Entypo.dots_three_horizontal;
 
 /// [Algolia]
 const kAlgoliaAppId = "AIBRVBFA4W";

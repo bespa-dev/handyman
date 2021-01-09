@@ -7,12 +7,10 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/bloc/bloc.dart';
-import 'package:handyman/app/routes/routes.gr.dart';
 import 'package:handyman/app/widgets/src/booking_list_item.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
@@ -181,78 +179,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (_, index) {
                                 final model = businessState.data[index];
-                                return Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(kSpacingX4),
-                                  ),
-                                  clipBehavior: Clip.hardEdge,
-                                  child: Container(
-                                    width: SizeConfig.screenWidth * 0.85,
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: kSpacingX12,
-                                      vertical: kSpacingX8,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.circular(kSpacingX4),
-                                    ),
-                                    clipBehavior: Clip.hardEdge,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Business Details",
-                                          style:
-                                              kTheme.textTheme.caption.copyWith(
-                                            color: kTheme
-                                                .colorScheme.onBackground
-                                                .withOpacity(kEmphasisLow),
-                                          ),
-                                        ),
-                                        SizedBox(height: kSpacingX12),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  model.name,
-                                                  style: kTheme
-                                                      .textTheme.headline6,
-                                                ),
-                                                SizedBox(height: kSpacingX4),
-                                                Text(
-                                                  model.location,
-                                                  style: kTheme
-                                                      .textTheme.bodyText1
-                                                      .copyWith(
-                                                    color: kTheme.colorScheme
-                                                        .onBackground
-                                                        .withOpacity(
-                                                            kEmphasisMedium),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            IconButton(
-                                              icon: Icon(kEditIcon),
-                                              iconSize: kSpacingX16,
-                                              onPressed: () => context.navigator
-                                                  .pushBusinessProfilePage(
-                                                business: model,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
+                                return BusinessListItem(business: model);
                               },
                               separatorBuilder: (_, __) =>
                                   SizedBox(width: kSpacingX8),
@@ -279,9 +206,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            
-                          ],
+                          children: [],
                         ),
 
                         if (bookingState

@@ -24,9 +24,9 @@ class BookingAdapter extends TypeAdapter<Booking> {
       category: fields[2] as String,
       imageUrl: fields[3] as String,
       description: fields[4] as String,
-      position: fields[5] as LocationMetadata,
       dueDate: fields[8] as String,
       currentState: fields[11] as String,
+      position: fields[5] as LocationMetadata,
       cost: fields[6] as double,
       progress: fields[7] as double,
     );
@@ -86,11 +86,11 @@ Booking _$BookingFromJson(Map<String, dynamic> json) {
     category: json['category'] as String,
     imageUrl: json['image_url'] as String,
     description: json['description'] as String,
+    dueDate: json['due_date'] as String,
+    currentState: json['current_state'] as String,
     position: json['position'] == null
         ? null
         : LocationMetadata.fromJson(json['position'] as Map<String, dynamic>),
-    dueDate: json['due_date'] as String,
-    currentState: json['current_state'] as String,
     cost: (json['cost'] as num)?.toDouble(),
     progress: (json['progress'] as num)?.toDouble(),
   );
@@ -102,7 +102,7 @@ Map<String, dynamic> _$BookingToJson(Booking instance) => <String, dynamic>{
       'category': instance.category,
       'image_url': instance.imageUrl,
       'description': instance.description,
-      'position': instance.position,
+      'position': instance.position.toJson(),
       'cost': instance.cost,
       'progress': instance.progress,
       'due_date': instance.dueDate,

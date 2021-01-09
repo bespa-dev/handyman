@@ -14,7 +14,8 @@ class LocationMetadata extends BaseLocationMetadata {
   @HiveField(1)
   final double lng;
 
-  LocationMetadata({@required this.lat, @required this.lng});
+  const LocationMetadata({@required this.lat, @required this.lng})
+      : super(lat: lat, lng: lng);
 
   @override
   String toString() => this.toJson().toString();
