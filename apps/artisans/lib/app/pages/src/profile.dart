@@ -15,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:handyman/app/bloc/bloc.dart';
-import 'package:handyman/app/pages/pages.dart';
 import 'package:handyman/app/routes/routes.gr.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
@@ -396,8 +395,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                       onComplete: () {
                                         _authBloc
                                             .add(AuthEvent.authSignOutEvent());
-                                        context.navigator.pushAndRemoveUntil(
-                                            Routes.homePage, (_) => _.isFirst);
+                                        context.navigator
+                                          ..popUntilRoot()
+                                          ..pushLoginPage();
                                       },
                                     ),
                                   );
@@ -455,10 +455,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   ListTile(
                     onTap: () {
-                      context.navigator.pop();
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) =>
-                              ImagePreviewPage(url: _currentUser?.avatar)));
+                      context.navigator
+                        ..pop()
+                        ..pushImagePreviewPage(url: _currentUser?.avatar);
                     },
                     title: Text("View picture"),
                   ),

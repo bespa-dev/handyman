@@ -67,6 +67,7 @@ class BookingRepositoryImpl extends BaseBookingRepository {
       String category,
       String description,
       String image,
+      double cost,
       BaseLocationMetadata metadata}) async {
     final now = DateTime.now();
     var booking = Booking(
@@ -75,10 +76,8 @@ class BookingRepositoryImpl extends BaseBookingRepository {
       category: category,
       customerId: customer,
       artisanId: artisan,
-      cost: 12.99,
+      cost: cost,
       currentState: BookingState.pending().name(),
-
-      /// fixme -> resolve prices for each service request
       description: description,
       imageUrl: image,
       position: metadata,

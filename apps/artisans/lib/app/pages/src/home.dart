@@ -38,9 +38,6 @@ class _HomePageState extends State<HomePage> {
 
   /// https://stackoverflow.com/questions/56707392/how-can-i-use-willpopscope-inside-a-navigator-in-flutter
   Future<bool> _backPressed(GlobalKey<NavigatorState> _yourKey) async {
-    logger.d(_yourKey.currentState.canPop());
-
-    /// fixme -> handle back pressed for other tabs
     // Checks if current Navigator still has screens on the stack.
     if (_yourKey.currentState.canPop()) {
       // 'maybePop' method handles the decision of 'pop' to another WillPopScope if they exist.

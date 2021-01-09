@@ -92,8 +92,8 @@ class HiveLocalDatasource extends BaseLocalDatasource {
       // for (var json in decodedRequests) {
       //   final item = Booking.fromJson(json);
       //
-      //   /// put each one into box
-      //   await bookingBox.put(item.id, item);
+      //  // put each one into box
+      // await bookingBox.put(item.id, item);
       // }
     }
   }

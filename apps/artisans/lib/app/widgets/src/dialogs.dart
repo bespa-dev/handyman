@@ -1,9 +1,9 @@
 import 'dart:ui';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/shared/shared.dart';
-import 'package:auto_route/auto_route.dart';
 
 /// width of dialogs
 final _kDialogWidth = SizeConfig.screenWidth * 0.8;
@@ -399,14 +399,14 @@ class ImageViewDialog extends StatelessWidget {
           padding: EdgeInsets.only(bottom: kSpacingX2),
           child: isAssetImage
               ? Image.asset(
-            imageUrl,
-            width: _kDialogWidth,
-            fit: BoxFit.contain,
-          )
+                  imageUrl,
+                  width: _kDialogWidth,
+                  fit: BoxFit.contain,
+                )
               : ImageView(
-            imageUrl: imageUrl,
-            fit: BoxFit.cover,
-          ),
+                  imageUrl: imageUrl,
+                  fit: BoxFit.cover,
+                ),
         ),
         Padding(
           padding: EdgeInsets.fromLTRB(
@@ -531,7 +531,6 @@ Future<T> showCustomDialog<T>({
         children: <Widget>[
           // 1. blurred background
           GestureDetector(
-            // FIXME: @derekbaah -> Should we allow users to dismiss by tapping the background?
             onTap: shouldDismissOnBarrierTap
                 ? () => context.navigator.pop()
                 : null,
@@ -542,7 +541,7 @@ Future<T> showCustomDialog<T>({
                 height: SizeConfig.screenHeight,
                 decoration: BoxDecoration(
                   color:
-                  kTheme.colorScheme.background.withOpacity(kEmphasisLow),
+                      kTheme.colorScheme.background.withOpacity(kEmphasisLow),
                 ),
               ),
             ),
@@ -574,7 +573,7 @@ Future<T> showCustomDialog<T>({
     barrierDismissible: false,
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
     barrierColor:
-    Theme.of(context).colorScheme.background.withOpacity(kOpacityX14),
+        Theme.of(context).colorScheme.background.withOpacity(kOpacityX14),
     transitionDuration: kDialogTransitionDuration,
     transitionBuilder: _buildMaterialDialogTransitions,
     useRootNavigator: true,

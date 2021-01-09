@@ -26,6 +26,7 @@ import 'package:handyman/domain/sources/sources.dart';
 import 'package:handyman/shared/shared.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -213,6 +214,12 @@ int compareTime(String first, String second) =>
 
 String countDownFrom(String first) =>
     Jiffy.unix(DateTime.tryParse(first).millisecondsSinceEpoch).fromNow();
+
+String formatCurrency(double amount) {
+  var cediFormat = NumberFormat.currency(
+      decimalDigits: 2, locale: "en_GH", symbol: "\u00a2");
+  return cediFormat.format(amount);
+}
 
 /// endregion
 

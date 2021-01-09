@@ -69,14 +69,8 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
   @override
   Widget build(BuildContext context) {
     kTheme = Theme.of(context);
-
     final stateTextColor =
         kTheme.colorScheme.onBackground.withOpacity(kEmphasisMedium);
-    final stateBgColor = widget.booking.isPending
-        ? kAmberColor.withOpacity(kEmphasisLow)
-        : widget.booking.isComplete
-            ? kGreenColor.withOpacity(kEmphasisLow)
-            : kTheme.colorScheme.error.withOpacity(kEmphasisLow);
 
     return BlocBuilder(
       cubit: _bookingBloc,
@@ -92,6 +86,12 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
             /// location where request was made
             final bookingPosition =
                 LatLng(booking.position.lat, booking.position.lng);
+
+            final stateBgColor = booking.isPending
+                ? kAmberColor.withOpacity(kEmphasisLow)
+                : booking.isComplete
+                    ? kGreenColor.withOpacity(kEmphasisLow)
+                    : kTheme.colorScheme.error.withOpacity(kEmphasisLow);
             return Scaffold(
               body: SafeArea(
                 top: false,
@@ -100,7 +100,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                     /// content
                     Positioned.fill(
                       child: SingleChildScrollView(
-                        padding: EdgeInsets.only(bottom: kSpacingX64),
+                        padding: EdgeInsets.only(bottom: kSpacingX72),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -241,7 +241,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                                             style: kTheme.textTheme.caption,
                                           ),
                                           Text(
-                                            "\$${booking.cost}",
+                                            formatCurrency(booking.cost),
                                             style: kTheme.textTheme.headline4
                                                 .copyWith(color: kGreenColor),
                                           ),
@@ -333,6 +333,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                                               BookingState.complete().name(),
                                           dueDate:
                                               DateTime.now().toIso8601String(),
+                                          progress: 1.0,
                                         ),
                                       ),
                                     );
@@ -347,7 +348,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                           width: SizeConfig.screenWidth,
                           decoration: BoxDecoration(
                             color: booking.isCancelled || booking.isComplete
-                                ? kTheme.disabledColor
+                                ? kTheme.colorScheme.onBackground
                                 : kTheme.colorScheme.secondary,
                           ),
                           clipBehavior: Clip.hardEdge,
@@ -361,7 +362,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                                     : "Mark as complete".toUpperCase(),
                             style: kTheme.textTheme.button.copyWith(
                               color: booking.isCancelled || booking.isComplete
-                                  ? kTheme.colorScheme.onBackground
+                                  ? kTheme.colorScheme.background
                                       .withOpacity(kEmphasisLow)
                                   : kTheme.colorScheme.onSecondary,
                             ),

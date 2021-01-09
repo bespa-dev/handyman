@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:handyman/app/bloc/bloc.dart';
@@ -32,9 +31,9 @@ class _BookingListItemState extends State<BookingListItem> {
     super.initState();
 
     if (mounted) {
-      /// todo -> change to getCustomerByIdEvent
+      /// get customer details
       _userBloc
-          .add(UserEvent.getArtisanByIdEvent(id: widget.booking.customerId));
+          .add(UserEvent.getCustomerByIdEvent(id: widget.booking.customerId));
     }
   }
 
@@ -51,7 +50,7 @@ class _BookingListItemState extends State<BookingListItem> {
 
     return BlocBuilder<UserBloc, BlocState>(
       cubit: _userBloc,
-      builder: (_, userState) => userState is SuccessState<BaseArtisan> &&
+      builder: (_, userState) => userState is SuccessState<BaseUser> &&
               widget.booking != null
           ? Padding(
               padding: EdgeInsets.only(
@@ -115,7 +114,7 @@ class _BookingListItemState extends State<BookingListItem> {
                                     TextSpan(
                                         text: parseFromTimestamp(
                                             widget.booking.createdAt)),
-                                    TextSpan(text: "\t\u2022\t"),
+                                    TextSpan(text: "\t\u2192\t"),
                                     TextSpan(
                                         text: parseFromTimestamp(
                                             widget.booking.dueDate)),
@@ -133,7 +132,7 @@ class _BookingListItemState extends State<BookingListItem> {
                           children: [
                             /// cost
                             Text(
-                              "\$${widget.booking.cost.toStringAsFixed(2)}",
+                              formatCurrency(widget.booking.cost),
                               style: kTheme.textTheme.button.copyWith(
                                 color: kTheme.colorScheme.onBackground
                                     .withOpacity(kEmphasisMedium),

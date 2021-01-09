@@ -97,6 +97,16 @@ dev_dependencies:
   mockito: ^4.1.3
   bloc_test: ^7.1.0
 
+# app icon
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo/app_logo.png"
+
+# app name
+flutter_launcher_name:
+  name: "HandyMan"
+
 flutter:
   uses-material-design: true
   assets:
