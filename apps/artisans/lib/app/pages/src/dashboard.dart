@@ -107,9 +107,6 @@ class _DashboardPageState extends State<DashboardPage> {
                     toolbarTextStyle: kTheme.appBarTheme.textTheme.headline6,
                     textTheme: kTheme.appBarTheme.textTheme,
                     leading: GestureDetector(
-                      onTap: () => showAboutDialog(
-                        context: context,
-                      ),
                       child: Image(
                         image: Svg(kLogoAsset),
                         height: kSpacingX36,
@@ -157,64 +154,27 @@ class _DashboardPageState extends State<DashboardPage> {
                   SliverList(
                     delegate: SliverChildListDelegate.fixed(
                       [
-                        /// business
-                        if (businessState
-                            is SuccessState<List<BaseBusiness>>) ...{
-                          Padding(
-                            padding: EdgeInsets.only(
-                              top: kSpacingX12,
-                              left: kSpacingX16,
-                            ),
-                            child: Text(
-                              "My Business profile",
-                              style: kTheme.textTheme.headline6.copyWith(
-                                color: kTheme.colorScheme.onBackground
-                                    .withOpacity(kEmphasisMedium),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            constraints: BoxConstraints(
-                              minWidth: SizeConfig.screenWidth,
-                              minHeight: SizeConfig.screenHeight * 0.1,
-                              maxHeight: SizeConfig.screenHeight * 0.15,
-                            ),
-                            child: ListView.separated(
-                              padding: EdgeInsets.only(
-                                top: kSpacingX12,
-                                left: kSpacingX8,
-                                right: kSpacingX8,
-                              ),
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (_, index) {
-                                final model = businessState.data[index];
-                                return BusinessListItem(business: model);
-                              },
-                              separatorBuilder: (_, __) =>
-                                  SizedBox(width: kSpacingX8),
-                              itemCount: businessState.data.length,
-                            ),
-                          ),
-                        },
-
                         /// income
                         Padding(
                           padding: EdgeInsets.only(
-                            top: kSpacingX24,
-                            left: kSpacingX16,
+                            top: kSpacingX16,
+                            left: kSpacingX8,
                             right: kSpacingX8,
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Progress",
-                                style: kTheme.textTheme.headline6.copyWith(
-                                  color: kTheme.colorScheme.onBackground
-                                      .withOpacity(kEmphasisMedium),
+                              Padding(
+                                padding: EdgeInsets.only(left: kSpacingX4),
+                                child: Text(
+                                  "Progress",
+                                  style: kTheme.textTheme.headline6.copyWith(
+                                    color: kTheme.colorScheme.onBackground
+                                        .withOpacity(kEmphasisMedium),
+                                  ),
                                 ),
                               ),
-                              SizedBox(height: kSpacingX16),
+                              SizedBox(height: kSpacingX12),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
@@ -243,8 +203,8 @@ class _DashboardPageState extends State<DashboardPage> {
                                               padding:
                                                   EdgeInsets.all(kSpacingX16),
                                               decoration: BoxDecoration(
-                                                color:
-                                                    kTheme.colorScheme.secondary,
+                                                color: kTheme
+                                                    .colorScheme.secondary,
                                                 borderRadius:
                                                     BorderRadius.circular(
                                                         kSpacingX8),
@@ -285,7 +245,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                   horizontal: kSpacingX16),
                                               child: Text(
                                                 /// todo -> show earnings here
-                                                formatCurrency(800.594),
+                                                formatCurrency(0.99),
                                                 style: kTheme
                                                     .textTheme.headline6
                                                     .copyWith(
@@ -324,8 +284,8 @@ class _DashboardPageState extends State<DashboardPage> {
                                               padding:
                                                   EdgeInsets.all(kSpacingX16),
                                               decoration: BoxDecoration(
-                                                color:
-                                                    kTheme.colorScheme.secondary,
+                                                color: kTheme
+                                                    .colorScheme.secondary,
                                                 borderRadius:
                                                     BorderRadius.circular(
                                                         kSpacingX8),
@@ -383,6 +343,46 @@ class _DashboardPageState extends State<DashboardPage> {
                             ],
                           ),
                         ),
+
+                        /// business
+                        if (businessState
+                            is SuccessState<List<BaseBusiness>>) ...{
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top: kSpacingX12,
+                              left: kSpacingX16,
+                            ),
+                            child: Text(
+                              "My Business profile",
+                              style: kTheme.textTheme.headline6.copyWith(
+                                color: kTheme.colorScheme.onBackground
+                                    .withOpacity(kEmphasisMedium),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            constraints: BoxConstraints(
+                              minWidth: SizeConfig.screenWidth,
+                              minHeight: SizeConfig.screenHeight * 0.1,
+                              maxHeight: SizeConfig.screenHeight * 0.15,
+                            ),
+                            child: ListView.separated(
+                              padding: EdgeInsets.only(
+                                top: kSpacingX12,
+                                left: kSpacingX8,
+                                right: kSpacingX8,
+                              ),
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (_, index) {
+                                final model = businessState.data[index];
+                                return BusinessListItem(business: model);
+                              },
+                              separatorBuilder: (_, __) =>
+                                  SizedBox(width: kSpacingX8),
+                              itemCount: businessState.data.length,
+                            ),
+                          ),
+                        },
 
                         if (bookingState
                             is SuccessState<Stream<List<BaseBooking>>>) ...{
