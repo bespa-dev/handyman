@@ -339,41 +339,41 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                     /// action button
                     Positioned(
                       bottom: kSpacingNone,
-                      child: Container(
-                        height: kToolbarHeight,
-                        width: SizeConfig.screenWidth,
-                        decoration: BoxDecoration(
-                          color: kTheme.colorScheme.secondary,
-                        ),
-                        clipBehavior: Clip.hardEdge,
-                        alignment: Alignment.center,
-                        child: InkWell(
-                          splashColor: kTheme.splashColor,
-                          onTap: () => booking.isCancelled || booking.isComplete
-                              ? null
-                              : showCustomDialog(
-                                  context: context,
-                                  builder: (_) => BasicDialog(
-                                    message:
-                                        "Do you wish to mark this service as completed?",
-                                    onComplete: () {
-                                      _updateBookingBloc.add(
-                                        BookingEvent.updateBooking(
-                                          booking: booking.copyWith(
-                                            currentState:
-                                                BookingState.complete().name(),
-                                            dueDate: DateTime.now()
-                                                .toIso8601String(),
-                                            progress: 1.0,
-                                          ),
+                      child: InkWell(
+                        splashColor: kTheme.splashColor,
+                        onTap: () => booking.isCancelled || booking.isComplete
+                            ? null
+                            : showCustomDialog(
+                                context: context,
+                                builder: (_) => BasicDialog(
+                                  message:
+                                      "Do you wish to mark this service as completed?",
+                                  onComplete: () {
+                                    _updateBookingBloc.add(
+                                      BookingEvent.updateBooking(
+                                        booking: booking.copyWith(
+                                          currentState:
+                                              BookingState.complete().name(),
+                                          dueDate:
+                                              DateTime.now().toIso8601String(),
+                                          progress: 1.0,
                                         ),
-                                      );
-                                      _bookingBloc.add(
-                                          BookingEvent.observeBookingById(
-                                              id: booking.id));
-                                    },
-                                  ),
+                                      ),
+                                    );
+                                    _bookingBloc.add(
+                                        BookingEvent.observeBookingById(
+                                            id: booking.id));
+                                  },
                                 ),
+                              ),
+                        child: Container(
+                          height: kToolbarHeight,
+                          width: SizeConfig.screenWidth,
+                          decoration: BoxDecoration(
+                            color: kTheme.colorScheme.secondary,
+                          ),
+                          clipBehavior: Clip.hardEdge,
+                          alignment: Alignment.center,
                           child: Text(
                             booking.isCancelled
                                 ? "Cancelled".toUpperCase()

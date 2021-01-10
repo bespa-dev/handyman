@@ -35,20 +35,10 @@ class _HomePageState extends State<HomePage> {
   /// blocs
   final _prefsBloc = PrefsBloc(repo: Injection.get());
   final _userBloc = UserBloc(repo: Injection.get());
+  final _updateUserBloc = UserBloc(repo: Injection.get());
 
-  /// https://stackoverflow.com/questions/56707392/how-can-i-use-willpopscope-inside-a-navigator-in-flutter
-  Future<bool> _backPressed(GlobalKey<NavigatorState> _yourKey) async {
-    // Checks if current Navigator still has screens on the stack.
-    if (_yourKey.currentState.canPop()) {
-      // 'maybePop' method handles the decision of 'pop' to another WillPopScope if they exist.
-      // If no other WillPopScope exists, it returns true
-      _yourKey.currentState.maybePop();
-      return Future<bool>.value(false);
-    }
-
-    // if nothing remains in the stack, it simply pops
-    return Future<bool>.value(true);
-  }
+  /// current user
+  BaseArtisan _currentUser;
 
   /// handles tab changes
   void _onTabPressed(int index) {
@@ -76,6 +66,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     _userBloc.close();
+    _updateUserBloc.close();
     _prefsBloc.close();
     super.dispose();
   }
@@ -91,13 +82,23 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     if (mounted) {
+      _updateUserBloc.listen((state) {
+        if (state is SuccessState<BaseArtisan>) {
+          _currentUser = state.data;
+          if (mounted) setState(() {});
+        }
+      });
+
       /// observe current user's id
       _prefsBloc
         ..add(PrefsEvent.getUserIdEvent())
         ..listen((state) {
-          if (state is SuccessState<String>) {
-            _isLoggedIn = state.data != null && state.data.isNotEmpty;
+          if (state is SuccessState<String> && state.data != null) {
+            _isLoggedIn = state.data.isNotEmpty;
             if (mounted) setState(() {});
+
+            /// get current artisan by id
+            _updateUserBloc.add(UserEvent.getArtisanByIdEvent(id: state.data));
 
             /// observe current user
             _userBloc.add(UserEvent.currentUserEvent());
@@ -109,6 +110,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     _kTheme = Theme.of(context);
+    final available = _currentUser?.isAvailable ?? false;
 
     return BlocBuilder<UserBloc, BlocState>(
       cubit: _userBloc,
@@ -120,21 +122,28 @@ class _HomePageState extends State<HomePage> {
           child: IndexedStack(
             index: _currentPage,
             children: [
+              /// dashboard
               Navigator(
                 key: _dashboardNavKey,
                 onGenerateRoute: (route) => MaterialPageRoute(
                     settings: route, builder: (__) => DashboardPage()),
               ),
+
+              /// search
               Navigator(
                 key: _searchNavKey,
                 onGenerateRoute: (route) => MaterialPageRoute(
                     settings: route, builder: (__) => SearchPage()),
               ),
+
+              /// notifications
               Navigator(
                 key: _notificationsNavKey,
                 onGenerateRoute: (route) => MaterialPageRoute(
                     settings: route, builder: (__) => NotificationsPage()),
               ),
+
+              /// profile
               Navigator(
                 key: _profileNavKey,
                 onGenerateRoute: (route) => MaterialPageRoute(
@@ -148,55 +157,138 @@ class _HomePageState extends State<HomePage> {
           decoration: BoxDecoration(
             color: _kTheme.colorScheme.background,
           ),
-          child: Column(
-            children: [
-              Expanded(
-                child: Material(
-                  type: MaterialType.card,
-                  elevation: kSpacingX2,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: Icon(Feather.home),
-                        color: _kTheme.colorScheme.onBackground,
-                        onPressed: () => _onTabPressed(0),
-                      ),
-                      IconButton(
-                        icon: Icon(Feather.search),
-                        color: _kTheme.colorScheme.onBackground,
-                        onPressed: () => _onTabPressed(1),
-                      ),
-                      IconButton(
-                        icon: Icon(Feather.bell),
-                        color: _kTheme.colorScheme.onBackground,
-                        onPressed: () => _onTabPressed(2),
-                      ),
-                      if (_isLoggedIn &&
-                          state is SuccessState<Stream<BaseArtisan>>) ...{
-                        StreamBuilder<BaseArtisan>(
-                            stream: state.data,
-                            builder: (_, snapshot) {
-                              final user = snapshot.data;
-                              return GestureDetector(
-                                onTap: () => _onTabPressed(3),
-                                child: SizedBox(
-                                  height: kSpacingX36,
-                                  width: kSpacingX36,
-                                  child: UserAvatar(
-                                    url: user?.avatar,
-                                    isCircular: true,
-                                  ),
-                                ),
-                              );
-                            }),
-                      },
-                    ],
+          child: Material(
+            type: MaterialType.card,
+            elevation: kSpacingX2,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: kSpacingX16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: Icon(Feather.home),
+                    color: _kTheme.colorScheme.onBackground,
+                    onPressed: () => _onTabPressed(0),
                   ),
-                ),
+                  IconButton(
+                    icon: Icon(Feather.search),
+                    color: _kTheme.colorScheme.onBackground,
+                    onPressed: () => _onTabPressed(1),
+                  ),
+
+                  /// toggle availability
+                  if (_isLoggedIn &&
+                      state is SuccessState<Stream<BaseArtisan>>) ...{
+                    InkWell(
+                      borderRadius: BorderRadius.circular(kSpacingX16),
+                      onTap: () {
+                        if (available) {
+                          /// show confirmation dialog
+                          showCustomDialog(
+                            context: context,
+                            builder: (_) => BasicDialog(
+                              message:
+                                  "Do you wish to go offline?\nYou will not receive new requests from prospective customers until you turn this back on.",
+                              onComplete: () {
+                                /// toggle offline mode
+                                _currentUser = _currentUser.copyWith(
+                                    isAvailable: !available);
+                                setState(() {});
+
+                                /// update user's availability
+                                _updateUserBloc.add(
+                                  UserEvent.updateUserEvent(user: _currentUser),
+                                );
+
+                                /// observe current user state
+                                _userBloc.add(UserEvent.currentUserEvent());
+                              },
+                            ),
+                          );
+                        } else {
+                          /// toggle online mode
+                          _currentUser =
+                              _currentUser.copyWith(isAvailable: !available);
+                          setState(() {});
+
+                          /// update user's availability
+                          _updateUserBloc.add(
+                            UserEvent.updateUserEvent(user: _currentUser),
+                          );
+
+                          /// observe current user state
+                          _userBloc.add(UserEvent.currentUserEvent());
+                        }
+                      },
+                      child: AnimatedContainer(
+                        duration: kScaleDuration,
+                        width: kSpacingX84,
+                        height: kSpacingX32,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(kSpacingX16),
+                          color: _kTheme.colorScheme.background,
+                          border: Border.all(
+                            color: available
+                                ? kGreenColor
+                                : _kTheme.colorScheme.error,
+                          ),
+                        ),
+                        alignment: available
+                            ? Alignment.centerLeft
+                            : Alignment.centerRight,
+                        padding: EdgeInsets.all(kSpacingX4),
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: kSpacingX24,
+                          width: kSpacingX24,
+                          decoration: BoxDecoration(
+                            color: available
+                                ? kGreenColor
+                                : _kTheme.colorScheme.error,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            available ? kOnlineIcon : kOfflineIcon,
+                            size: kSpacingX12,
+                          ),
+                        ),
+                      ),
+                    )
+                  },
+                  IconButton(
+                    icon: Icon(Feather.bell),
+                    color: _kTheme.colorScheme.onBackground,
+                    onPressed: () => _onTabPressed(2),
+                  ),
+
+                  /// toggle profile info
+                  if (_isLoggedIn &&
+                      state is SuccessState<Stream<BaseArtisan>>) ...{
+                    StreamBuilder<BaseArtisan>(
+                        stream: state.data,
+                        builder: (_, snapshot) {
+                          /// update current user info
+                          if (_currentUser == null && snapshot.hasData)
+                            _currentUser = snapshot.data;
+                          return InkWell(
+                            splashColor: _kTheme.splashColor,
+                            borderRadius: BorderRadius.circular(kSpacingX36),
+                            onTap: () => _onTabPressed(3),
+                            child: SizedBox(
+                              height: kSpacingX36,
+                              width: kSpacingX36,
+                              child: UserAvatar(
+                                url: snapshot.data?.avatar,
+                                isCircular: true,
+                              ),
+                            ),
+                          );
+                        }),
+                  },
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

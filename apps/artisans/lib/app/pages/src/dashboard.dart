@@ -7,12 +7,12 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/bloc/bloc.dart';
-import 'package:handyman/app/widgets/src/booking_list_item.dart';
+import 'package:handyman/app/routes/routes.gr.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
@@ -28,7 +28,6 @@ class _DashboardPageState extends State<DashboardPage> {
   final _categoryBloc = CategoryBloc(repo: Injection.get());
   final _businessBloc = BusinessBloc(repo: Injection.get());
   final _prefsBloc = PrefsBloc(repo: Injection.get());
-  final _locationBloc = LocationBloc(repo: Injection.get());
   final _bookingBloc = BookingBloc(repo: Injection.get());
 
   /// UI
@@ -43,7 +42,6 @@ class _DashboardPageState extends State<DashboardPage> {
     _categoryBloc.close();
     _businessBloc.close();
     _prefsBloc.close();
-    _locationBloc.close();
     _bookingBloc.close();
     super.dispose();
   }
@@ -102,57 +100,7 @@ class _DashboardPageState extends State<DashboardPage> {
               return CustomScrollView(
                 slivers: [
                   /// app bar
-                  SliverAppBar(
-                    toolbarHeight: kToolbarHeight,
-                    toolbarTextStyle: kTheme.appBarTheme.textTheme.headline6,
-                    textTheme: kTheme.appBarTheme.textTheme,
-                    leading: GestureDetector(
-                      onTap: () {
-                        /// todo -> add action to logo
-                      },
-                      child: Image(
-                        image: Svg(kLogoAsset),
-                        height: kSpacingX36,
-                        width: kSpacingX36,
-                      ),
-                    ),
-                    title: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(text: "$kAppName\n"),
-                          TextSpan(
-                            text: kAppVersion,
-                            style: kTheme.textTheme.caption,
-                          ),
-                        ],
-                      ),
-                      style: kTheme.textTheme.headline6.copyWith(
-                        color: kTheme.colorScheme.onBackground,
-                      ),
-                    ),
-                    centerTitle: false,
-                    pinned: true,
-                    backgroundColor: kTheme.colorScheme.background,
-                    expandedHeight: SizeConfig.screenHeight * 0.15,
-                    flexibleSpace: FlexibleSpaceBar(
-                      collapseMode: CollapseMode.parallax,
-                      background: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          Positioned.fill(
-                            child: ImageView(imageUrl: kBackgroundAsset),
-                          ),
-                          Positioned.fill(
-                            child: Container(
-                              color: kTheme.colorScheme.background
-                                  .withOpacity(kEmphasisLow),
-                            ),
-                          ),
-                        ],
-                      ),
-                      titlePadding: EdgeInsets.zero,
-                    ),
-                  ),
+                  CustomSliverAppBar(title: "Dashboard"),
 
                   SliverList(
                     delegate: SliverChildListDelegate.fixed(
@@ -355,12 +303,23 @@ class _DashboardPageState extends State<DashboardPage> {
                               top: kSpacingX12,
                               left: kSpacingX16,
                             ),
-                            child: Text(
-                              "My Business profile",
-                              style: kTheme.textTheme.headline6.copyWith(
-                                color: kTheme.colorScheme.onBackground
-                                    .withOpacity(kEmphasisMedium),
-                              ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "My Business profile",
+                                  style: kTheme.textTheme.headline6.copyWith(
+                                    color: kTheme.colorScheme.onBackground
+                                        .withOpacity(kEmphasisMedium),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(kPlusIcon),
+                                  onPressed: () => context.navigator
+                                      .pushBusinessProfilePage(),
+                                  iconSize: kSpacingX16,
+                                ),
+                              ],
                             ),
                           ),
                           Container(
@@ -396,12 +355,22 @@ class _DashboardPageState extends State<DashboardPage> {
                               left: kSpacingX16,
                               bottom: kSpacingX16,
                             ),
-                            child: Text(
-                              "Recent Bookings",
-                              style: kTheme.textTheme.headline6.copyWith(
-                                color: kTheme.colorScheme.onBackground
-                                    .withOpacity(kEmphasisMedium),
-                              ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Jobs",
+                                  style: kTheme.textTheme.headline6.copyWith(
+                                    color: kTheme.colorScheme.onBackground
+                                        .withOpacity(kEmphasisMedium),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(kFilterIcon),
+                                  onPressed: () {},
+                                  iconSize: kSpacingX16,
+                                ),
+                              ],
                             ),
                           ),
 

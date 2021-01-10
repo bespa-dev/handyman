@@ -10,8 +10,10 @@ import 'package:meta/meta.dart';
 
 class BookingListItem extends StatefulWidget {
   final BaseBooking booking;
+  final Function onLongPress;
 
-  const BookingListItem({Key key, @required this.booking}) : super(key: key);
+  const BookingListItem({Key key, @required this.booking, this.onLongPress})
+      : super(key: key);
 
   @override
   _BookingListItemState createState() => _BookingListItemState();
@@ -67,6 +69,7 @@ class _BookingListItemState extends State<BookingListItem> {
               child: InkWell(
                 splashColor: kTheme.splashColor,
                 borderRadius: BorderRadius.circular(kSpacingX4),
+                onLongPress: () => widget.onLongPress(),
                 onTap: () => context.navigator.push(
                   Routes.bookingDetailsPage,
                   arguments: BookingDetailsPageArguments(

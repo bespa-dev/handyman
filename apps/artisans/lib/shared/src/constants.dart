@@ -18,6 +18,21 @@ import 'package:url_launcher/url_launcher.dart';
 /// Logger
 final logger = Logger(printer: PrettyPrinter(printTime: true));
 
+/// https://stackoverflow.com/questions/56707392/how-can-i-use-willpopscope-inside-a-navigator-in-flutter
+Future<bool> backPressed(GlobalKey<NavigatorState> _yourKey) async {
+  // Checks if current Navigator still has screens on the stack.
+  if (_yourKey.currentState.canPop()) {
+    // 'maybePop' method handles the decision of 'pop' to another WillPopScope if they exist.
+    // If no other WillPopScope exists, it returns true
+    _yourKey.currentState.maybePop();
+    return Future<bool>.value(false);
+  }
+
+  // if nothing remains in the stack, it simply pops
+  return Future<bool>.value(true);
+}
+
+/// show [SnackBar] with a message
 void showSnackBarMessage(
   BuildContext context, {
   @required String message,
@@ -43,8 +58,9 @@ void showSnackBarMessage(
 }
 
 /// Sets map style
-Future getMapStyle({@required bool isLightTheme}) async => await rootBundle.loadString(
-    isLightTheme ? "assets/map_style.json" : "assets/dark_map_style.json");
+Future getMapStyle({@required bool isLightTheme}) async =>
+    await rootBundle.loadString(
+        isLightTheme ? "assets/map_style.json" : "assets/dark_map_style.json");
 
 /// Dimensions
 const double kSpacingNone = 0.0;
@@ -130,6 +146,9 @@ const kHistoryIcon = Icons.history;
 const kUserImageNotFound = Icons.link_off_outlined;
 const kArrowIcon = Icons.arrow_right_alt_outlined;
 const kOptionsIcon = Entypo.dots_two_vertical;
+const kFilterIcon = Feather.filter;
+const kOnlineIcon = Feather.wifi;
+const kOfflineIcon = Feather.wifi_off;
 const kThreeDotsOptionsIcon = Entypo.dots_three_horizontal;
 
 /// [Algolia]
