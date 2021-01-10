@@ -30,6 +30,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   final _businessBloc = BusinessBloc(repo: Injection.get());
   final _updateBusinessBloc = BusinessBloc(repo: Injection.get());
   final _locationBloc = LocationBloc(repo: Injection.get());
+  final _serviceBloc = ArtisanServiceBloc(repo: Injection.get());
 
   /// UI
   ThemeData _kTheme;
@@ -61,6 +62,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
     _businessBloc.close();
     _updateBusinessBloc.close();
     _locationBloc.close();
+    _serviceBloc.close();
     super.dispose();
   }
 

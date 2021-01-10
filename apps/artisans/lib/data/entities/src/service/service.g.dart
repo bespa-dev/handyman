@@ -19,6 +19,7 @@ class ArtisanServiceAdapter extends TypeAdapter<ArtisanService> {
     return ArtisanService(
       id: fields[0] as String,
       category: fields[1] as String,
+      name: fields[3] as String,
       price: fields[2] as double,
     );
   }
@@ -26,13 +27,15 @@ class ArtisanServiceAdapter extends TypeAdapter<ArtisanService> {
   @override
   void write(BinaryWriter writer, ArtisanService obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.category)
       ..writeByte(2)
-      ..write(obj.price);
+      ..write(obj.price)
+      ..writeByte(3)
+      ..write(obj.name);
   }
 
   @override
@@ -54,6 +57,7 @@ ArtisanService _$ArtisanServiceFromJson(Map<String, dynamic> json) {
   return ArtisanService(
     id: json['id'] as String,
     category: json['category'] as String,
+    name: json['name'] as String,
     price: (json['price'] as num)?.toDouble(),
   );
 }
@@ -63,4 +67,5 @@ Map<String, dynamic> _$ArtisanServiceToJson(ArtisanService instance) =>
       'id': instance.id,
       'category': instance.category,
       'price': instance.price,
+      'name': instance.name,
     };
