@@ -27,3 +27,5 @@ export 'src/storage/storage_bloc.dart';
 export 'src/storage/storage_event.dart';
 export 'src/user/user_bloc.dart';
 export 'src/user/user_event.dart';
+export 'src/service/service_bloc.dart';
+export 'src/service/service_event.dart';
