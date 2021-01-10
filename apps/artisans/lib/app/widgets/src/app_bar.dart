@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/shared/shared.dart';
+import 'package:uuid/uuid.dart';
 
 class ExpandedAppBarContainer extends StatelessWidget {
   final String title;
@@ -136,7 +137,7 @@ class CustomSliverAppBar extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             Positioned.fill(
-              child: ImageView(imageUrl: backgroundImage),
+              child: ImageView(tag: Uuid().v4(), imageUrl: backgroundImage),
             ),
             Positioned.fill(
               child: Container(

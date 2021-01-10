@@ -62,3 +62,20 @@ class GetLocationNameUseCase extends UseCase<String, BaseLocationMetadata> {
     }
   }
 }
+
+class GetLocationCoordinatesUseCase
+    extends UseCase<BaseLocationMetadata, String> {
+  final BaseLocationRepository _repo;
+
+  const GetLocationCoordinatesUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<BaseLocationMetadata>> execute(address) async {
+    try {
+      var location = await _repo.getLocationPosition(name: address);
+      return UseCaseResult<BaseLocationMetadata>.success(location);
+    } on Exception {
+      return UseCaseResult.error("Unable to get location name");
+    }
+  }
+}

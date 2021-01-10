@@ -151,6 +151,7 @@ const kOnlineIcon = Feather.wifi;
 const kOfflineIcon = Feather.wifi_off;
 const kCloseIcon = Feather.x;
 const kLocationIcon = Feather.map_pin;
+const kClearIcon = Icons.clear_all_outlined;
 const kThreeDotsOptionsIcon = Entypo.dots_three_horizontal;
 
 /// [Algolia]

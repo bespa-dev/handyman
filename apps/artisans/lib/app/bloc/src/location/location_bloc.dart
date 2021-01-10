@@ -19,6 +19,7 @@ class LocationBloc extends BaseBloc<LocationEvent> {
       getCurrentLocation: () => _mapEventToState(event),
       observeCurrentLocation: () => _mapEventToState(event),
       getLocationName: (e) => _mapEventToState(e),
+      getLocationCoordinates: (e) => _mapEventToState(e),
     );
   }
 
@@ -41,6 +42,13 @@ class LocationBloc extends BaseBloc<LocationEvent> {
       var result = await GetLocationNameUseCase(_repo).execute(event.location);
       if (result is UseCaseResultSuccess<String>)
         yield BlocState<String>.successState(data: result.value);
+      else
+        yield BlocState.errorState(failure: "Cannot get location name");
+    } else if (event is GetLocationCoordinates) {
+      var result =
+          await GetLocationCoordinatesUseCase(_repo).execute(event.address);
+      if (result is UseCaseResultSuccess<BaseLocationMetadata>)
+        yield BlocState<BaseLocationMetadata>.successState(data: result.value);
       else
         yield BlocState.errorState(failure: "Cannot get location name");
     }

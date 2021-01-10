@@ -51,14 +51,14 @@ class BasicDialog extends StatelessWidget {
           children: [
             _CustomDialogButton(
               label: negativeButtonText,
-              onTap: () => context.navigator.pop(),
+              onTap: () => context.navigator.pop(false),
               isPrimary: false,
             ),
             _CustomDialogButton(
               label: positiveButtonText,
               onTap: () {
                 onComplete();
-                context.navigator.pop();
+                context.navigator.pop(true);
               },
               isPrimary: true,
             ),

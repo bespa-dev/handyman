@@ -7,7 +7,8 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:handyman/domain/models/models.dart' show Exposable, BaseLocationMetadata;
+import 'package:handyman/domain/models/models.dart'
+    show Exposable, BaseLocationMetadata;
 import 'package:meta/meta.dart';
 
 /// base location repository class
@@ -18,6 +19,9 @@ abstract class BaseLocationRepository implements Exposable {
   /// Observe location updates
   Stream<BaseLocationMetadata> observeCurrentLocation();
 
-  /// Get location name based on [metaData]
+  /// Get location name based on [metadata]
   Future<String> getLocationName({@required BaseLocationMetadata metadata});
+
+  /// Get location based on [name]
+  Future<BaseLocationMetadata> getLocationPosition({@required String name});
 }

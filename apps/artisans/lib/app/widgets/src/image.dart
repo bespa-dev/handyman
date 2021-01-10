@@ -25,6 +25,7 @@ class ImageView extends StatelessWidget {
   final String imageUrl;
   final Function onTap;
   final BoxFit fit;
+  final String tag;
 
   const ImageView({
     Key key,
@@ -39,6 +40,7 @@ class ImageView extends StatelessWidget {
     this.isAssetImage = false,
     this.isFileImage = false,
     this.showErrorIcon = true,
+    this.tag,
   }) : super(key: key);
 
   @override
@@ -58,7 +60,7 @@ class ImageView extends StatelessWidget {
         child: imageUrl == null
             ? _buildError(context)
             : Hero(
-                tag: imageUrl,
+                tag: tag ?? imageUrl,
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(radius),

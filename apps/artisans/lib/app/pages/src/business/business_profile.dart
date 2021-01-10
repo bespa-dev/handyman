@@ -34,7 +34,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
   final _locationBloc = LocationBloc(repo: Injection.get());
 
   /// UI
-  bool _isLoading = false;
+  bool _isLoading = false, _hasResetFields = false;
   ThemeData kTheme;
 
   /// Business
@@ -64,12 +64,14 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
     if (mounted) {
       _nameController.text = widget.business?.name;
       _locationName = widget.business?.location;
+      _docUrl = widget.business?.docUrl;
 
       /// user update status
       _userBloc.listen((state) {
         if (state is SuccessState<BaseArtisan>) {
           _currentUser = state.data;
-          logger.i("Current user -> $_currentUser");
+          _birthCertFileName = _currentUser?.birthCert;
+          _idFileName = _currentUser?.nationalId;
           if (mounted) setState(() {});
         } else if (state is SuccessState<void>) {
           if (mounted) {
@@ -279,209 +281,261 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
     );
   }
 
+  Future<bool> _handleBackPressed() async {
+    final result = await showCustomDialog(
+      context: context,
+      builder: (_) => BasicDialog(
+        message: "Do you wish to cancel your business registration?",
+        onComplete: () {
+          context.navigator.pop();
+        },
+      ),
+    );
+    return Future<bool>.value(result);
+  }
+
   @override
   Widget build(BuildContext context) {
     kTheme = Theme.of(context);
 
-    return BlocBuilder<BusinessBloc, BlocState>(
-      cubit: _businessBloc,
-      builder: (_, state) => Scaffold(
-        backgroundColor: kTheme.colorScheme.primary,
-        body: Stack(
-          children: [
-            /// content
-            if (_isLoading) ...{
-              Loading(),
-            } else ...{
-              Positioned.fill(
-                top: kSpacingX96,
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.fromLTRB(
-                    kSpacingX24,
-                    kSpacingNone,
-                    kSpacingX24,
-                    kSpacingX8,
-                  ),
-                  child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Business Profile",
-                        style: kTheme.textTheme.headline4.copyWith(
-                          color: kTheme.colorScheme.onPrimary,
-                        ),
-                      ),
-                      SizedBox(height: kSpacingX8),
-                      Text(
-                        "Complete your business profile details by uploading a supporting document for approval",
-                        style: kTheme.textTheme.bodyText1.copyWith(
-                          color: kTheme.colorScheme.onPrimary,
-                        ),
-                      ),
-                      SizedBox(height: kSpacingX48),
-
-                      /// business name
-                      Form(
-                        key: _formKey,
-                        child: TextFormInput(
-                          labelText: "Business name",
-                          controller: _nameController,
-                          cursorColor: kTheme.colorScheme.onPrimary,
-                          validator: (_) =>
-                              _.isEmpty ? "Name is required" : null,
-                          textCapitalization: TextCapitalization.words,
-                          enabled: !_isLoading,
-                        ),
-                      ),
-
-                      /// business doc
-                      Card(
-                        child: ListTile(
-                          onTap: _pickDocument,
-                          title: Text("Upload Business Document"),
-                          subtitle: Text(
-                            _busFileName == null
-                                ? "This is required for approval (Only PDFs supported)"
-                                : "File uploaded",
-                          ),
-                          dense: true,
-                          trailing: Icon(
-                            _busFileName == null ? kArrowIcon : kDoneIcon,
-                            color: kTheme.colorScheme.onBackground,
+    return WillPopScope(
+      onWillPop: _handleBackPressed,
+      child: BlocBuilder<BusinessBloc, BlocState>(
+        cubit: _businessBloc,
+        builder: (_, state) => Scaffold(
+          backgroundColor: kTheme.colorScheme.primary,
+          body: Stack(
+            children: [
+              /// content
+              if (_isLoading) ...{
+                Loading(),
+              } else ...{
+                Positioned.fill(
+                  top: kSpacingX96,
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.fromLTRB(
+                      kSpacingX24,
+                      kSpacingNone,
+                      kSpacingX24,
+                      kSpacingX8,
+                    ),
+                    child: Column(
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Business Profile",
+                          style: kTheme.textTheme.headline4.copyWith(
+                            color: kTheme.colorScheme.onPrimary,
                           ),
                         ),
-                      ),
-
-                      Card(
-                        child: ListTile(
-                          onTap: () => _pickDocument(birthCert: true),
-                          title: Text("Upload Birth Certificate"),
-                          subtitle: Text(
-                            _birthCertFileName == null
-                                ? "This is required for approval (Only PDFs supported)"
-                                : "File uploaded",
-                          ),
-                          dense: true,
-                          trailing: Icon(
-                            _birthCertFileName == null ? kArrowIcon : kDoneIcon,
-                            color: kTheme.colorScheme.onBackground,
+                        SizedBox(height: kSpacingX8),
+                        Text(
+                          "Complete your business profile details by uploading a supporting document for approval",
+                          style: kTheme.textTheme.bodyText1.copyWith(
+                            color: kTheme.colorScheme.onPrimary,
                           ),
                         ),
-                      ),
+                        SizedBox(height: kSpacingX48),
 
-                      Card(
-                        child: ListTile(
-                          onTap: () => _pickDocument(nationalId: true),
-                          title: Text("Upload National ID"),
-                          subtitle: Text(
-                            _idFileName == null
-                                ? "This is required for approval (Only PDFs supported)"
-                                : "File uploaded",
-                          ),
-                          dense: true,
-                          trailing: Icon(
-                            _idFileName == null ? kArrowIcon : kDoneIcon,
-                            color: kTheme.colorScheme.onBackground,
+                        /// business name
+                        Form(
+                          key: _formKey,
+                          child: TextFormInput(
+                            labelText: "Business name",
+                            controller: _nameController,
+                            cursorColor: kTheme.colorScheme.onPrimary,
+                            validator: (_) =>
+                                _.isEmpty ? "Name is required" : null,
+                            textCapitalization: TextCapitalization.words,
+                            enabled: !_isLoading,
                           ),
                         ),
-                      ),
 
-                      /// business location
-                      Card(
-                        child: ListTile(
-                          onTap: _pickLocation,
-                          title: Text("Business Location"),
-                          subtitle: Text(
-                            _locationName == null
-                                ? "This is required for approval"
-                                : _locationName,
-                          ),
-                          dense: true,
-                          trailing: Icon(
-                            _locationName == null ? kArrowIcon : kDoneIcon,
-                            color: kTheme.colorScheme.onBackground,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              /// back button
-              Positioned(
-                top: kSpacingX36,
-                left: kSpacingX16,
-                child: IconButton(
-                  icon: Icon(kBackIcon),
-                  color: kTheme.colorScheme.onPrimary,
-                  onPressed: () => context.navigator.pop(),
-                ),
-              ),
-
-              if (_locationName != null &&
-                  _businessDocument != null &&
-                  _docUrl != null) ...{
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: InkWell(
-                    splashColor: kTheme.splashColor,
-                    onTap: () {
-                      if (!_formKey.currentState.validate()) return;
-                      _formKey.currentState.save();
-
-                      /// save business
-                      if (widget.business == null)
-                        _businessBloc.add(
-                          BusinessEvent.uploadBusiness(
-                            docUrl: _docUrl,
-                            name: _nameController.text?.trim(),
-                            artisan: _userId,
-                            location: _locationName,
-                          ),
-                        );
-                      else {
-                        _businessBloc.add(BusinessEvent.updateBusiness(
-                          business: widget.business.copyWith(
-                            docUrl: _docUrl,
-                            name: _nameController.text?.trim(),
-                            artisanId: _userId,
-                            location: _locationName,
-                          ),
-                        ));
-                      }
-                    },
-                    child: Container(
-                      width: SizeConfig.screenWidth,
-                      alignment: Alignment.center,
-                      height: kToolbarHeight,
-                      decoration: BoxDecoration(
-                        color: kTheme.colorScheme.secondary,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Save & Continue",
-                            style: kTheme.textTheme.button.copyWith(
-                              color: kTheme.colorScheme.onSecondary,
+                        /// business doc
+                        Card(
+                          child: ListTile(
+                            onTap: _pickDocument,
+                            title: Text("Upload Business Document"),
+                            subtitle: Text(
+                              _busFileName == null
+                                  ? "This is required for approval (Only PDFs supported)"
+                                  : "File uploaded",
+                            ),
+                            dense: true,
+                            trailing: Icon(
+                              _busFileName == null ? kArrowIcon : kDoneIcon,
+                              color: kTheme.colorScheme.onBackground,
                             ),
                           ),
-                          SizedBox(width: kSpacingX12),
-                          Icon(
-                            kArrowIcon,
-                            color: kTheme.colorScheme.onSecondary,
+                        ),
+
+                        if (_hasResetFields ||
+                            _currentUser.birthCert == null) ...{
+                          Card(
+                            child: ListTile(
+                              onTap: () => _pickDocument(birthCert: true),
+                              title: Text("Upload Birth Certificate"),
+                              subtitle: Text(
+                                _birthCertFileName == null
+                                    ? "This is required for approval (Only PDFs supported)"
+                                    : "File uploaded",
+                              ),
+                              dense: true,
+                              trailing: Icon(
+                                _birthCertFileName == null
+                                    ? kArrowIcon
+                                    : kDoneIcon,
+                                color: kTheme.colorScheme.onBackground,
+                              ),
+                            ),
                           ),
-                        ],
-                      ),
+                        },
+
+                        if (_hasResetFields ||
+                            _currentUser.nationalId == null) ...{
+                          Card(
+                            child: ListTile(
+                              onTap: () => _pickDocument(nationalId: true),
+                              title: Text("Upload National ID"),
+                              subtitle: Text(
+                                _idFileName == null
+                                    ? "This is required for approval (Only PDFs supported)"
+                                    : "File uploaded",
+                              ),
+                              dense: true,
+                              trailing: Icon(
+                                _idFileName == null ? kArrowIcon : kDoneIcon,
+                                color: kTheme.colorScheme.onBackground,
+                              ),
+                            ),
+                          ),
+                        },
+
+                        /// business location
+                        Card(
+                          child: ListTile(
+                            onTap: _pickLocation,
+                            title: Text("Business Location"),
+                            subtitle: Text(
+                              _locationName == null
+                                  ? "This is required for approval"
+                                  : _locationName,
+                            ),
+                            dense: true,
+                            trailing: Icon(
+                              _locationName == null ? kArrowIcon : kDoneIcon,
+                              color: kTheme.colorScheme.onBackground,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
+
+                /// back button
+                Positioned(
+                  top: kSpacingX36,
+                  left: kSpacingX16,
+                  child: IconButton(
+                    icon: Icon(kBackIcon),
+                    color: kTheme.colorScheme.onPrimary,
+                    onPressed: () => _handleBackPressed(),
+                  ),
+                ),
+
+                /// reset fields button
+                Positioned(
+                  top: kSpacingX36,
+                  right: kSpacingX16,
+                  child: IconButton(
+                    icon: Icon(kClearIcon),
+                    color: kTheme.colorScheme.onPrimary,
+                    onPressed: () async {
+                      await showCustomDialog(
+                        context: context,
+                        builder: (_) => BasicDialog(
+                          message:
+                              "This will reset all fields and selected files. Do you wish to continue?",
+                          onComplete: () {
+                            _locationName = null;
+                            _busFileName = null;
+                            _birthCertFileName = null;
+                            _idFileName = null;
+                            _nameController.clear();
+                            _hasResetFields = true;
+                            setState(() {});
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                if (_locationName != null &&
+                    _businessDocument != null &&
+                    _docUrl != null) ...{
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: InkWell(
+                      splashColor: kTheme.splashColor,
+                      onTap: () {
+                        if (!_formKey.currentState.validate()) return;
+                        _formKey.currentState.save();
+
+                        /// save business
+                        if (widget.business == null)
+                          _businessBloc.add(
+                            BusinessEvent.uploadBusiness(
+                              docUrl: _docUrl,
+                              name: _nameController.text?.trim(),
+                              artisan: _userId,
+                              location: _locationName,
+                            ),
+                          );
+                        else {
+                          _businessBloc.add(BusinessEvent.updateBusiness(
+                            business: widget.business.copyWith(
+                              docUrl: _docUrl,
+                              name: _nameController.text?.trim(),
+                              artisanId: _userId,
+                              location: _locationName,
+                            ),
+                          ));
+                        }
+                      },
+                      child: Container(
+                        width: SizeConfig.screenWidth,
+                        alignment: Alignment.center,
+                        height: kToolbarHeight,
+                        decoration: BoxDecoration(
+                          color: kTheme.colorScheme.secondary,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Save & Continue",
+                              style: kTheme.textTheme.button.copyWith(
+                                color: kTheme.colorScheme.onSecondary,
+                              ),
+                            ),
+                            SizedBox(width: kSpacingX12),
+                            Icon(
+                              kArrowIcon,
+                              color: kTheme.colorScheme.onSecondary,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                },
               },
-            },
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -26,16 +26,19 @@ class BusinessDetailsPage extends StatefulWidget {
 class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   /// blocs
   final _userBloc = UserBloc(repo: Injection.get());
+  final _categoryBloc = CategoryBloc(repo: Injection.get());
   final _businessBloc = BusinessBloc(repo: Injection.get());
   final _updateBusinessBloc = BusinessBloc(repo: Injection.get());
+  final _locationBloc = LocationBloc(repo: Injection.get());
 
   /// UI
   ThemeData _kTheme;
   GoogleMapController _mapController;
   final _pageController = PageController();
   BaseBusiness _business;
-  LatLng _businessLocation = LatLng(5.6443, -0.1223);
+  LatLng _businessLocation;
   int _currentPage = 0;
+  BaseArtisan _currentUser;
 
   /// setup map details
   void _setupMap() async {
@@ -54,8 +57,10 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   @override
   void dispose() {
     _userBloc.close();
+    _categoryBloc.close();
     _businessBloc.close();
     _updateBusinessBloc.close();
+    _locationBloc.close();
     super.dispose();
   }
 
@@ -64,10 +69,38 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
     super.initState();
 
     if (mounted) {
-      /// Get business for artisan
+      /// get business for artisan
       _businessBloc.add(
         BusinessEvent.observeBusinessById(id: widget.business.id),
       );
+
+      /// get location coordinates from name
+      _locationBloc
+        ..add(LocationEvent.getLocationCoordinates(
+            address: widget.business.location))
+        ..listen((state) {
+          if (state is SuccessState<BaseLocationMetadata> &&
+              state.data != null) {
+            _businessLocation = LatLng(state.data.lat, state.data.lng);
+            if (mounted) setState(() {});
+          }
+        });
+
+      /// observe current user
+      _userBloc
+        ..add(UserEvent.currentUserEvent())
+        ..listen((state) {
+          if (state is SuccessState<Stream<BaseArtisan>>) {
+            state.data.listen((user) {
+              _currentUser = user;
+              if (mounted) setState(() {});
+
+              /// get category for user
+              _categoryBloc
+                  .add(CategoryEvent.observeCategoryById(id: user.category));
+            });
+          }
+        });
     }
   }
 
@@ -95,33 +128,45 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
+                            AnimatedContainer(
+                              duration: kScaleDuration,
                               width: SizeConfig.screenWidth,
-                              height: SizeConfig.screenHeight * 0.35,
-                              child: GoogleMap(
-                                initialCameraPosition: CameraPosition(
-                                  target: _businessLocation,
-                                  zoom: kSpacingX16,
-                                ),
-                                zoomControlsEnabled: false,
-                                compassEnabled: true,
-                                liteModeEnabled: Platform.isAndroid,
-                                zoomGesturesEnabled: true,
-                                mapToolbarEnabled: false,
-                                myLocationButtonEnabled: false,
-                                myLocationEnabled: false,
-                                tiltGesturesEnabled: true,
-                                markers: <Marker>{
-                                  Marker(
-                                    markerId: MarkerId(_business.id),
-                                    position: _businessLocation,
-                                  ),
-                                },
-                                onMapCreated: (controller) async {
-                                  _mapController = controller;
-                                  _setupMap();
-                                },
-                                mapType: MapType.normal,
+                              height: _businessLocation == null
+                                  ? kSpacingNone
+                                  : SizeConfig.screenHeight * 0.3,
+                              child: AnimatedOpacity(
+                                duration: kScaleDuration,
+                                opacity: _businessLocation == null ? 0 : 1,
+                                child: _businessLocation == null
+                                    ? SizedBox.shrink()
+                                    : GoogleMap(
+                                        initialCameraPosition: CameraPosition(
+                                          target: _businessLocation,
+                                          zoom: kSpacingX16,
+                                        ),
+                                        zoomControlsEnabled: false,
+                                        compassEnabled: true,
+                                        liteModeEnabled: Platform.isAndroid,
+                                        zoomGesturesEnabled: true,
+                                        mapToolbarEnabled: false,
+                                        myLocationButtonEnabled: false,
+                                        myLocationEnabled: false,
+                                        tiltGesturesEnabled: true,
+                                        markers: <Marker>{
+                                          Marker(
+                                            markerId: MarkerId(_business.id),
+                                            position: _businessLocation,
+                                            icon: BitmapDescriptor
+                                                .defaultMarkerWithHue(
+                                                    BitmapDescriptor.hueGreen),
+                                          ),
+                                        },
+                                        onMapCreated: (controller) async {
+                                          _mapController = controller;
+                                          _setupMap();
+                                        },
+                                        mapType: MapType.normal,
+                                      ),
                               ),
                             ),
                             Padding(
