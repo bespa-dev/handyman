@@ -1,85 +1,85 @@
 [
   {
     "id": "2fc98ab1-e3e7-4197-b835-05eff73c7b09",
-    "category": "",
-    "name" : "",
+    "category": "bb7c0d03-add2-49cb-bdd5-9a55f67adb30",
+    "name" : "Ants",
     "price": 0.99
   },
   {
     "id": "01df65bf-3189-41ca-82aa-08b06b2f9e60",
-    "category": "",
-    "name" :  "",
+    "category": "bb7c0d03-add2-49cb-bdd5-9a55f67adb30",
+    "name" :  "Houseflies",
     "price": 0.99
   },
   {
     "id": "d7649ce4-59e5-4266-b63b-25835a27834b",
-    "category": "",
-    "name" :  "",
+    "category": "bb7c0d03-add2-49cb-bdd5-9a55f67adb30",
+    "name" :  "Termites",
     "price": 0.99
   },
   {
     "id": "d58ef00d-3350-4eb2-800a-996bf8d04cb1",
-    "category": "",
-    "name" :  "",
+    "category": "bb7c0d03-add2-49cb-bdd5-9a55f67adb30",
+    "name" :  "Cockroach",
     "price": 0.99
   },
   {
     "id": "daad24ef-e8c2-463f-8526-fc286de869d8",
-    "category": "",
-    "name" :  "",
+    "category": "bb7c0d03-add2-49cb-bdd5-9a55f67adb30",
+    "name" :  "Wood lovers",
     "price": 0.99
   },
   {
     "id": "a377a9fe-fd84-431f-b87e-0937e18f1836",
-    "category": "",
-    "name" :  "",
+    "category": "bb7c0d03-add2-49cb-bdd5-9a55f67adb30",
+    "name" :  "Woodlice",
     "price": 0.99
   },
   {
     "id": "9c667894-a7f5-42ab-a21b-f682fa01ce3f",
-    "category": "",
-    "name" :  "",
+    "category": "bb7c0d03-add2-49cb-bdd5-9a55f67adb30",
+    "name" :  "Snails",
     "price": 0.99
   },
   {
     "id": "011d6486-f05c-49c9-a23c-2bc4c9ffda9a",
-    "category": "",
-    "name" :  "",
+    "category": "bb7c0d03-add2-49cb-bdd5-9a55f67adb30",
+    "name" :  "Rodents",
     "price": 0.99
   },
   {
     "id": "9eb73da8-3a9e-4c53-a86a-ba072fd8b408",
-    "category": "",
-    "name" :  "",
+    "category": "bb7c0d03-add2-49cb-bdd5-9a55f67adb30",
+    "name" :  "Myriapods",
     "price": 0.99
   },
   {
     "id": "2c20f5a9-d728-4540-96a3-f7fb6f676177",
-    "category": "",
-    "name" :  "",
+    "category": "bb7c0d03-add2-49cb-bdd5-9a55f67adb30",
+    "name" :  "Bees",
     "price": 0.99
   },
   {
     "id": "950e10f2-86d6-4192-a111-deb40b1d4c80",
-    "category": "",
-    "name" :  "",
+    "category": "bb7c0d03-add2-49cb-bdd5-9a55f67adb30",
+    "name" :  "Fleas",
     "price": 0.99
   },
   {
     "id": "5e9ee6e5-7b2e-4999-8e2f-3393edf7961b",
-    "category": "",
-    "name" :  "",
+    "category": "bb7c0d03-add2-49cb-bdd5-9a55f67adb30",
+    "name" :  "Bedbugs",
     "price": 0.99
   },
   {
     "id": "78672ed4-e03b-46da-a14c-5c5e4a9c118e ",
-    "category": "",
+    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name" :  "",
     "price": 0.99
   },
   {
     "id": "2322a9e9-f441-4df3-88bd-9306ba270709",
-    "category": "",
+    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name" :  "",
     "price": 0.99
   },
