@@ -375,7 +375,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
 
-                              ///
+                              /// service pricing
                               Container(
                                 padding: EdgeInsets.only(
                                   top: kSpacingX16,
@@ -383,7 +383,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  "Business Profile",
+                                  "Service Pricing",
                                   textAlign: TextAlign.start,
                                   style: kTheme.textTheme.headline6.copyWith(
                                     color: kTheme.colorScheme.onBackground

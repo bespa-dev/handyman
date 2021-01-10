@@ -56,7 +56,7 @@ class GetLocationNameUseCase extends UseCase<String, BaseLocationMetadata> {
   Future<UseCaseResult<String>> execute(metadata) async {
     try {
       var locationName = await _repo.getLocationName(metadata: metadata);
-      return UseCaseResult.success(locationName);
+      return UseCaseResult<String>.success(locationName);
     } on Exception {
       return UseCaseResult.error("Unable to get location name");
     }

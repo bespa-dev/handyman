@@ -29,7 +29,8 @@ class LocationRepositoryImpl implements BaseLocationRepository {
   }
 
   @override
-  Future<String> getLocationName({BaseLocationMetadata metadata}) async {
+  Future<String> getLocationName(
+      {@required BaseLocationMetadata metadata}) async {
     final addresses = await _geocoding
         .findAddressesFromCoordinates(Coordinates(metadata.lat, metadata.lng));
     return addresses.first?.addressLine ?? "Unknown location";

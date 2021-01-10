@@ -126,6 +126,7 @@ const kEditIcon = Feather.edit_2;
 const kGoogleIcon = AntDesign.google;
 const kEmptyIcon = Entypo.bucket;
 const kDoneIcon = Icons.done;
+const kHistoryIcon = Icons.history;
 const kUserImageNotFound = Icons.link_off_outlined;
 const kArrowIcon = Icons.arrow_right_alt_outlined;
 const kOptionsIcon = Entypo.dots_two_vertical;
