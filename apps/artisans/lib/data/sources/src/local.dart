@@ -36,7 +36,8 @@ Future registerHiveDatabase() async {
     ..registerAdapter(ArtisanAdapter())
     ..registerAdapter(CustomerAdapter())
     ..registerAdapter(BusinessAdapter())
-    ..registerAdapter(LocationMetadataAdapter());
+    ..registerAdapter(LocationMetadataAdapter())
+    ..registerAdapter(ArtisanServiceAdapter());
 
   /// open boxes
   await Hive.openBox<Booking>(RefUtils.kBookingRef);
@@ -47,6 +48,7 @@ Future registerHiveDatabase() async {
   await Hive.openBox<Artisan>(RefUtils.kArtisanRef);
   await Hive.openBox<Customer>(RefUtils.kCustomerRef);
   await Hive.openBox<Business>(RefUtils.kBusinessRef);
+  await Hive.openBox<ArtisanService>(RefUtils.kServiceRef);
 }
 
 class HiveLocalDatasource extends BaseLocalDatasource {
@@ -59,6 +61,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   final Box<Conversation> conversationBox;
   final Box<ServiceCategory> categoryBox;
   final Box<Business> businessBox;
+  final Box<ArtisanService> serviceBox;
 
   HiveLocalDatasource({
     @required this.prefsRepo,
@@ -70,6 +73,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
     @required this.conversationBox,
     @required this.categoryBox,
     @required this.businessBox,
+    @required this.serviceBox,
   }) {
     /// load initial data from assets
     _performInitLoad();
@@ -84,6 +88,16 @@ class HiveLocalDatasource extends BaseLocalDatasource {
 
       /// put each one into box
       await categoryBox.put(item.id, item);
+    }
+
+    /// decode services from json
+    var serviceSource = await rootBundle.loadString("assets/services.json");
+    var decodedServices = jsonDecode(serviceSource) as List;
+    for (var json in decodedServices) {
+      final item = ArtisanService.fromJson(json);
+
+      /// put each one into box
+      await serviceBox.put(item.id, item);
     }
 
     if (!kReleaseMode) {
@@ -296,4 +310,13 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   Stream<BaseBusiness> observeBusinessById({@required String id}) async* {
     yield businessBox.get(id);
   }
+
+  @override
+  Future<List<BaseArtisanService>> getArtisanServices() async =>
+      serviceBox.values.toList();
+
+  @override
+  Future<void> updateArtisanService(
+          {@required BaseArtisanService artisanService}) async =>
+      await serviceBox.put(artisanService.id, artisanService);
 }

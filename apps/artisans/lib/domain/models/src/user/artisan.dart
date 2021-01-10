@@ -22,6 +22,7 @@ abstract class BaseArtisan extends BaseUser {
   double rating;
   List<String> requests;
   List<String> reports;
+  List<String> services;
   bool isAvailable;
   bool isApproved;
 
@@ -56,5 +57,6 @@ abstract class BaseArtisan extends BaseUser {
     int bookingsCount,
     List<String> requests,
     List<String> reports,
+    List<String> services,
   });
 }

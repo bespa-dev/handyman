@@ -69,6 +69,14 @@ final _businessRepositoryProvider =
   return BusinessRepositoryImpl(local: local, remote: remote);
 });
 
+final _serviceRepositoryProvider =
+    Provider.family<BaseArtisanServiceRepository, BasePreferenceRepository>(
+        (_, prefs) {
+  var local = _.read(_localDatasourceProvider(prefs));
+  var remote = _.read(_remoteDatasourceProvider(prefs));
+  return ArtisanServiceRepositoryImpl(local: local, remote: remote);
+});
+
 @Exposed()
 final _categoryRepositoryProvider =
     Provider.family<BaseCategoryRepository, BasePreferenceRepository>(
@@ -187,6 +195,7 @@ final _hiveDatasourceProvider = ChangeNotifierProvider.family<
     artisanBox: Hive.box<Artisan>(RefUtils.kArtisanRef),
     customerBox: Hive.box<Customer>(RefUtils.kCustomerRef),
     businessBox: Hive.box<Business>(RefUtils.kBusinessRef),
+    serviceBox: Hive.box<ArtisanService>(RefUtils.kServiceRef),
   );
 });
 
@@ -235,6 +244,7 @@ class Injection {
     _repos.add(await container.read(_authRepositoryProvider.future));
     _repos.add(await container.read(_bookingRepositoryProvider(prefsRepo)));
     _repos.add(await container.read(_businessRepositoryProvider(prefsRepo)));
+    _repos.add(await container.read(_serviceRepositoryProvider(prefsRepo)));
     _repos.add(await container.read(_categoryRepositoryProvider(prefsRepo)));
     _repos
         .add(await container.read(_conversationRepositoryProvider(prefsRepo)));

@@ -104,6 +104,13 @@ abstract class BaseLocalDatasource extends ChangeNotifier {
       {@required String artisan});
 
   Future<void> updateBusiness({@required BaseBusiness business});
+
   Future<BaseBusiness> getBusinessById({@required String id});
+
   Stream<BaseBusiness> observeBusinessById({@required String id});
+
+  Future<List<BaseArtisanService>> getArtisanServices();
+
+  Future<void> updateArtisanService(
+      {@required BaseArtisanService artisanService});
 }

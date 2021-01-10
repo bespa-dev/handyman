@@ -104,6 +104,9 @@ class Artisan extends BaseArtisan {
   @override
   final String nationalId;
 
+  @HiveField(21)
+  @override
+  final List<String> services;
 
   Artisan({
     @required this.id,
@@ -124,6 +127,7 @@ class Artisan extends BaseArtisan {
     this.bookingsCount = 0,
     this.requests = const [],
     this.reports = const [],
+    this.services = const [],
     this.isAvailable = false,
     this.isApproved = false,
   });
@@ -172,6 +176,7 @@ class Artisan extends BaseArtisan {
     int bookingsCount,
     List<String> requests,
     List<String> reports,
+    List<String> services,
   }) =>
       Artisan(
         name: name ??= this.name,
@@ -192,6 +197,7 @@ class Artisan extends BaseArtisan {
         bookingsCount: bookingsCount ??= this.bookingsCount,
         requests: requests ??= this.requests,
         reports: reports ??= this.reports,
+        services: services ??= this.services,
         id: this.id,
         createdAt: this.createdAt,
       );
