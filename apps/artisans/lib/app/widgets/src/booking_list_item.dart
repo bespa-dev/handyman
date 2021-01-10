@@ -38,13 +38,8 @@ class _BookingListItemState extends State<BookingListItem> {
           .add(UserEvent.getCustomerByIdEvent(id: widget.booking.customerId));
 
       /// get request location details
-      _locationBloc
-        ..add(LocationEvent.getLocationName(location: widget.booking.position))
-        ..listen((state) {
-          if (state is SuccessState<String>) {
-            logger.d("Location name => ${state.data}");
-          }
-        });
+      _locationBloc.add(
+          LocationEvent.getLocationName(location: widget.booking.position));
     }
   }
 
