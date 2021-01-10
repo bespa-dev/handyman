@@ -24,6 +24,7 @@ import 'package:handyman/app/pages/pages.dart';
     CustomRoute(page: LoginPage),
     CustomRoute(page: RegisterPage),
     CustomRoute(page: BusinessProfilePage),
+    CustomRoute(page: BusinessDetailsPage),
     CustomRoute(page: CategoryPickerPage),
 
     /// endregion

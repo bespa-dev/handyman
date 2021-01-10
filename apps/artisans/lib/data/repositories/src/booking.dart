@@ -77,7 +77,7 @@ class BookingRepositoryImpl extends BaseBookingRepository {
       customerId: customer,
       artisanId: artisan,
       cost: cost,
-      currentState: BookingState.pending().name(),
+      currentState: BookingState.none().name(),
       description: description,
       imageUrl: image,
       position: metadata,

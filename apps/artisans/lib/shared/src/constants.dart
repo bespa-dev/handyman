@@ -149,6 +149,8 @@ const kOptionsIcon = Entypo.dots_two_vertical;
 const kFilterIcon = Feather.filter;
 const kOnlineIcon = Feather.wifi;
 const kOfflineIcon = Feather.wifi_off;
+const kCloseIcon = Feather.x;
+const kLocationIcon = Feather.map_pin;
 const kThreeDotsOptionsIcon = Entypo.dots_three_horizontal;
 
 /// [Algolia]

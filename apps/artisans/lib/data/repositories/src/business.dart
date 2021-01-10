@@ -41,8 +41,7 @@ class BusinessRepositoryImpl extends BaseBusinessRepository {
   @override
   Future<List<BaseBusiness>> getBusinessesForArtisan(
       {@required String artisan}) async {
-    final businesses =
-        await remote.getBusinessesForArtisan(artisan: artisan);
+    final businesses = await remote.getBusinessesForArtisan(artisan: artisan);
     for (var value in businesses) {
       if (value != null) await local.updateBusiness(business: value);
     }
@@ -73,5 +72,23 @@ class BusinessRepositoryImpl extends BaseBusinessRepository {
   Future<void> updateBusiness({@required BaseBusiness business}) async {
     await local.updateBusiness(business: business);
     await remote.updateBusiness(business: business);
+  }
+
+  @override
+  Future<BaseBusiness> getBusinessById({@required String id}) async {
+    var business = await remote.getBusinessById(id: id);
+    if (business != null) await local.updateBusiness(business: business);
+    return local.getBusinessById(id: id);
+  }
+
+  @override
+  Stream<BaseBusiness> observeBusinessById({@required String id}) async* {
+    yield* local.observeBusinessById(id: id);
+    remote.observeBusinessById(id: id).listen((business) async* {
+      if (business != null) {
+        await local.updateBusiness(business: business);
+        yield* local.observeBusinessById(id: id);
+      }
+    });
   }
 }

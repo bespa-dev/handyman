@@ -21,6 +21,8 @@ export 'src/location/location_bloc.dart';
 export 'src/location/location_event.dart';
 export 'src/prefs/prefs_bloc.dart';
 export 'src/prefs/prefs_event.dart';
+export 'src/review/review_bloc.dart';
+export 'src/review/review_event.dart';
 export 'src/storage/storage_bloc.dart';
 export 'src/storage/storage_event.dart';
 export 'src/user/user_bloc.dart';

@@ -20,5 +20,6 @@ export 'src/image.dart';
 export 'src/loaders.dart';
 export 'src/menu_icon.dart';
 export 'src/page_indicator.dart';
+export 'src/review_list_item.dart';
 export 'src/sign_out_button.dart';
 export 'src/user_avatar.dart';

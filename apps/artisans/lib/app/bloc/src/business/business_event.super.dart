@@ -17,6 +17,12 @@ abstract class BusinessEvent<T> extends Equatable {
   factory BusinessEvent.updateBusiness({@required T business}) =
       UpdateBusiness<T>.create;
 
+  factory BusinessEvent.getBusinessById({@required String id}) =
+      GetBusinessById<T>.create;
+
+  factory BusinessEvent.observeBusinessById({@required String id}) =
+      ObserveBusinessById<T>.create;
+
   factory BusinessEvent.uploadBusiness(
       {@required String docUrl,
       @required String name,
@@ -30,10 +36,14 @@ abstract class BusinessEvent<T> extends Equatable {
   R when<R extends Object>(
       {@required R Function(GetBusinessesForArtisan<T>) getBusinessesForArtisan,
       @required R Function(UpdateBusiness<T>) updateBusiness,
+      @required R Function(GetBusinessById<T>) getBusinessById,
+      @required R Function(ObserveBusinessById<T>) observeBusinessById,
       @required R Function(UploadBusiness<T>) uploadBusiness}) {
     assert(() {
       if (getBusinessesForArtisan == null ||
           updateBusiness == null ||
+          getBusinessById == null ||
+          observeBusinessById == null ||
           uploadBusiness == null) {
         throw 'check for all possible cases';
       }
@@ -44,6 +54,10 @@ abstract class BusinessEvent<T> extends Equatable {
         return getBusinessesForArtisan(this as GetBusinessesForArtisan);
       case _BusinessEvent.UpdateBusiness:
         return updateBusiness(this as UpdateBusiness);
+      case _BusinessEvent.GetBusinessById:
+        return getBusinessById(this as GetBusinessById);
+      case _BusinessEvent.ObserveBusinessById:
+        return observeBusinessById(this as ObserveBusinessById);
       case _BusinessEvent.UploadBusiness:
         return uploadBusiness(this as UploadBusiness);
     }
@@ -57,6 +71,8 @@ abstract class BusinessEvent<T> extends Equatable {
   R whenOrElse<R extends Object>(
       {R Function(GetBusinessesForArtisan<T>) getBusinessesForArtisan,
       R Function(UpdateBusiness<T>) updateBusiness,
+      R Function(GetBusinessById<T>) getBusinessById,
+      R Function(ObserveBusinessById<T>) observeBusinessById,
       R Function(UploadBusiness<T>) uploadBusiness,
       @required R Function(BusinessEvent<T>) orElse}) {
     assert(() {
@@ -72,6 +88,12 @@ abstract class BusinessEvent<T> extends Equatable {
       case _BusinessEvent.UpdateBusiness:
         if (updateBusiness == null) break;
         return updateBusiness(this as UpdateBusiness);
+      case _BusinessEvent.GetBusinessById:
+        if (getBusinessById == null) break;
+        return getBusinessById(this as GetBusinessById);
+      case _BusinessEvent.ObserveBusinessById:
+        if (observeBusinessById == null) break;
+        return observeBusinessById(this as ObserveBusinessById);
       case _BusinessEvent.UploadBusiness:
         if (uploadBusiness == null) break;
         return uploadBusiness(this as UploadBusiness);
@@ -84,10 +106,14 @@ abstract class BusinessEvent<T> extends Equatable {
   void whenPartial(
       {void Function(GetBusinessesForArtisan<T>) getBusinessesForArtisan,
       void Function(UpdateBusiness<T>) updateBusiness,
+      void Function(GetBusinessById<T>) getBusinessById,
+      void Function(ObserveBusinessById<T>) observeBusinessById,
       void Function(UploadBusiness<T>) uploadBusiness}) {
     assert(() {
       if (getBusinessesForArtisan == null &&
           updateBusiness == null &&
+          getBusinessById == null &&
+          observeBusinessById == null &&
           uploadBusiness == null) {
         throw 'provide at least one branch';
       }
@@ -100,6 +126,12 @@ abstract class BusinessEvent<T> extends Equatable {
       case _BusinessEvent.UpdateBusiness:
         if (updateBusiness == null) break;
         return updateBusiness(this as UpdateBusiness);
+      case _BusinessEvent.GetBusinessById:
+        if (getBusinessById == null) break;
+        return getBusinessById(this as GetBusinessById);
+      case _BusinessEvent.ObserveBusinessById:
+        if (observeBusinessById == null) break;
+        return observeBusinessById(this as ObserveBusinessById);
       case _BusinessEvent.UploadBusiness:
         if (uploadBusiness == null) break;
         return uploadBusiness(this as UploadBusiness);
@@ -177,6 +209,72 @@ class _UpdateBusinessImpl<T> extends UpdateBusiness<T> {
   String toString() => 'UpdateBusiness(business: ${this.business})';
   @override
   List<Object> get props => [business];
+}
+
+@immutable
+abstract class GetBusinessById<T> extends BusinessEvent<T> {
+  const GetBusinessById({@required this.id})
+      : super(_BusinessEvent.GetBusinessById);
+
+  factory GetBusinessById.create({@required String id}) =
+      _GetBusinessByIdImpl<T>;
+
+  final String id;
+
+  /// Creates a copy of this GetBusinessById but with the given fields
+  /// replaced with the new values.
+  GetBusinessById<T> copyWith({String id});
+}
+
+@immutable
+class _GetBusinessByIdImpl<T> extends GetBusinessById<T> {
+  const _GetBusinessByIdImpl({@required this.id}) : super(id: id);
+
+  @override
+  final String id;
+
+  @override
+  _GetBusinessByIdImpl<T> copyWith({Object id = superEnum}) =>
+      _GetBusinessByIdImpl(
+        id: id == superEnum ? this.id : id as String,
+      );
+  @override
+  String toString() => 'GetBusinessById(id: ${this.id})';
+  @override
+  List<Object> get props => [id];
+}
+
+@immutable
+abstract class ObserveBusinessById<T> extends BusinessEvent<T> {
+  const ObserveBusinessById({@required this.id})
+      : super(_BusinessEvent.ObserveBusinessById);
+
+  factory ObserveBusinessById.create({@required String id}) =
+      _ObserveBusinessByIdImpl<T>;
+
+  final String id;
+
+  /// Creates a copy of this ObserveBusinessById but with the given fields
+  /// replaced with the new values.
+  ObserveBusinessById<T> copyWith({String id});
+}
+
+@immutable
+class _ObserveBusinessByIdImpl<T> extends ObserveBusinessById<T> {
+  const _ObserveBusinessByIdImpl({@required this.id}) : super(id: id);
+
+  @override
+  final String id;
+
+  @override
+  _ObserveBusinessByIdImpl<T> copyWith({Object id = superEnum}) =>
+      _ObserveBusinessByIdImpl(
+        id: id == superEnum ? this.id : id as String,
+      );
+  @override
+  String toString() => 'ObserveBusinessById(id: ${this.id})';
+  @override
+  List<Object> get props => [id];
 }
 
 @immutable

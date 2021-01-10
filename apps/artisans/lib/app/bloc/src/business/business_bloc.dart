@@ -24,6 +24,8 @@ class BusinessBloc extends BaseBloc<BusinessEvent> {
       getBusinessesForArtisan: (e) => _mapEventToState(e),
       uploadBusiness: (e) => _mapEventToState(e),
       updateBusiness: (e) => _mapEventToState(e),
+      getBusinessById: (e) => _mapEventToState(e),
+      observeBusinessById: (e) => _mapEventToState(e),
     );
   }
 
@@ -58,6 +60,20 @@ class BusinessBloc extends BaseBloc<BusinessEvent> {
         yield BlocState.successState();
       else
         BlocState.errorState(failure: "Failed to update business model");
+    } else if (event is GetBusinessById) {
+      var result = await GetBusinessUseCase(_repo).execute(event.id);
+      if (result is UseCaseResultSuccess<BaseBusiness>)
+        yield BlocState<BaseBusiness>.successState(data: result.value);
+      else
+        yield BlocState.errorState(
+            failure: "Cannot get business info at this time");
+    } else if (event is ObserveBusinessById) {
+      var result = await ObserveBusinessUseCase(_repo).execute(event.id);
+      if (result is UseCaseResultSuccess<Stream<BaseBusiness>>)
+        yield BlocState<Stream<BaseBusiness>>.successState(data: result.value);
+      else
+        yield BlocState.errorState(
+            failure: "Cannot observe business info at this time");
     }
   }
 }

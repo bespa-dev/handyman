@@ -289,4 +289,18 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
         .doc(business.id)
         .set(business.toJson(), SetOptions(merge: true));
   }
+
+  @override
+  Future<BaseBusiness> getBusinessById({@required String id}) async {
+    var snapshot =
+        await firestore.collection(RefUtils.kBusinessRef).doc(id).get();
+    return snapshot.exists ? Business.fromJson(snapshot.data()) : null;
+  }
+
+  @override
+  Stream<BaseBusiness> observeBusinessById({@required String id}) async* {
+    yield* firestore.collection(RefUtils.kBusinessRef).doc(id).snapshots().map(
+        (snapshot) =>
+            snapshot.exists ? Business.fromJson(snapshot.data()) : null);
+  }
 }

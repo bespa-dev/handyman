@@ -33,4 +33,8 @@ abstract class BaseBusinessRepository extends BaseRepository {
   });
 
   Future<void> updateBusiness({@required BaseBusiness business});
+
+  Future<BaseBusiness> getBusinessById({@required String id});
+
+  Stream<BaseBusiness> observeBusinessById({@required String id});
 }

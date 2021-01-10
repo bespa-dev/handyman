@@ -38,7 +38,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   /// UI
   ThemeData kTheme;
-  bool _isLoading = false;
   File _avatarFile;
   final _textController = TextEditingController();
 
@@ -65,27 +64,19 @@ class _ProfilePageState extends State<ProfilePage> {
         ..add(UserEvent.currentUserEvent())
         ..listen((state) {
           if (state is SuccessState<void>) {
-            _isLoading = false;
             _avatarFile = null;
             if (mounted) setState(() {});
           }
         });
 
       _storageBloc.listen((state) {
-        if (state is LoadingState) {
-          _isLoading = true;
-          if (mounted) setState(() {});
-        } else if (state is SuccessState<String>) {
-          _isLoading = false;
+        if (state is SuccessState<String>) {
           _avatarFile = null;
           if (mounted) setState(() {});
           _currentUser = _currentUser.copyWith(avatar: state.data);
 
           /// update user profile image
           _updateUserBloc.add(UserEvent.updateUserEvent(user: _currentUser));
-        } else {
-          _isLoading = false;
-          if (mounted) setState(() {});
         }
       });
     }
@@ -447,7 +438,8 @@ class _ProfilePageState extends State<ProfilePage> {
               width: kSpacingX36,
               height: kSpacingX4,
               decoration: BoxDecoration(
-                color: kTheme.colorScheme.onBackground.withOpacity(kEmphasisLow),
+                color:
+                    kTheme.colorScheme.onBackground.withOpacity(kEmphasisLow),
                 borderRadius: BorderRadius.circular(kSpacingX24),
               ),
             ),

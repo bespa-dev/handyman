@@ -11,6 +11,8 @@ part of 'booking.dart';
 abstract class BookingState extends Equatable {
   const BookingState(this._type);
 
+  factory BookingState.none() = None.create;
+
   factory BookingState.complete() = Complete.create;
 
   factory BookingState.pending() = Pending.create;
@@ -22,16 +24,22 @@ abstract class BookingState extends Equatable {
   /// The [when] method is the equivalent to pattern matching.
   /// Its prototype depends on the _BookingState [_type]s defined.
   R when<R extends Object>(
-      {@required R Function() complete,
+      {@required R Function() none,
+      @required R Function() complete,
       @required R Function() pending,
       @required R Function() cancelled}) {
     assert(() {
-      if (complete == null || pending == null || cancelled == null) {
+      if (none == null ||
+          complete == null ||
+          pending == null ||
+          cancelled == null) {
         throw 'check for all possible cases';
       }
       return true;
     }());
     switch (this._type) {
+      case _BookingState.None:
+        return none();
       case _BookingState.Complete:
         return complete();
       case _BookingState.Pending:
@@ -47,7 +55,8 @@ abstract class BookingState extends Equatable {
   /// On the other hand, it adds an extra orElse required parameter,
   /// for fallback behavior.
   R whenOrElse<R extends Object>(
-      {R Function() complete,
+      {R Function() none,
+      R Function() complete,
       R Function() pending,
       R Function() cancelled,
       @required R Function(BookingState) orElse}) {
@@ -58,6 +67,9 @@ abstract class BookingState extends Equatable {
       return true;
     }());
     switch (this._type) {
+      case _BookingState.None:
+        if (none == null) break;
+        return none();
       case _BookingState.Complete:
         if (complete == null) break;
         return complete();
@@ -74,16 +86,23 @@ abstract class BookingState extends Equatable {
   /// The [whenPartial] method is equivalent to [whenOrElse],
   /// but non-exhaustive.
   void whenPartial(
-      {void Function() complete,
+      {void Function() none,
+      void Function() complete,
       void Function() pending,
       void Function() cancelled}) {
     assert(() {
-      if (complete == null && pending == null && cancelled == null) {
+      if (none == null &&
+          complete == null &&
+          pending == null &&
+          cancelled == null) {
         throw 'provide at least one branch';
       }
       return true;
     }());
     switch (this._type) {
+      case _BookingState.None:
+        if (none == null) break;
+        return none();
       case _BookingState.Complete:
         if (complete == null) break;
         return complete();
@@ -98,6 +117,21 @@ abstract class BookingState extends Equatable {
 
   @override
   List<Object> get props => const [];
+}
+
+@immutable
+abstract class None extends BookingState {
+  const None() : super(_BookingState.None);
+
+  factory None.create() = _NoneImpl;
+}
+
+@immutable
+class _NoneImpl extends None {
+  const _NoneImpl() : super();
+
+  @override
+  String toString() => 'None()';
 }
 
 @immutable

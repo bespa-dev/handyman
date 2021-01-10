@@ -95,6 +95,15 @@ class HiveLocalDatasource extends BaseLocalDatasource {
         // put each one into box
         await bookingBox.put(item.id, item);
       }
+
+      var reviewsSource = await rootBundle.loadString("assets/reviews.json");
+      var decodedReviews = jsonDecode(reviewsSource) as List;
+      for (var json in decodedReviews) {
+        final item = Review.fromJson(json);
+
+        // put each one into box
+        await reviewBox.put(item.id, item);
+      }
     }
   }
 
@@ -278,4 +287,13 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   @override
   Future<void> updateBusiness({@required BaseBusiness business}) async =>
       await businessBox.put(business.id, business);
+
+  @override
+  Future<BaseBusiness> getBusinessById({@required String id}) async =>
+      businessBox.get(id);
+
+  @override
+  Stream<BaseBusiness> observeBusinessById({@required String id}) async* {
+    yield businessBox.get(id);
+  }
 }

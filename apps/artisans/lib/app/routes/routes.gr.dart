@@ -17,6 +17,7 @@ class Routes {
   static const String loginPage = '/login-page';
   static const String registerPage = '/register-page';
   static const String businessProfilePage = '/business-profile-page';
+  static const String businessDetailsPage = '/business-details-page';
   static const String categoryPickerPage = '/category-picker-page';
   static const String conversationPage = '/conversation-page';
   static const String requestPage = '/request-page';
@@ -36,6 +37,7 @@ class Routes {
     loginPage,
     registerPage,
     businessProfilePage,
+    businessDetailsPage,
     categoryPickerPage,
     conversationPage,
     requestPage,
@@ -61,6 +63,7 @@ class Router extends RouterBase {
     RouteDef(Routes.loginPage, page: LoginPage),
     RouteDef(Routes.registerPage, page: RegisterPage),
     RouteDef(Routes.businessProfilePage, page: BusinessProfilePage),
+    RouteDef(Routes.businessDetailsPage, page: BusinessDetailsPage),
     RouteDef(Routes.categoryPickerPage, page: CategoryPickerPage),
     RouteDef(Routes.conversationPage, page: ConversationPage),
     RouteDef(Routes.requestPage, page: RequestPage),
@@ -106,6 +109,18 @@ class Router extends RouterBase {
             BusinessProfilePage(
           key: args.key,
           business: args.business,
+        ),
+        settings: data,
+      );
+    },
+    BusinessDetailsPage: (data) {
+      final args = data.getArgs<BusinessDetailsPageArguments>(nullOk: false);
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            BusinessDetailsPage(
+          key: args.key,
+          business: args.business,
+          artisan: args.artisan,
         ),
         settings: data,
       );
@@ -252,6 +267,17 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
         arguments: BusinessProfilePageArguments(key: key, business: business),
       );
 
+  Future<dynamic> pushBusinessDetailsPage({
+    Key key,
+    @required BaseBusiness business,
+    BaseArtisan artisan,
+  }) =>
+      push<dynamic>(
+        Routes.businessDetailsPage,
+        arguments: BusinessDetailsPageArguments(
+            key: key, business: business, artisan: artisan),
+      );
+
   Future<dynamic> pushCategoryPickerPage() =>
       push<dynamic>(Routes.categoryPickerPage);
 
@@ -339,6 +365,15 @@ class BusinessProfilePageArguments {
   final Key key;
   final BaseBusiness business;
   BusinessProfilePageArguments({this.key, this.business});
+}
+
+/// BusinessDetailsPage arguments holder class
+class BusinessDetailsPageArguments {
+  final Key key;
+  final BaseBusiness business;
+  final BaseArtisan artisan;
+  BusinessDetailsPageArguments(
+      {this.key, @required this.business, this.artisan});
 }
 
 /// ConversationPage arguments holder class

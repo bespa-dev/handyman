@@ -21,14 +21,18 @@ class ReviewRepositoryImpl extends BaseReviewRepository {
   }) : super(local, remote);
 
   @override
-  Future<void> deleteReviewById({String id}) async {
+  Future<void> deleteReviewById({@required String id}) async {
     await local.deleteReviewById(id: id);
     await remote.deleteReviewById(id: id);
   }
 
   @override
-  Future<void> sendReview(
-      {String message, String reviewer, String artisan, double rating}) async {
+  Future<void> sendReview({
+    @required String message,
+    @required String reviewer,
+    @required String artisan,
+    @required double rating,
+  }) async {
     final review = Review(
       id: Uuid().v4(),
       artisanId: artisan,

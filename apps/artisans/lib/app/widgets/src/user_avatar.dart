@@ -44,7 +44,7 @@ class UserAvatar extends StatelessWidget {
     return GestureDetector(
       onTap: onTap ?? null,
       child: Hero(
-        tag: Uuid().v4(),
+        tag: url ?? Uuid().v4(),
         child: Container(
           height: radius,
           width: radius,

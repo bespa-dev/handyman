@@ -50,7 +50,40 @@ class GetBusinessesForArtisanUseCase
   }
 }
 
-class UploadBusinessUseCase extends UseCase<String, UploadBusinessUseCaseParams> {
+class GetBusinessUseCase extends UseCase<BaseBusiness, String> {
+  final BaseBusinessRepository _repo;
+
+  GetBusinessUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<BaseBusiness>> execute(String id) async {
+    try {
+      var results = await _repo.getBusinessById(id: id);
+      return UseCaseResult<BaseBusiness>.success(results);
+    } on Exception {
+      return UseCaseResult.error();
+    }
+  }
+}
+
+class ObserveBusinessUseCase extends ObservableUseCase<BaseBusiness, String> {
+  final BaseBusinessRepository _repo;
+
+  ObserveBusinessUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<Stream<BaseBusiness>>> execute(String id) async {
+    try {
+      var results = _repo.observeBusinessById(id: id);
+      return UseCaseResult<Stream<BaseBusiness>>.success(results);
+    } on Exception {
+      return UseCaseResult.error();
+    }
+  }
+}
+
+class UploadBusinessUseCase
+    extends UseCase<String, UploadBusinessUseCaseParams> {
   final BaseBusinessRepository _repo;
 
   UploadBusinessUseCase(this._repo);

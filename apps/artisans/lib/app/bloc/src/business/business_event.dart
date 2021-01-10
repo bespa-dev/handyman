@@ -9,6 +9,10 @@ enum _BusinessEvent {
   @generic
   @Data(fields: [DataField<Generic>("business")])
   UpdateBusiness,
+  @Data(fields: [DataField<String>("id")])
+  GetBusinessById,
+  @Data(fields: [DataField<String>("id")])
+  ObserveBusinessById,
   @Data(fields: [
     DataField<String>("docUrl"),
     DataField<String>("name"),

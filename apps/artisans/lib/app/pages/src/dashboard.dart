@@ -11,6 +11,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/routes/routes.gr.dart';
 import 'package:handyman/app/widgets/widgets.dart';
@@ -29,6 +30,7 @@ class _DashboardPageState extends State<DashboardPage> {
   final _businessBloc = BusinessBloc(repo: Injection.get());
   final _prefsBloc = PrefsBloc(repo: Injection.get());
   final _bookingBloc = BookingBloc(repo: Injection.get());
+  final _reviewBloc = ReviewBloc(repo: Injection.get());
 
   /// UI
   ThemeData kTheme;
@@ -43,6 +45,7 @@ class _DashboardPageState extends State<DashboardPage> {
     _businessBloc.close();
     _prefsBloc.close();
     _bookingBloc.close();
+    _reviewBloc.close();
     super.dispose();
   }
 
@@ -136,75 +139,86 @@ class _DashboardPageState extends State<DashboardPage> {
                                         borderRadius:
                                             BorderRadius.circular(kSpacingX4),
                                       ),
-                                      child: Container(
-                                        constraints: BoxConstraints.tightFor(
-                                          height:
-                                              SizeConfig.screenHeight * 0.23,
-                                        ),
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: kSpacingX12,
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              padding:
-                                                  EdgeInsets.all(kSpacingX16),
-                                              decoration: BoxDecoration(
-                                                color: kTheme
-                                                    .colorScheme.secondary,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        kSpacingX8),
-                                              ),
-                                              child: Icon(
-                                                Entypo.wallet,
-                                                size: kSpacingX24,
-                                                color: kTheme
-                                                    .colorScheme.onSecondary,
-                                              ),
-                                            ),
-                                            SizedBox(height: kSpacingX12),
-                                            Text(
-                                              "Weekly Earnings",
-                                              style: kTheme.textTheme.bodyText1
-                                                  .copyWith(
-                                                fontWeight: FontWeight.w600,
-                                                color: kTheme
-                                                    .colorScheme.onBackground
-                                                    .withOpacity(
-                                                        kEmphasisMedium),
-                                              ),
-                                            ),
-                                            SizedBox(height: kSpacingX2),
-                                            Text(
-                                              "This is how much you earned during the week",
-                                              textAlign: TextAlign.center,
-                                              style: kTheme.textTheme.caption
-                                                  .copyWith(
-                                                color: kTheme
-                                                    .colorScheme.onBackground
-                                                    .withOpacity(kEmphasisLow),
-                                              ),
-                                            ),
-                                            SizedBox(height: kSpacingX4),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: kSpacingX16),
-                                              child: Text(
-                                                /// todo -> show earnings here
-                                                formatCurrency(0.99),
-                                                style: kTheme
-                                                    .textTheme.headline6
-                                                    .copyWith(
-                                                  fontWeight: FontWeight.w700,
+                                      child: InkWell(
+                                        borderRadius:
+                                            BorderRadius.circular(kSpacingX4),
+                                        splashColor: kTheme.splashColor,
+                                        onTap: () {
+                                          /// fixme -> add to v1.2.1
+                                          /// todo -> nav to earnings page
+                                        },
+                                        child: Container(
+                                          constraints: BoxConstraints.tightFor(
+                                            height:
+                                                SizeConfig.screenHeight * 0.23,
+                                          ),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: kSpacingX12,
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    EdgeInsets.all(kSpacingX16),
+                                                decoration: BoxDecoration(
+                                                  color: kTheme
+                                                      .colorScheme.secondary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          kSpacingX8),
+                                                ),
+                                                child: Icon(
+                                                  Entypo.wallet,
+                                                  size: kSpacingX24,
+                                                  color: kTheme
+                                                      .colorScheme.onSecondary,
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                              SizedBox(height: kSpacingX12),
+                                              Text(
+                                                "Weekly Earnings",
+                                                style: kTheme
+                                                    .textTheme.bodyText1
+                                                    .copyWith(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: kTheme
+                                                      .colorScheme.onBackground
+                                                      .withOpacity(
+                                                          kEmphasisMedium),
+                                                ),
+                                              ),
+                                              SizedBox(height: kSpacingX2),
+                                              Text(
+                                                "This is how much you earned during the week",
+                                                textAlign: TextAlign.center,
+                                                style: kTheme.textTheme.caption
+                                                    .copyWith(
+                                                  color: kTheme
+                                                      .colorScheme.onBackground
+                                                      .withOpacity(
+                                                          kEmphasisLow),
+                                                ),
+                                              ),
+                                              SizedBox(height: kSpacingX4),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: kSpacingX16),
+                                                child: Text(
+                                                  /// todo -> show earnings here
+                                                  formatCurrency(0.99),
+                                                  style: kTheme
+                                                      .textTheme.headline6
+                                                      .copyWith(
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -217,74 +231,82 @@ class _DashboardPageState extends State<DashboardPage> {
                                         borderRadius:
                                             BorderRadius.circular(kSpacingX4),
                                       ),
-                                      child: Container(
-                                        constraints: BoxConstraints.tightFor(
-                                          height:
-                                              SizeConfig.screenHeight * 0.23,
-                                        ),
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: kSpacingX12,
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              padding:
-                                                  EdgeInsets.all(kSpacingX16),
-                                              decoration: BoxDecoration(
-                                                color: kTheme
-                                                    .colorScheme.secondary,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        kSpacingX8),
-                                              ),
-                                              child: Icon(
-                                                kRatingStar,
-                                                size: kSpacingX24,
-                                                color: kTheme
-                                                    .colorScheme.onSecondary,
-                                              ),
-                                            ),
-                                            SizedBox(height: kSpacingX12),
-                                            Text(
-                                              "Ratings",
-                                              style: kTheme.textTheme.bodyText1
-                                                  .copyWith(
-                                                fontWeight: FontWeight.w600,
-                                                color: kTheme
-                                                    .colorScheme.onBackground
-                                                    .withOpacity(
-                                                        kEmphasisMedium),
-                                              ),
-                                            ),
-                                            SizedBox(height: kSpacingX2),
-                                            Text(
-                                              "Based on reviews made by customers served",
-                                              textAlign: TextAlign.center,
-                                              style: kTheme.textTheme.caption
-                                                  .copyWith(
-                                                color: kTheme
-                                                    .colorScheme.onBackground
-                                                    .withOpacity(kEmphasisLow),
-                                              ),
-                                            ),
-                                            SizedBox(height: kSpacingX4),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: kSpacingX16),
-                                              child: Text(
-                                                "${_currentUser?.rating ?? "2.5"}",
-                                                style: kTheme
-                                                    .textTheme.headline6
-                                                    .copyWith(
-                                                  fontWeight: FontWeight.w700,
+                                      child: InkWell(
+                                        borderRadius:
+                                            BorderRadius.circular(kSpacingX8),
+                                        splashColor: kTheme.splashColor,
+                                        onTap: _showReviewsSheet,
+                                        child: Container(
+                                          constraints: BoxConstraints.tightFor(
+                                            height:
+                                                SizeConfig.screenHeight * 0.23,
+                                          ),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: kSpacingX12,
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    EdgeInsets.all(kSpacingX16),
+                                                decoration: BoxDecoration(
+                                                  color: kTheme
+                                                      .colorScheme.secondary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          kSpacingX8),
+                                                ),
+                                                child: Icon(
+                                                  kRatingStar,
+                                                  size: kSpacingX24,
+                                                  color: kTheme
+                                                      .colorScheme.onSecondary,
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                              SizedBox(height: kSpacingX12),
+                                              Text(
+                                                "Ratings",
+                                                style: kTheme
+                                                    .textTheme.bodyText1
+                                                    .copyWith(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: kTheme
+                                                      .colorScheme.onBackground
+                                                      .withOpacity(
+                                                          kEmphasisMedium),
+                                                ),
+                                              ),
+                                              SizedBox(height: kSpacingX2),
+                                              Text(
+                                                "Based on reviews made by customers served",
+                                                textAlign: TextAlign.center,
+                                                style: kTheme.textTheme.caption
+                                                    .copyWith(
+                                                  color: kTheme
+                                                      .colorScheme.onBackground
+                                                      .withOpacity(
+                                                          kEmphasisLow),
+                                                ),
+                                              ),
+                                              SizedBox(height: kSpacingX4),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: kSpacingX16),
+                                                child: Text(
+                                                  "${_currentUser?.rating ?? "2.5"}",
+                                                  style: kTheme
+                                                      .textTheme.headline6
+                                                      .copyWith(
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -388,4 +410,150 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
     );
   }
+
+  /// sheet containing all reviews for current user
+  void _showReviewsSheet() async {
+    _reviewBloc.add(ReviewEvent.observeReviewsForArtisan(id: _currentUser.id));
+
+    await showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      backgroundColor: kTheme.colorScheme.background,
+      builder: (_) => Material(
+        type: MaterialType.button,
+        color: kTheme.colorScheme.background,
+        child: BlocBuilder<ReviewBloc, BlocState>(
+          cubit: _reviewBloc,
+          builder: (_, state) => AnimatedContainer(
+            duration: kScaleDuration,
+            height: state is SuccessState<Stream<List<BaseReview>>>
+                ? SizeConfig.screenHeight
+                : SizeConfig.screenHeight * 0.4,
+            width: SizeConfig.screenWidth,
+            child: state is SuccessState<Stream<List<BaseReview>>>
+                ? StreamBuilder<List<BaseReview>>(
+                    initialData: [],
+                    stream: state.data,
+                    builder: (_, snapshot) {
+                      return snapshot.connectionState == ConnectionState.waiting
+                          ? Loading()
+                          : snapshot.data.isEmpty
+                              ? emptyStateUI(context,
+                                  message: "No reviews found",
+                                  icon: kRatingStar)
+                              : Column(
+                                  children: [
+                                    /// reviews title
+                                    _buildReviewsTitle(snapshot.data.length),
+
+                                    /// reviews list
+                                    Expanded(
+                                      child: _buildReviewsList(snapshot.data),
+                                    ),
+                                  ],
+                                );
+                    })
+                : Loading(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// title
+  Widget _buildReviewsTitle(int length) => Material(
+        type: MaterialType.card,
+        elevation: kSpacingX4,
+        child: Container(
+          height: kToolbarHeight,
+          padding: EdgeInsets.symmetric(
+            vertical: kSpacingX6,
+            horizontal: kSpacingX16,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    child: Icon(
+                      kCloseIcon,
+                      size: kSpacingX20,
+                      color: kTheme.colorScheme.onBackground
+                          .withOpacity(kEmphasisMedium),
+                    ),
+                    onTap: () => context.navigator.pop(),
+                  ),
+                  SizedBox(width: kSpacingX12),
+                  Text.rich(
+                    TextSpan(children: [
+                      TextSpan(
+                        text: "$length ",
+                        style: kTheme.textTheme.headline6.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: kTheme.colorScheme.onBackground
+                              .withOpacity(kEmphasisMedium),
+                        ),
+                      ),
+                      TextSpan(text: length > 1 ? 'reviews' : 'review')
+                    ]),
+                    style: kTheme.textTheme.headline6.copyWith(
+                      color: kTheme.colorScheme.onBackground
+                          .withOpacity(kEmphasisMedium),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    kRatingStar,
+                    size: kSpacingX12,
+                    color: kAmberColor,
+                  ),
+                  SizedBox(width: kSpacingX4),
+                  Text(
+                    "${_currentUser.rating}",
+                    style: kTheme.textTheme.button.copyWith(
+                      color: kAmberColor,
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      );
+
+  /// reviews
+  Widget _buildReviewsList(List<BaseReview> reviews) => AnimationLimiter(
+        child: ListView.separated(
+          padding: EdgeInsets.only(
+            top: kSpacingX16,
+            left: kSpacingX16,
+            right: kSpacingX16,
+            bottom: kToolbarHeight,
+          ),
+          itemBuilder: (_, index) {
+            final review = reviews[index];
+            return AnimationConfiguration.staggeredList(
+              position: index,
+              duration: kSheetDuration,
+              child: ScaleAnimation(
+                child: FadeInAnimation(
+                  child: ReviewListItem(
+                    review: review,
+                  ),
+                  duration: kSheetDuration,
+                ),
+                duration: kScaleDuration,
+              ),
+            );
+          },
+          separatorBuilder: (_, __) => SizedBox(height: kSpacingX8),
+          itemCount: reviews.length,
+        ),
+      );
 }
