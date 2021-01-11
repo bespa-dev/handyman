@@ -80,6 +80,7 @@ dependencies:
   geocoder:
   flutter_dotenv: ^2.1.0
   day_night_time_picker:
+  get_version: ^0.2.2
 
 dev_dependencies:
   flutter_test:
