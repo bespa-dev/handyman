@@ -116,7 +116,7 @@
   {
     "id": "d412530a-e8df-4249-8302-d3f86fc933d3",
     "name": "Saloon",
-    "avatar": "",
+    "avatar": "https://images.unsplash.com/photo-1562322140-8baeececf3df?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8aGFpcmRyZXNzZXJ8ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
     "has_services": false
@@ -124,7 +124,7 @@
   {
     "id": "aa93f4ed-e3a6-4b5d-97b0-891a727d6003",
     "name": "Nail Technician",
-    "avatar": "",
+    "avatar": "https://images.unsplash.com/photo-1511803574983-43bf1f387ece?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8bmFpbCUyMHBvbGlzaHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
     "has_services": false
@@ -132,7 +132,7 @@
   {
     "id": "724bc23e-7ff8-48c1-8656-f64b4a37e3a5",
     "name": "Glazier",
-    "avatar": "",
+    "avatar": "https://firebasestorage.googleapis.com/v0/b/handyman-mobile-app.appspot.com/o/handyman_pro%2Fdownload.jfif?alt=media&token=7d33dda9-0464-4ad3-901d-aad84f035697",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
     "has_services": true
@@ -140,7 +140,7 @@
   {
     "id": "7ce1241a-931a-4892-b381-a6787ebbf6c6",
     "name": "Air Conditioner",
-    "avatar": "",
+    "avatar": "https://images.unsplash.com/photo-1545649311-24d0ac00ae82?ixid=MXwxMjA3fDB8MHxzZWFyY2h8NHx8YWlyJTIwY29uZGl0aW9uZXJ8ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
     "has_services": false
@@ -148,7 +148,7 @@
   {
     "id": "1a75906f-b929-4321-8163-7a45b399b9df",
     "name": "Make-up Artiste",
-    "avatar": "",
+    "avatar": "https://images.unsplash.com/photo-1602910344008-22f323cc1817?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8bWFrZXVwJTIwYXJ0aXN0fGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
     "has_services": true
