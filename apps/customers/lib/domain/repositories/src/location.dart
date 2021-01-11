@@ -7,17 +7,21 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:lite/domain/models/models.dart' show Exposable, LocationMetadata;
+import 'package:lite/domain/models/models.dart'
+    show Exposable, BaseLocationMetadata;
 import 'package:meta/meta.dart';
 
 /// base location repository class
 abstract class BaseLocationRepository implements Exposable {
   /// Get current location
-  Future<LocationMetadata> getCurrentLocation();
+  Future<BaseLocationMetadata> getCurrentLocation();
 
   /// Observe location updates
-  Stream<LocationMetadata> observeCurrentLocation();
+  Stream<BaseLocationMetadata> observeCurrentLocation();
 
-  /// Get location name based on [metaData]
-  Future<String> getLocationName({@required LocationMetadata metadata});
+  /// Get location name based on [metadata]
+  Future<String> getLocationName({@required BaseLocationMetadata metadata});
+
+  /// Get location based on [name]
+  Future<BaseLocationMetadata> getLocationPosition({@required String name});
 }

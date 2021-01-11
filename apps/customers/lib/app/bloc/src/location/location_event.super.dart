@@ -8,16 +8,19 @@ part of 'location_event.dart';
 // **************************************************************************
 
 @immutable
-abstract class LocationEvent extends Equatable {
+abstract class LocationEvent<T> extends Equatable {
   const LocationEvent(this._type);
 
-  factory LocationEvent.getCurrentLocation() = GetCurrentLocation.create;
+  factory LocationEvent.getCurrentLocation() = GetCurrentLocation<T>.create;
 
   factory LocationEvent.observeCurrentLocation() =
-      ObserveCurrentLocation.create;
+      ObserveCurrentLocation<T>.create;
 
-  factory LocationEvent.getLocationName({@required String name}) =
-      GetLocationName.create;
+  factory LocationEvent.getLocationName({@required T location}) =
+      GetLocationName<T>.create;
+
+  factory LocationEvent.getLocationCoordinates({@required String address}) =
+      GetLocationCoordinates<T>.create;
 
   final _LocationEvent _type;
 
@@ -26,11 +29,13 @@ abstract class LocationEvent extends Equatable {
   R when<R extends Object>(
       {@required R Function() getCurrentLocation,
       @required R Function() observeCurrentLocation,
-      @required R Function(GetLocationName) getLocationName}) {
+      @required R Function(GetLocationName<T>) getLocationName,
+      @required R Function(GetLocationCoordinates<T>) getLocationCoordinates}) {
     assert(() {
       if (getCurrentLocation == null ||
           observeCurrentLocation == null ||
-          getLocationName == null) {
+          getLocationName == null ||
+          getLocationCoordinates == null) {
         throw 'check for all possible cases';
       }
       return true;
@@ -42,6 +47,8 @@ abstract class LocationEvent extends Equatable {
         return observeCurrentLocation();
       case _LocationEvent.GetLocationName:
         return getLocationName(this as GetLocationName);
+      case _LocationEvent.GetLocationCoordinates:
+        return getLocationCoordinates(this as GetLocationCoordinates);
     }
   }
 
@@ -53,8 +60,9 @@ abstract class LocationEvent extends Equatable {
   R whenOrElse<R extends Object>(
       {R Function() getCurrentLocation,
       R Function() observeCurrentLocation,
-      R Function(GetLocationName) getLocationName,
-      @required R Function(LocationEvent) orElse}) {
+      R Function(GetLocationName<T>) getLocationName,
+      R Function(GetLocationCoordinates<T>) getLocationCoordinates,
+      @required R Function(LocationEvent<T>) orElse}) {
     assert(() {
       if (orElse == null) {
         throw 'Missing orElse case';
@@ -71,6 +79,9 @@ abstract class LocationEvent extends Equatable {
       case _LocationEvent.GetLocationName:
         if (getLocationName == null) break;
         return getLocationName(this as GetLocationName);
+      case _LocationEvent.GetLocationCoordinates:
+        if (getLocationCoordinates == null) break;
+        return getLocationCoordinates(this as GetLocationCoordinates);
     }
     return orElse(this);
   }
@@ -80,11 +91,13 @@ abstract class LocationEvent extends Equatable {
   void whenPartial(
       {void Function() getCurrentLocation,
       void Function() observeCurrentLocation,
-      void Function(GetLocationName) getLocationName}) {
+      void Function(GetLocationName<T>) getLocationName,
+      void Function(GetLocationCoordinates<T>) getLocationCoordinates}) {
     assert(() {
       if (getCurrentLocation == null &&
           observeCurrentLocation == null &&
-          getLocationName == null) {
+          getLocationName == null &&
+          getLocationCoordinates == null) {
         throw 'provide at least one branch';
       }
       return true;
@@ -99,6 +112,9 @@ abstract class LocationEvent extends Equatable {
       case _LocationEvent.GetLocationName:
         if (getLocationName == null) break;
         return getLocationName(this as GetLocationName);
+      case _LocationEvent.GetLocationCoordinates:
+        if (getLocationCoordinates == null) break;
+        return getLocationCoordinates(this as GetLocationCoordinates);
     }
   }
 
@@ -107,14 +123,14 @@ abstract class LocationEvent extends Equatable {
 }
 
 @immutable
-abstract class GetCurrentLocation extends LocationEvent {
+abstract class GetCurrentLocation<T> extends LocationEvent<T> {
   const GetCurrentLocation() : super(_LocationEvent.GetCurrentLocation);
 
-  factory GetCurrentLocation.create() = _GetCurrentLocationImpl;
+  factory GetCurrentLocation.create() = _GetCurrentLocationImpl<T>;
 }
 
 @immutable
-class _GetCurrentLocationImpl extends GetCurrentLocation {
+class _GetCurrentLocationImpl<T> extends GetCurrentLocation<T> {
   const _GetCurrentLocationImpl() : super();
 
   @override
@@ -122,14 +138,14 @@ class _GetCurrentLocationImpl extends GetCurrentLocation {
 }
 
 @immutable
-abstract class ObserveCurrentLocation extends LocationEvent {
+abstract class ObserveCurrentLocation<T> extends LocationEvent<T> {
   const ObserveCurrentLocation() : super(_LocationEvent.ObserveCurrentLocation);
 
-  factory ObserveCurrentLocation.create() = _ObserveCurrentLocationImpl;
+  factory ObserveCurrentLocation.create() = _ObserveCurrentLocationImpl<T>;
 }
 
 @immutable
-class _ObserveCurrentLocationImpl extends ObserveCurrentLocation {
+class _ObserveCurrentLocationImpl<T> extends ObserveCurrentLocation<T> {
   const _ObserveCurrentLocationImpl() : super();
 
   @override
@@ -137,34 +153,69 @@ class _ObserveCurrentLocationImpl extends ObserveCurrentLocation {
 }
 
 @immutable
-abstract class GetLocationName extends LocationEvent {
-  const GetLocationName({@required this.name})
+abstract class GetLocationName<T> extends LocationEvent<T> {
+  const GetLocationName({@required this.location})
       : super(_LocationEvent.GetLocationName);
 
-  factory GetLocationName.create({@required String name}) =
-      _GetLocationNameImpl;
+  factory GetLocationName.create({@required T location}) =
+      _GetLocationNameImpl<T>;
 
-  final String name;
+  final T location;
 
   /// Creates a copy of this GetLocationName but with the given fields
   /// replaced with the new values.
-  GetLocationName copyWith({String name});
+  GetLocationName<T> copyWith({T location});
 }
 
 @immutable
-class _GetLocationNameImpl extends GetLocationName {
-  const _GetLocationNameImpl({@required this.name}) : super(name: name);
+class _GetLocationNameImpl<T> extends GetLocationName<T> {
+  const _GetLocationNameImpl({@required this.location})
+      : super(location: location);
 
   @override
-  final String name;
+  final T location;
 
   @override
-  _GetLocationNameImpl copyWith({Object name = superEnum}) =>
+  _GetLocationNameImpl<T> copyWith({Object location = superEnum}) =>
       _GetLocationNameImpl(
-        name: name == superEnum ? this.name : name as String,
+        location: location == superEnum ? this.location : location as T,
       );
   @override
-  String toString() => 'GetLocationName(name: ${this.name})';
+  String toString() => 'GetLocationName(location: ${this.location})';
   @override
-  List<Object> get props => [name];
+  List<Object> get props => [location];
+}
+
+@immutable
+abstract class GetLocationCoordinates<T> extends LocationEvent<T> {
+  const GetLocationCoordinates({@required this.address})
+      : super(_LocationEvent.GetLocationCoordinates);
+
+  factory GetLocationCoordinates.create({@required String address}) =
+      _GetLocationCoordinatesImpl<T>;
+
+  final String address;
+
+  /// Creates a copy of this GetLocationCoordinates but with the given fields
+  /// replaced with the new values.
+  GetLocationCoordinates<T> copyWith({String address});
+}
+
+@immutable
+class _GetLocationCoordinatesImpl<T> extends GetLocationCoordinates<T> {
+  const _GetLocationCoordinatesImpl({@required this.address})
+      : super(address: address);
+
+  @override
+  final String address;
+
+  @override
+  _GetLocationCoordinatesImpl<T> copyWith({Object address = superEnum}) =>
+      _GetLocationCoordinatesImpl(
+        address: address == superEnum ? this.address : address as String,
+      );
+  @override
+  String toString() => 'GetLocationCoordinates(address: ${this.address})';
+  @override
+  List<Object> get props => [address];
 }

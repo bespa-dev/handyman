@@ -12,35 +12,32 @@ import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/domain/sources/sources.dart';
 import 'package:meta/meta.dart';
 
-class CategoryRepositoryImpl implements BaseCategoryRepository {
-  final BaseLocalDatasource _localDatasource;
-  final BaseRemoteDatasource _remoteDatasource;
-
-  CategoryRepositoryImpl({
+class CategoryRepositoryImpl extends BaseCategoryRepository {
+  const CategoryRepositoryImpl({
     @required BaseLocalDatasource local,
     @required BaseRemoteDatasource remote,
-  })  : _localDatasource = local,
-        _remoteDatasource = remote;
+  }) : super(local, remote);
 
   @override
   Stream<List<BaseServiceCategory>> observeCategories(
       {ServiceCategoryGroup categoryGroup}) async* {
-    yield* _localDatasource.observeCategories(categoryGroup: categoryGroup).asBroadcastStream();
-    _remoteDatasource
+    yield* local
+        .observeCategories(categoryGroup: categoryGroup)
+        .asBroadcastStream();
+    remote
         .observeCategories(categoryGroup: categoryGroup)
         .listen((event) async {
       for (var value in event) {
-        if (value != null)
-          await _localDatasource.updateCategory(category: value);
+        if (value != null) await local.updateCategory(category: value);
       }
     });
   }
 
   @override
   Stream<BaseServiceCategory> observeCategoryById({String id}) async* {
-    yield* _localDatasource.observeCategoryById(id: id);
-    _remoteDatasource.observeCategoryById(id: id).listen((event) async {
-      if (event != null) await _localDatasource.updateCategory(category: event);
+    yield* local.observeCategoryById(id: id);
+    remote.observeCategoryById(id: id).listen((event) async {
+      if (event != null) await local.updateCategory(category: event);
     });
   }
 }

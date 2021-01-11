@@ -9,7 +9,10 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/shared/shared.dart';
+import 'package:uuid/uuid.dart';
 
 class ExpandedAppBarContainer extends StatelessWidget {
   final String title;
@@ -77,6 +80,73 @@ class ExpandedAppBarContainer extends StatelessWidget {
             child: SingleChildScrollView(child: child),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// sliver app bar
+class CustomSliverAppBar extends StatelessWidget {
+  final String title;
+  final String backgroundImage;
+
+  const CustomSliverAppBar({
+    Key key,
+    this.title = kAppName,
+    this.backgroundImage = kBackgroundAsset,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final kTheme = Theme.of(context);
+    return SliverAppBar(
+      toolbarHeight: kToolbarHeight,
+      toolbarTextStyle: kTheme.appBarTheme.textTheme.headline6,
+      textTheme: kTheme.appBarTheme.textTheme,
+      leading: GestureDetector(
+        onTap: () {
+          /// todo -> add action to logo
+        },
+        child: Image(
+          image: Svg(kLogoAsset),
+          height: kSpacingX36,
+          width: kSpacingX36,
+        ),
+      ),
+      title: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(text: "$title\n"),
+            TextSpan(
+              text: kAppVersion,
+              style: kTheme.textTheme.caption,
+            ),
+          ],
+        ),
+        style: kTheme.textTheme.headline6.copyWith(
+          color: kTheme.colorScheme.onBackground,
+        ),
+      ),
+      centerTitle: false,
+      pinned: true,
+      backgroundColor: kTheme.colorScheme.background,
+      expandedHeight: SizeConfig.screenHeight * 0.15,
+      flexibleSpace: FlexibleSpaceBar(
+        collapseMode: CollapseMode.parallax,
+        background: Stack(
+          fit: StackFit.expand,
+          children: [
+            Positioned.fill(
+              child: ImageView(tag: Uuid().v4(), imageUrl: backgroundImage),
+            ),
+            Positioned.fill(
+              child: Container(
+                color: kTheme.colorScheme.background.withOpacity(kEmphasisLow),
+              ),
+            ),
+          ],
+        ),
+        titlePadding: EdgeInsets.zero,
       ),
     );
   }

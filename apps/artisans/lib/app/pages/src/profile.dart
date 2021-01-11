@@ -366,23 +366,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
 
-                              /// service pricing
-                              Container(
-                                padding: EdgeInsets.only(
-                                  top: kSpacingX16,
-                                  bottom: kSpacingX12,
-                                ),
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Service Pricing",
-                                  textAlign: TextAlign.start,
-                                  style: kTheme.textTheme.headline6.copyWith(
-                                    color: kTheme.colorScheme.onBackground
-                                        .withOpacity(kEmphasisMedium),
-                                  ),
-                                ),
-                              ),
-
                               SizedBox(height: kSpacingX64),
                               ButtonPrimary(
                                 width: SizeConfig.screenWidth * 0.85,

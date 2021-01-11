@@ -15,15 +15,15 @@ import 'package:lite/domain/sources/sources.dart';
 import 'package:lite/shared/shared.dart';
 import 'package:meta/meta.dart';
 
-class SearchRepositoryImpl implements BaseSearchRepository {
-  final BaseLocalDatasource _localDatasource;
+class SearchRepositoryImpl extends BaseSearchRepository {
   final Algolia _algolia;
 
-  SearchRepositoryImpl({
+  const SearchRepositoryImpl({
     @required BaseLocalDatasource local,
+    @required BaseRemoteDatasource remote,
     @required Algolia algolia,
-  })  : _localDatasource = local,
-        _algolia = algolia;
+  })  : _algolia = algolia,
+        super(local, remote);
 
   @override
   Future<List<BaseUser>> searchFor({String query, String categoryId}) async {
@@ -40,12 +40,11 @@ class SearchRepositoryImpl implements BaseSearchRepository {
 
       // Return transformed data from API
       if (snapshot.empty) {
-        return await _localDatasource.searchFor(
-            query: query, categoryId: categoryId);
+        return await local.searchFor(query: query, categoryId: categoryId);
       }
       var results = snapshot.hits.map((e) => Artisan.fromJson(e.data)).toList();
       for (var value in results) {
-        if (value != null) await _localDatasource.updateUser(value);
+        if (value != null) await local.updateUser(value);
       }
       return results;
     } on Exception {

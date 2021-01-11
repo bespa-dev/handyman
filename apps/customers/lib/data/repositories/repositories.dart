@@ -19,3 +19,4 @@ export 'src/review.dart'; // done
 export 'src/search.dart'; // done
 export 'src/storage.dart'; // done
 export 'src/user.dart'; // done
+export 'src/service.dart'; // done

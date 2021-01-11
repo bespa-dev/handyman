@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021.
- * This application is owned by HandyMan LLC,
+ * This application is owned by lite LLC,
  * developed & designed by Quabynah Codelabs LLC.
  *
  *
@@ -8,9 +8,14 @@
  */
 
 import 'package:lite/domain/models/models.dart';
+import 'package:lite/domain/repositories/repositories.dart';
+import 'package:lite/domain/sources/src/local.dart';
+import 'package:lite/domain/sources/src/remote.dart';
 import 'package:meta/meta.dart';
 
-abstract class BaseReviewRepository implements Exposable {
+abstract class BaseReviewRepository extends BaseRepository {
+  const BaseReviewRepository(BaseLocalDatasource local, BaseRemoteDatasource remote) : super(local, remote);
+
   /// Delete a [CustomerReview] by [id]
   Future<void> deleteReviewById({@required String id});
 

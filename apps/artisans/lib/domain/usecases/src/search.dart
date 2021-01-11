@@ -22,7 +22,7 @@ class SearchUseCase extends UseCase<List<BaseUser>, String> {
   Future<UseCaseResult<List<BaseUser>>> execute(String query) async {
     try {
       var results = await _repo.searchFor(query: query);
-      return UseCaseResult.success(results);
+      return UseCaseResult<List<BaseUser>>.success(results);
     } on Exception {
       return UseCaseResult.error("Unable to complete search");
     }

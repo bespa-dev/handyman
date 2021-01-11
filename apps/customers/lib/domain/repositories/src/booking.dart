@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021.
- * This application is owned by HandyMan LLC,
+ * This application is owned by lite LLC,
  * developed & designed by Quabynah Codelabs LLC.
  *
  *
@@ -8,9 +8,14 @@
  */
 
 import 'package:lite/domain/models/models.dart';
+import 'package:lite/domain/repositories/repositories.dart';
+import 'package:lite/domain/sources/src/local.dart';
+import 'package:lite/domain/sources/src/remote.dart';
 import 'package:meta/meta.dart';
 
-abstract class BaseBookingRepository implements Exposable {
+abstract class BaseBookingRepository extends BaseRepository {
+  const BaseBookingRepository(BaseLocalDatasource local, BaseRemoteDatasource remote) : super(local, remote);
+
   /// Get [BaseBooking] by [id]
   Stream<BaseBooking> getBookingById({String id});
 
@@ -25,7 +30,8 @@ abstract class BaseBookingRepository implements Exposable {
     @required String category,
     @required String description,
     @required String image,
-    @required LocationMetadata metadata,
+    @required double cost,
+    @required BaseLocationMetadata metadata,
   });
 
   Future<void> updateBooking({@required BaseBooking booking});

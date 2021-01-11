@@ -18,7 +18,7 @@ import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/shared/shared.dart';
 import 'package:meta/meta.dart';
 
-class AuthRepositoryImpl implements BaseAuthRepository {
+class AuthRepositoryImpl extends BaseAuthRepository {
   final GoogleSignIn _googleSignIn;
   final FirebaseAuth _auth;
   final BasePreferenceRepository _prefsRepo;
@@ -45,16 +45,19 @@ class AuthRepositoryImpl implements BaseAuthRepository {
     var firebaseUser = credential.user;
     final username = firebaseUser.displayName ?? forcedUsername;
 
-    var user = await _userRepo.getCustomerById(id: firebaseUser.uid);
+    var user = await _userRepo.getArtisanById(id: firebaseUser.uid);
     if (user == null) {
-      final newUser = Customer(
+      var timestamp = DateTime.now().toIso8601String();
+      final newUser = Artisan(
         id: firebaseUser.uid,
         email: firebaseUser.email,
-        createdAt: DateTime.now().toIso8601String(),
+        createdAt: timestamp,
         name: username,
         phone: firebaseUser.phoneNumber,
         token: await _messaging.getToken(),
         avatar: firebaseUser.photoURL,
+        startWorkingHours: timestamp,
+        endWorkingHours: timestamp,
       );
       await _userRepo.updateUser(user: newUser);
       _prefsRepo.userId = newUser.id;

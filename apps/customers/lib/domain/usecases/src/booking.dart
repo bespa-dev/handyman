@@ -102,6 +102,7 @@ class RequestBookingUseCase extends CompletableUseCase<RequestBookingParams> {
         category: params.category,
         description: params.description,
         image: params.image,
+        cost: params.cost,
         metadata: params.metadata,
       );
       return UseCaseResult.success();
@@ -181,7 +182,8 @@ class RequestBookingParams {
   final String category;
   final String description;
   final String image;
-  final LocationMetadata metadata;
+  final double cost;
+  final BaseLocationMetadata metadata;
 
   const RequestBookingParams({
     this.artisan,
@@ -190,6 +192,7 @@ class RequestBookingParams {
     this.description,
     this.image,
     this.metadata,
+    this.cost,
   });
 }
 

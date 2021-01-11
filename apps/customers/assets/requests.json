@@ -1,0 +1,70 @@
+[
+  {
+    "id": "0c40a5bd-3a08-4b84-8da9-b5d6521e435c",
+    "created_at": "2021-01-08T17:03:21.307855",
+    "customer_id": "gNR60F1m44e4vjl2AS8HwWl3I9I3",
+    "artisan_id": "mxbSbRIuWqMS1bjJXh8E22k6xAh2",
+    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
+    "image_url": "https://images.unsplash.com/photo-1454694220579-9d6672b1ec2a?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8aGFuZHltYW58ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
+    "description": "Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cursus sit amet dictum sit amet. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique",
+    "position": {
+      "lat": 5.6441,
+      "lng": -0.1261
+    },
+    "cost": 95,
+    "progress": 0.9,
+    "due_date": "2021-01-28T17:03:21.307855",
+    "current_state": "Pending"
+  },
+  {
+    "id": "58cd11e6-fc14-4143-8767-db136d738187",
+    "created_at": "2021-01-08T17:03:21.307855",
+    "customer_id": "fXYrXtbwUwQUTgWSWdeX26NOr2l2",
+    "artisan_id": "mxbSbRIuWqMS1bjJXh8E22k6xAh2",
+    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
+    "image_url": "https://images.unsplash.com/photo-1454694220579-9d6672b1ec2a?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8aGFuZHltYW58ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
+    "description": "Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cursus sit amet dictum sit amet. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique",
+    "position": {
+      "lat": 5.6441,
+      "lng": -0.1261
+    },
+    "cost": 1250,
+    "progress": 0.65,
+    "due_date": "2021-01-28T17:03:21.307855",
+    "current_state": "Complete"
+  },
+  {
+    "id": "db68377e-569a-4af4-905d-1b46c78bfacd",
+    "created_at": "2021-01-08T17:03:21.307855",
+    "customer_id": "xjO66ViCdGWzlYUpWEvCwX322bM2",
+    "artisan_id": "mxbSbRIuWqMS1bjJXh8E22k6xAh2",
+    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
+    "image_url": "https://images.unsplash.com/photo-1454694220579-9d6672b1ec2a?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8aGFuZHltYW58ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
+    "description": "Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cursus sit amet dictum sit amet. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique",
+    "position": {
+      "lat": 5.6441,
+      "lng": -0.1261
+    },
+    "cost": 756,
+    "progress": 0.15,
+    "due_date": "2021-01-28T17:03:21.307855",
+    "current_state": "Pending"
+  },
+  {
+    "id": "a0ee3fdb-474f-4de1-ba53-6752736c81ad",
+    "created_at": "2021-01-08T17:03:21.307855",
+    "customer_id": "a3rrEsuy2qgphPc9N87EwcjDF0S2",
+    "artisan_id": "mxbSbRIuWqMS1bjJXh8E22k6xAh2",
+    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
+    "image_url": "",
+    "description": "Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cursus sit amet dictum sit amet. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique",
+    "position": {
+      "lat": 5.6441,
+      "lng": -0.1261
+    },
+    "cost": 960,
+    "progress": 0.5,
+    "due_date": "2021-01-08T17:03:21.307855",
+    "current_state": "Cancelled"
+  }
+]

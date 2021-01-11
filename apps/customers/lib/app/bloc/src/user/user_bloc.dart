@@ -45,8 +45,8 @@ class UserBloc extends BaseBloc<UserEvent> {
     try {
       if (event is CurrentUserEvent) {
         var result = await ObserveCurrentUserUseCase(_repo).execute(null);
-        if (result is UseCaseResultSuccess<Stream<BaseUser>>) {
-          yield BlocState<Stream<BaseUser>>.successState(data: result.value);
+        if (result is UseCaseResultSuccess<Stream<BaseArtisan>>) {
+          yield BlocState<Stream<BaseArtisan>>.successState(data: result.value);
         } else
           throw Exception();
       } else if (event is UpdateUserEvent) {

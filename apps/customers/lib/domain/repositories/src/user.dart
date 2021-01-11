@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021.
- * This application is owned by HandyMan LLC,
+ * This application is owned by lite LLC,
  * developed & designed by Quabynah Codelabs LLC.
  *
  *
@@ -8,10 +8,15 @@
  */
 
 import 'package:lite/domain/models/models.dart';
+import 'package:lite/domain/repositories/repositories.dart';
+import 'package:lite/domain/sources/src/local.dart';
+import 'package:lite/domain/sources/src/remote.dart';
 import 'package:meta/meta.dart';
 
 /// base user repository class
-abstract class BaseUserRepository implements Exposable {
+abstract class BaseUserRepository extends BaseRepository {
+  const BaseUserRepository(BaseLocalDatasource local, BaseRemoteDatasource remote) : super(local, remote);
+
   /// Update [BaseUser] profile information
   Future<void> updateUser({@required BaseUser user});
 

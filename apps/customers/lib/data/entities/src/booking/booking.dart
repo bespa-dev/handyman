@@ -1,21 +1,25 @@
 /*
  * Copyright (c) 2021.
- * This application is owned by HandyMan LLC,
+ * This application is owned by lite LLC,
  * developed & designed by Quabynah Codelabs LLC.
  *
  *
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:lite/data/entities/entities.dart' show LocationMetadata;
+import 'package:lite/domain/models/models.dart';
+import 'package:lite/shared/shared.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:lite/domain/models/models.dart';
+import 'package:meta/meta.dart';
 
 part 'booking.g.dart';
 
+// 'position': instance.position.toJson(),
 @HiveType(typeId: 0)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class Booking extends BaseBooking {
+class Booking extends BaseBooking<LocationMetadata> {
   @HiveField(0)
   @override
   final String customerId;
@@ -60,26 +64,75 @@ class Booking extends BaseBooking {
   @override
   final String createdAt;
 
+  @HiveField(11)
+  @override
+  final String currentState;
+
   Booking({
-    this.id,
-    this.createdAt,
-    this.customerId,
-    this.artisanId,
-    this.category,
-    this.imageUrl,
-    this.description,
-    this.position,
-    this.cost,
-    this.progress,
-    this.dueDate,
+    @required this.id,
+    @required this.createdAt,
+    @required this.customerId,
+    @required this.artisanId,
+    @required this.category,
+    @required this.imageUrl,
+    @required this.description,
+    @required this.dueDate,
+    @required this.currentState,
+    this.position = const LocationMetadata(lat: 5.644, lng: -0.122),
+    this.cost = 0.0,
+    this.progress = 0.0,
   });
 
   @override
   get model => this;
+
+  @override
+  bool get hasImage => imageUrl != null && imageUrl.isNotEmpty;
+
+  @override
+  bool get isDue =>
+      compareTime(dueDate, DateTime.now().toIso8601String()).isNegative;
+
+  @override
+  bool get isPending => currentState == BookingState.pending().name();
+
+  @override
+  bool get isComplete => currentState == BookingState.complete().name();
+
+  @override
+  bool get isCancelled => currentState == BookingState.cancelled().name();
 
   factory Booking.fromJson(Map<String, dynamic> json) =>
       _$BookingFromJson(json);
 
   @override
   Map<String, dynamic> toJson() => _$BookingToJson(this);
+
+  @override
+  BaseBooking copyWith({
+    String customerId,
+    String artisanId,
+    String category,
+    String imageUrl,
+    String description,
+    BaseLocationMetadata position,
+    double cost,
+    double progress,
+    String dueDate,
+    String currentState,
+  }) =>
+      Booking(
+        id: this.id,
+        createdAt: this.createdAt,
+        customerId: customerId ?? this.customerId,
+        artisanId: artisanId ?? this.artisanId,
+        category: category ?? this.category,
+        imageUrl: imageUrl ?? this.imageUrl,
+        description: description ?? this.description,
+        position: position ?? this.position,
+        cost: cost ?? this.cost,
+        progress: progress ?? this.progress,
+        dueDate: dueDate ?? this.dueDate,
+        currentState: currentState ?? this.currentState,
+      );
 }

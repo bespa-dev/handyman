@@ -9,15 +9,16 @@
 
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lite/data/entities/entities.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/domain/sources/sources.dart';
 import 'package:lite/shared/shared.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:meta/meta.dart';
 
 /// Read more -> https://docs.hivedb.dev/
@@ -33,7 +34,10 @@ Future registerHiveDatabase() async {
     ..registerAdapter(GalleryAdapter())
     ..registerAdapter(ReviewAdapter())
     ..registerAdapter(ArtisanAdapter())
-    ..registerAdapter(CustomerAdapter());
+    ..registerAdapter(CustomerAdapter())
+    ..registerAdapter(BusinessAdapter())
+    ..registerAdapter(LocationMetadataAdapter())
+    ..registerAdapter(ArtisanServiceAdapter());
 
   /// open boxes
   await Hive.openBox<Booking>(RefUtils.kBookingRef);
@@ -43,6 +47,8 @@ Future registerHiveDatabase() async {
   await Hive.openBox<Review>(RefUtils.kReviewRef);
   await Hive.openBox<Artisan>(RefUtils.kArtisanRef);
   await Hive.openBox<Customer>(RefUtils.kCustomerRef);
+  await Hive.openBox<Business>(RefUtils.kBusinessRef);
+  await Hive.openBox<ArtisanService>(RefUtils.kServiceRef);
 }
 
 class HiveLocalDatasource extends BaseLocalDatasource {
@@ -54,6 +60,8 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   final Box<Gallery> galleryBox;
   final Box<Conversation> conversationBox;
   final Box<ServiceCategory> categoryBox;
+  final Box<Business> businessBox;
+  final Box<ArtisanService> serviceBox;
 
   HiveLocalDatasource({
     @required this.prefsRepo,
@@ -64,6 +72,8 @@ class HiveLocalDatasource extends BaseLocalDatasource {
     @required this.galleryBox,
     @required this.conversationBox,
     @required this.categoryBox,
+    @required this.businessBox,
+    @required this.serviceBox,
   }) {
     /// load initial data from assets
     _performInitLoad();
@@ -71,13 +81,43 @@ class HiveLocalDatasource extends BaseLocalDatasource {
 
   void _performInitLoad() async {
     /// decode categories from json
-    var source = await rootBundle.loadString("assets/categories.json");
-    var decoded = jsonDecode(source) as List;
-    for (var json in decoded) {
+    var categorySource = await rootBundle.loadString("assets/categories.json");
+    var decodedCategories = jsonDecode(categorySource) as List;
+    for (var json in decodedCategories) {
       final item = ServiceCategory.fromJson(json);
 
       /// put each one into box
       await categoryBox.put(item.id, item);
+    }
+
+    /// decode services from json
+    var serviceSource = await rootBundle.loadString("assets/services.json");
+    var decodedServices = jsonDecode(serviceSource) as List;
+    for (var json in decodedServices) {
+      final item = ArtisanService.fromJson(json);
+
+      /// put each one into box
+      await serviceBox.put(item.id, item);
+    }
+
+    if (!kReleaseMode) {
+      var requestsSource = await rootBundle.loadString("assets/requests.json");
+      var decodedRequests = jsonDecode(requestsSource) as List;
+      for (var json in decodedRequests) {
+        final item = Booking.fromJson(json);
+
+        // put each one into box
+        await bookingBox.put(item.id, item);
+      }
+
+      var reviewsSource = await rootBundle.loadString("assets/reviews.json");
+      var decodedReviews = jsonDecode(reviewsSource) as List;
+      for (var json in decodedReviews) {
+        final item = Review.fromJson(json);
+
+        // put each one into box
+        await reviewBox.put(item.id, item);
+      }
     }
   }
 
@@ -92,9 +132,9 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   }
 
   @override
-  Stream<BaseUser> currentUser() async* {
-    var customer = customerBox.get(prefsRepo.userId);
-    yield customer;
+  Stream<BaseArtisan> currentUser() async* {
+    var artisan = artisanBox.get(prefsRepo.userId);
+    yield artisan;
     notifyListeners();
   }
 
@@ -144,6 +184,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   Stream<List<BaseArtisan>> observeArtisans({String category}) async* {
     yield artisanBox.values
         .where((item) => item.categoryGroup.contains(category))
+        .where((item) => item.id != prefsRepo.userId)
         .toList();
   }
 
@@ -251,4 +292,31 @@ class HiveLocalDatasource extends BaseLocalDatasource {
       await galleryBox.put(value.id, value);
     }
   }
+
+  @override
+  Future<List<BaseBusiness>> getBusinessesForArtisan(
+          {@required String artisan}) async =>
+      businessBox.values.where((item) => item.artisanId == artisan).toList();
+
+  @override
+  Future<void> updateBusiness({@required BaseBusiness business}) async =>
+      await businessBox.put(business.id, business);
+
+  @override
+  Future<BaseBusiness> getBusinessById({@required String id}) async =>
+      businessBox.get(id);
+
+  @override
+  Stream<BaseBusiness> observeBusinessById({@required String id}) async* {
+    yield businessBox.get(id);
+  }
+
+  @override
+  Future<List<BaseArtisanService>> getArtisanServices() async =>
+      serviceBox.values.toList();
+
+  @override
+  Future<void> updateArtisanService(
+          {@required BaseArtisanService artisanService}) async =>
+      await serviceBox.put(artisanService.id, artisanService);
 }

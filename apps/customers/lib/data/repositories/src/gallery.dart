@@ -12,22 +12,18 @@ import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/domain/sources/sources.dart';
 import 'package:meta/meta.dart';
 
-class GalleryRepositoryImpl implements BaseGalleryRepository {
-  final BaseLocalDatasource _localDatasource;
-  final BaseRemoteDatasource _remoteDatasource;
-
-  GalleryRepositoryImpl({
+class GalleryRepositoryImpl extends BaseGalleryRepository {
+  const GalleryRepositoryImpl({
     @required BaseLocalDatasource local,
     @required BaseRemoteDatasource remote,
-  })  : _localDatasource = local,
-        _remoteDatasource = remote;
+  }) : super(local, remote);
 
   @override
   Stream<List<BaseGallery>> getPhotosForArtisan({String userId}) async* {
-    yield* _localDatasource.getPhotosForArtisan(userId: userId);
-    _remoteDatasource.getPhotosForArtisan(userId: userId).listen((event) async {
+    yield* local.getPhotosForArtisan(userId: userId);
+    remote.getPhotosForArtisan(userId: userId).listen((event) async {
       for (var value in event) {
-        if (value != null) await _localDatasource.updateGallery(gallery: value);
+        if (value != null) await local.updateGallery(gallery: value);
       }
     });
   }

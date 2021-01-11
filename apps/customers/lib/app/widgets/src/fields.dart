@@ -29,26 +29,28 @@ class TextFormInput extends TextFormField {
     bool autofocus = false,
     int maxLines = 1,
     Color color,
+    Color cursorColor,
   }) : super(
-    keyboardType: keyboardType,
-    textInputAction: textInputAction,
-    controller: controller,
-    enabled: enabled,
-    validator: validator,
-    obscureText: obscureText,
-    textCapitalization: textCapitalization,
-    decoration: InputDecoration(
-      labelText: labelText,
-      hintText: hintText,
-      helperText: helperText,
-      suffixIcon: suffixIcon,
-      enabled: enabled,
-    ),
-    focusNode: focusNode,
-    onFieldSubmitted: onFieldSubmitted,
-    autofocus: autofocus,
-    maxLines: maxLines,
-  );
+          keyboardType: keyboardType,
+          textInputAction: textInputAction,
+          controller: controller,
+          enabled: enabled,
+          validator: validator,
+          obscureText: obscureText,
+          textCapitalization: textCapitalization,
+          cursorColor: cursorColor,
+          decoration: InputDecoration(
+            labelText: labelText,
+            hintText: hintText,
+            helperText: helperText,
+            suffixIcon: suffixIcon,
+            enabled: enabled,
+          ),
+          focusNode: focusNode,
+          onFieldSubmitted: onFieldSubmitted,
+          autofocus: autofocus,
+          maxLines: maxLines,
+        );
 }
 
 class PasswordInput extends StatefulWidget {
@@ -60,6 +62,7 @@ class PasswordInput extends StatefulWidget {
   final bool enabled;
   final Color iconColor;
   final Color color;
+  final Color cursorColor;
   final FormFieldValidator<String> validator;
   final FocusNode focusNode;
   final Function onFieldSubmitted;
@@ -75,6 +78,7 @@ class PasswordInput extends StatefulWidget {
     this.focusNode,
     this.onFieldSubmitted,
     this.iconColor,
+    this.cursorColor,
     this.color,
   });
 
@@ -98,6 +102,7 @@ class _PasswordInputState extends State<PasswordInput> {
       validator: widget.validator,
       obscureText: _obscure,
       maxLines: 1,
+      cursorColor: widget.cursorColor,
       color: widget.color,
       suffixIcon: IconButton(
         icon: Icon(

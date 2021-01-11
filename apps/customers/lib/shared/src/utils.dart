@@ -17,6 +17,8 @@ class RefUtils {
   static const String kGalleryRef = "galleries";
   static const String kCategoryRef = "categories";
   static const String kReviewRef = "reviews";
+  static const String kBusinessRef = "businesses";
+  static const String kServiceRef = "artisan_services";
   static String kBucketRef = kAppName.toLowerCase().replaceAll(" ", "_");
 }
 

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021.
- * This application is owned by HandyMan LLC,
+ * This application is owned by lite LLC,
  * developed & designed by Quabynah Codelabs LLC.
  *
  *
@@ -16,11 +16,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:geocoder/geocoder.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:hive/hive.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:jiffy/jiffy.dart';
 import 'package:lite/data/entities/entities.dart';
 import 'package:lite/data/repositories/repositories.dart';
 import 'package:lite/data/sources/sources.dart';
@@ -28,6 +24,8 @@ import 'package:lite/domain/models/models.dart';
 import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/domain/sources/sources.dart';
 import 'package:lite/shared/shared.dart';
+import 'package:hive/hive.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// region Preferences
@@ -61,13 +59,20 @@ final _bookingRepositoryProvider =
   return BookingRepositoryImpl(local: local, remote: remote);
 });
 
-@Exposed()
 final _businessRepositoryProvider =
     Provider.family<BaseBusinessRepository, BasePreferenceRepository>(
         (_, prefs) {
   var local = _.read(_localDatasourceProvider(prefs));
   var remote = _.read(_remoteDatasourceProvider(prefs));
   return BusinessRepositoryImpl(local: local, remote: remote);
+});
+
+final _serviceRepositoryProvider =
+    Provider.family<BaseArtisanServiceRepository, BasePreferenceRepository>(
+        (_, prefs) {
+  var local = _.read(_localDatasourceProvider(prefs));
+  var remote = _.read(_remoteDatasourceProvider(prefs));
+  return ArtisanServiceRepositoryImpl(local: local, remote: remote);
 });
 
 @Exposed()
@@ -114,12 +119,13 @@ final _reviewRepositoryProvider =
 final _searchRepositoryProvider =
     Provider.family<BaseSearchRepository, BasePreferenceRepository>((_, prefs) {
   var local = _.read(_localDatasourceProvider(prefs));
+  var remote = _.read(_remoteDatasourceProvider(prefs));
   final dotenv = DotEnv();
   final algolia = Algolia.init(
     applicationId: dotenv.env['applicationId'],
     apiKey: dotenv.env['apiKey'],
   );
-  return SearchRepositoryImpl(local: local, algolia: algolia);
+  return SearchRepositoryImpl(local: local, remote: remote, algolia: algolia);
 });
 
 @Exposed()
@@ -128,7 +134,6 @@ final _storageRepositoryProvider =
   return _.watch(_firebaseStorageRepositoryProvider);
 });
 
-@Exposed()
 final _userRepositoryProvider =
     Provider.family<BaseUserRepository, BasePreferenceRepository>((_, prefs) {
   var local = _.read(_localDatasourceProvider(prefs));
@@ -187,33 +192,12 @@ final _hiveDatasourceProvider = ChangeNotifierProvider.family<
     reviewBox: Hive.box<Review>(RefUtils.kReviewRef),
     artisanBox: Hive.box<Artisan>(RefUtils.kArtisanRef),
     customerBox: Hive.box<Customer>(RefUtils.kCustomerRef),
+    businessBox: Hive.box<Business>(RefUtils.kBusinessRef),
+    serviceBox: Hive.box<ArtisanService>(RefUtils.kServiceRef),
   );
 });
 
 /// endregion Data sources
-
-/// region Parsers
-String parseFromTimestamp(
-  String time, {
-  bool isChatFormat = false,
-  bool isDetailedFormat = false,
-  bool fromNow = false,
-}) {
-  final timestamp = DateTime.parse(time);
-  return fromNow
-      ? Jiffy.unix(timestamp.millisecondsSinceEpoch).fromNow()
-      : isChatFormat
-          ? Jiffy.unix(timestamp.millisecondsSinceEpoch).jm
-          : isDetailedFormat
-              ? Jiffy.unix(timestamp.millisecondsSinceEpoch).yMMMEd
-              : Jiffy.unix(timestamp.millisecondsSinceEpoch).yMMMd;
-}
-
-int compareTime(String first, String second) {
-  return DateTime.tryParse(first).compareTo(DateTime.tryParse(second));
-}
-
-/// endregion
 
 /// region Dependency Injection
 class Injection {
@@ -227,6 +211,7 @@ class Injection {
     _repos.add(await container.read(_authRepositoryProvider.future));
     _repos.add(await container.read(_bookingRepositoryProvider(prefsRepo)));
     _repos.add(await container.read(_businessRepositoryProvider(prefsRepo)));
+    _repos.add(await container.read(_serviceRepositoryProvider(prefsRepo)));
     _repos.add(await container.read(_categoryRepositoryProvider(prefsRepo)));
     _repos
         .add(await container.read(_conversationRepositoryProvider(prefsRepo)));
@@ -245,7 +230,7 @@ class Injection {
     for (var value in _repos) {
       if (value is R) return value as R;
     }
-    return null;
+    throw Exception("Unknown repository for -> ${R.runtimeType}");
   }
 }
 

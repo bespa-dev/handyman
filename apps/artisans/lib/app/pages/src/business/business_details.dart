@@ -7,6 +7,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/routes/routes.gr.dart';
+import 'package:handyman/app/widgets/src/service_list_item.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
 
@@ -157,57 +158,61 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                       backgroundColor: _kTheme.colorScheme.background,
                       flexibleSpace: FlexibleSpaceBar(
                         collapseMode: CollapseMode.parallax,
-                        background: AnimatedContainer(
-                          duration: kScaleDuration,
-                          width: SizeConfig.screenWidth,
-                          height: _businessLocation == null
-                              ? kSpacingNone
-                              : SizeConfig.screenHeight * 0.3,
-                          child: AnimatedOpacity(
-                            duration: kScaleDuration,
-                            opacity: _businessLocation == null ? 0 : 1,
-                            child: _businessLocation == null
-                                ? SizedBox.shrink()
-                                : GoogleMap(
-                                    initialCameraPosition: CameraPosition(
-                                      target: _businessLocation,
-                                      zoom: kSpacingX16,
-                                    ),
-                                    zoomControlsEnabled: false,
-                                    compassEnabled: true,
-                                    liteModeEnabled: Platform.isAndroid,
-                                    zoomGesturesEnabled: true,
-                                    mapToolbarEnabled: false,
-                                    myLocationButtonEnabled: false,
-                                    myLocationEnabled: false,
-                                    tiltGesturesEnabled: true,
-                                    markers: <Marker>{
-                                      Marker(
-                                        markerId: MarkerId(_business.id),
-                                        position: _businessLocation,
-                                        icon: BitmapDescriptor
-                                            .defaultMarkerWithHue(
-                                                BitmapDescriptor.hueGreen),
-                                      ),
-                                    },
-                                    onMapCreated: (controller) async {
-                                      _mapController = controller;
-                                      _setupMap();
-                                    },
-                                    mapType: MapType.normal,
-                                  ),
-                          ),
-                        ),
+                        stretchModes: [
+                          StretchMode.zoomBackground,
+                          StretchMode.blurBackground,
+                        ],
                       ),
                       leading: IconButton(
                         icon: Icon(kBackIcon),
                         onPressed: () => context.navigator.pop(),
                       ),
                     ),
-                    if (_businessLocation == null) ...{},
                     SliverList(
                       delegate: SliverChildListDelegate.fixed(
                         [
+                          AnimatedContainer(
+                            duration: kScaleDuration,
+                            width: SizeConfig.screenWidth,
+                            height: _businessLocation == null
+                                ? kSpacingNone
+                                : SizeConfig.screenHeight * 0.3,
+                            child: AnimatedOpacity(
+                              duration: kScaleDuration,
+                              opacity: _businessLocation == null ? 0 : 1,
+                              child: _businessLocation == null
+                                  ? SizedBox.shrink()
+                                  : GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                  target: _businessLocation,
+                                  zoom: kSpacingX16,
+                                ),
+                                zoomControlsEnabled: false,
+                                compassEnabled: true,
+                                liteModeEnabled: Platform.isAndroid,
+                                zoomGesturesEnabled: true,
+                                mapToolbarEnabled: false,
+                                myLocationButtonEnabled: false,
+                                myLocationEnabled: false,
+                                tiltGesturesEnabled: true,
+                                markers: <Marker>{
+                                  Marker(
+                                    markerId: MarkerId(_business.id),
+                                    position: _businessLocation,
+                                    icon: BitmapDescriptor
+                                        .defaultMarkerWithHue(
+                                        BitmapDescriptor.hueGreen),
+                                  ),
+                                },
+                                onMapCreated: (controller) async {
+                                  _mapController = controller;
+                                  _setupMap();
+                                },
+                                mapType: MapType.normal,
+                              ),
+                            ),
+                          ),
+
                           AnimatedPadding(
                             duration: kScaleDuration,
                             padding: EdgeInsets.only(
@@ -431,51 +436,23 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
               crossAxisCount: 2,
               crossAxisSpacing: kSpacingX8,
               mainAxisSpacing: kSpacingX8,
-              childAspectRatio: 0.8,
               children: [
-                ..._currentUser.services
-                    .map(
-                      (item) => AnimationLimiter(
-                        child: BlocBuilder<ArtisanServiceBloc, BlocState>(
-                          cubit: _serviceBloc
-                            ..add(ArtisanServiceEvent.getServiceById(id: item)),
-                          builder: (_, state) => state
-                                  is SuccessState<BaseArtisanService>
-                              ? AnimationConfiguration.staggeredGrid(
-                                  position: _currentUser.services.indexOf(item),
-                                  columnCount: 2,
-                                  duration: kSheetDuration,
-                                  child: ScaleAnimation(
-                                    duration: kScaleDuration,
-                                    child: FadeInAnimation(
-                                      duration: kScaleDuration,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color:
-                                                _kTheme.colorScheme.secondary,
-                                            width: 0.5,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(kSpacingX8),
-                                        ),
-                                        child: InkWell(
-                                          splashColor: _kTheme.splashColor,
-                                          borderRadius:
-                                              BorderRadius.circular(kSpacingX8),
-                                          onTap: () {
-                                            /// todo -> edit price sheet or dialog
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : SizedBox.shrink(),
+                for (int i = 0; i < _currentUser.services.length; i++) ...{
+                  AnimationConfiguration.staggeredGrid(
+                    position: i,
+                    columnCount: 2,
+                    duration: kSheetDuration,
+                    child: ScaleAnimation(
+                      duration: kScaleDuration,
+                      child: FadeInAnimation(
+                        duration: kScaleDuration,
+                        child: ArtisanServiceListItem(
+                          service: _currentUser.services[i],
                         ),
                       ),
-                    )
-                    .toList(),
+                    ),
+                  ),
+                },
               ],
             ),
           }

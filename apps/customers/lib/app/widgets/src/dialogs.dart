@@ -51,14 +51,14 @@ class BasicDialog extends StatelessWidget {
           children: [
             _CustomDialogButton(
               label: negativeButtonText,
-              onTap: () => context.navigator.pop(),
+              onTap: () => context.navigator.pop(false),
               isPrimary: false,
             ),
             _CustomDialogButton(
               label: positiveButtonText,
               onTap: () {
                 onComplete();
-                context.navigator.pop();
+                context.navigator.pop(true);
               },
               isPrimary: true,
             ),
@@ -116,6 +116,8 @@ class ReplyMessageDialog extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: hintText,
                   border: InputBorder.none,
+                  fillColor: kTheme.disabledColor,
+                  filled: true,
                 ),
               ),
             ),
@@ -529,7 +531,6 @@ Future<T> showCustomDialog<T>({
         children: <Widget>[
           // 1. blurred background
           GestureDetector(
-            // FIXME: @derekbaah -> Should we allow users to dismiss by tapping the background?
             onTap: shouldDismissOnBarrierTap
                 ? () => context.navigator.pop()
                 : null,

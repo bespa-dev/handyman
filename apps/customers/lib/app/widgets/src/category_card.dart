@@ -10,7 +10,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:lite/app/pages/pages.dart';
+import 'package:lite/app/routes/routes.gr.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 
@@ -61,11 +61,8 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
               widget.onSelected(widget.category);
             }
           } else {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => CategoryDetailsPage(category: widget.category),
-              ),
-            );
+            context.navigator
+                .pushCategoryDetailsPage(category: widget.category);
           }
         },
         child: Stack(
@@ -111,4 +108,44 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
       ),
     );
   }
+}
+
+class SelectableGridCategory extends StatefulWidget {
+  final List<BaseServiceCategory> categories;
+  final Function(BaseServiceCategory) onSelected;
+  final String selected;
+
+  const SelectableGridCategory({
+    Key key,
+    @required this.categories,
+    @required this.onSelected,
+    @required this.selected,
+  }) : super(key: key);
+
+  @override
+  _SelectableGridCategoryState createState() => _SelectableGridCategoryState();
+}
+
+class _SelectableGridCategoryState extends State<SelectableGridCategory> {
+  @override
+  Widget build(BuildContext context) => GridView.builder(
+        gridDelegate:
+            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        itemCount: widget.categories.length,
+        itemBuilder: (_, index) {
+          final category = widget.categories[index];
+          return GridCategoryCardItem(
+            category: category,
+            isSelectable: true,
+            isSelected: widget.selected == category.id,
+            onSelected: (item) {
+              widget.onSelected(item);
+              setState(() {});
+            },
+          );
+        },
+        padding: EdgeInsets.only(bottom: kSpacingX36),
+        addAutomaticKeepAlives: false,
+        cacheExtent: 100,
+      );
 }

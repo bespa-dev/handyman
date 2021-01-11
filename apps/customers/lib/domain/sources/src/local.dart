@@ -14,7 +14,7 @@ import 'package:meta/meta.dart';
 /// base local datasource class
 abstract class BaseLocalDatasource extends ChangeNotifier {
   /// observe current user
-  Stream<BaseUser> currentUser();
+  Stream<BaseArtisan> currentUser();
 
   /// Get all [BaseArtisan]
   Stream<List<BaseArtisan>> observeArtisans({@required String category});
@@ -99,4 +99,18 @@ abstract class BaseLocalDatasource extends ChangeNotifier {
   Future<void> updateGallery({@required BaseGallery gallery});
 
   Future<void> updateReview({@required BaseReview review});
+
+  Future<List<BaseBusiness>> getBusinessesForArtisan(
+      {@required String artisan});
+
+  Future<void> updateBusiness({@required BaseBusiness business});
+
+  Future<BaseBusiness> getBusinessById({@required String id});
+
+  Stream<BaseBusiness> observeBusinessById({@required String id});
+
+  Future<List<BaseArtisanService>> getArtisanServices();
+
+  Future<void> updateArtisanService(
+      {@required BaseArtisanService artisanService});
 }

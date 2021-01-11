@@ -35,6 +35,7 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
       bookingsCount: fields[4] as int,
       requests: (fields[5] as List)?.cast<String>(),
       reports: (fields[6] as List)?.cast<String>(),
+      services: (fields[21] as List)?.cast<String>(),
       isAvailable: fields[8] as bool,
       isApproved: fields[9] as bool,
     );
@@ -43,7 +44,7 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
   @override
   void write(BinaryWriter writer, Artisan obj) {
     writer
-      ..writeByte(21)
+      ..writeByte(22)
       ..writeByte(0)
       ..write(obj.businessId)
       ..writeByte(1)
@@ -84,6 +85,8 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
       ..write(obj.birthCert)
       ..writeByte(20)
       ..write(obj.nationalId)
+      ..writeByte(21)
+      ..write(obj.services)
       ..writeByte(7)
       ..write(obj.isCertified);
   }
@@ -123,6 +126,7 @@ Artisan _$ArtisanFromJson(Map<String, dynamic> json) {
     bookingsCount: json['bookings_count'] as int,
     requests: (json['requests'] as List)?.map((e) => e as String)?.toList(),
     reports: (json['reports'] as List)?.map((e) => e as String)?.toList(),
+    services: (json['services'] as List)?.map((e) => e as String)?.toList(),
     isAvailable: json['available'] as bool,
     isApproved: json['approved'] as bool,
   );
@@ -149,4 +153,5 @@ Map<String, dynamic> _$ArtisanToJson(Artisan instance) => <String, dynamic>{
       'category_group': instance.categoryGroup,
       'birth_cert': instance.birthCert,
       'national_id': instance.nationalId,
+      'services': instance.services,
     };

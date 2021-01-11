@@ -13,6 +13,7 @@ enum _SnackBarDuration {
 }
 
 /// Durations
+const kNoDuration = const Duration(milliseconds: 150);
 const kScaleDuration = const Duration(milliseconds: 350);
 const kTestDuration = const Duration(milliseconds: 2500);
 const kSheetDuration = const Duration(milliseconds: 550);

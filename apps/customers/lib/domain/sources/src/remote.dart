@@ -13,7 +13,7 @@ import 'package:meta/meta.dart';
 /// base remote datasource class
 abstract class BaseRemoteDatasource {
   /// observe current user
-  Stream<BaseUser> currentUser();
+  Stream<BaseArtisan> currentUser();
 
   /// Get all [BaseArtisan]
   Stream<List<BaseArtisan>> observeArtisans({@required String category});
@@ -89,4 +89,13 @@ abstract class BaseRemoteDatasource {
 
   /// Request [Booking] for an [Artisan]
   Future<void> requestBooking({@required BaseBooking booking});
+
+  Future<List<BaseBusiness>> getBusinessesForArtisan(
+      {@required String artisan});
+
+  Future<void> updateBusiness({@required BaseBusiness business});
+
+  Future<BaseBusiness> getBusinessById({@required String id});
+
+  Stream<BaseBusiness> observeBusinessById({@required String id});
 }

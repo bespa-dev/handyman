@@ -17,6 +17,7 @@ enum _BookingEvent {
     DataField<String>("category"),
     DataField<String>("description"),
     DataField<String>("image"),
+    DataField<double>("cost"),
     DataField<Generic>("location"),
   ])
   RequestBooking,

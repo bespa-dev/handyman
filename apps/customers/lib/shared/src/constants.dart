@@ -11,56 +11,54 @@ import 'package:algolia/algolia.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:lite/shared/shared.dart';
 import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'size_config.dart';
 
 /// Logger
 final logger = Logger(printer: PrettyPrinter(printTime: true));
 
-void showSnackBarMessage(BuildContext context, {@required String message}) {
+/// https://stackoverflow.com/questions/56707392/how-can-i-use-willpopscope-inside-a-navigator-in-flutter
+Future<bool> backPressed(GlobalKey<NavigatorState> _yourKey) async {
+  // Checks if current Navigator still has screens on the stack.
+  if (_yourKey.currentState.canPop()) {
+    // 'maybePop' method handles the decision of 'pop' to another WillPopScope if they exist.
+    // If no other WillPopScope exists, it returns true
+    _yourKey.currentState.maybePop();
+    return Future<bool>.value(false);
+  }
+
+  // if nothing remains in the stack, it simply pops
+  return Future<bool>.value(true);
+}
+
+/// show [SnackBar] with a message
+void showSnackBarMessage(
+  BuildContext context, {
+  @required String message,
+  SnackBarDuration duration,
+}) {
+  duration ??= SnackBarDuration.shortLength();
+  logger.d(duration);
   ScaffoldMessenger.of(context)
     ..removeCurrentSnackBar()
     ..showSnackBar(
       SnackBar(
         content: Text(message),
         behavior: SnackBarBehavior.floating,
+        duration: Duration(
+          seconds: duration is ShortLength
+              ? 5
+              : duration is LongLength
+                  ? 10
+                  : 1200,
+        ),
       ),
     );
 }
 
-Widget buildFunctionalityNotAvailablePanel(BuildContext context) => Container(
-      height: getProportionateScreenHeight(kSpacingX320),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            Entypo.feather,
-            size: getProportionateScreenHeight(kSpacingX96),
-            color: Theme.of(context).colorScheme.onBackground,
-          ),
-          SizedBox(height: getProportionateScreenHeight(kSpacingX24)),
-          Text(
-            "Functionality currently not available",
-            style: Theme.of(context).textTheme.subtitle1,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
-          Text(
-            "Grab a beverage and check back later!",
-            style: Theme.of(context).textTheme.bodyText2.copyWith(
-                  color: Theme.of(context).disabledColor,
-                ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-
 /// Sets map style
-Future getMapStyle({bool isLightTheme = false}) async =>
+Future getMapStyle({@required bool isLightTheme}) async =>
     await rootBundle.loadString(
         isLightTheme ? "assets/map_style.json" : "assets/dark_map_style.json");
 
@@ -74,6 +72,8 @@ const double kSpacingX12 = 12.0;
 const double kSpacingX16 = 16.0;
 const double kSpacingX20 = 20.0;
 const double kSpacingX24 = 24.0;
+const double kSpacingX28 = 28.0;
+const double kSpacingX32 = 32.0;
 const double kSpacingX36 = 36.0;
 const double kSpacingX42 = 42.0;
 const double kSpacingX48 = 48.0;
@@ -103,7 +103,7 @@ const double kEmphasisHigh = 0.9;
 const double kBlurSigma = 5.0;
 
 /// App
-const kAppName = "HandyMan Lite";
+const kAppName = "HandyMan Pro";
 const kAppNameShort = "HandyMan";
 const kAppSlogan =
     "A mobile application to gather all handyman service providers on a single platform and introduce them to potential service seekers and compare between providers and hire the best quote";
@@ -122,12 +122,11 @@ const kFunctionalityUnavailable =
     "Functionality is currently unavailable. Try again after the next update. Thank you";
 const kCustomerString = "Customer";
 const kLogoAsset = "assets/logo/logo.svg";
-const kWelcomeAsset = "assets/wfh_2.png";
+const kWelcomeAsset = "assets/svg/welcome.png";
+const kRegisterAsset = "assets/svg/register.png";
+const kLoginAsset = "assets/svg/login.png";
 const k404Asset = "assets/svg/404.svg";
 const kLogoDarkAsset = "assets/logo/logo_dark.svg";
-const kTimeSvgAsset = "assets/svg/time.svg";
-const kPeopleSvgAsset = "assets/svg/people.svg";
-const kBookingSvgAsset = "assets/svg/booking.svg";
 const kAlgoliaSvgAsset = "assets/svg/algolia_blue_mark.svg";
 const kBackgroundAsset =
     "https://images.unsplash.com/photo-1454694220579-9d6672b1ec2a?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8aGFuZHltYW58ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60";
@@ -136,13 +135,25 @@ const kLoremText =
 
 /// icons
 const kBackIcon = AntDesign.back;
+const kPlusIcon = Feather.plus;
 const kRatingStar = Entypo.star;
 const kMailIcon = Feather.mail;
+const kEditIcon = Feather.edit_2;
 const kGoogleIcon = AntDesign.google;
 const kEmptyIcon = Entypo.bucket;
+const kDoneIcon = Icons.done;
+const kHistoryIcon = Icons.history;
 const kUserImageNotFound = Icons.link_off_outlined;
 const kArrowIcon = Icons.arrow_right_alt_outlined;
 const kOptionsIcon = Entypo.dots_two_vertical;
+const kFilterIcon = Feather.filter;
+const kOnlineIcon = Feather.wifi;
+const kOfflineIcon = Feather.wifi_off;
+const kCloseIcon = Feather.x;
+const kSearchIcon = Feather.search;
+const kLocationIcon = Feather.map_pin;
+const kClearIcon = Icons.clear_all_outlined;
+const kThreeDotsOptionsIcon = Entypo.dots_three_horizontal;
 
 /// [Algolia]
 const kAlgoliaAppId = "AIBRVBFA4W";
@@ -199,6 +210,7 @@ const kShadowDarkColor = Color(0xFF7C7C7C);
 
 /// launch [url]
 Future<void> launchUrl({@required String url}) async {
+  logger.d("Launching -> $url");
   if (await canLaunch(url)) {
     await launch(url);
   }

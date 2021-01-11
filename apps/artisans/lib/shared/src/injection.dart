@@ -26,8 +26,6 @@ import 'package:handyman/domain/sources/sources.dart';
 import 'package:handyman/shared/shared.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
-import 'package:jiffy/jiffy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// region Preferences
@@ -200,37 +198,6 @@ final _hiveDatasourceProvider = ChangeNotifierProvider.family<
 });
 
 /// endregion Data sources
-
-/// region Parsers
-String parseFromTimestamp(
-  String time, {
-  bool isChatFormat = false,
-  bool isDetailedFormat = false,
-  bool fromNow = false,
-}) {
-  final timestamp = DateTime.parse(time);
-  return fromNow
-      ? Jiffy.unix(timestamp.millisecondsSinceEpoch).fromNow()
-      : isChatFormat
-          ? Jiffy.unix(timestamp.millisecondsSinceEpoch).jm
-          : isDetailedFormat
-              ? Jiffy.unix(timestamp.millisecondsSinceEpoch).yMMMEd
-              : Jiffy.unix(timestamp.millisecondsSinceEpoch).yMMMd;
-}
-
-int compareTime(String first, String second) =>
-    DateTime.tryParse(first).compareTo(DateTime.tryParse(second));
-
-String countDownFrom(String first) =>
-    Jiffy.unix(DateTime.tryParse(first).millisecondsSinceEpoch).fromNow();
-
-String formatCurrency(double amount) {
-  var cediFormat = NumberFormat.currency(
-      decimalDigits: 2, locale: "en_GH", symbol: "\u00a2");
-  return cediFormat.format(amount);
-}
-
-/// endregion
 
 /// region Dependency Injection
 class Injection {
