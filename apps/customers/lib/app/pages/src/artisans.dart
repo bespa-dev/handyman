@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/routes/routes.gr.dart';
 import 'package:lite/app/widgets/widgets.dart';
@@ -79,52 +78,7 @@ class _ArtisansPageState extends State<ArtisansPage> {
             builder: (_, categoriesSnapshot) {
               return CustomScrollView(
                 slivers: [
-                  SliverAppBar(
-                    toolbarHeight: kToolbarHeight,
-                    toolbarTextStyle: kTheme.appBarTheme.textTheme.headline6,
-                    textTheme: kTheme.appBarTheme.textTheme,
-                    leading: Image(
-                      image: Svg(kLogoAsset),
-                      height: kSpacingX36,
-                      width: kSpacingX36,
-                    ),
-                    title: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(text: "$kAppName\n"),
-                          TextSpan(
-                            text: kAppVersion,
-                            style: kTheme.textTheme.caption,
-                          ),
-                        ],
-                      ),
-                      style: kTheme.textTheme.headline6.copyWith(
-                        color: kTheme.colorScheme.onBackground,
-                      ),
-                    ),
-                    centerTitle: false,
-                    pinned: true,
-                    backgroundColor: kTheme.colorScheme.background,
-                    expandedHeight: SizeConfig.screenHeight * 0.25,
-                    flexibleSpace: FlexibleSpaceBar(
-                      collapseMode: CollapseMode.parallax,
-                      background: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          Positioned.fill(
-                            child: ImageView(imageUrl: kBackgroundAsset),
-                          ),
-                          Positioned.fill(
-                            child: Container(
-                              color: kTheme.colorScheme.background
-                                  .withOpacity(kEmphasisLow),
-                            ),
-                          ),
-                        ],
-                      ),
-                      titlePadding: EdgeInsets.zero,
-                    ),
-                  ),
+                  CustomSliverAppBar(title: "Artisans"),
 
                   /// artisans' list
                   SliverList(

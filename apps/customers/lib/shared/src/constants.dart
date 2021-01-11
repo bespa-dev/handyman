@@ -107,7 +107,6 @@ const kAppName = "HandyMan Lite";
 const kAppNameShort = "HandyMan";
 const kAppSlogan =
     "A mobile application to gather all handyman service providers on a single platform and introduce them to potential service seekers and compare between providers and hire the best quote";
-const kAppVersion = "v1.2.0";
 const kAppSloganDesc = "Find & book your services easily with $kAppNameShort";
 const kArtisanReviewHelpDialogContent =
     "Sensitive data (like email addresses, phone numbers, user ids etc) will not be made public to customers on this platform.\nYour ratings are also based on the accumulated reviews by customers you have served over the last 6 months";
@@ -175,7 +174,7 @@ const kPlaceholderColor = Color(0x70000000);
 const kDisabledColor = Color(0xFF666666);
 
 const kPrimaryColor = Color(0xFF0E37EA);
-const kSecondaryLightColor = Color(0xFFEBB609);
+const kSecondaryLightColor = Color(0xFF8AC185);
 const kErrorLightColor = Color(0xffE91E63);
 const kAccentLightColor = kSecondaryLightColor;
 const kBackgroundLightColor = Color(0xFFfafafa);

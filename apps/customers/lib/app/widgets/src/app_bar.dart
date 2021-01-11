@@ -10,6 +10,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:get_version/get_version.dart';
 import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/shared/shared.dart';
 import 'package:uuid/uuid.dart';
@@ -86,7 +87,7 @@ class ExpandedAppBarContainer extends StatelessWidget {
 }
 
 /// sliver app bar
-class CustomSliverAppBar extends StatelessWidget {
+class CustomSliverAppBar extends StatefulWidget {
   final String title;
   final String backgroundImage;
 
@@ -95,6 +96,25 @@ class CustomSliverAppBar extends StatelessWidget {
     this.title = kAppName,
     this.backgroundImage = kBackgroundAsset,
   }) : super(key: key);
+
+  @override
+  _CustomSliverAppBarState createState() => _CustomSliverAppBarState();
+}
+
+class _CustomSliverAppBarState extends State<CustomSliverAppBar> {
+  String _appVersion = "...";
+
+  /// gets the application's version
+  void _getAppVersion() async {
+    _appVersion = await GetVersion.projectVersion;
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getAppVersion();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,9 +136,9 @@ class CustomSliverAppBar extends StatelessWidget {
       title: Text.rich(
         TextSpan(
           children: [
-            TextSpan(text: "$title\n"),
+            TextSpan(text: "${widget.title}\n"),
             TextSpan(
-              text: kAppVersion,
+              text: _appVersion,
               style: kTheme.textTheme.caption,
             ),
           ],
@@ -137,7 +157,8 @@ class CustomSliverAppBar extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             Positioned.fill(
-              child: ImageView(tag: Uuid().v4(), imageUrl: backgroundImage),
+              child:
+              ImageView(tag: Uuid().v4(), imageUrl: widget.backgroundImage),
             ),
             Positioned.fill(
               child: Container(
