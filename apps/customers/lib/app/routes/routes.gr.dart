@@ -19,6 +19,12 @@ class Routes {
   static const String categoryDetailsPage = '/category-details-page';
   static const String requestPage = '/request-page';
   static const String imagePreviewPage = '/image-preview-page';
+  static const String bookingDetailsPage = '/booking-details-page';
+  static const String searchPage = '/search-page';
+  static const String artisansPage = '/artisans-page';
+  static const String notificationsPage = '/notifications-page';
+  static const String profilePage = '/profile-page';
+  static const String artisanInfoPage = '/artisan-info-page';
   static const String homePage = '/home-page';
   static const String registerPage = '/register-page';
   static const String unknownRoutePage = '*';
@@ -29,6 +35,12 @@ class Routes {
     categoryDetailsPage,
     requestPage,
     imagePreviewPage,
+    bookingDetailsPage,
+    searchPage,
+    artisansPage,
+    notificationsPage,
+    profilePage,
+    artisanInfoPage,
     homePage,
     registerPage,
     unknownRoutePage,
@@ -45,11 +57,13 @@ class Router extends RouterBase {
     RouteDef(Routes.categoryDetailsPage, page: CategoryDetailsPage),
     RouteDef(Routes.requestPage, page: RequestPage),
     RouteDef(Routes.imagePreviewPage, page: ImagePreviewPage),
-    RouteDef(
-      Routes.homePage,
-      page: HomePage,
-      generator: HomePageRouter(),
-    ),
+    RouteDef(Routes.bookingDetailsPage, page: BookingDetailsPage),
+    RouteDef(Routes.searchPage, page: SearchPage),
+    RouteDef(Routes.artisansPage, page: ArtisansPage),
+    RouteDef(Routes.notificationsPage, page: NotificationsPage),
+    RouteDef(Routes.profilePage, page: ProfilePage),
+    RouteDef(Routes.artisanInfoPage, page: ArtisanInfoPage),
+    RouteDef(Routes.homePage, page: HomePage),
     RouteDef(Routes.registerPage, page: RegisterPage),
     RouteDef(Routes.unknownRoutePage, page: UnknownRoutePage),
   ];
@@ -108,6 +122,54 @@ class Router extends RouterBase {
             ImagePreviewPage(
           key: args.key,
           url: args.url,
+        ),
+        settings: data,
+      );
+    },
+    BookingDetailsPage: (data) {
+      final args = data.getArgs<BookingDetailsPageArguments>(nullOk: false);
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            BookingDetailsPage(
+          key: args.key,
+          booking: args.booking,
+          customer: args.customer,
+        ),
+        settings: data,
+      );
+    },
+    SearchPage: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => SearchPage(),
+        settings: data,
+      );
+    },
+    ArtisansPage: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => ArtisansPage(),
+        settings: data,
+      );
+    },
+    NotificationsPage: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            NotificationsPage(),
+        settings: data,
+      );
+    },
+    ProfilePage: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => ProfilePage(),
+        settings: data,
+      );
+    },
+    ArtisanInfoPage: (data) {
+      final args = data.getArgs<ArtisanInfoPageArguments>(nullOk: false);
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ArtisanInfoPage(
+          key: args.key,
+          artisan: args.artisan,
         ),
         settings: data,
       );
@@ -181,117 +243,41 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
         arguments: ImagePreviewPageArguments(key: key, url: url),
       );
 
-  Future<dynamic> pushHomePage() => push<dynamic>(Routes.homePage);
-
-  Future<dynamic> pushRegisterPage() => push<dynamic>(Routes.registerPage);
-
-  Future<dynamic> pushUnknownRoutePage() =>
-      push<dynamic>(Routes.unknownRoutePage);
-}
-
-class HomePageRoutes {
-  static const String bookingsPage = '/bookings-page';
-  static const String searchPage = '/search-page';
-  static const String artisansPage = '/';
-  static const String notificationsPage = '/notifications-page';
-  static const String profilePage = '/profile-page';
-  static const String artisanInfoPage = '/artisan-info-page';
-  static const all = <String>{
-    bookingsPage,
-    searchPage,
-    artisansPage,
-    notificationsPage,
-    profilePage,
-    artisanInfoPage,
-  };
-}
-
-class HomePageRouter extends RouterBase {
-  @override
-  List<RouteDef> get routes => _routes;
-  final _routes = <RouteDef>[
-    RouteDef(HomePageRoutes.bookingsPage, page: BookingsPage),
-    RouteDef(HomePageRoutes.searchPage, page: SearchPage),
-    RouteDef(HomePageRoutes.artisansPage, page: ArtisansPage),
-    RouteDef(HomePageRoutes.notificationsPage, page: NotificationsPage),
-    RouteDef(HomePageRoutes.profilePage, page: ProfilePage),
-    RouteDef(HomePageRoutes.artisanInfoPage, page: ArtisanInfoPage),
-  ];
-  @override
-  Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
-  final _pagesMap = <Type, AutoRouteFactory>{
-    BookingsPage: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => BookingsPage(),
-        settings: data,
+  Future<dynamic> pushBookingDetailsPage({
+    Key key,
+    @required BaseBooking<dynamic> booking,
+    @required BaseUser customer,
+  }) =>
+      push<dynamic>(
+        Routes.bookingDetailsPage,
+        arguments: BookingDetailsPageArguments(
+            key: key, booking: booking, customer: customer),
       );
-    },
-    SearchPage: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => SearchPage(),
-        settings: data,
-      );
-    },
-    ArtisansPage: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => ArtisansPage(),
-        settings: data,
-      );
-    },
-    NotificationsPage: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            NotificationsPage(),
-        settings: data,
-      );
-    },
-    ProfilePage: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => ProfilePage(),
-        settings: data,
-      );
-    },
-    ArtisanInfoPage: (data) {
-      final args = data.getArgs<ArtisanInfoPageArguments>(nullOk: false);
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            ArtisanInfoPage(
-          key: args.key,
-          artisan: args.artisan,
-        ),
-        settings: data,
-      );
-    },
-  };
-}
 
-/// ************************************************************************
-/// Navigation helper methods extension
-/// *************************************************************************
+  Future<dynamic> pushSearchPage() => push<dynamic>(Routes.searchPage);
 
-extension HomePageRouterExtendedNavigatorStateX on ExtendedNavigatorState {
-  Future<dynamic> pushBookingsPage() =>
-      push<dynamic>(HomePageRoutes.bookingsPage);
-
-  Future<dynamic> pushSearchPage() => push<dynamic>(HomePageRoutes.searchPage);
-
-  Future<dynamic> pushArtisansPage() =>
-      push<dynamic>(HomePageRoutes.artisansPage);
+  Future<dynamic> pushArtisansPage() => push<dynamic>(Routes.artisansPage);
 
   Future<dynamic> pushNotificationsPage() =>
-      push<dynamic>(HomePageRoutes.notificationsPage);
+      push<dynamic>(Routes.notificationsPage);
 
-  Future<dynamic> pushProfilePage() =>
-      push<dynamic>(HomePageRoutes.profilePage);
+  Future<dynamic> pushProfilePage() => push<dynamic>(Routes.profilePage);
 
   Future<dynamic> pushArtisanInfoPage({
     Key key,
     @required BaseArtisan artisan,
   }) =>
       push<dynamic>(
-        HomePageRoutes.artisanInfoPage,
+        Routes.artisanInfoPage,
         arguments: ArtisanInfoPageArguments(key: key, artisan: artisan),
       );
+
+  Future<dynamic> pushHomePage() => push<dynamic>(Routes.homePage);
+
+  Future<dynamic> pushRegisterPage() => push<dynamic>(Routes.registerPage);
+
+  Future<dynamic> pushUnknownRoutePage() =>
+      push<dynamic>(Routes.unknownRoutePage);
 }
 
 /// ************************************************************************
@@ -326,6 +312,15 @@ class ImagePreviewPageArguments {
   final Key key;
   final String url;
   ImagePreviewPageArguments({this.key, @required this.url});
+}
+
+/// BookingDetailsPage arguments holder class
+class BookingDetailsPageArguments {
+  final Key key;
+  final BaseBooking<dynamic> booking;
+  final BaseUser customer;
+  BookingDetailsPageArguments(
+      {this.key, @required this.booking, @required this.customer});
 }
 
 /// ArtisanInfoPage arguments holder class

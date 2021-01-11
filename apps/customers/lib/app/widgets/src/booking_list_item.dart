@@ -70,14 +70,13 @@ class _BookingListItemState extends State<BookingListItem> {
                 splashColor: kTheme.splashColor,
                 borderRadius: BorderRadius.circular(kSpacingX4),
                 onLongPress: () => widget.onLongPress(),
-                /// fixme -> add nav to booking details page
-                // onTap: () => context.navigator.push(
-                //   Routes.bookingDetailsPage,
-                //   arguments: BookingDetailsPageArguments(
-                //     booking: widget.booking,
-                //     customer: userState.data,
-                //   ),
-                // ),
+                onTap: () => context.navigator.push(
+                  Routes.bookingDetailsPage,
+                  arguments: BookingDetailsPageArguments(
+                    booking: widget.booking,
+                    customer: userState.data,
+                  ),
+                ),
                 child: Container(
                   clipBehavior: Clip.hardEdge,
                   decoration: BoxDecoration(

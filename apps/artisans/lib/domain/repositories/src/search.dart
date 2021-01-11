@@ -16,6 +16,6 @@ import 'package:meta/meta.dart';
 abstract class BaseSearchRepository extends BaseRepository {
   const BaseSearchRepository(BaseLocalDatasource local, BaseRemoteDatasource remote) : super(local, remote);
 
-  /// Search for any [BaseArtisan]
+  /// Search for any [BaseUser]
   Future<List<BaseUser>> searchFor({@required String query, String categoryId});
 }

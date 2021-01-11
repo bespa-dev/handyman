@@ -22,17 +22,13 @@ import 'package:lite/app/pages/pages.dart';
     CustomRoute(page: CategoryDetailsPage),
     CustomRoute(page: RequestPage),
     CustomRoute(page: ImagePreviewPage),
-    CustomRoute(
-      page: HomePage,
-      children: <AutoRoute>[
-        CustomRoute(page: BookingsPage),
-        CustomRoute(page: SearchPage),
-        CustomRoute(page: ArtisansPage, path: "/"),
-        CustomRoute(page: NotificationsPage),
-        CustomRoute(page: ProfilePage),
-        CustomRoute(page: ArtisanInfoPage),
-      ],
-    ),
+    CustomRoute(page: BookingDetailsPage),
+    CustomRoute(page: SearchPage),
+    CustomRoute(page: ArtisansPage),
+    CustomRoute(page: NotificationsPage),
+    CustomRoute(page: ProfilePage),
+    CustomRoute(page: ArtisanInfoPage),
+    CustomRoute(page: HomePage),
     CustomRoute(page: RegisterPage),
 
     /// keep at the bottom

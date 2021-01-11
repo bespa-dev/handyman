@@ -103,7 +103,7 @@ const double kEmphasisHigh = 0.9;
 const double kBlurSigma = 5.0;
 
 /// App
-const kAppName = "HandyMan Pro";
+const kAppName = "HandyMan Lite";
 const kAppNameShort = "HandyMan";
 const kAppSlogan =
     "A mobile application to gather all handyman service providers on a single platform and introduce them to potential service seekers and compare between providers and hire the best quote";

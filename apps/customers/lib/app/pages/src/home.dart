@@ -7,12 +7,11 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:lite/app/bloc/bloc.dart';
-import 'package:lite/app/routes/routes.gr.dart';
+import 'package:lite/app/pages/pages.dart';
 import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
@@ -26,10 +25,42 @@ class _HomePageState extends State<HomePage> {
   /// UI
   ThemeData _kTheme;
   bool _isLoggedIn = false;
+  int _currentPage = 0;
+  final _navStates = <GlobalKey<NavigatorState>>[];
+  final _artisansNavKey = GlobalKey<NavigatorState>();
+  final _searchNavKey = GlobalKey<NavigatorState>();
+  final _notificationsNavKey = GlobalKey<NavigatorState>();
+  final _profileNavKey = GlobalKey<NavigatorState>();
 
   /// blocs
   final _prefsBloc = PrefsBloc(repo: Injection.get());
   final _userBloc = UserBloc(repo: Injection.get());
+
+  /// handles tab changes
+  void _onTabPressed(int index) {
+    if (_currentPage == index)
+      switch (_currentPage) {
+        case 0:
+          _artisansNavKey.currentState.popUntil((route) => route.isFirst);
+          break;
+        case 1:
+          _searchNavKey.currentState.popUntil((route) => route.isFirst);
+          break;
+        case 2:
+          _profileNavKey.currentState.popUntil((route) => route.isFirst);
+          break;
+        case 3:
+          _notificationsNavKey.currentState.popUntil((route) => route.isFirst);
+          break;
+        default:
+          _profileNavKey.currentState.popUntil((route) => route.isFirst);
+          break;
+      }
+    else if (mounted)
+      setState(() {
+        _currentPage = index;
+      });
+  }
 
   @override
   void dispose() {
@@ -73,9 +104,41 @@ class _HomePageState extends State<HomePage> {
       cubit: _userBloc,
       builder: (_, state) => Scaffold(
         body: SafeArea(
-          top: false,
+          top: _navStates[_currentPage] == _artisansNavKey ||
+              _navStates[_currentPage] == _profileNavKey,
           bottom: true,
-          child: ExtendedNavigator(),
+          child: IndexedStack(
+            index: _currentPage,
+            children: [
+              /// dashboard
+              Navigator(
+                key: _artisansNavKey,
+                onGenerateRoute: (route) => MaterialPageRoute(
+                    settings: route, builder: (__) => ArtisansPage()),
+              ),
+
+              /// search
+              Navigator(
+                key: _searchNavKey,
+                onGenerateRoute: (route) => MaterialPageRoute(
+                    settings: route, builder: (__) => SearchPage()),
+              ),
+
+              /// notifications
+              Navigator(
+                key: _notificationsNavKey,
+                onGenerateRoute: (route) => MaterialPageRoute(
+                    settings: route, builder: (__) => NotificationsPage()),
+              ),
+
+              /// profile
+              Navigator(
+                key: _profileNavKey,
+                onGenerateRoute: (route) => MaterialPageRoute(
+                    settings: route, builder: (__) => ProfilePage()),
+              ),
+            ],
+          ),
         ),
         bottomNavigationBar: Container(
           height: getProportionateScreenHeight(kSpacingX64),
@@ -95,18 +158,12 @@ class _HomePageState extends State<HomePage> {
                       IconButton(
                         icon: Icon(Feather.home),
                         color: _kTheme.colorScheme.onBackground,
-                        onPressed: () {
-                          context.navigator.push(
-                              Routes.homePage + HomePageRoutes.artisansPage);
-                        },
+                        onPressed: () => _onTabPressed(0),
                       ),
                       IconButton(
                         icon: Icon(Feather.search),
                         color: _kTheme.colorScheme.onBackground,
-                        onPressed: () {
-                          context.navigator
-                              .push(Routes.homePage + HomePageRoutes.searchPage);
-                        },
+                        onPressed: () => _onTabPressed(1),
                       ),
                       if (_isLoggedIn &&
                           state is SuccessState<Stream<BaseUser>>) ...{
@@ -115,10 +172,7 @@ class _HomePageState extends State<HomePage> {
                             builder: (_, snapshot) {
                               final user = snapshot.data;
                               return GestureDetector(
-                                onTap: () {
-                                  context.navigator.push(Routes.homePage +
-                                      HomePageRoutes.profilePage);
-                                },
+                                onTap: () => _onTabPressed(2),
                                 child: SizedBox(
                                   height: kSpacingX36,
                                   width: kSpacingX36,
@@ -133,18 +187,12 @@ class _HomePageState extends State<HomePage> {
                       IconButton(
                         icon: Icon(Feather.bell),
                         color: _kTheme.colorScheme.onBackground,
-                        onPressed: () {
-                          context.navigator.push(
-                              Routes.homePage + HomePageRoutes.notificationsPage);
-                        },
+                        onPressed: () => _onTabPressed(3),
                       ),
                       IconButton(
                         icon: Icon(Feather.briefcase),
                         color: _kTheme.colorScheme.onBackground,
-                        onPressed: () {
-                          context.navigator.push(
-                              Routes.homePage + HomePageRoutes.bookingsPage);
-                        },
+                        onPressed: () => _onTabPressed(4),
                       ),
                     ],
                   ),
