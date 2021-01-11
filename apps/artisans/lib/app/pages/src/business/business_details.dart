@@ -460,8 +460,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
       );
 
   /// business profile tab
-  Widget _buildBusinessProfileTab() => Container(color: kAmberColor);
+  Widget _buildBusinessProfileTab() => Container(/*color: kAmberColor*/);
 
   /// earnings tab
-  Widget _buildEarningsTab() => Container(color: _kTheme.colorScheme.error);
+  Widget _buildEarningsTab() => Container(/*color: _kTheme.colorScheme.error*/);
 }
