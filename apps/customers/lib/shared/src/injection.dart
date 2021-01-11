@@ -14,9 +14,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:hive/hive.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:lite/data/entities/entities.dart';
 import 'package:lite/data/repositories/repositories.dart';
 import 'package:lite/data/sources/sources.dart';
@@ -24,8 +27,6 @@ import 'package:lite/domain/models/models.dart';
 import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/domain/sources/sources.dart';
 import 'package:lite/shared/shared.dart';
-import 'package:hive/hive.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// region Preferences
@@ -253,5 +254,8 @@ Future<void> initAppDependencies() async {
   /// inject dependencies
   await Injection.inject();
 }
+
+/// setup notifications plugin
+final notificationsPlugin = FlutterLocalNotificationsPlugin();
 
 /// endregion
