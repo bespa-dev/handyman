@@ -7,9 +7,9 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:handyman/domain/models/models.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:handyman/domain/models/models.dart';
 
 part 'category.g.dart';
 
@@ -36,12 +36,17 @@ class ServiceCategory extends BaseServiceCategory {
   @override
   final String createdAt;
 
+  @HiveField(5)
+  @override
+  final bool hasServices;
+
   ServiceCategory({
     this.id,
     this.createdAt,
     this.name,
     this.avatar,
     this.groupName,
+    this.hasServices = false,
   });
 
   @override

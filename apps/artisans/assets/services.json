@@ -74,457 +74,349 @@
   {
     "id": "78672ed4-e03b-46da-a14c-5c5e4a9c118e ",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Toyota",
     "price": 0.99
   },
   {
     "id": "2322a9e9-f441-4df3-88bd-9306ba270709",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Range Rover",
     "price": 0.99
   },
   {
     "id": "0ea7eba6-7d90-4ed3-840d-34d759843566",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Mercedes Benz",
     "price": 0.99
   },
   {
     "id": "dba89b64-3e59-42ad-860c-300fcb57278c",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Acura",
     "price": 0.99
   },
   {
     "id": "a885170f-8643-41e5-ae42-cbdc66658ffb",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Chevrolet",
     "price": 0.99
   },
   {
     "id": "976c9987-ecd0-4d20-a8c8-0949f019d512",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "BMW",
     "price": 0.99
   },
   {
     "id": "e284550c-07fe-479c-9ce1-1011f2803e98",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Bentley",
     "price": 0.99
   },
   {
     "id": "0e2a6f70-3b38-4219-9183-a2641a262d9e",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Honda",
     "price": 0.99
   },
   {
     "id": "9cbcc566-a8eb-4ae9-9b01-0397ca846422",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Hyundai",
     "price": 0.99
   },
   {
     "id": "95aaf546-5afc-4287-b26a-db08aa5f5d15",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Ford",
     "price": 0.99
   },
   {
     "id": "477a2908-c78d-4c01-b088-1aa2958f7e8a",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Jaguar",
     "price": 0.99
   },
   {
     "id": "c7cefe69-93a6-41b5-8af7-662822a88efd",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Cadillac",
     "price": 0.99
   },
   {
     "id": "ceadfc6c-343a-4027-8787-b42f5e15c7a1",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Mitsubishi",
     "price": 0.99
   },
   {
     "id": "da36dee8-59d6-4f29-b12a-826e79366a26",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Volkswagen",
     "price": 0.99
   },
   {
     "id": "31782b49-195f-47c1-ac9f-2007c4a93005",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Rolls Royce",
     "price": 0.99
   },
   {
     "id": "a6e95405-5b11-463b-9d2d-cf1f5c9aaaf4",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Nissan",
     "price": 0.99
   },
   {
     "id": "3861157a-a45d-4876-81b6-496617188f91",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Kia",
     "price": 0.99
   },
   {
     "id": "362b6aa5-aaa8-442f-be68-007b79235e8f",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Mazda",
     "price": 0.99
   },
   {
     "id": "3d165b69-0172-40b8-b365-f4c23e5920cc",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Genesis",
     "price": 0.99
   },
   {
     "id": "398af58b-6a1c-4a1d-814c-f60c179f749f",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Picanto",
     "price": 0.99
   },
   {
     "id": "d62bfdbe-36b7-4ffa-a622-b890422a8b6b",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Dodge",
     "price": 0.99
   },
   {
     "id": "bdedc392-7610-4525-a1f0-132bc694baaa",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "name": "Chrysler",
     "price": 0.99
   },
   {
     "id": "58f36490-6197-4a54-85a5-09dff5e7b7b7",
-    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "category": "8552bfd4-1a1e-420f-9f1e-feba454bb62d8",
+    "name": "Haircut",
     "price": 0.99
   },
   {
     "id": "d1fc6a5f-4d5c-4236-8f21-78a8e7321690",
-    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "category": "8552bfd4-1a1e-420f-9f1e-feba454bb62d",
+    "name": "Sporting waves",
     "price": 0.99
   },
   {
     "id": "a3f44ce2-df35-4151-8b24-53d352e7509c",
-    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "category": "8552bfd4-1a1e-420f-9f1e-feba454bb62d",
+    "name": "Hair dye",
     "price": 0.99
   },
   {
     "id": "9521fbdc-22b9-47ed-89a0-b9af08785936",
-    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "category": "8552bfd4-1a1e-420f-9f1e-feba454bb62d",
+    "name": "Hair shape",
     "price": 0.99
   },
   {
     "id": "8be77609-c062-4474-bea6-6bbc70a3dadd",
-    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "category": "781ec80c-63c6-4e9f-89a7-54b85f0c1666",
+    "name": "Gate",
     "price": 0.99
   },
   {
     "id": "7929223f-fd1e-4edb-be64-a803f419028e",
-    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "name": "",
+    "category": "781ec80c-63c6-4e9f-89a7-54b85f0c1666",
+    "name": "Car door",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "afe678e9-9d9a-4e7d-858b-91949c3084c5",
+    "category": "781ec80c-63c6-4e9f-89a7-54b85f0c1666",
+    "name": "Home door",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "f3e029a6-d3b7-4b89-a751-2aba50f3f123",
+    "category": "781ec80c-63c6-4e9f-89a7-54b85f0c1666",
+    "name": "Chair",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "332cc44c-2e6e-4aec-94fe-e70f4e839856",
+    "category": "781ec80c-63c6-4e9f-89a7-54b85f0c1666",
+    "name": "Table",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "b32852c4-dc4f-4653-bbe6-f0fb10bc3514",
+    "category": "e177c9ba-bedb-498c-93b5-3598cbd2e37e",
+    "name": "Bouquet",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "1d7e8ff5-a51a-4d9e-b2e7-ffb31120cb31",
+    "category": "e177c9ba-bedb-498c-93b5-3598cbd2e37e",
+    "name": "Centerpieces",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "da8be8f8-1383-4e62-8120-6dac03cfa697",
+    "category": "e177c9ba-bedb-498c-93b5-3598cbd2e37e",
+    "name": "Corsages",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "594bb186-725c-417d-9bf7-66608549df0b",
+    "category": "bbe8a179-7797-4d87-b388-cf93125f490e",
+    "name": "Bathtubs",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "eb2d08b0-4912-4a0d-b132-7c2d5ecc0f26",
+    "category": "bbe8a179-7797-4d87-b388-cf93125f490e",
+    "name": "Sinks",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "48331942-a879-4773-b409-17eb1d932d50",
+    "category": "bbe8a179-7797-4d87-b388-cf93125f490e",
+    "name": "Toilets",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "6124cc2c-84c2-47bb-b5e0-6e64c98b1cc2",
+    "category": "bbe8a179-7797-4d87-b388-cf93125f490e",
+    "name": "Dishwashers",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "6db42e5d-5586-4ca6-95ec-77729f570c6a",
+    "category": "bbe8a179-7797-4d87-b388-cf93125f490e",
+    "name": "Washing machine",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "df827557-9130-4afe-b394-338ce5601d6e",
+    "category": "4dcd2140-7ab5-43d3-8e17-68abce8c6dc6",
+    "name": "Wiring of the house",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "cec2cb3f-81a6-4ba8-914c-7eac3e42195d",
+    "category": "4dcd2140-7ab5-43d3-8e17-68abce8c6dc6",
+    "name": "Transmission lines",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "003cbe77-f501-458f-8cdc-bd201b6f3d85",
+    "category": "4dcd2140-7ab5-43d3-8e17-68abce8c6dc6",
+    "name": "Installation of electrical equipment such as funs, bulbs",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "74cebaac-0881-43d3-adfa-b0bb57faec96",
+    "category": "4dcd2140-7ab5-43d3-8e17-68abce8c6dc6",
+    "name": "Electrical equipment repair",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "18b2f6e7-fefd-4834-85aa-1818e96fdfae",
+    "category": "e982775e-9b85-4ea4-a11d-d1e02c9d40cd",
+    "name": "Install and maintain seasonal plants",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "710b946d-58e3-4334-9d30-53f4e9df2762",
+    "category": "e982775e-9b85-4ea4-a11d-d1e02c9d40cd",
+    "name": "Mow, trim and fertilize green spaces",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "9604e94f-aba7-4cad-8c87-794d36a3e10e",
+    "category": "e982775e-9b85-4ea4-a11d-d1e02c9d40cd",
+    "name": "Mulch, edge and weed gardens",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "2b2949c6-d3c6-470a-b3c6-18e19c608201",
+    "category": "e982775e-9b85-4ea4-a11d-d1e02c9d40cd",
+    "name": "Prune and trim trees and bushes",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "2d0f9beb-915c-428d-a0f1-db03271dd410",
+    "category": "e982775e-9b85-4ea4-a11d-d1e02c9d40cd",
+    "name": "Maintain all gardening equipment and machinery",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "c2759b84-9df6-472b-a2ec-045092d796b3",
+    "category": "e982775e-9b85-4ea4-a11d-d1e02c9d40cd",
+    "name": "Monitor and maintain the health of plants, like mowers, trimmers and leaf blowers",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "5297cd7f-48cd-4680-af8b-139cd4338836",
+    "category": "e982775e-9b85-4ea4-a11d-d1e02c9d40cd",
+    "name": "Deal with pest problems that could damage plants",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "dd76fee4-b03f-4929-8b2e-f0b449c8eb45",
+    "category": "e982775e-9b85-4ea4-a11d-d1e02c9d40cd",
+    "name": "Keep gardens and green spaces clear of debris and litter",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "b70abce0-f7db-4445-8d56-2853343af082",
+    "category": "701ab0cb-9cfe-48d4-ab65-9060c85b2804",
+    "name": "2 set",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "ab91f57e-6ae6-4aa9-a7a0-9d1dc36be502",
+    "category": "701ab0cb-9cfe-48d4-ab65-9060c85b2804",
+    "name": "3 set",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "cde5281c-d12e-4ca3-b2e2-c9603d4d34a8",
+    "category": "701ab0cb-9cfe-48d4-ab65-9060c85b2804",
+    "name": "4 set",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "643ebf5d-1dd3-484f-b240-69bac57652b7",
+    "category": "724bc23e-7ff8-48c1-8656-f64b4a37e3a5",
+    "name": "Door",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "c0b62ddc-cb50-4f26-ade0-2ba24943a04f",
+    "category": "724bc23e-7ff8-48c1-8656-f64b4a37e3a5",
+    "name": "Table",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "be8b8cb2-0e61-4862-a1d6-fd45a6fddca4",
+    "category": "1a75906f-b929-4321-8163-7a45b399b9df",
+    "name": "Bridal",
     "price": 0.99
   },
   {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
-    "price": 0.99
-  },
-  {
-    "id": "",
-    "category": "",
-    "name": "",
+    "id": "53402394-c181-49d8-899b-bab35913ef34",
+    "category": "1a75906f-b929-4321-8163-7a45b399b9df",
+    "name": "Full Glam",
     "price": 0.99
   }
 ]

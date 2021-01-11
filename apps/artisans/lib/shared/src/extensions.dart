@@ -9,7 +9,7 @@
 
 import 'package:flutter/material.dart';
 
-/// extensions on list
+/// extensions on [List]
 extension ListX on List<dynamic> {
   /// add an [item] to an existing [List] if it does not already contain it
   void addIfDoesNotExist(dynamic item) {
@@ -33,12 +33,14 @@ extension ListX on List<dynamic> {
   }
 }
 
+/// extensions on [DateTime]
 extension DateTimeExtensionX on DateTime {
   TimeOfDay toTimeOfDay() {
     return TimeOfDay(hour: this.hour, minute: this.minute);
   }
 }
 
+/// extensions on [TimeOfDay]
 extension TimeOfDayExtensionX on TimeOfDay {
   DateTime toDateTime() {
     final now = DateTime.now();

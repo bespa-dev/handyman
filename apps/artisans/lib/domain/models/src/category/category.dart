@@ -33,6 +33,8 @@ abstract class BaseServiceCategory extends BaseModel {
   String avatar;
 
   String groupName; // one of ServiceCategoryGroup
+
+  bool hasServices;
 }
 
 extension CategoryX on ServiceCategoryGroup {
