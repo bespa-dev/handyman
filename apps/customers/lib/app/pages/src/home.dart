@@ -72,6 +72,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    _navStates.addAll([
+      _notificationsNavKey,
+      _searchNavKey,
+      _notificationsNavKey,
+      _bookingsNavKey,
+      _profileNavKey,
+    ]);
     super.initState();
 
     if (mounted) {

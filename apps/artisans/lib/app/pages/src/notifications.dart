@@ -20,13 +20,11 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationsPageState extends State<NotificationsPage> {
-  final _locationBloc = LocationBloc(repo: Injection.get());
   final _bookingBloc = BookingBloc(repo: Injection.get());
   final _prefsBloc = PrefsBloc(repo: Injection.get());
 
   @override
   void dispose() {
-    _locationBloc.close();
     _bookingBloc.close();
     _prefsBloc.close();
     super.dispose();
@@ -90,13 +88,18 @@ class _NotificationsPageState extends State<NotificationsPage> {
                           ),
                         ),
 
-                        /// bookings list
-                        ...bookings
-                            .where((item) =>
-                                item.currentState ==
-                                BookingState.pending().name())
-                            .map((item) => BookingListItem(booking: item))
-                            .toList(),
+                        if (bookings.isEmpty) ...{
+                          emptyStateUI(context,
+                              message: "No new notifications"),
+                        } else ...{
+                          /// bookings list
+                          ...bookings
+                              .where((item) =>
+                                  item.currentState ==
+                                  BookingState.pending().name())
+                              .map((item) => BookingListItem(booking: item))
+                              .toList(),
+                        },
                       },
                     ],
                   ),

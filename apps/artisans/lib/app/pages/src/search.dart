@@ -26,16 +26,7 @@ class _SearchPageState extends State<SearchPage> {
   ThemeData kTheme;
   final _searchController = TextEditingController();
 
-  FocusNode _focusNode;
-
-  @override
-  void initState() {
-    super.initState();
-    if (mounted) {
-      _focusNode = FocusNode();
-      // _searchBloc?.add(SearchEvent.showRecentSearchesEvent());
-    }
-  }
+  FocusNode _focusNode = FocusNode();
 
   @override
   void dispose() {
@@ -49,125 +40,121 @@ class _SearchPageState extends State<SearchPage> {
     kTheme = Theme.of(context);
 
     return Scaffold(
-      body: Container(
-        height: SizeConfig.screenHeight,
-        width: SizeConfig.screenWidth,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ConstrainedBox(
-              constraints:
-                  BoxConstraints.tightFor(width: SizeConfig.screenWidth),
-              child: Form(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: getProportionateScreenWidth(kSpacingX16),
-                      ),
-                      child: Text("Search anyone"),
-                    ),
-                    SizedBox(
-                      height: getProportionateScreenHeight(kSpacingX8),
-                    ),
-                    Container(
-                      constraints: BoxConstraints(
-                        maxHeight: kToolbarHeight * 1.5,
-                      ),
-                      width: SizeConfig.screenWidth * 0.9,
-                      padding: EdgeInsets.only(
-                        left: getProportionateScreenWidth(kSpacingX16),
-                        right: getProportionateScreenWidth(kSpacingX16),
-                        top: getProportionateScreenHeight(kSpacingX2),
-                        bottom: getProportionateScreenHeight(kSpacingX2),
-                      ),
-                      decoration: BoxDecoration(
-                        color: kTheme.colorScheme.background,
-                        borderRadius: BorderRadius.circular(kSpacingX8),
-                      ),
-                      child: TextFormField(
-                        keyboardType: TextInputType.text,
-                        textInputAction: TextInputAction.search,
-                        controller: _searchController,
-                        cursorColor: kTheme.colorScheme.onBackground,
-                        autofocus: false,
-                        focusNode: _focusNode,
-                        onEditingComplete: () {
-                          _query = _searchController.text?.trim();
-
-                          /// todo -> perform search
-                          _searchBloc
-                              .add(SearchEvent.searchAllUsers(query: _query));
-                        },
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "\tSearch",
-                          suffixIcon: IconButton(
-                            icon: Icon(kSearchIcon),
-                            color: kTheme.unselectedWidgetColor,
-                            onPressed: () {
-                              if (_searchController.text.isNotEmpty) {
-                                _query = _searchController.text?.trim();
-
-                                /// todo -> perform search
-                                _searchBloc.add(
-                                    SearchEvent.searchAllUsers(query: _query));
-                              }
-                            },
-                          ),
-                          helperStyle: kTheme.textTheme.caption,
-                          hintStyle: kTheme.textTheme.headline4.copyWith(
-                            color: kTheme.colorScheme.onBackground
-                                .withOpacity(kEmphasisLow),
-                          ),
+      body: SafeArea(
+        child: Container(
+          height: SizeConfig.screenHeight,
+          width: SizeConfig.screenWidth,
+          padding: EdgeInsets.only(
+            top: SizeConfig.screenHeight * 0.1,
+            left: kSpacingX16,
+            right: kSpacingX16,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ConstrainedBox(
+                constraints:
+                    BoxConstraints.tightFor(width: SizeConfig.screenWidth),
+                child: Form(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: getProportionateScreenWidth(kSpacingX16),
                         ),
-                        onFieldSubmitted: (_) {
-                          if (_.isNotEmpty) {
-                            _query = _searchController.text?.trim();
-
-                            /// todo -> perform search
-                            _searchBloc
-                                .add(SearchEvent.searchAllUsers(query: _query));
-                          }
-                        },
-                        maxLines: 3,
-                        style: kTheme.textTheme.headline4
-                            .copyWith(color: kTheme.colorScheme.onBackground),
+                        child: Text("Search"),
                       ),
-                    ),
-                    SizedBox(
-                      height: getProportionateScreenHeight(kSpacingX8),
-                    ),
-                    Divider(
-                      endIndent: getProportionateScreenWidth(kSpacingX64),
-                    ),
-                  ],
+                      SizedBox(
+                        height: getProportionateScreenHeight(kSpacingX8),
+                      ),
+                      Container(
+                        constraints: BoxConstraints(
+                          maxHeight: kToolbarHeight * 1.5,
+                        ),
+                        width: SizeConfig.screenWidth * 0.9,
+                        padding: EdgeInsets.only(
+                          left: getProportionateScreenWidth(kSpacingX16),
+                          right: getProportionateScreenWidth(kSpacingX16),
+                          top: getProportionateScreenHeight(kSpacingX2),
+                          bottom: getProportionateScreenHeight(kSpacingX2),
+                        ),
+                        decoration: BoxDecoration(
+                          color: kTheme.colorScheme.background,
+                          borderRadius: BorderRadius.circular(kSpacingX8),
+                        ),
+                        child: TextFormField(
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.search,
+                          controller: _searchController,
+                          cursorColor: kTheme.colorScheme.onBackground,
+                          autofocus: false,
+                          focusNode: _focusNode,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "\tSearch",
+                            suffixIcon: IconButton(
+                              icon: Icon(kSearchIcon),
+                              color: kTheme.unselectedWidgetColor,
+                              onPressed: () {
+                                if (_searchController.text.isNotEmpty) {
+                                  _query = _searchController.text?.trim();
+                                  _searchBloc.add(SearchEvent.searchAllUsers(
+                                      query: _query));
+                                }
+                              },
+                            ),
+                            helperStyle: kTheme.textTheme.caption,
+                            hintStyle: kTheme.textTheme.headline4.copyWith(
+                              color: kTheme.colorScheme.onBackground
+                                  .withOpacity(kEmphasisLow),
+                            ),
+                          ),
+                          onFieldSubmitted: (_) {
+                            if (_.isNotEmpty) {
+                              _query = _?.trim();
+                              _searchBloc.add(
+                                  SearchEvent.searchAllUsers(query: _query));
+                            }
+                          },
+                          maxLines: 3,
+                          style: kTheme.textTheme.headline4
+                              .copyWith(color: kTheme.colorScheme.onBackground),
+                        ),
+                      ),
+                      SizedBox(
+                        height: getProportionateScreenHeight(kSpacingX8),
+                      ),
+                      Divider(
+                        endIndent: getProportionateScreenWidth(kSpacingX64),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: getProportionateScreenHeight(kSpacingX12),
-            ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: getProportionateScreenWidth(kSpacingX24),
-                ),
-                child: BlocBuilder<SearchBloc, BlocState>(
-                    cubit: _searchBloc,
-                    builder: (_, state) {
-                      return state is SuccessState<List<BaseUser>> ||
-                              _isSearching
-                          ? _buildResults()
-                          : state is SuccessState<List<String>>
-                              ? _buildSuggestions(state.data)
-                              : SizedBox.shrink();
-                    }),
+              SizedBox(
+                height: getProportionateScreenHeight(kSpacingX12),
               ),
-            ),
-          ],
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: getProportionateScreenWidth(kSpacingX24),
+                  ),
+                  child: BlocBuilder<SearchBloc, BlocState>(
+                      cubit: _searchBloc,
+                      builder: (_, state) {
+                        return state is SuccessState<List<BaseUser>> ||
+                                _isSearching
+                            ? _buildResults()
+                            : state is SuccessState<List<String>>
+                                ? _buildSuggestions(state.data)
+                                : Loading();
+                      }),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -259,8 +246,6 @@ class _SearchPageState extends State<SearchPage> {
       );
 
   Widget _buildResults() {
-    _searchBloc.add(SearchEvent.searchAllUsers(query: _query));
-
     /// fixme -> load search results card
     return BlocBuilder<SearchBloc, BlocState>(
       cubit: _searchBloc,
