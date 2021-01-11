@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
   final _artisansNavKey = GlobalKey<NavigatorState>();
   final _searchNavKey = GlobalKey<NavigatorState>();
   final _notificationsNavKey = GlobalKey<NavigatorState>();
+  final _bookingsNavKey = GlobalKey<NavigatorState>();
   final _profileNavKey = GlobalKey<NavigatorState>();
 
   /// blocs
@@ -53,7 +54,7 @@ class _HomePageState extends State<HomePage> {
           _notificationsNavKey.currentState.popUntil((route) => route.isFirst);
           break;
         default:
-          _profileNavKey.currentState.popUntil((route) => route.isFirst);
+          _bookingsNavKey.currentState.popUntil((route) => route.isFirst);
           break;
       }
     else if (mounted)
@@ -110,7 +111,7 @@ class _HomePageState extends State<HomePage> {
           child: IndexedStack(
             index: _currentPage,
             children: [
-              /// dashboard
+              /// artisans
               Navigator(
                 key: _artisansNavKey,
                 onGenerateRoute: (route) => MaterialPageRoute(
@@ -124,6 +125,13 @@ class _HomePageState extends State<HomePage> {
                     settings: route, builder: (__) => SearchPage()),
               ),
 
+              /// profile
+              Navigator(
+                key: _profileNavKey,
+                onGenerateRoute: (route) => MaterialPageRoute(
+                    settings: route, builder: (__) => ProfilePage()),
+              ),
+
               /// notifications
               Navigator(
                 key: _notificationsNavKey,
@@ -131,11 +139,11 @@ class _HomePageState extends State<HomePage> {
                     settings: route, builder: (__) => NotificationsPage()),
               ),
 
-              /// profile
+              /// bookings
               Navigator(
-                key: _profileNavKey,
+                key: _bookingsNavKey,
                 onGenerateRoute: (route) => MaterialPageRoute(
-                    settings: route, builder: (__) => ProfilePage()),
+                    settings: route, builder: (__) => BookingsPage()),
               ),
             ],
           ),
