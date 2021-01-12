@@ -95,13 +95,13 @@ class _HomePageState extends State<HomePage> {
         ..listen((state) {
           if (state is SuccessState<String> && state.data != null) {
             _isLoggedIn = state.data.isNotEmpty;
-            if (mounted) setState(() {});
 
             /// get current artisan by id
             _updateUserBloc.add(UserEvent.getArtisanByIdEvent(id: state.data));
 
             /// observe current user
-            _userBloc.add(UserEvent.currentUserEvent());
+            if (_isLoggedIn) _userBloc.add(UserEvent.currentUserEvent());
+            if (mounted) setState(() {});
           }
         });
     }
@@ -154,11 +154,9 @@ class _HomePageState extends State<HomePage> {
         ),
         bottomNavigationBar: Container(
           height: getProportionateScreenHeight(kSpacingX64),
-          decoration: BoxDecoration(
-            color: _kTheme.colorScheme.background,
-          ),
+          decoration: BoxDecoration(color: _kTheme.colorScheme.primary),
           child: Material(
-            type: MaterialType.card,
+            type: MaterialType.transparency,
             elevation: kSpacingX2,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: kSpacingX16),
@@ -168,12 +166,12 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   IconButton(
                     icon: Icon(Feather.home),
-                    color: _kTheme.colorScheme.onBackground,
+                    color: _kTheme.colorScheme.onPrimary,
                     onPressed: () => _onTabPressed(0),
                   ),
                   IconButton(
                     icon: Icon(Feather.search),
-                    color: _kTheme.colorScheme.onBackground,
+                    color: _kTheme.colorScheme.onPrimary,
                     onPressed: () => _onTabPressed(1),
                   ),
 
@@ -227,7 +225,7 @@ class _HomePageState extends State<HomePage> {
                         height: kSpacingX32,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(kSpacingX16),
-                          color: _kTheme.colorScheme.background,
+                          color: _kTheme.cardColor,
                           border: Border.all(
                             color: available
                                 ? kGreenColor
@@ -258,7 +256,7 @@ class _HomePageState extends State<HomePage> {
                   },
                   IconButton(
                     icon: Icon(Feather.bell),
-                    color: _kTheme.colorScheme.onBackground,
+                    color: _kTheme.colorScheme.onPrimary,
                     onPressed: () => _onTabPressed(2),
                   ),
 

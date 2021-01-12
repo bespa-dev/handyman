@@ -247,7 +247,8 @@ class _SplashPageState extends State<SplashPage>
                                     TextSpan(
                                       children: [
                                         TextSpan(
-                                            text: "Already have an account?\t"),
+                                            text:
+                                                "Already have an account?\t\t"),
                                         TextSpan(
                                           text: "Log in",
                                           style:
@@ -300,7 +301,7 @@ class _SplashPageState extends State<SplashPage>
           await Future.delayed(kTestDuration);
           if (mounted)
             setState(() {
-              _isLoading = true;
+              _isLoading = !_isLoading;
             });
           await Future.delayed(kSplashDuration);
           if (_animationController.status == AnimationStatus.forward ||
@@ -311,6 +312,7 @@ class _SplashPageState extends State<SplashPage>
 
           if (mounted)
             setState(() {
+              _isLoading = !_isLoading;
               _showPageContent = !_showPageContent;
             });
         }

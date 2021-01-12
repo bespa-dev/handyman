@@ -5,7 +5,6 @@ import 'package:uuid/uuid.dart';
 /// shows an empty state UI
 Widget emptyStateUI(BuildContext context,
     {String message = "No content found", IconData icon = kEmptyIcon}) {
-  logger.d("${Uuid().v4()} => ${DateTime.now().toIso8601String()}");
   final kTheme = Theme.of(context);
   return Container(
     width: SizeConfig.screenWidth,

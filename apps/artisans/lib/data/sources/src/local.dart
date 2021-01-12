@@ -100,7 +100,8 @@ class HiveLocalDatasource extends BaseLocalDatasource {
       await serviceBox.put(item.id, item);
     }
 
-    if (!kReleaseMode) {
+    /// todo -> set to true if you need to test for requests
+    if (false) {
       var requestsSource = await rootBundle.loadString("assets/requests.json");
       var decodedRequests = jsonDecode(requestsSource) as List;
       for (var json in decodedRequests) {

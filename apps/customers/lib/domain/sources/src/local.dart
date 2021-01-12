@@ -14,7 +14,7 @@ import 'package:meta/meta.dart';
 /// base local datasource class
 abstract class BaseLocalDatasource extends ChangeNotifier {
   /// observe current user
-  Stream<BaseArtisan> currentUser();
+  Stream<BaseUser> currentUser();
 
   /// Get all [BaseArtisan]
   Stream<List<BaseArtisan>> observeArtisans({@required String category});

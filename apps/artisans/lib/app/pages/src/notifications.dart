@@ -20,8 +20,12 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationsPageState extends State<NotificationsPage> {
+  /// blocs
   final _bookingBloc = BookingBloc(repo: Injection.get());
   final _prefsBloc = PrefsBloc(repo: Injection.get());
+
+  /// UI
+  String _userId;
 
   @override
   void dispose() {
@@ -40,6 +44,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
         ..add(PrefsEvent.getUserIdEvent())
         ..listen((state) {
           if (state is SuccessState<String>) {
+            _userId = state.data;
+            if (mounted) setState(() {});
             if (state.data != null) {
               /// fetch bookings for artisan
               _bookingBloc
@@ -61,7 +67,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
               ? bookingState.data
               : Stream.empty(),
           builder: (_, snapshot) {
-            final bookings = snapshot.data;
+            final bookings = snapshot.data
+                .where((item) =>
+                    item.currentState == BookingState.pending().name())
+                .toList();
             return CustomScrollView(
               slivers: [
                 /// app bar
@@ -94,10 +103,16 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         } else ...{
                           /// bookings list
                           ...bookings
-                              .where((item) =>
-                                  item.currentState ==
-                                  BookingState.pending().name())
-                              .map((item) => BookingListItem(booking: item))
+                              .map((item) => BookingListItem(
+                                    booking: item,
+                                    shouldUpdateUI: (_) {
+                                      if (_)
+                                        _bookingBloc.add(
+                                          BookingEvent.observeBookingForArtisan(
+                                              id: _userId),
+                                        );
+                                    },
+                                  ))
                               .toList(),
                         },
                       },

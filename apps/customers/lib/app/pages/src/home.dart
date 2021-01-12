@@ -88,16 +88,10 @@ class _HomePageState extends State<HomePage> {
         ..listen((state) {
           if (state is SuccessState<String>) {
             _isLoggedIn = state.data != null && state.data.isNotEmpty;
-            if (mounted) setState(() {});
 
             /// observe current user
-            _userBloc
-              ..add(UserEvent.currentUserEvent())
-              ..listen((state) {
-                if (state is SuccessState<Stream<BaseUser>>) {
-                  if (mounted) setState(() {});
-                }
-              });
+            if (_isLoggedIn) _userBloc.add(UserEvent.currentUserEvent());
+            if (mounted) setState(() {});
           }
         });
     }
@@ -157,63 +151,54 @@ class _HomePageState extends State<HomePage> {
         ),
         bottomNavigationBar: Container(
           height: getProportionateScreenHeight(kSpacingX64),
-          decoration: BoxDecoration(
-            color: _kTheme.colorScheme.background,
-          ),
-          child: Column(
-            children: [
-              Expanded(
-                child: Material(
-                  type: MaterialType.card,
-                  elevation: kSpacingX2,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: Icon(Feather.home),
-                        color: _kTheme.colorScheme.onBackground,
-                        onPressed: () => _onTabPressed(0),
-                      ),
-                      IconButton(
-                        icon: Icon(Feather.search),
-                        color: _kTheme.colorScheme.onBackground,
-                        onPressed: () => _onTabPressed(1),
-                      ),
-                      if (_isLoggedIn &&
-                          state is SuccessState<Stream<BaseUser>>) ...{
-                        StreamBuilder<BaseUser>(
-                            stream: state.data,
-                            builder: (_, snapshot) {
-                              final user = snapshot.data;
-                              return GestureDetector(
-                                onTap: () => _onTabPressed(2),
-                                child: SizedBox(
-                                  height: kSpacingX36,
-                                  width: kSpacingX36,
-                                  child: UserAvatar(
-                                    url: user?.avatar,
-                                    isCircular: true,
-                                  ),
-                                ),
-                              );
-                            }),
-                      },
-                      IconButton(
-                        icon: Icon(Feather.bell),
-                        color: _kTheme.colorScheme.onBackground,
-                        onPressed: () => _onTabPressed(3),
-                      ),
-                      IconButton(
-                        icon: Icon(Feather.briefcase),
-                        color: _kTheme.colorScheme.onBackground,
-                        onPressed: () => _onTabPressed(4),
-                      ),
-                    ],
-                  ),
+          decoration: BoxDecoration(color: _kTheme.colorScheme.primary),
+          child: Material(
+            type: MaterialType.transparency,
+            elevation: kSpacingX2,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: Icon(Feather.home),
+                  color: _kTheme.colorScheme.onPrimary,
+                  onPressed: () => _onTabPressed(0),
                 ),
-              ),
-            ],
+                IconButton(
+                  icon: Icon(Feather.search),
+                  color: _kTheme.colorScheme.onPrimary,
+                  onPressed: () => _onTabPressed(1),
+                ),
+                if (_isLoggedIn && state is SuccessState<Stream<BaseUser>>) ...{
+                  StreamBuilder<BaseUser>(
+                      stream: state.data,
+                      builder: (_, snapshot) {
+                        final user = snapshot.data;
+                        return GestureDetector(
+                          onTap: () => _onTabPressed(2),
+                          child: SizedBox(
+                            height: kSpacingX36,
+                            width: kSpacingX36,
+                            child: UserAvatar(
+                              url: user?.avatar,
+                              isCircular: true,
+                            ),
+                          ),
+                        );
+                      }),
+                },
+                IconButton(
+                  icon: Icon(Feather.bell),
+                  color: _kTheme.colorScheme.onPrimary,
+                  onPressed: () => _onTabPressed(3),
+                ),
+                IconButton(
+                  icon: Icon(Feather.briefcase),
+                  color: _kTheme.colorScheme.onPrimary,
+                  onPressed: () => _onTabPressed(4),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -12,13 +12,13 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lite/data/entities/entities.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/domain/repositories/repositories.dart';
 import 'package:lite/domain/sources/sources.dart';
 import 'package:lite/shared/shared.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:meta/meta.dart';
 
 /// Read more -> https://docs.hivedb.dev/
@@ -132,9 +132,10 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   }
 
   @override
-  Stream<BaseArtisan> currentUser() async* {
-    var artisan = artisanBox.get(prefsRepo.userId);
-    yield artisan;
+  Stream<BaseUser> currentUser() async* {
+    var user = customerBox.get(prefsRepo.userId);
+    logger.e("Current user -> $user");
+    yield user;
     notifyListeners();
   }
 

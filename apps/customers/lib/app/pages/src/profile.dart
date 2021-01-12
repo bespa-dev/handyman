@@ -7,9 +7,11 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lite/app/bloc/bloc.dart';
+import 'package:lite/app/routes/routes.gr.dart';
 import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
@@ -58,11 +60,36 @@ class _ProfilePageState extends State<ProfilePage> {
               stream: state.data,
               builder: (_, snapshot) {
                 if (_currentUser == null) _currentUser = snapshot.data;
-                return Center(
-                  child: Text(
-                    _currentUser?.name ?? "No username",
-                    style: kTheme.textTheme.headline5,
-                  ),
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _currentUser?.name ?? "No username",
+                      style: kTheme.textTheme.headline4,
+                    ),
+                    SizedBox(height: kSpacingX64),
+                    ButtonPrimary(
+                      width: SizeConfig.screenWidth * 0.85,
+                      color: kTheme.colorScheme.error,
+                      textColor: kTheme.colorScheme.onError,
+                      onTap: () {
+                        showCustomDialog(
+                          context: context,
+                          builder: (_) => BasicDialog(
+                            message: kSignOutText,
+                            onComplete: () {
+                              _authBloc.add(AuthEvent.authSignOutEvent());
+                              context.navigator
+                                ..popUntilRoot()
+                                ..pushSplashPage();
+                            },
+                          ),
+                        );
+                      },
+                      label: "Sign out",
+                    ),
+                  ],
                 );
               })
           : Loading(),

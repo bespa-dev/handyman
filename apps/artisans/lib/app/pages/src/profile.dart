@@ -381,7 +381,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             .add(AuthEvent.authSignOutEvent());
                                         context.navigator
                                           ..popUntilRoot()
-                                          ..pushLoginPage();
+                                          ..pushSplashPage();
                                       },
                                     ),
                                   );

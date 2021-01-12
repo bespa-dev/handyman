@@ -48,16 +48,15 @@ class AuthRepositoryImpl extends BaseAuthRepository {
     var user = await _userRepo.getArtisanById(id: firebaseUser.uid);
     if (user == null) {
       var timestamp = DateTime.now().toIso8601String();
-      final newUser = Artisan(
+
+      final newUser = Customer(
         id: firebaseUser.uid,
         email: firebaseUser.email,
         createdAt: timestamp,
         name: username,
-        phone: firebaseUser.phoneNumber,
         token: await _messaging.getToken(),
+        phone: firebaseUser.phoneNumber,
         avatar: firebaseUser.photoURL,
-        startWorkingHours: timestamp,
-        endWorkingHours: timestamp,
       );
       await _userRepo.updateUser(user: newUser);
       _prefsRepo.userId = newUser.id;

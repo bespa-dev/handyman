@@ -11,8 +11,10 @@ import 'package:meta/meta.dart';
 class BookingListItem extends StatefulWidget {
   final BaseBooking booking;
   final Function onLongPress;
+  final Function(bool) shouldUpdateUI;
 
-  const BookingListItem({Key key, @required this.booking, this.onLongPress})
+  const BookingListItem(
+      {Key key, @required this.booking, this.shouldUpdateUI, this.onLongPress})
       : super(key: key);
 
   @override
@@ -70,13 +72,17 @@ class _BookingListItemState extends State<BookingListItem> {
                 splashColor: kTheme.splashColor,
                 borderRadius: BorderRadius.circular(kSpacingX4),
                 onLongPress: () => widget.onLongPress(),
-                onTap: () => context.navigator.push(
-                  Routes.bookingDetailsPage,
-                  arguments: BookingDetailsPageArguments(
-                    booking: widget.booking,
-                    customer: userState.data,
-                  ),
-                ),
+                onTap: () async {
+                  final shouldUpdate = await context.navigator.push(
+                    Routes.bookingDetailsPage,
+                    arguments: BookingDetailsPageArguments(
+                      booking: widget.booking,
+                      customer: userState.data,
+                    ),
+                  );
+                  if (widget.shouldUpdateUI != null)
+                    widget.shouldUpdateUI(shouldUpdate);
+                },
                 child: Container(
                   clipBehavior: Clip.hardEdge,
                   decoration: BoxDecoration(

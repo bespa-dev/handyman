@@ -403,7 +403,15 @@ class _DashboardPageState extends State<DashboardPage> {
 
                           /// bookings list
                           ...bookings
-                              .map((item) => BookingListItem(booking: item))
+                              .map((item) => BookingListItem(
+                                    booking: item,
+                                    shouldUpdateUI: (_) {
+                                      if (_)
+                                        _bookingBloc.add(BookingEvent
+                                            .observeBookingForArtisan(
+                                                id: _currentUser?.id));
+                                    },
+                                  ))
                               .toList(),
                         },
                       ],
