@@ -60,6 +60,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "1019948772794-24a8bhlevhr05d4g34gajaffvrutmn3h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.azaware.handyman.lite",
+            "certificate_hash": "93c815b33965fa575e4951f2fd3449c017fc9392"
+          }
+        },
+        {
+          "client_id": "1019948772794-vetvh1pr8p9odehagkn2d9eafjtuqcke.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.azaware.handyman.lite",
+            "certificate_hash": "ad1a324748b05394c22e972b74ed6a4873f410ff"
+          }
+        },
+        {
           "client_id": "1019948772794-6s2aets4s7phbtbpr17joilk34li4l2s.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -60,11 +60,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "1019948772794-11sct8gec1ia8qng3930faoab22eh6uj.apps.googleusercontent.com",
+          "client_id": "1019948772794-24a8bhlevhr05d4g34gajaffvrutmn3h.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "dev.azaware.handyman.lite",
-            "certificate_hash": "343dbe19f387d899df7192dc6fa2f12b6151ee7c"
+            "certificate_hash": "93c815b33965fa575e4951f2fd3449c017fc9392"
           }
         },
         {
