@@ -125,7 +125,6 @@ const kWelcomeAsset = "assets/svg/welcome.png";
 const kRegisterAsset = "assets/svg/register.png";
 const kLoginAsset = "assets/svg/login.png";
 const k404Asset = "assets/svg/404.svg";
-const kLogoDarkAsset = "assets/logo/logo_dark.svg";
 const kAlgoliaSvgAsset = "assets/svg/algolia_blue_mark.svg";
 const kBackgroundAsset =
     "https://images.unsplash.com/photo-1454694220579-9d6672b1ec2a?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8aGFuZHltYW58ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60";

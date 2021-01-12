@@ -156,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     SizedBox(height: kSpacingX36),
                     if (_isLoading) ...{
-                      Loading(color: kTheme.colorScheme.secondary),
+                      Loading(),
                     } else ...{
                       Center(
                         child: ButtonPrimary(

@@ -69,8 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
               if (mounted) {
                 setState(() {});
                 context.navigator
-                    .pushAndRemoveUntil(
-                    Routes.homePage, (route) => false);
+                    .pushAndRemoveUntil(Routes.homePage, (route) => false);
               }
             }
           });
@@ -172,7 +171,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     SizedBox(height: kSpacingX36),
                     if (_isLoading) ...{
-                      Loading(color: kTheme.colorScheme.secondary),
+                      Loading(),
                     } else ...{
                       Center(
                         child: ButtonPrimary(

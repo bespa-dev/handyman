@@ -12,6 +12,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/routes/routes.gr.dart';
 import 'package:lite/app/widgets/widgets.dart';
@@ -127,19 +128,23 @@ class _SplashPageState extends State<SplashPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    kAppName,
-                    textAlign: TextAlign.center,
-                    style: kTheme.textTheme.headline4,
+                  Image(
+                    image: Svg(kLogoAsset),
+                    height: kSpacingX120,
+                    width: kSpacingX120,
                   ),
-                  SizedBox(height: kSpacingX8),
+                  SizedBox(height: kSpacingX16),
                   Text(
                     kAppSloganDesc,
                     textAlign: TextAlign.center,
                     style: kTheme.textTheme.subtitle1,
                   ),
                   SizedBox(height: kSpacingX64),
-                  Loading(color: kTheme.colorScheme.primary),
+                  AnimatedOpacity(
+                    opacity: _isLoading ? 1 : 0,
+                    duration: kSheetDuration,
+                    child: Loading(),
+                  ),
                 ],
               ),
             ),
@@ -292,6 +297,11 @@ class _SplashPageState extends State<SplashPage>
                 CachedNetworkImageProvider(element.avatar), context);
           });
 
+          await Future.delayed(kTestDuration);
+          if (mounted)
+            setState(() {
+              _isLoading = true;
+            });
           await Future.delayed(kSplashDuration);
           if (_animationController.status == AnimationStatus.forward ||
               _animationController.status == AnimationStatus.completed) {

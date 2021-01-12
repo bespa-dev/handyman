@@ -12,10 +12,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/routes/routes.gr.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
+import 'package:handyman/domain/repositories/repositories.dart';
 import 'package:handyman/shared/shared.dart';
 
 class SplashPage extends StatefulWidget {
@@ -34,7 +36,7 @@ class _SplashPageState extends State<SplashPage>
   /// UI
   AnimationController _animationController;
   Animation<double> _animation;
-  bool _showPageContent = false;
+  bool _showPageContent = false, _isLoading = false;
 
   @override
   void dispose() {
@@ -64,6 +66,40 @@ class _SplashPageState extends State<SplashPage>
       /// get current user's login state
       _prefsBloc.add(PrefsEvent.getUserIdEvent());
 
+      /// observe auth state
+      _authBloc
+        ..add(AuthEvent.observeAuthStatetEvent())
+        ..add(AuthEvent.observeMessageEvent())
+        ..listen((state) {
+          if (state is SuccessState<Stream<AuthState>>) {
+            /// stream auth state
+            state.data.listen((event) {
+              if (event is AuthLoadingState) {
+                _isLoading = true;
+                if (mounted) setState(() {});
+              } else if (event is AuthFailedState) {
+                _isLoading = false;
+                if (mounted) {
+                  setState(() {});
+                  showSnackBarMessage(context,
+                      message: event.message ?? "Authentication failed");
+                }
+              } else if (event is AuthenticatedState) {
+                _isLoading = false;
+                if (mounted) setState(() {});
+                context.navigator
+                  ..popUntilRoot()
+                  ..pushHomePage();
+              }
+            });
+          } else if (state is SuccessState<Stream<String>>) {
+            /// stream messages
+            state.data.listen((message) {
+              if (mounted) showSnackBarMessage(context, message: message);
+            });
+          }
+        });
+
       /// animate UI entry
       _animateEntry();
     }
@@ -92,19 +128,23 @@ class _SplashPageState extends State<SplashPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    kAppName,
-                    textAlign: TextAlign.center,
-                    style: kTheme.textTheme.headline4,
+                  Image(
+                    image: Svg(kLogoAsset),
+                    height: kSpacingX120,
+                    width: kSpacingX120,
                   ),
-                  SizedBox(height: kSpacingX8),
+                  SizedBox(height: kSpacingX16),
                   Text(
                     kAppSloganDesc,
                     textAlign: TextAlign.center,
                     style: kTheme.textTheme.subtitle1,
                   ),
                   SizedBox(height: kSpacingX64),
-                  Loading(color: kTheme.colorScheme.primary),
+                  AnimatedOpacity(
+                    opacity: _isLoading ? 1 : 0,
+                    duration: kSheetDuration,
+                    child: Loading(),
+                  ),
                 ],
               ),
             ),
@@ -120,89 +160,113 @@ class _SplashPageState extends State<SplashPage>
                     alignment: Alignment.center,
                     padding: EdgeInsets.symmetric(
                       horizontal: kSpacingX24,
-                      vertical: kSpacingX42,
+                      vertical: kSpacingX56,
                     ),
                     color: kTheme.colorScheme.primary,
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          kWelcomeAsset,
-                          width: SizeConfig.screenWidth,
-                          height: SizeConfig.screenHeight * 0.35,
-                        ),
-                        SizedBox(height: kSpacingX64),
-                        Text.rich(
-                          TextSpan(children: [
-                            TextSpan(text: "Growing your business is "),
-                            TextSpan(
-                              text: "easier ",
-                              style: kTheme.textTheme.headline4.copyWith(
-                                color: kTheme.colorScheme.secondary,
-                              ),
+                    child: SafeArea(
+                      top: true,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Welcome back...",
+                            style: kTheme.textTheme.headline6.copyWith(
+                              color: kTheme.colorScheme.onPrimary,
                             ),
-                            TextSpan(text: "than you think!"),
-                          ]),
-                          style: kTheme.textTheme.headline4.copyWith(
-                            color: kTheme.colorScheme.onPrimary,
                           ),
-                        ),
-                        if (state is SuccessState<String> &&
-                            state.data == null) ...{
                           SizedBox(height: kSpacingX8),
                           Text(
-                            "Sign up takes only 2 minutes",
-                            textAlign: TextAlign.center,
-                            style: kTheme.textTheme.bodyText2.copyWith(
-                              color: kTheme.colorScheme.onPrimary
-                                  .withOpacity(kEmphasisMedium),
+                            kAppSloganDesc,
+                            style: kTheme.textTheme.headline4.copyWith(
+                              color: kTheme.colorScheme.onPrimary,
                             ),
                           ),
-                        },
-                        Spacer(),
-                        if (state is SuccessState<String> &&
-                            state.data != null) ...{
-                          Align(
-                            alignment: Alignment.center,
-                            child: ButtonPrimary(
-                              width: SizeConfig.screenWidth * 0.85,
-                              onTap: () => context.navigator.pushAndRemoveUntil(
-                                Routes.homePage,
-                                (route) => false,
+                          SizedBox(height: kSpacingX96),
+                          if (state is SuccessState<String> &&
+                              state.data != null) ...{
+                            Spacer(),
+                            Align(
+                              alignment: Alignment.center,
+                              child: ButtonPrimary(
+                                width: SizeConfig.screenWidth * 0.85,
+                                onTap: () => context.navigator
+                                    .pushAndRemoveUntil(
+                                    Routes.homePage, (route) => false),
+                                label: "Explore",
+                                color: kTheme.colorScheme.onBackground,
+                                textColor: kTheme.colorScheme.background,
                               ),
-                              label: "Explore",
-                              color: kTheme.colorScheme.onBackground,
-                              textColor: kTheme.colorScheme.background,
+                            )
+                          } else ...{
+                            Align(
+                              alignment: Alignment.center,
+                              child: ButtonPrimary(
+                                width: SizeConfig.screenWidth * 0.85,
+                                onTap: () {
+                                  _authBloc
+                                      .add(AuthEvent.federatedOAuthEvent());
+                                },
+                                icon: kGoogleIcon,
+                                gravity: ButtonIconGravity.START,
+                                label: "Continue with Google",
+                                color: kTheme.colorScheme.onBackground,
+                                textColor: kTheme.colorScheme.background,
+                              ),
                             ),
-                          )
-                        } else ...{
-                          Align(
-                            alignment: Alignment.center,
-                            child: ButtonPrimary(
-                              width: SizeConfig.screenWidth * 0.85,
-                              onTap: () => context.navigator.pushRegisterPage(),
-                              label: "Get Started",
-                              color: kTheme.colorScheme.onBackground,
-                              textColor: kTheme.colorScheme.background,
+                            SizedBox(height: kSpacingX12),
+                            Align(
+                              alignment: Alignment.center,
+                              child: ButtonPrimary(
+                                width: SizeConfig.screenWidth * 0.85,
+                                onTap: () =>
+                                    context.navigator.pushRegisterPage(),
+                                icon: kMailIcon,
+                                gravity: ButtonIconGravity.START,
+                                label: "Sign up with email",
+                                color: lightTheme
+                                    ? kTheme.colorScheme.background
+                                    : kTheme.colorScheme.secondary,
+                                textColor: lightTheme
+                                    ? kTheme.colorScheme.onBackground
+                                    : kTheme.colorScheme.onSecondary,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: kSpacingX16),
-                          Align(
-                            alignment: Alignment.center,
-                            child: ButtonPrimary(
-                              width: SizeConfig.screenWidth * 0.85,
-                              onTap: () => context.navigator.pushLoginPage(),
-                              label: "Sign in",
-                              color: lightTheme
-                                  ? kTheme.colorScheme.background
-                                      .withOpacity(kEmphasisHigh)
-                                  : kTheme.colorScheme.secondary,
-                              textColor: lightTheme
-                                  ? kTheme.colorScheme.onBackground
-                                  : kTheme.colorScheme.onSecondary,
+                            if (_isLoading) ...{
+                              SizedBox(height: kSpacingX36),
+                              Loading(),
+                            },
+                            Spacer(),
+
+                            /// bottom action button
+                            Align(
+                              alignment: Alignment.bottomCenter,
+                              child: GestureDetector(
+                                onTap: () => context.navigator.pushLoginPage(),
+                                child: Container(
+                                  child: Text.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                            text: "Already have an account?\t"),
+                                        TextSpan(
+                                          text: "Log in",
+                                          style:
+                                          kTheme.textTheme.button.copyWith(
+                                            color: kTheme.colorScheme.secondary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    style: kTheme.textTheme.button.copyWith(
+                                      color: kTheme.colorScheme.onPrimary,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        }
-                      ],
+                          }
+                        ],
+                      ),
                     ),
                   ),
                   animation: _animation,
@@ -229,10 +293,16 @@ class _SplashPageState extends State<SplashPage>
         if (state is SuccessState<Stream<List<BaseServiceCategory>>>) {
           var list = await state.data.single;
           list.forEach((element) async {
+            logger.i("Caching category images");
             await precacheImage(
                 CachedNetworkImageProvider(element.avatar), context);
           });
 
+          await Future.delayed(kTestDuration);
+          if (mounted)
+            setState(() {
+              _isLoading = true;
+            });
           await Future.delayed(kSplashDuration);
           if (_animationController.status == AnimationStatus.forward ||
               _animationController.status == AnimationStatus.completed) {
