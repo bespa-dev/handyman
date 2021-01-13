@@ -79,7 +79,7 @@ class Booking extends BaseBooking {
     @required this.description,
     @required this.dueDate,
     @required this.currentState,
-    this.position = const LocationMetadata(lat: 5.644, lng: -0.122),
+    this.position,
     this.cost = 0.0,
     this.progress = 0.0,
   });

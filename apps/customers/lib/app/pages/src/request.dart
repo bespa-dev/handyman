@@ -76,20 +76,17 @@ class _RequestPageState extends State<RequestPage> {
     if (_formKey.currentState == null) return;
     if (_formKey.currentState.validate() &&
         _location != null &&
-        _selectedService != null) {
+        _selectedService != null &&
+        _userId != null) {
       _formKey.currentState.save();
 
       if (_imageFile != null && _fileUrl == null) {
-        logger.i("uploading image");
-
         /// perform upload
         _storageBloc.add(StorageEvent.uploadFile(
             path: _timestamp,
             filePath: _imageFile.absolute.path,
             isImage: true));
       } else {
-        logger.i("Sending request");
-
         /// todo -> add service cost
         _bookingBloc.add(
           BookingEvent.requestBooking(
@@ -185,6 +182,15 @@ class _RequestPageState extends State<RequestPage> {
 
     if (mounted) {
       _focusNode = FocusNode();
+
+      PrefsBloc(repo: Injection.get())
+        ..add(PrefsEvent.getUserIdEvent())
+        ..listen((state) {
+          if (state is SuccessState<String> && state.data != null) {
+            _userId = state.data;
+            if (mounted) setState(() {});
+          }
+        });
 
       /// get home address
       _homeAddressBloc.add(PrefsEvent.getHomeAddressEvent());
