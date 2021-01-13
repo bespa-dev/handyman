@@ -65,7 +65,7 @@ class ObserveReviewsForArtisanUseCase
   Future<UseCaseResult<Stream<List<BaseReview>>>> execute(String id) async {
     try {
       var reviews = _repo.observeReviewsForArtisan(id);
-      return UseCaseResult<Stream<List<BaseReview>>>.success(reviews);
+      return UseCaseResult<Stream<List<BaseReview>>>.success(reviews.asBroadcastStream());
     } on Exception {
       return UseCaseResult.error();
     }
@@ -82,7 +82,7 @@ class ObserveReviewsByCustomerUseCase
   Future<UseCaseResult<Stream<List<BaseReview>>>> execute(String id) async {
     try {
       var reviews = _repo.observeReviewsByCustomer(id);
-      return UseCaseResult<Stream<List<BaseReview>>>.success(reviews);
+      return UseCaseResult<Stream<List<BaseReview>>>.success(reviews.asBroadcastStream());
     } on Exception {
       return UseCaseResult.error();
     }

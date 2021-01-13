@@ -45,7 +45,7 @@ class GetBusinessesForArtisanUseCase
       var results = await _repo.getBusinessesForArtisan(artisan: artisan);
       return UseCaseResult<List<BaseBusiness>>.success(results);
     } on Exception {
-      return UseCaseResult.error();
+      return UseCaseResult<List<BaseBusiness>>.error();
     }
   }
 }
@@ -75,7 +75,7 @@ class ObserveBusinessUseCase extends ObservableUseCase<BaseBusiness, String> {
   Future<UseCaseResult<Stream<BaseBusiness>>> execute(String id) async {
     try {
       var results = _repo.observeBusinessById(id: id);
-      return UseCaseResult<Stream<BaseBusiness>>.success(results);
+      return UseCaseResult<Stream<BaseBusiness>>.success(results.asBroadcastStream());
     } on Exception {
       return UseCaseResult.error();
     }

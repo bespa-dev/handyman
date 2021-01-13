@@ -119,6 +119,15 @@ class HiveLocalDatasource extends BaseLocalDatasource {
         // put each one into box
         await reviewBox.put(item.id, item);
       }
+    } else {
+      var reviewsSource = await rootBundle.loadString("assets/reviews.json");
+      var decodedReviews = jsonDecode(reviewsSource) as List;
+      for (var json in decodedReviews) {
+        final item = Review.fromJson(json);
+
+        // put each one into box
+        await reviewBox.put(item.id, item);
+      }
     }
   }
 

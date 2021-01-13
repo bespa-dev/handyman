@@ -7,9 +7,9 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:lite/domain/models/models.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:lite/domain/models/models.dart';
 import 'package:meta/meta.dart';
 
 part 'artisan.g.dart';
@@ -142,10 +142,13 @@ class Artisan extends BaseArtisan {
   int get ongoingBookingsCount => 0;
 
   @override
-  int get reportsCount => reports.length;
+  int get servicesCount => services?.length ?? 0;
 
   @override
-  int get requestsCount => requests.length;
+  int get reportsCount => reports?.length ?? 0;
+
+  @override
+  int get requestsCount => requests?.length ?? 0;
 
   @override
   get model => this;

@@ -21,6 +21,7 @@ import 'package:uuid/uuid.dart';
 /// Center(child: CircularProgressIndicator(value: downloadProgress.progress));
 class UserAvatar extends StatelessWidget {
   final String url;
+  final String tag;
   final Function onTap;
   final double radius;
   final bool isCircular;
@@ -30,6 +31,7 @@ class UserAvatar extends StatelessWidget {
   const UserAvatar({
     Key key,
     @required this.url,
+    this.tag,
     this.onTap,
     this.radius = kSpacingX48,
     this.isCircular = false,
@@ -44,7 +46,7 @@ class UserAvatar extends StatelessWidget {
     return GestureDetector(
       onTap: onTap ?? null,
       child: Hero(
-        tag: url ?? Uuid().v4(),
+        tag: tag ?? Uuid().v4(),
         child: Container(
           height: radius,
           width: radius,

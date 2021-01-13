@@ -31,6 +31,7 @@ import 'package:lite/app/pages/pages.dart';
     CustomRoute(page: ArtisanInfoPage),
     CustomRoute(page: HomePage),
     CustomRoute(page: RegisterPage),
+    CustomRoute(page: BusinessDetailsPage),
 
     /// keep at the bottom
     CustomRoute(page: UnknownRoutePage, path: "*"),

@@ -28,6 +28,7 @@ class Routes {
   static const String artisanInfoPage = '/artisan-info-page';
   static const String homePage = '/home-page';
   static const String registerPage = '/register-page';
+  static const String businessDetailsPage = '/business-details-page';
   static const String unknownRoutePage = '*';
   static const all = <String>{
     splashPage,
@@ -45,6 +46,7 @@ class Routes {
     artisanInfoPage,
     homePage,
     registerPage,
+    businessDetailsPage,
     unknownRoutePage,
   };
 }
@@ -68,6 +70,7 @@ class Router extends RouterBase {
     RouteDef(Routes.artisanInfoPage, page: ArtisanInfoPage),
     RouteDef(Routes.homePage, page: HomePage),
     RouteDef(Routes.registerPage, page: RegisterPage),
+    RouteDef(Routes.businessDetailsPage, page: BusinessDetailsPage),
     RouteDef(Routes.unknownRoutePage, page: UnknownRoutePage),
   ];
   @override
@@ -195,6 +198,18 @@ class Router extends RouterBase {
         settings: data,
       );
     },
+    BusinessDetailsPage: (data) {
+      final args = data.getArgs<BusinessDetailsPageArguments>(nullOk: false);
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            BusinessDetailsPage(
+          key: args.key,
+          business: args.business,
+          artisan: args.artisan,
+        ),
+        settings: data,
+      );
+    },
     UnknownRoutePage: (data) {
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) =>
@@ -287,6 +302,17 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
 
   Future<dynamic> pushRegisterPage() => push<dynamic>(Routes.registerPage);
 
+  Future<dynamic> pushBusinessDetailsPage({
+    Key key,
+    @required BaseBusiness business,
+    BaseArtisan artisan,
+  }) =>
+      push<dynamic>(
+        Routes.businessDetailsPage,
+        arguments: BusinessDetailsPageArguments(
+            key: key, business: business, artisan: artisan),
+      );
+
   Future<dynamic> pushUnknownRoutePage() =>
       push<dynamic>(Routes.unknownRoutePage);
 }
@@ -339,4 +365,13 @@ class ArtisanInfoPageArguments {
   final Key key;
   final BaseArtisan artisan;
   ArtisanInfoPageArguments({this.key, @required this.artisan});
+}
+
+/// BusinessDetailsPage arguments holder class
+class BusinessDetailsPageArguments {
+  final Key key;
+  final BaseBusiness business;
+  final BaseArtisan artisan;
+  BusinessDetailsPageArguments(
+      {this.key, @required this.business, this.artisan});
 }

@@ -21,6 +21,7 @@ import 'package:uuid/uuid.dart';
 /// Center(child: CircularProgressIndicator(value: downloadProgress.progress));
 class UserAvatar extends StatelessWidget {
   final String url;
+  final String tag;
   final Function onTap;
   final double radius;
   final bool isCircular;
@@ -30,6 +31,7 @@ class UserAvatar extends StatelessWidget {
   const UserAvatar({
     Key key,
     @required this.url,
+    this.tag,
     this.onTap,
     this.radius = kSpacingX48,
     this.isCircular = false,
@@ -44,7 +46,7 @@ class UserAvatar extends StatelessWidget {
     return GestureDetector(
       onTap: onTap ?? null,
       child: Hero(
-        tag: url ?? Uuid().v4(),
+        tag: tag ?? Uuid().v4(),
         child: Container(
           height: radius,
           width: radius,
@@ -56,85 +58,85 @@ class UserAvatar extends StatelessWidget {
           ),
           child: url != null && url.isNotEmpty
               ? Container(
-                  clipBehavior: Clip.hardEdge,
-                  decoration: BoxDecoration(
-                    shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
-                    borderRadius:
-                        isCircular ? null : BorderRadius.circular(radius / 8),
-                  ),
-                  child: isFileAsset
-                      ? Container(
-                          clipBehavior: Clip.hardEdge,
-                          decoration: BoxDecoration(
-                            shape: isCircular
-                                ? BoxShape.circle
-                                : BoxShape.rectangle,
-                            borderRadius: isCircular
-                                ? null
-                                : BorderRadius.circular(radius / 8),
-                          ),
-                          child: Image.file(
-                            File(url),
-                            height: radius,
-                            width: radius,
-                            fit: BoxFit.cover,
-                            alignment: Alignment.center,
-                          ),
-                        )
-                      : CachedNetworkImage(
-                          imageUrl: url ?? "",
-                          progressIndicatorBuilder:
-                              (_, url, downloadProgress) => Container(
-                            clipBehavior: Clip.hardEdge,
-                            decoration: BoxDecoration(
-                              shape: isCircular
-                                  ? BoxShape.circle
-                                  : BoxShape.rectangle,
-                              borderRadius: isCircular
-                                  ? null
-                                  : BorderRadius.circular(radius / 8),
-                            ),
-                          ),
-                          fit: BoxFit.cover,
-                          width: radius,
-                          height: radius,
-                          alignment: Alignment.center,
-                          errorWidget: (_, __, chunk) => Container(
-                            alignment: Alignment.center,
-                            height: radius,
-                            width: radius,
-                            clipBehavior: Clip.hardEdge,
-                            decoration: BoxDecoration(
-                              color: themeData.colorScheme.onBackground
-                                  .withOpacity(kOpacityX14),
-                              borderRadius: isCircular
-                                  ? null
-                                  : BorderRadius.circular(radius / 8),
-                              shape: isCircular
-                                  ? BoxShape.circle
-                                  : BoxShape.rectangle,
-                            ),
-                            child: Icon(kUserImageNotFound, size: radius / 2.5),
-                          ),
-                        ),
-                )
-              : Container(
-                  clipBehavior: Clip.hardEdge,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: themeData.colorScheme.onBackground
-                        .withOpacity(kOpacityX14),
-                    borderRadius:
-                        isCircular ? null : BorderRadius.circular(radius / 8),
-                    shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
-                  ),
-                  child: Icon(
-                    errorIcon,
-                    size: radius / 3,
-                    color: themeData.colorScheme.onBackground
-                        .withOpacity(kOpacityX35),
-                  ),
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
+              borderRadius:
+              isCircular ? null : BorderRadius.circular(radius / 8),
+            ),
+            child: isFileAsset
+                ? Container(
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                shape: isCircular
+                    ? BoxShape.circle
+                    : BoxShape.rectangle,
+                borderRadius: isCircular
+                    ? null
+                    : BorderRadius.circular(radius / 8),
+              ),
+              child: Image.file(
+                File(url),
+                height: radius,
+                width: radius,
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+              ),
+            )
+                : CachedNetworkImage(
+              imageUrl: url ?? "",
+              progressIndicatorBuilder:
+                  (_, url, downloadProgress) => Container(
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                  shape: isCircular
+                      ? BoxShape.circle
+                      : BoxShape.rectangle,
+                  borderRadius: isCircular
+                      ? null
+                      : BorderRadius.circular(radius / 8),
                 ),
+              ),
+              fit: BoxFit.cover,
+              width: radius,
+              height: radius,
+              alignment: Alignment.center,
+              errorWidget: (_, __, chunk) => Container(
+                alignment: Alignment.center,
+                height: radius,
+                width: radius,
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                  color: themeData.colorScheme.onBackground
+                      .withOpacity(kOpacityX14),
+                  borderRadius: isCircular
+                      ? null
+                      : BorderRadius.circular(radius / 8),
+                  shape: isCircular
+                      ? BoxShape.circle
+                      : BoxShape.rectangle,
+                ),
+                child: Icon(kUserImageNotFound, size: radius / 2.5),
+              ),
+            ),
+          )
+              : Container(
+            clipBehavior: Clip.hardEdge,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: themeData.colorScheme.onBackground
+                  .withOpacity(kOpacityX14),
+              borderRadius:
+              isCircular ? null : BorderRadius.circular(radius / 8),
+              shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
+            ),
+            child: Icon(
+              errorIcon,
+              size: radius / 3,
+              color: themeData.colorScheme.onBackground
+                  .withOpacity(kOpacityX35),
+            ),
+          ),
         ),
       ),
     );

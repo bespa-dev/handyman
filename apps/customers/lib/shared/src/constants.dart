@@ -107,7 +107,7 @@ const kAppName = "HandyMan Lite";
 const kAppNameShort = "HandyMan";
 const kAppSlogan =
     "A mobile application to gather all handyman service providers on a single platform and introduce them to potential service seekers and compare between providers and hire the best quote";
-const kAppSloganDesc = "Find & book your services easily with $kAppNameShort";
+const kAppSloganDesc = "Find & book your services easily with $kAppName";
 const kArtisanReviewHelpDialogContent =
     "Sensitive data (like email addresses, phone numbers, user ids etc) will not be made public to customers on this platform.\nYour ratings are also based on the accumulated reviews by customers you have served over the last 6 months";
 const kPasswordHint =
@@ -159,6 +159,8 @@ const kGalleryIcon = Entypo.image;
 const kHomeIcon = Feather.home;
 const kNotificationIcon = Feather.bell;
 const kBriefcaseIcon = MaterialCommunityIcons.briefcase;
+const kUserAddIcon = Feather.user_plus;
+const kChatIcon = Entypo.message;
 const kThreeDotsOptionsIcon = Entypo.dots_three_horizontal;
 
 /// [Algolia]

@@ -142,10 +142,13 @@ class Artisan extends BaseArtisan {
   int get ongoingBookingsCount => 0;
 
   @override
-  int get reportsCount => reports.length;
+  int get servicesCount => services?.length ?? 0;
 
   @override
-  int get requestsCount => requests.length;
+  int get reportsCount => reports?.length ?? 0;
+
+  @override
+  int get requestsCount => requests?.length ?? 0;
 
   @override
   get model => this;

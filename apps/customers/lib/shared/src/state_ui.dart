@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lite/shared/shared.dart';
-import 'package:uuid/uuid.dart';
 
 /// shows an empty state UI
 Widget emptyStateUI(BuildContext context,

@@ -32,6 +32,8 @@ abstract class BaseArtisan extends BaseUser {
 
   int get reportsCount;
 
+  int get servicesCount;
+
   int get ongoingBookingsCount;
 
   int get completedBookingsCount;

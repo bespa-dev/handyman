@@ -110,7 +110,7 @@ class _BookingListItemState extends State<BookingListItem> {
                       children: [
                         /// avatar
                         UserAvatar(
-                          url: userState.data.avatar,
+                          url: userState.data?.avatar,
                           radius: kSpacingX42,
                         ),
                         Padding(

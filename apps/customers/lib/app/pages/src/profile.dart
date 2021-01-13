@@ -71,8 +71,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     SizedBox(height: kSpacingX64),
                     ButtonPrimary(
                       width: SizeConfig.screenWidth * 0.85,
-                      color: kTheme.colorScheme.error,
-                      textColor: kTheme.colorScheme.onError,
+                      color: kTheme.colorScheme.onBackground,
+                      textColor: kTheme.colorScheme.background,
                       onTap: () {
                         showCustomDialog(
                           context: context,

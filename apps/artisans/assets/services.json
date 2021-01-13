@@ -205,7 +205,7 @@
   },
   {
     "id": "58f36490-6197-4a54-85a5-09dff5e7b7b7",
-    "category": "8552bfd4-1a1e-420f-9f1e-feba454bb62d8",
+    "category": "8552bfd4-1a1e-420f-9f1e-feba454bb62d",
     "name": "Haircut",
     "price": 0.99
   },
@@ -320,7 +320,7 @@
   {
     "id": "003cbe77-f501-458f-8cdc-bd201b6f3d85",
     "category": "4dcd2140-7ab5-43d3-8e17-68abce8c6dc6",
-    "name": "Installation of electrical equipment such as funs, bulbs",
+    "name": "Installation of electrical equipment",
     "price": 0.99
   },
   {

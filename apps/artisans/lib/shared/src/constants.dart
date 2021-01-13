@@ -107,7 +107,7 @@ const kAppName = "HandyMan Pro";
 const kAppNameShort = "HandyMan";
 const kAppSlogan =
     "A mobile application to gather all handyman service providers on a single platform and introduce them to potential service seekers and compare between providers and hire the best quote";
-const kAppSloganDesc = "Find & book your services easily with $kAppNameShort";
+const kAppSloganDesc = "Find & book your services easily with $kAppName";
 const kArtisanReviewHelpDialogContent =
     "Sensitive data (like email addresses, phone numbers, user ids etc) will not be made public to customers on this platform.\nYour ratings are also based on the accumulated reviews by customers you have served over the last 6 months";
 const kPasswordHint =
@@ -116,6 +116,8 @@ const kSignOutText =
     "Signing out will set you offline until you sign in again. You may not be able to send/receive requests. Do you wish to continue?";
 const kAccountCompletionHelperText =
     "In order to complete your mobile registration process, kindly setup your profile information and upload a business document. You will be notified within the next 72 hours. Thank you!";
+const kServiceHelperText =
+    "Details on services provided by this artisan are not made public. If you need more information regarding the procedure and arrangement for the performance of this job please contact the artisan directly through the \"chat\" option available on his/her profile.";
 const kArtisanString = "Artisan";
 const kFunctionalityUnavailable =
     "Functionality is currently unavailable. Try again after the next update. Thank you";
@@ -158,6 +160,8 @@ const kGalleryIcon = Entypo.image;
 const kHomeIcon = Feather.home;
 const kNotificationIcon = Feather.bell;
 const kBriefcaseIcon = MaterialCommunityIcons.briefcase;
+const kUserAddIcon = Feather.user_plus;
+const kChatIcon = Entypo.message;
 const kThreeDotsOptionsIcon = Entypo.dots_three_horizontal;
 
 /// [Algolia]

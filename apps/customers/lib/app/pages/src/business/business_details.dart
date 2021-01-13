@@ -1,15 +1,11 @@
-import 'dart:io';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:handyman/app/bloc/bloc.dart';
-import 'package:handyman/app/routes/routes.gr.dart';
-import 'package:handyman/app/widgets/src/service_list_item.dart';
-import 'package:handyman/domain/models/models.dart';
-import 'package:handyman/shared/shared.dart';
+import 'package:lite/app/bloc/bloc.dart';
+import 'package:lite/app/widgets/widgets.dart';
+import 'package:lite/domain/models/models.dart';
+import 'package:lite/shared/shared.dart';
 
 /// todo -> complete other tabs
 class BusinessDetailsPage extends StatefulWidget {
@@ -41,7 +37,6 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   BaseBusiness _business;
   LatLng _businessLocation;
   int _currentPage = 0;
-  BaseArtisan _currentUser;
   List<BaseArtisanService> _servicesForCategory = const [];
   List<String> _selectedServices = [];
 
@@ -93,32 +88,11 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
         });
 
       /// observe current user
-      _userBloc
-        ..add(UserEvent.currentUserEvent())
-        ..listen((state) {
-          if (state is SuccessState<Stream<BaseArtisan>>) {
-            state.data.listen((user) {
-              _currentUser = user;
-              if (_currentUser.services == null) {
-                _currentUser =
-                    _currentUser.copyWith(services: _selectedServices);
-                _updateUserBloc.add(
-                  UserEvent.updateUserEvent(user: _currentUser),
-                );
-              } else
-                _selectedServices = _currentUser.services;
-              if (mounted) setState(() {});
-
-              /// get services for category
-              _serviceBloc.add(
-                ArtisanServiceEvent.getArtisanServices(
-                  category:
-                      user.category /*"bb7c0d03-add2-49cb-bdd5-9a55f67adb30"*/,
-                ),
-              );
-            });
-          }
-        });
+      /// get services for category
+      _serviceBloc.add(
+        ArtisanServiceEvent.getArtisanServices(
+            category: widget.artisan.category),
+      );
 
       /// observe list of services for category
       _serviceBloc.listen((state) {
@@ -148,13 +122,6 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                   slivers: [
                     /// app bar
                     SliverAppBar(
-                      actions: [
-                        IconButton(
-                          icon: Icon(kEditIcon),
-                          onPressed: () => context.navigator
-                              .pushBusinessProfilePage(business: _business),
-                        ),
-                      ],
                       floating: true,
                       backgroundColor: _kTheme.colorScheme.background,
                       flexibleSpace: FlexibleSpaceBar(
@@ -169,8 +136,6 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                         onPressed: () => context.navigator.pop(),
                       ),
                     ),
-
-                    /// content
                     SliverList(
                       delegate: SliverChildListDelegate.fixed(
                         [
@@ -182,47 +147,50 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                                 ? kSpacingNone
                                 : SizeConfig.screenHeight * 0.3,
                             child: AnimatedOpacity(
-                              duration: kScaleDuration,
-                              opacity: _businessLocation == null ? 0 : 1,
-                              child: _businessLocation == null
-                                  ? SizedBox.shrink()
-                                  : FutureBuilder(
-                                      future: Future.delayed(kSheetDuration),
-                                      builder: (_, __) => GoogleMap(
-                                            initialCameraPosition:
-                                                CameraPosition(
-                                              target: _businessLocation,
-                                              zoom: kSpacingX16,
-                                            ),
-                                            zoomControlsEnabled: false,
-                                            compassEnabled: true,
-                                            liteModeEnabled: Platform.isAndroid,
-                                            zoomGesturesEnabled: true,
-                                            mapToolbarEnabled: false,
-                                            myLocationButtonEnabled: false,
-                                            myLocationEnabled: false,
-                                            tiltGesturesEnabled: true,
-                                            markers: <Marker>{
-                                              Marker(
-                                                markerId:
-                                                    MarkerId(_business.id),
-                                                position: _businessLocation,
-                                                icon: BitmapDescriptor
-                                                    .defaultMarkerWithHue(
-                                                        BitmapDescriptor
-                                                            .hueGreen),
-                                              ),
-                                            },
-                                            onMapCreated: (controller) async {
-                                              _mapController = controller;
-                                              _setupMap();
-                                            },
-                                            mapType: MapType.normal,
-                                          )),
-                            ),
+                                duration: kScaleDuration,
+                                opacity: _businessLocation == null ? 0 : 1,
+                                child: _businessLocation == null
+                                    ? SizedBox.shrink()
+                                    : Loading()
+
+                                /// fixme -> google maps fix
+                                // : FutureBuilder(
+                                //     future: Future.delayed(kSheetDuration),
+                                //     builder: (_, __) => GoogleMap(
+                                //           initialCameraPosition:
+                                //               CameraPosition(
+                                //             target: _businessLocation,
+                                //             zoom: kSpacingX16,
+                                //           ),
+                                //           zoomControlsEnabled: false,
+                                //           compassEnabled: true,
+                                //           liteModeEnabled: Platform.isAndroid,
+                                //           zoomGesturesEnabled: true,
+                                //           mapToolbarEnabled: false,
+                                //           myLocationButtonEnabled: false,
+                                //           myLocationEnabled: false,
+                                //           tiltGesturesEnabled: true,
+                                //           markers: <Marker>{
+                                //             Marker(
+                                //               markerId:
+                                //                   MarkerId(_business.id),
+                                //               position: _businessLocation,
+                                //               icon: BitmapDescriptor
+                                //                   .defaultMarkerWithHue(
+                                //                       BitmapDescriptor
+                                //                           .hueGreen),
+                                //             ),
+                                //           },
+                                //           onMapCreated: (controller) async {
+                                //             _mapController = controller;
+                                //             _setupMap();
+                                //           },
+                                //           mapType: MapType.normal,
+                                //         )),
+                                ),
                           ),
 
-                          /// body
+                          /// details
                           AnimatedPadding(
                             duration: kScaleDuration,
                             padding: EdgeInsets.only(
@@ -231,7 +199,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                                   : kSpacingX16,
                               left: kSpacingX16,
                               right: kSpacingX16,
-                              bottom: kSpacingNone,
+                              bottom: kSpacingX24,
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,9 +244,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                                   ],
                                 ),
 
-                                /// pages
                                 if (_currentPage == 0) ...{
-                                  ..._buildServicesTab()
+                                  _buildServicesTab()
                                 } else if (_currentPage == 1) ...{
                                   _buildBusinessProfileTab()
                                 } else ...{
@@ -335,120 +302,45 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
       );
 
   /// services tab
-  List<Widget> _buildServicesTab() => [
-    Padding(
-      padding: EdgeInsets.only(left: kSpacingX4),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Available services...",
-            style: _kTheme.textTheme.headline6.copyWith(
-              color: _kTheme.colorScheme.onBackground
-                  .withOpacity(kEmphasisMedium),
-            ),
-          ),
-          SizedBox(height: kSpacingX4),
-          Text(
-            "Tap on any service below to add to your portfolio",
-            style: _kTheme.textTheme.caption.copyWith(
-              color: _kTheme.colorScheme.onBackground
-                  .withOpacity(kEmphasisLow),
-            ),
-          ),
-        ],
-      ),
-    ),
-    SizedBox(height: kSpacingX12),
-    Wrap(
+  Widget _buildServicesTab() =>  Padding(
+    padding: EdgeInsets.only(left: kSpacingX4),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ..._servicesForCategory
-            .map(
-              (item) => Padding(
-            padding: EdgeInsets.only(right: kSpacingX8),
-            child: ChoiceChip(
-              label: Text(item.name),
-              selected: _selectedServices.contains(item.id),
-              onSelected: (selected) {
-                _selectedServices.toggleAddOrRemove(item.id);
-
-                /// update user
-                _currentUser = _currentUser.copyWith(
-                    services: _selectedServices);
-
-                setState(() {});
-                _updateUserBloc.add(UserEvent.updateUserEvent(
-                    user: _currentUser));
-              },
-              disabledColor: _kTheme.disabledColor,
-              selectedColor: _kTheme.colorScheme.secondary,
-            ),
+        Text(
+          "Services rendered",
+          style: _kTheme.textTheme.headline6.copyWith(
+            color: _kTheme.colorScheme.onBackground
+                .withOpacity(kEmphasisMedium),
           ),
-        )
-            .toList(),
+        ),
+        SizedBox(height: kSpacingX4),
+        Text(
+          "Tap on \ufffd to view more details",
+          style: _kTheme.textTheme.caption.copyWith(
+            color: _kTheme.colorScheme.onBackground
+                .withOpacity(kEmphasisLow),
+          ),
+        ),
+        SizedBox(height: kSpacingX24),
+        if (_servicesForCategory.isNotEmpty) ...{
+          ..._servicesForCategory
+              .map(
+                (service) => ArtisanListTile(
+              service: service,
+              onTap: () {},
+            ),
+          )
+              .toList(),
+        }
       ],
     ),
-    if (_servicesForCategory.isNotEmpty) ...{
-      Padding(
-        padding: EdgeInsets.only(
-          top: kSpacingX24,
-          left: kSpacingX4,
-          bottom: kSpacingX16,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Pricing",
-              style: _kTheme.textTheme.headline6.copyWith(
-                color: _kTheme.colorScheme.onBackground
-                    .withOpacity(kEmphasisMedium),
-              ),
-            ),
-            SizedBox(height: kSpacingX4),
-            Text(
-              "Set prices for your professional services",
-              style: _kTheme.textTheme.caption.copyWith(
-                color: _kTheme.colorScheme.onBackground
-                    .withOpacity(kEmphasisLow),
-              ),
-            ),
-          ],
-        ),
-      ),
-    },
-    if (_servicesForCategory.isNotEmpty) ...{
-      GridView.count(
-        crossAxisCount: 2,
-        crossAxisSpacing: kSpacingX8,
-        mainAxisSpacing: kSpacingX8,
-        children: [
-          for (int i = 0; i < _currentUser.services.length; i++) ...{
-            AnimationConfiguration.staggeredGrid(
-              position: i,
-              columnCount: 2,
-              duration: kSheetDuration,
-              child: ScaleAnimation(
-                duration: kScaleDuration,
-                child: FadeInAnimation(
-                  duration: kScaleDuration,
-                  child: ArtisanServiceListItem(
-                    service: _currentUser.services[i],
-                  ),
-                ),
-              ),
-            ),
-          },
-        ],
-      ),
-    }
-  ];
+  );
 
   /// business profile tab
-  Widget _buildBusinessProfileTab() => Container(/*color: kAmberColor*/);
+  Widget _buildBusinessProfileTab() => Container(color: kAmberColor);
 
   /// earnings tab
-  Widget _buildEarningsTab() => Container(/*color: _kTheme.colorScheme.error*/);
+  Widget _buildEarningsTab() => Container(color: _kTheme.colorScheme.error);
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:lite/app/bloc/bloc.dart';
-import 'package:lite/app/widgets/src/dialogs.dart';
 import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
@@ -123,8 +123,8 @@ class ArtisanServiceListView extends StatefulWidget {
   const ArtisanServiceListView({
     Key key,
     @required this.services,
-    @required this.onItemSelected,
-    @required this.selected,
+    this.onItemSelected,
+    this.selected,
     this.selectedColor,
     this.unselectedColor,
     this.checkable = false,
@@ -139,27 +139,38 @@ class _ArtisanServiceListViewState extends State<ArtisanServiceListView> {
   Widget build(BuildContext context) => Container(
         width: SizeConfig.screenWidth,
         height: SizeConfig.screenHeight,
-        child: ListView.builder(
-          itemBuilder: (_, index) {
-            final item = widget.services[index];
-            return _ArtisanListTile(
-              service: item,
-              showLeadingIcon: widget.checkable,
-              onTap: () {
-                widget.onItemSelected(item);
-              },
-              selected: widget.selected == item,
-              selectedColor: widget.selectedColor,
-              unselectedColor: widget.unselectedColor,
-            );
-          },
-          itemCount: widget.services.length,
-          padding: EdgeInsets.zero,
+        child: AnimationLimiter(
+          child: ListView.builder(
+            itemBuilder: (_, index) {
+              final item = widget.services[index];
+              return AnimationConfiguration.staggeredList(
+                position: index,
+                child: ScaleAnimation(
+                  duration: kScaleDuration,
+                  child: FadeInAnimation(
+                    child: ArtisanListTile(
+                      service: item,
+                      showLeadingIcon: widget.checkable,
+                      onTap: () {
+                        if (widget.onItemSelected != null)
+                          widget.onItemSelected(item);
+                      },
+                      selected: widget.selected == item,
+                      selectedColor: widget.selectedColor,
+                      unselectedColor: widget.unselectedColor,
+                    ),
+                  ),
+                ),
+              );
+            },
+            itemCount: widget.services.length,
+            padding: EdgeInsets.zero,
+          ),
         ),
       );
 }
 
-class _ArtisanListTile extends StatefulWidget {
+class ArtisanListTile extends StatefulWidget {
   final BaseArtisanService service;
   final bool selected;
   final bool showLeadingIcon;
@@ -167,21 +178,21 @@ class _ArtisanListTile extends StatefulWidget {
   final Color selectedColor;
   final Color unselectedColor;
 
-  const _ArtisanListTile({
+  const ArtisanListTile({
     Key key,
     @required this.service,
-    this.selected = false,
     @required this.onTap,
+    this.selected = false,
     this.selectedColor,
     this.unselectedColor,
     this.showLeadingIcon = true,
   }) : super(key: key);
 
   @override
-  __ArtisanListTileState createState() => __ArtisanListTileState();
+  _ArtisanListTileState createState() => _ArtisanListTileState();
 }
 
-class __ArtisanListTileState extends State<_ArtisanListTile> {
+class _ArtisanListTileState extends State<ArtisanListTile> {
   final _categoryBloc = CategoryBloc(repo: Injection.get());
 
   @override
@@ -212,8 +223,9 @@ class __ArtisanListTileState extends State<_ArtisanListTile> {
             EdgeInsets.symmetric(horizontal: kSpacingX8, vertical: kSpacingX4),
         decoration: BoxDecoration(
           border: Border.all(
-            color:
-                widget.selected ? widget.selectedColor : widget.unselectedColor,
+            color: widget.selected
+                ? widget.selectedColor ?? kTheme.colorScheme.secondary
+                : widget.unselectedColor ?? kTheme.cardColor,
           ),
           borderRadius: BorderRadius.circular(kSpacingX4),
         ),
@@ -223,7 +235,7 @@ class __ArtisanListTileState extends State<_ArtisanListTile> {
             widget.service.name,
             style: TextStyle(
               color: widget.selected
-                  ? widget.selectedColor
+                  ? widget.selectedColor ?? kTheme.colorScheme.secondary
                   : kTheme.colorScheme.onBackground.withOpacity(kEmphasisHigh),
             ),
           ),
@@ -242,7 +254,8 @@ class __ArtisanListTileState extends State<_ArtisanListTile> {
                       snapshot.hasData ? snapshot.data.name : "...",
                       style: TextStyle(
                         color: widget.selected
-                            ? widget.selectedColor
+                            ? widget.selectedColor ??
+                                kTheme.colorScheme.secondary
                             : kTheme.colorScheme.onBackground
                                 .withOpacity(kEmphasisMedium),
                       ),
@@ -252,7 +265,7 @@ class __ArtisanListTileState extends State<_ArtisanListTile> {
           trailing: IconButton(
             icon: Icon(kHelpIcon),
             color: widget.selected
-                ? widget.selectedColor
+                ? widget.selectedColor ?? kTheme.colorScheme.secondary
                 : kTheme.colorScheme.onBackground.withOpacity(kEmphasisHigh),
             onPressed: () => showCustomDialog(
               context: context,
@@ -283,7 +296,6 @@ class __ArtisanListTileState extends State<_ArtisanListTile> {
           selected: widget.selected,
           tileColor: widget.unselectedColor ?? kTheme.cardColor,
           enableFeedback: true,
-          // selectedTileColor: widget.selectedColor ?? kTheme.colorScheme.secondary,
         ),
       ),
     );
