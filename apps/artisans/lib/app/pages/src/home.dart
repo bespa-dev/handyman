@@ -165,12 +165,12 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   IconButton(
-                    icon: Icon(Feather.home),
+                    icon: Icon(kHomeIcon),
                     color: _kTheme.colorScheme.onPrimary,
                     onPressed: () => _onTabPressed(0),
                   ),
                   IconButton(
-                    icon: Icon(Feather.search),
+                    icon: Icon(kSearchIcon),
                     color: _kTheme.colorScheme.onPrimary,
                     onPressed: () => _onTabPressed(1),
                   ),
@@ -255,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                     )
                   },
                   IconButton(
-                    icon: Icon(Feather.bell),
+                    icon: Icon(kNotificationIcon),
                     color: _kTheme.colorScheme.onPrimary,
                     onPressed: () => _onTabPressed(2),
                   ),

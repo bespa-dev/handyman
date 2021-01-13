@@ -156,6 +156,9 @@ const kClearIcon = Icons.clear_all_outlined;
 const kHelpIcon = Feather.help_circle;
 const kCameraIcon = Entypo.camera;
 const kGalleryIcon = Entypo.image;
+const kHomeIcon = Feather.home;
+const kNotificationIcon = Feather.bell;
+const kBriefcaseIcon = MaterialCommunityIcons.briefcase;
 const kThreeDotsOptionsIcon = Entypo.dots_three_horizontal;
 
 /// [Algolia]

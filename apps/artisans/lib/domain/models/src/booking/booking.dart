@@ -26,13 +26,13 @@ enum _BookingState {
 }
 
 /// base bookings class
-abstract class BaseBooking<M> extends BaseModel {
+abstract class BaseBooking extends BaseModel {
   String customerId;
   String artisanId;
   String category;
   String imageUrl;
   String description;
-  M position;
+  BaseLocationMetadata position;
   double cost;
   double progress;
   String dueDate;

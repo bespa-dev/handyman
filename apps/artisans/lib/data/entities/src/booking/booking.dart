@@ -16,10 +16,11 @@ import 'package:meta/meta.dart';
 
 part 'booking.g.dart';
 
-// 'position': instance.position.toJson(),
+/// todo -> always set this after rebuilding dependencies
+/// 'position': instance.position.toJson(),
 @HiveType(typeId: 0)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class Booking extends BaseBooking<LocationMetadata> {
+class Booking extends BaseBooking {
   @HiveField(0)
   @override
   final String customerId;

@@ -207,7 +207,7 @@ class __ArtisanListTileState extends State<_ArtisanListTile> {
     return BlocBuilder<CategoryBloc, BlocState>(
       cubit: _categoryBloc,
       builder: (_, state) => AnimatedContainer(
-        duration: kSheetDuration,
+        duration: kScaleDuration,
         margin:
             EdgeInsets.symmetric(horizontal: kSpacingX8, vertical: kSpacingX4),
         decoration: BoxDecoration(

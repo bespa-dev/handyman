@@ -170,10 +170,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                       Text.rich(
                                         TextSpan(
                                           children: [
+                                            TextSpan(text: "Joined on\t"),
                                             TextSpan(
-                                              text: parseFromTimestamp(
-                                                  _currentUser?.createdAt),
-                                            ),
+                                                text: parseFromTimestamp(
+                                                    _currentUser?.createdAt),
+                                                style: kTheme.textTheme.caption
+                                                    .copyWith(
+                                                  color: kTheme
+                                                      .colorScheme.secondary,
+                                                )),
                                             TextSpan(
                                               text: "\n${_currentUser.email}",
                                             ),

@@ -20,7 +20,7 @@ class SearchView extends StatefulWidget {
     @required this.onQueryComplete,
     @required this.onQueryChange,
     @required this.focusNode,
-    this.hint = "Search...",
+    this.hint = "\tWhat do you want to do?",
   }) : super(key: key);
 
   @override
@@ -30,7 +30,6 @@ class SearchView extends StatefulWidget {
 class _SearchViewState extends State<SearchView> {
   final _controller = TextEditingController();
   bool _isTyping = false;
-  final _hint = "\tWhat do you want to do?";
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +74,7 @@ class _SearchViewState extends State<SearchView> {
                       cursorColor: kTheme.colorScheme.onBackground,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: _hint,
+                        hintText: widget.hint,
                         contentPadding: EdgeInsets.zero,
                         hintStyle: kTheme.textTheme.headline6.copyWith(
                           color: kTheme.colorScheme.onBackground
@@ -108,7 +107,7 @@ class _SearchViewState extends State<SearchView> {
                       ),
                       SizedBox(width: kSpacingX12),
                       Text(
-                        _hint,
+                        widget.hint,
                         style: kTheme.textTheme.headline6.copyWith(
                           color: kTheme.colorScheme.onBackground
                               .withOpacity(kEmphasisLow),

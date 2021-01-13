@@ -19,4 +19,3 @@ public class HandyManApp extends FlutterApplication implements PluginRegistrantC
         FirebaseMessagingPlugin.registerWith(pluginRegistry.registrarFor("io.flutter.plugins.firebasemessaging.FirebaseMessagingPlugin"));
     }
 }
-

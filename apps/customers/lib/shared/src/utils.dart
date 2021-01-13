@@ -24,6 +24,8 @@ class RefUtils {
 
 class PrefUtils {
   static const String kUserId = "user_id";
+  static const String kHomeAddress = "home_address";
+  static const String kWorkAddress = "work_address";
   static const String kEmergencyContact = "emergency_contact";
   static const String kTheme = "theme_mode";
   static const String kShowSplash = "show_splash";

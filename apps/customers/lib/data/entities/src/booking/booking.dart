@@ -7,19 +7,20 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:hive/hive.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:lite/data/entities/entities.dart' show LocationMetadata;
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
-import 'package:hive/hive.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 part 'booking.g.dart';
 
-// 'position': instance.position.toJson(),
+/// todo -> always set this after rebuilding dependencies
+/// 'position': instance.position.toJson(),
 @HiveType(typeId: 0)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class Booking extends BaseBooking<LocationMetadata> {
+class Booking extends BaseBooking {
   @HiveField(0)
   @override
   final String customerId;
@@ -78,7 +79,7 @@ class Booking extends BaseBooking<LocationMetadata> {
     @required this.description,
     @required this.dueDate,
     @required this.currentState,
-    this.position = const LocationMetadata(lat: 5.644, lng: -0.122),
+    this.position,
     this.cost = 0.0,
     this.progress = 0.0,
   });

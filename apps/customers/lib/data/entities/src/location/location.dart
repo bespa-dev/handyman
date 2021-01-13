@@ -1,6 +1,6 @@
-import 'package:lite/domain/models/models.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:lite/domain/models/models.dart';
 import 'package:meta/meta.dart';
 
 part 'location.g.dart';
@@ -14,20 +14,32 @@ class LocationMetadata extends BaseLocationMetadata {
   @HiveField(1)
   final double lng;
 
-  const LocationMetadata({@required this.lat, @required this.lng})
-      : super(lat: lat, lng: lng);
+  @HiveField(2)
+  final String name;
 
-  @override
-  String toString() => this.toJson().toString();
+  LocationMetadata({
+    @required this.lat,
+    @required this.lng,
+    this.name = "",
+  });
 
   factory LocationMetadata.fromJson(Map<String, dynamic> json) =>
       _$LocationMetadataFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$LocationMetadataToJson(this);
 
-  static toJsonFormat(LocationMetadata instance) =>
-      _$LocationMetadataToJson(instance);
+  // static toJsonFormat(LocationMetadata instance) =>
+  //     _$LocationMetadataToJson(instance);
+  //
+  // static LocationMetadata fromJsonFormat(Map<String, dynamic> json) =>
+  //     _$LocationMetadataFromJson(json);
 
-  static LocationMetadata fromJsonFormat(Map<String, dynamic> json) =>
-      _$LocationMetadataFromJson(json);
+  @override
+  BaseLocationMetadata copyWith({String name, double lat, double lng}) =>
+      LocationMetadata(
+        lat: lat ??= this.lat,
+        lng: lng ??= this.lng,
+        name: name ??= this.name,
+      );
 }

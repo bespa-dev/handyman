@@ -38,7 +38,7 @@ class TextFormInput extends TextFormField {
           validator: validator,
           obscureText: obscureText,
           textCapitalization: textCapitalization,
-          cursorColor: cursorColor,
+          cursorColor: cursorColor ?? kBlackColor,
           decoration: InputDecoration(
             labelText: labelText,
             hintText: hintText,

@@ -27,9 +27,9 @@ class PreferenceRepositoryImpl extends BasePreferenceRepository {
       _useStandardViewType = true,
       _isLoggedIn = true,
       _shouldShowSplash = true;
-  String _userId, _emergencyContactNumber;
+  String _userId, _emergencyContactNumber, _workAddress, _homeAddress;
   final StreamController<bool> _onThemeChangeController =
-      StreamController.broadcast();
+  StreamController.broadcast();
 
   @override
   String get emergencyContactNumber => _emergencyContactNumber;
@@ -47,10 +47,30 @@ class PreferenceRepositoryImpl extends BasePreferenceRepository {
   bool get useStandardViewType => _useStandardViewType;
 
   @override
+  String get homeAddress => _homeAddress;
+
+  @override
+  String get workAddress => _workAddress;
+
+  @override
   String get userId => _userId;
 
   @override
   Stream<bool> get onThemeChanged => _onThemeChangeController.stream;
+
+  @override
+  set homeAddress(String _homeAddress) {
+    _prefs.setString(PrefUtils.kHomeAddress, _homeAddress);
+    this._homeAddress = _homeAddress;
+    notifyListeners();
+  }
+
+  @override
+  set workAddress(String _workAddress) {
+    _prefs.setString(PrefUtils.kWorkAddress, _workAddress);
+    this._workAddress = _workAddress;
+    notifyListeners();
+  }
 
   @override
   set userId(String _userId) {
@@ -94,6 +114,8 @@ class PreferenceRepositoryImpl extends BasePreferenceRepository {
 
   void _initPrefs() async {
     _userId = _prefs.getString(PrefUtils.kUserId);
+    _workAddress = _prefs.getString(PrefUtils.kWorkAddress);
+    _homeAddress = _prefs.getString(PrefUtils.kHomeAddress);
     _emergencyContactNumber = _prefs.getString(PrefUtils.kEmergencyContact);
     _isLightTheme = _prefs.getBool(PrefUtils.kTheme) ?? false;
     _useStandardViewType = _prefs.getBool(PrefUtils.kStandardView) ?? true;

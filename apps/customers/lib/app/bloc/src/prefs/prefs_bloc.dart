@@ -28,6 +28,8 @@ class PrefsBloc extends BaseBloc<PrefsEvent> {
     PrefsEvent event,
   ) async* {
     yield* event.when(
+      getHomeAddressEvent: () => _mapEventToState(event),
+      getWorkAddressEvent: () => _mapEventToState(event),
       getUserIdEvent: () => _mapEventToState(event),
       getContactEvent: () => _mapEventToState(event),
       getStandardViewEvent: () => _mapEventToState(event),
@@ -36,6 +38,9 @@ class PrefsBloc extends BaseBloc<PrefsEvent> {
       saveContactEvent: (e) => _mapEventToState(e),
       saveLightThemeEvent: (e) => _mapEventToState(e),
       saveStandardViewEvent: (e) => _mapEventToState(e),
+      saveHomeAddressEvent: (e) => _mapEventToState(e),
+      saveUserIdEvent: (e) => _mapEventToState(e),
+      saveWorkAddressEvent: (e) => _mapEventToState(e),
       prefsSignOutEvent: () => _mapEventToState(event),
     );
   }
@@ -85,6 +90,27 @@ class PrefsBloc extends BaseBloc<PrefsEvent> {
         yield BlocState.successState();
       } else if (event is PrefsSignOutEvent) {
         await PrefsSignOutUseCase(_repo).execute(null);
+        yield BlocState.successState();
+      } else if (event is GetHomeAddressEvent) {
+        var result = await GetHomeAddressUseCase(_repo).execute(null);
+        if (result is UseCaseResultSuccess<String>) {
+          yield BlocState<String>.successState(data: result.value);
+        } else
+          throw Exception();
+      } else if (event is GetWorkAddressEvent) {
+        var result = await GetWorkAddressUseCase(_repo).execute(null);
+        if (result is UseCaseResultSuccess<String>) {
+          yield BlocState<String>.successState(data: result.value);
+        } else
+          throw Exception();
+      } else if (event is SaveUserIdEvent) {
+        await SaveUserIdUseCase(_repo).execute(event.id);
+        yield BlocState.successState();
+      } else if (event is SaveHomeAddressEvent) {
+        await SaveHomeAddressUseCase(_repo).execute(event.address);
+        yield BlocState.successState();
+      } else if (event is SaveWorkAddressEvent) {
+        await SaveWorkAddressUseCase(_repo).execute(event.address);
         yield BlocState.successState();
       }
     } on Exception {

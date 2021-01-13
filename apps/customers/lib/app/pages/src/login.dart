@@ -140,6 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                             textInputAction: TextInputAction.next,
                             enabled: !_isLoading,
                             color: kTheme.colorScheme.onPrimary,
+                            cursorColor: kTheme.colorScheme.onBackground,
                             validator: (_) => _.isEmpty ? "Required" : null,
                           ),
                           PasswordInput(
@@ -147,6 +148,7 @@ class _LoginPageState extends State<LoginPage> {
                             controller: _passwordController,
                             textInputAction: TextInputAction.done,
                             enabled: !_isLoading,
+                            cursorColor: kTheme.colorScheme.onBackground,
                             color: kTheme.colorScheme.onPrimary,
                             validator: (_) => _.isEmpty ? "Required" : null,
                             onFieldSubmitted: (_) => _validateAndLogin(),

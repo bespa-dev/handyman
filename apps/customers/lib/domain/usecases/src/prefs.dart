@@ -12,6 +12,38 @@ import 'package:lite/domain/repositories/repositories.dart';
 import 'usecase/result.dart';
 import 'usecase/usecase.dart';
 
+/// get home address
+class GetHomeAddressUseCase extends NoParamsUseCase<String> {
+  final BasePreferenceRepository _repo;
+
+  const GetHomeAddressUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<String>> execute(_) async {
+    try {
+      return UseCaseResult<String>.success(_repo.homeAddress);
+    } on Exception catch (ex) {
+      return UseCaseResult.error(ex.toString());
+    }
+  }
+}
+
+/// get work address
+class GetWorkAddressUseCase extends NoParamsUseCase<String> {
+  final BasePreferenceRepository _repo;
+
+  const GetWorkAddressUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<String>> execute(_) async {
+    try {
+      return UseCaseResult<String>.success(_repo.workAddress);
+    } on Exception catch (ex) {
+      return UseCaseResult.error(ex.toString());
+    }
+  }
+}
+
 /// get user id
 class GetUserIdUseCase extends NoParamsUseCase<String> {
   final BasePreferenceRepository _repo;
@@ -103,6 +135,40 @@ class SaveUserIdUseCase extends CompletableUseCase<String> {
   Future<UseCaseResult<void>> execute(id) async {
     try {
       _repo.userId = id;
+      return UseCaseResult.success();
+    } on Exception catch (ex) {
+      return UseCaseResult.error(ex.toString());
+    }
+  }
+}
+
+/// set home address
+class SaveHomeAddressUseCase extends CompletableUseCase<String> {
+  final BasePreferenceRepository _repo;
+
+  const SaveHomeAddressUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<void>> execute(address) async {
+    try {
+      _repo.homeAddress = address;
+      return UseCaseResult.success();
+    } on Exception catch (ex) {
+      return UseCaseResult.error(ex.toString());
+    }
+  }
+}
+
+/// set work address
+class SaveWorkAddressUseCase extends CompletableUseCase<String> {
+  final BasePreferenceRepository _repo;
+
+  const SaveWorkAddressUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<void>> execute(address) async {
+    try {
+      _repo.workAddress = address;
       return UseCaseResult.success();
     } on Exception catch (ex) {
       return UseCaseResult.error(ex.toString());

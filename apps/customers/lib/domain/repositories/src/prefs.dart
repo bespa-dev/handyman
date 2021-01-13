@@ -14,6 +14,8 @@ import 'package:lite/domain/models/models.dart';
 abstract class BasePreferenceRepository extends ChangeNotifier with Exposable {
   String emergencyContactNumber;
   String userId;
+  String homeAddress;
+  String workAddress;
   bool isLightTheme;
   bool useStandardViewType;
   bool shouldShowSplash;

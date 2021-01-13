@@ -9,7 +9,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/pages/pages.dart';
 import 'package:lite/app/widgets/widgets.dart';
@@ -160,12 +159,12 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: Icon(Feather.home),
+                  icon: Icon(kHomeIcon),
                   color: _kTheme.colorScheme.onPrimary,
                   onPressed: () => _onTabPressed(0),
                 ),
                 IconButton(
-                  icon: Icon(Feather.search),
+                  icon: Icon(kSearchIcon),
                   color: _kTheme.colorScheme.onPrimary,
                   onPressed: () => _onTabPressed(1),
                 ),
@@ -188,12 +187,12 @@ class _HomePageState extends State<HomePage> {
                       }),
                 },
                 IconButton(
-                  icon: Icon(Feather.bell),
+                  icon: Icon(kNotificationIcon),
                   color: _kTheme.colorScheme.onPrimary,
                   onPressed: () => _onTabPressed(3),
                 ),
                 IconButton(
-                  icon: Icon(Feather.briefcase),
+                  icon: Icon(kBriefcaseIcon),
                   color: _kTheme.colorScheme.onPrimary,
                   onPressed: () => _onTabPressed(4),
                 ),

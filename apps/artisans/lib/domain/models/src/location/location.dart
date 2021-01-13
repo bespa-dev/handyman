@@ -7,11 +7,19 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:meta/meta.dart';
+abstract class BaseLocationMetadata {
+  double lat;
+  double lng;
+  String name;
 
-class BaseLocationMetadata {
-  final double lat;
-  final double lng;
+  Map<String, dynamic> toJson();
 
-  const BaseLocationMetadata({@required this.lat, @required this.lng});
+  @override
+  String toString() => this.toJson().toString();
+
+  BaseLocationMetadata copyWith({
+    String name,
+    double lat,
+    double lng,
+  });
 }

@@ -13,7 +13,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:handyman/data/entities/entities.dart';
 import 'package:handyman/domain/models/src/location/location.dart';
 import 'package:handyman/domain/repositories/repositories.dart';
-import 'package:handyman/shared/shared.dart';
 import 'package:meta/meta.dart';
 
 class LocationRepositoryImpl implements BaseLocationRepository {
@@ -26,7 +25,14 @@ class LocationRepositoryImpl implements BaseLocationRepository {
   @override
   Future<BaseLocationMetadata> getCurrentLocation() async {
     var position = await Geolocator.getCurrentPosition();
-    return LocationMetadata(lat: position.latitude, lng: position.longitude);
+    var address = await getLocationName(
+        metadata:
+            LocationMetadata(lat: position.latitude, lng: position.longitude));
+    return LocationMetadata(
+      lat: position.latitude,
+      lng: position.longitude,
+      name: address,
+    );
   }
 
   @override
@@ -39,8 +45,12 @@ class LocationRepositoryImpl implements BaseLocationRepository {
 
   @override
   Stream<BaseLocationMetadata> observeCurrentLocation() async* {
-    yield* Geolocator.getPositionStream().map(
-        (event) => LocationMetadata(lat: event.latitude, lng: event.longitude));
+    Geolocator.getPositionStream().listen((event) async* {
+      var metadata =
+          LocationMetadata(lat: event.latitude, lng: event.longitude);
+      final name = await getLocationName(metadata: metadata);
+      yield metadata.copyWith(name: name);
+    });
   }
 
   @override
@@ -48,13 +58,12 @@ class LocationRepositoryImpl implements BaseLocationRepository {
       {@required String name}) async {
     var addresses = await _geocoding.findAddressesFromQuery(name);
     if (addresses.isNotEmpty) {
-      for (var value in addresses) {
-        logger.i("Address: ${value.addressLine} => ${value.coordinates}");
-      }
       /// return first address
       return LocationMetadata(
-          lat: addresses[0].coordinates.latitude,
-          lng: addresses[0].coordinates.longitude);
+        lat: addresses[0].coordinates.latitude,
+        lng: addresses[0].coordinates.longitude,
+        name: addresses[0].addressLine,
+      );
     }
     return null;
   }

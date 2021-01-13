@@ -16,6 +16,10 @@ enum _PrefsEvent {
   @object
   GetUserIdEvent,
   @object
+  GetHomeAddressEvent,
+  @object
+  GetWorkAddressEvent,
+  @object
   GetThemeEvent,
   @object
   GetContactEvent,
@@ -31,4 +35,10 @@ enum _PrefsEvent {
   SaveStandardViewEvent,
   @Data(fields: [DataField<String>("contact")])
   SaveContactEvent,
+  @Data(fields: [DataField<String>("id")])
+  SaveUserIdEvent,
+  @Data(fields: [DataField<String>("address")])
+  SaveHomeAddressEvent,
+  @Data(fields: [DataField<String>("address")])
+  SaveWorkAddressEvent,
 }

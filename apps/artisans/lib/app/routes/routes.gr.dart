@@ -303,7 +303,7 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
 
   Future<dynamic> pushBookingDetailsPage({
     Key key,
-    @required BaseBooking<dynamic> booking,
+    @required BaseBooking booking,
     @required BaseUser customer,
   }) =>
       push<dynamic>(
@@ -391,7 +391,7 @@ class CategoryDetailsPageArguments {
 /// BookingDetailsPage arguments holder class
 class BookingDetailsPageArguments {
   final Key key;
-  final BaseBooking<dynamic> booking;
+  final BaseBooking booking;
   final BaseUser customer;
   BookingDetailsPageArguments(
       {this.key, @required this.booking, @required this.customer});
