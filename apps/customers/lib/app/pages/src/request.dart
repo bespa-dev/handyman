@@ -62,8 +62,8 @@ class _RequestPageState extends State<RequestPage> {
   final _pageController = PageController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String _userId, _timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-  bool _complete = false,
-      _isRequesting = false,
+  bool _isRequesting = false,
+      _showActionIcon = true,
       _useCurrentLocation = false,
       _isHomeAddress = false,
       _isWorkAddress = false;
@@ -257,6 +257,7 @@ class _RequestPageState extends State<RequestPage> {
       _storageBloc.listen((state) {
         if (state is SuccessState<String>) {
           _fileUrl = state.data;
+          _showActionIcon = true;
           if (mounted) setState(() {});
           if (_isRequesting)
 
@@ -272,10 +273,15 @@ class _RequestPageState extends State<RequestPage> {
                 location: _location,
               ),
             );
-        } else {
+        } else if (state is ErrorState) {
           logger.e("Failed to upload image");
           showSnackBarMessage(context, message: "Failed to upload image");
           _isRequesting = false;
+          _showActionIcon = true;
+          if (mounted) setState(() {});
+        } else {
+          showSnackBarMessage(context, message: "Uploading file");
+          _showActionIcon = false;
           if (mounted) setState(() {});
         }
       });
@@ -340,7 +346,7 @@ class _RequestPageState extends State<RequestPage> {
               bottom: kSpacingNone,
               left: kSpacingNone,
               right: kSpacingNone,
-              height: _currentPage != 1 ? kToolbarHeight : kSpacingNone,
+              height: _currentPage == 1 ? kSpacingNone : kToolbarHeight,
               child: _buildActionButton(),
             ),
           ],
@@ -449,9 +455,10 @@ class _RequestPageState extends State<RequestPage> {
                 snapSpec: const SnapSpec(snappings: [0.5, 0.7, 1.0]),
                 cornerRadius: kSpacingX8,
                 footerBuilder: (_, __) => SizedBox(
-                    width: SizeConfig.screenWidth,
-                    height: kToolbarHeight,
-                    child: _buildActionButton()),
+                  width: SizeConfig.screenWidth,
+                  height: kToolbarHeight,
+                  child: _buildActionButton(text: "Next"),
+                ),
                 builder: (_, __) => Padding(
                   padding: EdgeInsets.only(
                     top: kSpacingX36,
@@ -470,26 +477,6 @@ class _RequestPageState extends State<RequestPage> {
                         ),
                       ),
                       SizedBox(height: kSpacingX12),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Checkbox(
-                            value: _useCurrentLocation,
-                            onChanged: (use) {
-                              _useCurrentLocation = use;
-                              setState(() {});
-                              _locationBloc
-                                  .add(LocationEvent.getCurrentLocation());
-                            },
-                          ),
-                          SizedBox(width: kSpacingX4),
-                          Text(
-                            "Use current location",
-                            style: kTheme.textTheme.bodyText1,
-                          ),
-                        ],
-                      ),
                       SearchView(
                         onQueryComplete: (_) {},
                         onQueryChange: (_) {},
@@ -497,6 +484,18 @@ class _RequestPageState extends State<RequestPage> {
                         hint: "Enter a location",
                       ),
                       SizedBox(height: kSpacingX12),
+                      SwitchListTile.adaptive(
+                        value: _useCurrentLocation,
+                        secondary: Icon(kLocationIcon),
+                        onChanged: (checked) {
+                          _useCurrentLocation = checked;
+                          setState(() {});
+                          if (_useCurrentLocation)
+                            _locationBloc
+                                .add(LocationEvent.getCurrentLocation());
+                        },
+                        title: Text("Use current location"),
+                      ),
                       BlocBuilder<PrefsBloc, BlocState>(
                         cubit: _homeAddressBloc,
                         builder: (_, state) => ListTile(
@@ -569,14 +568,12 @@ class _RequestPageState extends State<RequestPage> {
                     width: SizeConfig.screenWidth,
                     height: SizeConfig.screenHeight * 0.6,
                     alignment: Alignment.center,
-                    color: state is LoadingState
-                        ? kTheme.colorScheme.error
-                        : kTheme.colorScheme.background,
+                    color: kTheme.colorScheme.background,
                     child: state is SuccessState<BaseLocationMetadata>
                         ? Text(state.data.name)
                         : state is LoadingState
                             ? Loading()
-                            : SizedBox.shrink(),
+                            : emptyStateUI(context, message: "Oops..."),
 
                     /// fixme -> add google maps key
                     /// 1. AndroidManifest file
@@ -625,88 +622,57 @@ class _RequestPageState extends State<RequestPage> {
         height: SizeConfig.screenHeight,
         width: SizeConfig.screenWidth,
         color: kPlaceholderColor,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              top: SizeConfig.screenHeight * 0.1,
-              child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: kSpacingX24),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(
+            left: kSpacingX24,
+            right: kSpacingX24,
+            top: SizeConfig.screenHeight * 0.15,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                margin: EdgeInsets.only(
+                  top: kSpacingX12,
+                  bottom: kSpacingX24,
+                ),
+                height: SizeConfig.screenHeight * 0.3,
+                width: SizeConfig.screenWidth,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(kSpacingX8),
+                  color: kTheme.cardColor,
+                ),
+                clipBehavior: Clip.hardEdge,
+                child: ImageView(
+                  imageUrl: _imageFile?.absolute?.path,
+                  isFileImage: _imageFile != null,
+                  onTap: _pickImage,
+                  fit: BoxFit.cover,
+                  height: SizeConfig.screenHeight * 0.3,
+                  width: SizeConfig.screenWidth,
+                ),
+              ),
+              Form(
+                key: _formKey,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: kSpacingX12,
-                        bottom: kSpacingX24,
-                      ),
-                      height: SizeConfig.screenHeight * 0.3,
-                      width: SizeConfig.screenWidth,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(kSpacingX8),
-                        color: kTheme.cardColor,
-                      ),
-                      clipBehavior: Clip.hardEdge,
-                      child: ImageView(
-                        imageUrl: _imageFile?.absolute?.path,
-                        isFileImage: _imageFile != null,
-                        onTap: _pickImage,
-                        fit: BoxFit.cover,
-                        height: SizeConfig.screenHeight * 0.3,
-                        width: SizeConfig.screenWidth,
-                      ),
-                    ),
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          TextFormInput(
-                            labelText: "Short Description*",
-                            controller: _bodyController,
-                            validator: (_) => _.isEmpty
-                                ? "Add a short description of your problem"
-                                : null,
-                            textCapitalization: TextCapitalization.words,
-                            enabled: !_isRequesting,
-                            cursorColor: kTheme.colorScheme.onBackground,
-                            maxLines: 5,
-                            keyboardType: TextInputType.multiline,
-                          ),
-                        ],
-                      ),
+                    TextFormInput(
+                      labelText: "Short Description*",
+                      controller: _bodyController,
+                      validator: (_) => _.isEmpty
+                          ? "Add a short description of your problem"
+                          : null,
+                      textCapitalization: TextCapitalization.words,
+                      enabled: !_isRequesting,
+                      cursorColor: kTheme.colorScheme.onBackground,
+                      maxLines: 5,
+                      keyboardType: TextInputType.multiline,
                     ),
                   ],
                 ),
               ),
-            ),
-
-            /// action buttons
-            Positioned(
-              bottom: kSpacingNone,
-              left: kSpacingNone,
-              right: kSpacingNone,
-              child: InkWell(
-                onTap: () => _complete ? _requestService() : null,
-                child: Container(
-                  height: kToolbarHeight,
-                  width: SizeConfig.screenWidth,
-                  alignment: Alignment.center,
-                  decoration:
-                      BoxDecoration(color: kTheme.colorScheme.secondary),
-                  child: _isRequesting
-                      ? Loading(
-                          circular: true,
-                          color: kTheme.colorScheme.onSecondary,
-                        )
-                      : Text(
-                          "Send Request",
-                          style: kTheme.textTheme.button.copyWith(
-                            color: kTheme.colorScheme.onSecondary,
-                          ),
-                        ),
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
 
@@ -726,7 +692,7 @@ class _RequestPageState extends State<RequestPage> {
   }
 
   /// bottom action button
-  Widget _buildActionButton() {
+  Widget _buildActionButton({String text = "Send Request"}) {
     kTheme = Theme.of(context);
     bool isLastPage = _currentPage == _numPages - 1;
     return InkWell(
@@ -773,7 +739,9 @@ class _RequestPageState extends State<RequestPage> {
                   break;
               }
             },
-      child: Container(
+      child: AnimatedContainer(
+        duration: kSheetDuration,
+        height: _showActionIcon ? kToolbarHeight : kSpacingNone,
         width: SizeConfig.screenWidth,
         alignment: Alignment.center,
         decoration: BoxDecoration(color: kTheme.colorScheme.secondary),
@@ -783,7 +751,7 @@ class _RequestPageState extends State<RequestPage> {
                 color: kTheme.colorScheme.onSecondary,
               )
             : Text(
-                _currentPage == 2 ? "Send request" : "Next",
+                isLastPage ? text : "Next",
                 style: kTheme.textTheme.button.copyWith(
                   color: kTheme.colorScheme.onSecondary,
                 ),

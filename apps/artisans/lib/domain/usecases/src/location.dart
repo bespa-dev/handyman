@@ -24,7 +24,8 @@ class GetCurrentLocationUseCase extends NoParamsUseCase<BaseLocationMetadata> {
       var metadata = await _repo.getCurrentLocation();
       return UseCaseResult<BaseLocationMetadata>.success(metadata);
     } on Exception {
-      return UseCaseResult.error("Failed to get current user location");
+      return UseCaseResult<BaseLocationMetadata>.error(
+          "Failed to get current user location");
     }
   }
 }
@@ -42,7 +43,8 @@ class ObserveCurrentLocationUseCase
       return UseCaseResult<Stream<BaseLocationMetadata>>.success(
           stream.asBroadcastStream());
     } on Exception {
-      return UseCaseResult.error("Failed to get current user location");
+      return UseCaseResult<Stream<BaseLocationMetadata>>.error(
+          "Failed to get current user location");
     }
   }
 }
@@ -58,7 +60,7 @@ class GetLocationNameUseCase extends UseCase<String, BaseLocationMetadata> {
       var locationName = await _repo.getLocationName(metadata: metadata);
       return UseCaseResult<String>.success(locationName);
     } on Exception {
-      return UseCaseResult.error("Unable to get location name");
+      return UseCaseResult<String>.error("Unable to get location name");
     }
   }
 }
@@ -75,7 +77,8 @@ class GetLocationCoordinatesUseCase
       var location = await _repo.getLocationPosition(name: address);
       return UseCaseResult<BaseLocationMetadata>.success(location);
     } on Exception {
-      return UseCaseResult.error("Unable to get location name");
+      return UseCaseResult<BaseLocationMetadata>.error(
+          "Unable to get location name");
     }
   }
 }
