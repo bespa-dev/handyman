@@ -62,6 +62,24 @@ class _HomePageState extends State<HomePage> {
       });
   }
 
+  /// handles back press
+  Future<bool> _handleBackPressed() async {
+    if (_currentPage == 0) {
+      final state = await showCustomDialog(
+        context: context,
+        builder: (_) => BasicDialog(
+          message: "Do you wish to exit $kAppName?",
+          onComplete: () async {},
+        ),
+      );
+      return Future<bool>.value(state ?? false);
+    } else {
+      _currentPage = 0;
+      setState(() {});
+      return Future<bool>.value(false);
+    }
+  }
+
   @override
   void dispose() {
     _userBloc.close();
@@ -101,102 +119,106 @@ class _HomePageState extends State<HomePage> {
     SizeConfig().init(context);
     _kTheme = Theme.of(context);
 
-    return BlocBuilder<UserBloc, BlocState>(
-      cubit: _userBloc,
-      builder: (_, state) => Scaffold(
-        body: SafeArea(
-          top: _navStates[_currentPage] == _artisansNavKey ||
-              _navStates[_currentPage] == _profileNavKey,
-          bottom: true,
-          child: IndexedStack(
-            index: _currentPage,
-            children: [
-              /// artisans
-              Navigator(
-                key: _artisansNavKey,
-                onGenerateRoute: (route) => MaterialPageRoute(
-                    settings: route, builder: (__) => ArtisansPage()),
-              ),
-
-              /// search
-              Navigator(
-                key: _searchNavKey,
-                onGenerateRoute: (route) => MaterialPageRoute(
-                    settings: route, builder: (__) => SearchPage()),
-              ),
-
-              /// profile
-              Navigator(
-                key: _profileNavKey,
-                onGenerateRoute: (route) => MaterialPageRoute(
-                    settings: route, builder: (__) => ProfilePage()),
-              ),
-
-              /// notifications
-              Navigator(
-                key: _notificationsNavKey,
-                onGenerateRoute: (route) => MaterialPageRoute(
-                    settings: route, builder: (__) => NotificationsPage()),
-              ),
-
-              /// bookings
-              Navigator(
-                key: _bookingsNavKey,
-                onGenerateRoute: (route) => MaterialPageRoute(
-                    settings: route, builder: (__) => BookingsPage()),
-              ),
-            ],
-          ),
-        ),
-        bottomNavigationBar: Container(
-          height: getProportionateScreenHeight(kSpacingX64),
-          decoration: BoxDecoration(color: _kTheme.colorScheme.primary),
-          child: Material(
-            type: MaterialType.transparency,
-            elevation: kSpacingX2,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
+    return WillPopScope(
+      onWillPop: _handleBackPressed,
+      child: BlocBuilder<UserBloc, BlocState>(
+        cubit: _userBloc,
+        builder: (_, state) => Scaffold(
+          body: SafeArea(
+            top: _navStates[_currentPage] == _artisansNavKey ||
+                _navStates[_currentPage] == _profileNavKey,
+            bottom: true,
+            child: IndexedStack(
+              index: _currentPage,
               children: [
-                IconButton(
-                  icon: Icon(kHomeIcon),
-                  color: _kTheme.colorScheme.onPrimary,
-                  onPressed: () => _onTabPressed(0),
+                /// artisans
+                Navigator(
+                  key: _artisansNavKey,
+                  onGenerateRoute: (route) => MaterialPageRoute(
+                      settings: route, builder: (__) => ArtisansPage()),
                 ),
-                IconButton(
-                  icon: Icon(kSearchIcon),
-                  color: _kTheme.colorScheme.onPrimary,
-                  onPressed: () => _onTabPressed(1),
+
+                /// search
+                Navigator(
+                  key: _searchNavKey,
+                  onGenerateRoute: (route) => MaterialPageRoute(
+                      settings: route, builder: (__) => SearchPage()),
                 ),
-                if (_isLoggedIn && state is SuccessState<Stream<BaseUser>>) ...{
-                  StreamBuilder<BaseUser>(
-                      stream: state.data,
-                      builder: (_, snapshot) {
-                        final user = snapshot.data;
-                        return GestureDetector(
-                          onTap: () => _onTabPressed(2),
-                          child: SizedBox(
-                            height: kSpacingX36,
-                            width: kSpacingX36,
-                            child: UserAvatar(
-                              url: user?.avatar,
-                              isCircular: true,
-                            ),
-                          ),
-                        );
-                      }),
-                },
-                IconButton(
-                  icon: Icon(kNotificationIcon),
-                  color: _kTheme.colorScheme.onPrimary,
-                  onPressed: () => _onTabPressed(3),
+
+                /// profile
+                Navigator(
+                  key: _profileNavKey,
+                  onGenerateRoute: (route) => MaterialPageRoute(
+                      settings: route, builder: (__) => ProfilePage()),
                 ),
-                IconButton(
-                  icon: Icon(kBriefcaseIcon),
-                  color: _kTheme.colorScheme.onPrimary,
-                  onPressed: () => _onTabPressed(4),
+
+                /// notifications
+                Navigator(
+                  key: _notificationsNavKey,
+                  onGenerateRoute: (route) => MaterialPageRoute(
+                      settings: route, builder: (__) => NotificationsPage()),
+                ),
+
+                /// bookings
+                Navigator(
+                  key: _bookingsNavKey,
+                  onGenerateRoute: (route) => MaterialPageRoute(
+                      settings: route, builder: (__) => BookingsPage()),
                 ),
               ],
+            ),
+          ),
+          bottomNavigationBar: Container(
+            height: getProportionateScreenHeight(kSpacingX64),
+            decoration: BoxDecoration(color: _kTheme.colorScheme.primary),
+            child: Material(
+              type: MaterialType.transparency,
+              elevation: kSpacingX2,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: Icon(kHomeIcon),
+                    color: _kTheme.colorScheme.onPrimary,
+                    onPressed: () => _onTabPressed(0),
+                  ),
+                  IconButton(
+                    icon: Icon(kSearchIcon),
+                    color: _kTheme.colorScheme.onPrimary,
+                    onPressed: () => _onTabPressed(1),
+                  ),
+                  if (_isLoggedIn &&
+                      state is SuccessState<Stream<BaseUser>>) ...{
+                    StreamBuilder<BaseUser>(
+                        stream: state.data,
+                        builder: (_, snapshot) {
+                          final user = snapshot.data;
+                          return GestureDetector(
+                            onTap: () => _onTabPressed(2),
+                            child: SizedBox(
+                              height: kSpacingX36,
+                              width: kSpacingX36,
+                              child: UserAvatar(
+                                url: user?.avatar,
+                                isCircular: true,
+                              ),
+                            ),
+                          );
+                        }),
+                  },
+                  IconButton(
+                    icon: Icon(kNotificationIcon),
+                    color: _kTheme.colorScheme.onPrimary,
+                    onPressed: () => _onTabPressed(3),
+                  ),
+                  IconButton(
+                    icon: Icon(kBriefcaseIcon),
+                    color: _kTheme.colorScheme.onPrimary,
+                    onPressed: () => _onTabPressed(4),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
