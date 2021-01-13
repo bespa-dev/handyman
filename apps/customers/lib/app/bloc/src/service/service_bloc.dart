@@ -19,6 +19,7 @@ class ArtisanServiceBloc extends BaseBloc<ArtisanServiceEvent> {
       getArtisanServices: (e) => _mapEventToState(e),
       updateArtisanService: (e) => _mapEventToState(e),
       getServiceById: (e) => _mapEventToState(e),
+      getAllArtisanServices: () => _mapEventToState(event),
     );
   }
 
@@ -28,6 +29,14 @@ class ArtisanServiceBloc extends BaseBloc<ArtisanServiceEvent> {
     if (event is GetArtisanServices) {
       var result =
           await GetArtisanServicesUseCase(_repo).execute(event.category);
+      if (result is UseCaseResultSuccess<List<BaseArtisanService>>)
+        yield BlocState<List<BaseArtisanService>>.successState(
+            data: result.value);
+      else
+        yield BlocState.errorState(failure: "Failed to load services");
+    } else if (event is GetAllArtisanServices) {
+      var result =
+      await GetAllArtisanServicesUseCase(_repo).execute(null);
       if (result is UseCaseResultSuccess<List<BaseArtisanService>>)
         yield BlocState<List<BaseArtisanService>>.successState(
             data: result.value);

@@ -4,6 +4,23 @@ import 'package:lite/domain/repositories/repositories.dart';
 import 'usecase/result.dart';
 import 'usecase/usecase.dart';
 
+class GetAllArtisanServicesUseCase
+    extends NoParamsUseCase<List<BaseArtisanService>> {
+  final BaseArtisanServiceRepository _repo;
+
+  const GetAllArtisanServicesUseCase(this._repo);
+
+  @override
+  Future<UseCaseResult<List<BaseArtisanService>>> execute(_) async {
+    try {
+      var results = (await _repo.getArtisanServices()).toList();
+      return UseCaseResult<List<BaseArtisanService>>.success(results);
+    } on Exception {
+      return UseCaseResult.error();
+    }
+  }
+}
+
 class GetArtisanServicesUseCase
     extends UseCase<List<BaseArtisanService>, String> {
   final BaseArtisanServiceRepository _repo;

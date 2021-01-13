@@ -8,15 +8,20 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:lite/shared/shared.dart';
+import 'package:meta/meta.dart';
 
 /// Page indicator
 class PageIndicator extends StatefulWidget {
   final int pages; // Number of pages
   final int currentPage;
+  final Color activeColor;
 
-  const PageIndicator({@required this.pages, @required this.currentPage});
+  const PageIndicator({
+    @required this.pages,
+    @required this.currentPage,
+    this.activeColor,
+  });
 
   @override
   _PageIndicatorState createState() => _PageIndicatorState();
@@ -53,7 +58,9 @@ class _PageIndicatorState extends State<PageIndicator> {
             ? getProportionateScreenWidth(kSpacingX36)
             : getProportionateScreenWidth(kSpacingX8),
         decoration: BoxDecoration(
-          color: isActive ? _themeData.colorScheme.primary : _themeData.disabledColor,
+          color: isActive
+              ? widget.activeColor ?? _themeData.colorScheme.primary
+              : _themeData.disabledColor,
           borderRadius: BorderRadius.all(
             Radius.circular(getProportionateScreenWidth(kSpacingX12)),
           ),

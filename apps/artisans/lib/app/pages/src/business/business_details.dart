@@ -11,6 +11,7 @@ import 'package:handyman/app/widgets/src/service_list_item.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
 
+/// todo -> complete other tabs
 class BusinessDetailsPage extends StatefulWidget {
   final BaseBusiness business;
   final BaseArtisan artisan;

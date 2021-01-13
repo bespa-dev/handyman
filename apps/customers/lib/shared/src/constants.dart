@@ -116,6 +116,8 @@ const kSignOutText =
     "Signing out will set you offline until you sign in again. You may not be able to send/receive requests. Do you wish to continue?";
 const kAccountCompletionHelperText =
     "In order to complete your mobile registration process, kindly setup your profile information and upload a business document. You will be notified within the next 72 hours. Thank you!";
+const kServiceHelperText =
+    "Details on services provided by this artisan are not made public. If you need more information regarding the procedure and arrangement for the performance of this job please contact the artisan directly through the \"chat\" option available on his/her profile.";
 const kArtisanString = "Artisan";
 const kFunctionalityUnavailable =
     "Functionality is currently unavailable. Try again after the next update. Thank you";
@@ -151,6 +153,9 @@ const kCloseIcon = Feather.x;
 const kSearchIcon = Feather.search;
 const kLocationIcon = Feather.map_pin;
 const kClearIcon = Icons.clear_all_outlined;
+const kHelpIcon = Feather.help_circle;
+const kCameraIcon = Entypo.camera;
+const kGalleryIcon = Entypo.image;
 const kThreeDotsOptionsIcon = Entypo.dots_three_horizontal;
 
 /// [Algolia]

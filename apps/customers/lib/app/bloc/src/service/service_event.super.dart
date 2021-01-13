@@ -20,6 +20,9 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
   factory ArtisanServiceEvent.updateArtisanService({@required T service}) =
       UpdateArtisanService<T>.create;
 
+  factory ArtisanServiceEvent.getAllArtisanServices() =
+      GetAllArtisanServices<T>.create;
+
   final _ArtisanServiceEvent _type;
 
   /// The [when] method is the equivalent to pattern matching.
@@ -27,11 +30,13 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
   R when<R extends Object>(
       {@required R Function(GetArtisanServices<T>) getArtisanServices,
       @required R Function(GetServiceById<T>) getServiceById,
-      @required R Function(UpdateArtisanService<T>) updateArtisanService}) {
+      @required R Function(UpdateArtisanService<T>) updateArtisanService,
+      @required R Function() getAllArtisanServices}) {
     assert(() {
       if (getArtisanServices == null ||
           getServiceById == null ||
-          updateArtisanService == null) {
+          updateArtisanService == null ||
+          getAllArtisanServices == null) {
         throw 'check for all possible cases';
       }
       return true;
@@ -43,6 +48,8 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
         return getServiceById(this as GetServiceById);
       case _ArtisanServiceEvent.UpdateArtisanService:
         return updateArtisanService(this as UpdateArtisanService);
+      case _ArtisanServiceEvent.GetAllArtisanServices:
+        return getAllArtisanServices();
     }
   }
 
@@ -55,6 +62,7 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
       {R Function(GetArtisanServices<T>) getArtisanServices,
       R Function(GetServiceById<T>) getServiceById,
       R Function(UpdateArtisanService<T>) updateArtisanService,
+      R Function() getAllArtisanServices,
       @required R Function(ArtisanServiceEvent<T>) orElse}) {
     assert(() {
       if (orElse == null) {
@@ -72,6 +80,9 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
       case _ArtisanServiceEvent.UpdateArtisanService:
         if (updateArtisanService == null) break;
         return updateArtisanService(this as UpdateArtisanService);
+      case _ArtisanServiceEvent.GetAllArtisanServices:
+        if (getAllArtisanServices == null) break;
+        return getAllArtisanServices();
     }
     return orElse(this);
   }
@@ -81,11 +92,13 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
   void whenPartial(
       {void Function(GetArtisanServices<T>) getArtisanServices,
       void Function(GetServiceById<T>) getServiceById,
-      void Function(UpdateArtisanService<T>) updateArtisanService}) {
+      void Function(UpdateArtisanService<T>) updateArtisanService,
+      void Function() getAllArtisanServices}) {
     assert(() {
       if (getArtisanServices == null &&
           getServiceById == null &&
-          updateArtisanService == null) {
+          updateArtisanService == null &&
+          getAllArtisanServices == null) {
         throw 'provide at least one branch';
       }
       return true;
@@ -100,6 +113,9 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
       case _ArtisanServiceEvent.UpdateArtisanService:
         if (updateArtisanService == null) break;
         return updateArtisanService(this as UpdateArtisanService);
+      case _ArtisanServiceEvent.GetAllArtisanServices:
+        if (getAllArtisanServices == null) break;
+        return getAllArtisanServices();
     }
   }
 
@@ -205,4 +221,20 @@ class _UpdateArtisanServiceImpl<T> extends UpdateArtisanService<T> {
   String toString() => 'UpdateArtisanService(service: ${this.service})';
   @override
   List<Object> get props => [service];
+}
+
+@immutable
+abstract class GetAllArtisanServices<T> extends ArtisanServiceEvent<T> {
+  const GetAllArtisanServices()
+      : super(_ArtisanServiceEvent.GetAllArtisanServices);
+
+  factory GetAllArtisanServices.create() = _GetAllArtisanServicesImpl<T>;
+}
+
+@immutable
+class _GetAllArtisanServicesImpl<T> extends GetAllArtisanServices<T> {
+  const _GetAllArtisanServicesImpl() : super();
+
+  @override
+  String toString() => 'GetAllArtisanServices()';
 }

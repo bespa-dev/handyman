@@ -11,4 +11,6 @@ enum _ArtisanServiceEvent {
   @generic
   @Data(fields: [DataField<Generic>("service")])
   UpdateArtisanService,
+  @object
+  GetAllArtisanServices,
 }

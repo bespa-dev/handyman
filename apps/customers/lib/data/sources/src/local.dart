@@ -248,10 +248,8 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   Future<List<BaseUser>> searchFor({String query, String categoryId}) async {
     return artisanBox.values
         .where((item) =>
-            item.email.contains(query) ||
-            item.category.contains(query) ||
-            item.phone.contains(query) ||
-            item.name.contains(query))
+            item != null &&
+            (item.email.contains(query) || item.name.contains(query)))
         .toList();
   }
 

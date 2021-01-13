@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:lite/app/bloc/bloc.dart';
+import 'package:lite/app/routes/routes.gr.dart';
 import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
@@ -63,96 +64,138 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
           builder: (_, userSnap) {
             final artisan = userSnap.data;
 
-            return CustomScrollView(
-              slivers: [
-                /// header
-                SliverAppBar(
-                  toolbarHeight: kToolbarHeight,
-                  toolbarTextStyle: kTheme.textTheme.headline6,
-                  textTheme: kTheme.textTheme,
-                  leading: IconButton(
-                    icon: Icon(kBackIcon),
-                    onPressed: () => context.navigator.pop(),
-                  ),
-                  pinned: true,
-                  backgroundColor: kTheme.colorScheme.background,
-                  expandedHeight: SizeConfig.screenHeight * 0.35,
-                  actions: [
-                    IconButton(
-                      icon: Icon(kOptionsIcon),
-                      onPressed: _showOptionsBottomSheet,
-                    ),
-                  ],
-                  flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.parallax,
-                    background: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Positioned.fill(
-                          child: ImageView(imageUrl: artisan.avatar),
-                        ),
-                      ],
-                    ),
-                    titlePadding: EdgeInsets.zero,
-                  ),
-                ),
-
-                /// profile details
-                SliverList(
-                  delegate: SliverChildListDelegate.fixed(
-                    [
-                      Padding(
-                        padding: const EdgeInsets.all(kSpacingX8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+            return Scaffold(
+              body: Stack(
+                children: [
+                  /// main content
+                  Positioned.fill(
+                    child: CustomScrollView(
+                      slivers: [
+                        /// header
+                        SliverAppBar(
+                          toolbarHeight: kToolbarHeight,
+                          toolbarTextStyle: kTheme.textTheme.headline6,
+                          textTheme: kTheme.textTheme,
+                          leading: IconButton(
+                            icon: Icon(kBackIcon),
+                            onPressed: () => context.navigator.pop(),
+                          ),
+                          pinned: true,
+                          backgroundColor: kTheme.colorScheme.background,
+                          expandedHeight: SizeConfig.screenHeight * 0.35,
+                          actions: [
+                            IconButton(
+                              icon: Icon(kOptionsIcon),
+                              onPressed: _showOptionsBottomSheet,
+                            ),
+                          ],
+                          flexibleSpace: FlexibleSpaceBar(
+                            collapseMode: CollapseMode.parallax,
+                            background: Stack(
+                              fit: StackFit.expand,
                               children: [
-                                Text(
-                                  artisan.name ?? "No username",
-                                  style: kTheme.textTheme.headline5,
-                                ),
-                                BlocBuilder<CategoryBloc, BlocState>(
-                                  cubit: CategoryBloc(repo: Injection.get())
-                                    ..add(
-                                      CategoryEvent.observeCategoryById(
-                                          id: artisan.category),
-                                    ),
-                                  builder: (_, userCategoryState) =>
-                                      StreamBuilder<BaseServiceCategory>(
-                                          stream: userCategoryState is SuccessState<
-                                              Stream<BaseServiceCategory>>
-                                              ? userCategoryState.data
-                                              : Stream.empty(),
-                                          builder: (_, __) {
-                                            return Text(
-                                              __.hasData ? __.data.name : "...",
-                                              style: kTheme.textTheme.bodyText2,
-                                            );
-                                          }),
-                                ),
-                                SizedBox(width: kSpacingX8),
-                                RatingBarIndicator(
-                                  itemBuilder: (_, index) => Icon(
-                                    kRatingStar,
-                                    color: kAmberColor,
-                                  ),
-                                  itemCount: 5,
-                                  itemSize: kSpacingX24,
-                                  rating: artisan.rating,
+                                Positioned.fill(
+                                  child: ImageView(imageUrl: artisan.avatar),
                                 ),
                               ],
                             ),
-                          ],
+                            titlePadding: EdgeInsets.zero,
+                          ),
+                        ),
+
+                        /// profile details
+                        SliverList(
+                          delegate: SliverChildListDelegate.fixed(
+                            [
+                              Padding(
+                                padding: const EdgeInsets.all(kSpacingX8),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          artisan.name ?? "No username",
+                                          style: kTheme.textTheme.headline5,
+                                        ),
+                                        BlocBuilder<CategoryBloc, BlocState>(
+                                          cubit: CategoryBloc(
+                                              repo: Injection.get())
+                                            ..add(
+                                              CategoryEvent.observeCategoryById(
+                                                  id: artisan.category),
+                                            ),
+                                          builder: (_, userCategoryState) =>
+                                              StreamBuilder<
+                                                      BaseServiceCategory>(
+                                                  stream: userCategoryState
+                                                          is SuccessState<
+                                                              Stream<
+                                                                  BaseServiceCategory>>
+                                                      ? userCategoryState.data
+                                                      : Stream.empty(),
+                                                  builder: (_, __) {
+                                                    return Text(
+                                                      __.hasData
+                                                          ? __.data.name
+                                                          : "...",
+                                                      style: kTheme
+                                                          .textTheme.bodyText2,
+                                                    );
+                                                  }),
+                                        ),
+                                        SizedBox(width: kSpacingX8),
+                                        RatingBarIndicator(
+                                          itemBuilder: (_, index) => Icon(
+                                            kRatingStar,
+                                            color: kAmberColor,
+                                          ),
+                                          itemCount: 5,
+                                          itemSize: kSpacingX24,
+                                          rating: artisan.rating,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                            addAutomaticKeepAlives: true,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  /// request service button
+                  Positioned(
+                    bottom: kSpacingNone,
+                    left: kSpacingNone,
+                    right: kSpacingNone,
+                    child: InkWell(
+                      onTap: () =>
+                          context.navigator.pushRequestPage(artisan: artisan),
+                      child: Container(
+                        height: kToolbarHeight,
+                        width: SizeConfig.screenWidth,
+                        alignment: Alignment.center,
+                        decoration:
+                            BoxDecoration(color: kTheme.colorScheme.secondary),
+                        child: Text(
+                          "Request Job",
+                          style: kTheme.textTheme.button.copyWith(
+                            color: kTheme.colorScheme.onSecondary,
+                          ),
                         ),
                       ),
-                    ],
-                    addAutomaticKeepAlives: true,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           }),
     );
@@ -263,7 +306,8 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
 
     logger.d("Report -> $report");
     if (mounted && report != null)
-      showSnackBarMessage(context, message: "${widget.artisan.name ?? "Artisan"} reported");
+      showSnackBarMessage(context,
+          message: "${widget.artisan.name ?? "Artisan"} reported");
 
     /// todo -> send report to server
   }

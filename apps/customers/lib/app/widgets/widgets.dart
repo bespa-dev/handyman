@@ -24,3 +24,4 @@ export 'src/review_list_item.dart';
 export 'src/sign_out_button.dart';
 export 'src/user_avatar.dart';
 export 'src/service_list_item.dart';
+export 'src/search_view.dart';

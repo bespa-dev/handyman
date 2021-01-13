@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/widgets/src/dialogs.dart';
+import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 
@@ -19,12 +20,14 @@ class _ArtisanServiceListItemState extends State<ArtisanServiceListItem> {
   /// blocs
   final _serviceBloc = ArtisanServiceBloc(repo: Injection.get());
   final _updateServiceBloc = ArtisanServiceBloc(repo: Injection.get());
+  final _categoryBloc = CategoryBloc(repo: Injection.get());
 
   /// UI
   final _controller = TextEditingController();
 
   @override
   void dispose() {
+    _categoryBloc.close();
     _serviceBloc.close();
     _updateServiceBloc.close();
     super.dispose();
@@ -46,6 +49,7 @@ class _ArtisanServiceListItemState extends State<ArtisanServiceListItem> {
 
     return BlocBuilder<ArtisanServiceBloc, BlocState>(
       cubit: _serviceBloc,
+      buildWhen: (previous, current) => previous != current,
       builder: (_, state) => state is SuccessState<BaseArtisanService>
           ? InkWell(
               splashColor: kTheme.splashColor,
@@ -104,6 +108,184 @@ class _ArtisanServiceListItemState extends State<ArtisanServiceListItem> {
               ),
             )
           : SizedBox.shrink(),
+    );
+  }
+}
+
+class ArtisanServiceListView extends StatefulWidget {
+  final List<BaseArtisanService> services;
+  final Function(BaseArtisanService) onItemSelected;
+  final BaseArtisanService selected;
+  final Color selectedColor;
+  final Color unselectedColor;
+  final bool checkable;
+
+  const ArtisanServiceListView({
+    Key key,
+    @required this.services,
+    @required this.onItemSelected,
+    @required this.selected,
+    this.selectedColor,
+    this.unselectedColor,
+    this.checkable = false,
+  }) : super(key: key);
+
+  @override
+  _ArtisanServiceListViewState createState() => _ArtisanServiceListViewState();
+}
+
+class _ArtisanServiceListViewState extends State<ArtisanServiceListView> {
+  @override
+  Widget build(BuildContext context) => Container(
+        width: SizeConfig.screenWidth,
+        height: SizeConfig.screenHeight,
+        child: ListView.builder(
+          itemBuilder: (_, index) {
+            final item = widget.services[index];
+            return _ArtisanListTile(
+              service: item,
+              showLeadingIcon: widget.checkable,
+              onTap: () {
+                widget.onItemSelected(item);
+              },
+              selected: widget.selected == item,
+              selectedColor: widget.selectedColor,
+              unselectedColor: widget.unselectedColor,
+            );
+          },
+          itemCount: widget.services.length,
+          padding: EdgeInsets.zero,
+        ),
+      );
+}
+
+class _ArtisanListTile extends StatefulWidget {
+  final BaseArtisanService service;
+  final bool selected;
+  final bool showLeadingIcon;
+  final Function() onTap;
+  final Color selectedColor;
+  final Color unselectedColor;
+
+  const _ArtisanListTile({
+    Key key,
+    @required this.service,
+    this.selected = false,
+    @required this.onTap,
+    this.selectedColor,
+    this.unselectedColor,
+    this.showLeadingIcon = true,
+  }) : super(key: key);
+
+  @override
+  __ArtisanListTileState createState() => __ArtisanListTileState();
+}
+
+class __ArtisanListTileState extends State<_ArtisanListTile> {
+  final _categoryBloc = CategoryBloc(repo: Injection.get());
+
+  @override
+  void dispose() {
+    _categoryBloc.close();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (mounted) {
+      _categoryBloc
+          .add(CategoryEvent.observeCategoryById(id: widget.service.category));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final kTheme = Theme.of(context);
+
+    return BlocBuilder<CategoryBloc, BlocState>(
+      cubit: _categoryBloc,
+      builder: (_, state) => AnimatedContainer(
+        duration: kSheetDuration,
+        margin:
+            EdgeInsets.symmetric(horizontal: kSpacingX8, vertical: kSpacingX4),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color:
+                widget.selected ? widget.selectedColor : widget.unselectedColor,
+          ),
+          borderRadius: BorderRadius.circular(kSpacingX4),
+        ),
+        child: ListTile(
+          onTap: widget.onTap,
+          title: Text(
+            widget.service.name,
+            style: TextStyle(
+              color: widget.selected
+                  ? widget.selectedColor
+                  : kTheme.colorScheme.onBackground.withOpacity(kEmphasisHigh),
+            ),
+          ),
+          leading: state is SuccessState<Stream<BaseServiceCategory>> &&
+                  widget.showLeadingIcon
+              ? StreamBuilder<BaseServiceCategory>(
+                  stream: state.data,
+                  builder: (_, snapshot) => UserAvatar(
+                      url: snapshot.hasData ? snapshot.data.avatar : ""))
+              : null,
+          subtitle: state is SuccessState<Stream<BaseServiceCategory>>
+              ? StreamBuilder<BaseServiceCategory>(
+                  stream: state.data,
+                  builder: (_, snapshot) {
+                    return Text(
+                      snapshot.hasData ? snapshot.data.name : "...",
+                      style: TextStyle(
+                        color: widget.selected
+                            ? widget.selectedColor
+                            : kTheme.colorScheme.onBackground
+                                .withOpacity(kEmphasisMedium),
+                      ),
+                    );
+                  })
+              : SizedBox.shrink(),
+          trailing: IconButton(
+            icon: Icon(kHelpIcon),
+            color: widget.selected
+                ? widget.selectedColor
+                : kTheme.colorScheme.onBackground.withOpacity(kEmphasisHigh),
+            onPressed: () => showCustomDialog(
+              context: context,
+              builder: (_) => InfoDialog(
+                title: widget.service.name,
+                message: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(text: kServiceHelperText),
+                      TextSpan(
+                          text: "\n\nPrice range starts from\t",
+                          style: kTheme.textTheme.bodyText1.copyWith(
+                            fontWeight: FontWeight.w600,
+                          )),
+                      TextSpan(
+                        text: "${formatCurrency(widget.service.price)}",
+                        style: kTheme.textTheme.bodyText1.copyWith(
+                          color: kTheme.colorScheme.secondary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          selected: widget.selected,
+          tileColor: widget.unselectedColor ?? kTheme.cardColor,
+          enableFeedback: true,
+          // selectedTileColor: widget.selectedColor ?? kTheme.colorScheme.secondary,
+        ),
+      ),
     );
   }
 }

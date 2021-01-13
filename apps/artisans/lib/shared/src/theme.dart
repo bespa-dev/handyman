@@ -97,7 +97,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
             color: kTitleTextColorLight,
             fontFamily: _kTitleFontFamily,
             fontSize: 18,
-            fontWeight: FontWeight.w500),
+            fontWeight: FontWeight.w600),
         bodyText1:
             TextStyle(color: kBodyTextColorLight, fontFamily: _kBodyFontFamily),
         bodyText2: TextStyle(
@@ -187,7 +187,7 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
             color: kTitleTextColorDark,
             fontFamily: _kTitleFontFamily,
             fontSize: 18,
-            fontWeight: FontWeight.w500),
+            fontWeight: FontWeight.w600),
         bodyText1:
             TextStyle(color: kBodyTextColorDark, fontFamily: _kBodyFontFamily),
         bodyText2: TextStyle(

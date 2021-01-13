@@ -12,15 +12,25 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Loading extends StatelessWidget {
   final Color color;
+  final bool circular;
 
-  const Loading({Key key, this.color}) : super(key: key);
+  const Loading({
+    Key key,
+    this.color,
+    this.circular = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SpinKitFadingCube(
-        color: color ?? Theme.of(context).colorScheme.secondary,
-      ),
+      child: circular
+          ? CircularProgressIndicator.adaptive(
+              valueColor: AlwaysStoppedAnimation(
+                  color ?? Theme.of(context).colorScheme.secondary),
+            )
+          : SpinKitFadingCube(
+              color: color ?? Theme.of(context).colorScheme.secondary,
+            ),
     );
   }
 }

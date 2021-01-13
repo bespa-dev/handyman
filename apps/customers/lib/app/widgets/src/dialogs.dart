@@ -69,6 +69,53 @@ class BasicDialog extends StatelessWidget {
   }
 }
 
+/// 2. info dialog with [title] & [message]
+class InfoDialog extends StatelessWidget {
+  final String title;
+  final Widget message;
+  final String buttonText;
+
+  const InfoDialog({
+    Key key,
+    @required this.title,
+    @required this.message,
+    this.buttonText = "Got it",
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final kTheme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(bottom: kSpacingX20),
+          child: Text(
+            title,
+            style: kTheme.textTheme.headline6,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(bottom: kSpacingX36),
+          child: message,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _CustomDialogButton(
+              label: buttonText,
+              onTap: () {
+                context.navigator.pop(true);
+              },
+              isPrimary: true,
+            ),
+          ],
+        )
+      ],
+    );
+  }
+}
+
 /// 2. dialog with [controller] for editing text
 class ReplyMessageDialog extends StatelessWidget {
   final String title;
@@ -483,7 +530,7 @@ class _CustomDialogButton extends StatelessWidget {
         ),
         width: SizeConfig.screenWidth * 0.35,
         decoration: BoxDecoration(
-          color: isPrimary ? kTheme.colorScheme.primary : kTheme.disabledColor,
+          color: isPrimary ? kTheme.colorScheme.secondary : kTheme.cardColor,
           borderRadius: BorderRadius.circular(kSpacingX8),
         ),
         alignment: Alignment.center,
@@ -492,8 +539,8 @@ class _CustomDialogButton extends StatelessWidget {
           style: kTheme.textTheme.headline6.copyWith(
             fontSize: kTheme.textTheme.button.fontSize,
             color: isPrimary
-                ? kTheme.colorScheme.onPrimary
-                : kTheme.colorScheme.onBackground.withOpacity(kEmphasisMedium),
+                ? kTheme.colorScheme.onSecondary
+                : kTheme.iconTheme.color,
           ),
         ),
       ),
@@ -553,6 +600,8 @@ Future<T> showCustomDialog<T>({
             right: SizeConfig.screenWidth * 0.1,
             child: Material(
               clipBehavior: Clip.hardEdge,
+              type: MaterialType.card,
+              elevation: kSpacingX2,
               borderRadius: BorderRadius.circular(kSpacingX16),
               child: Container(
                 padding: isImageDialog ? EdgeInsets.zero : contentPadding,
