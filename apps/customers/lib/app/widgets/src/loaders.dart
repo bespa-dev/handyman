@@ -28,7 +28,7 @@ class Loading extends StatelessWidget {
               valueColor: AlwaysStoppedAnimation(
                   color ?? Theme.of(context).colorScheme.secondary),
             )
-          : SpinKitCircle(
+          : SpinKitFadingCube(
               color: color ?? Theme.of(context).colorScheme.secondary,
             ),
     );
