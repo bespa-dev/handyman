@@ -156,7 +156,6 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                         ),
                       ],
                       floating: true,
-                      backgroundColor: _kTheme.colorScheme.background,
                       flexibleSpace: FlexibleSpaceBar(
                         collapseMode: CollapseMode.parallax,
                         stretchModes: [
@@ -278,7 +277,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
 
                                 /// pages
                                 if (_currentPage == 0) ...{
-                                  ..._buildServicesTab()
+                                  _buildServicesTab()
                                 } else if (_currentPage == 1) ...{
                                   _buildBusinessProfileTab()
                                 } else ...{
@@ -335,116 +334,10 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
       );
 
   /// services tab
-  List<Widget> _buildServicesTab() => [
-    Padding(
-      padding: EdgeInsets.only(left: kSpacingX4),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Available services...",
-            style: _kTheme.textTheme.headline6.copyWith(
-              color: _kTheme.colorScheme.onBackground
-                  .withOpacity(kEmphasisMedium),
-            ),
-          ),
-          SizedBox(height: kSpacingX4),
-          Text(
-            "Tap on any service below to add to your portfolio",
-            style: _kTheme.textTheme.caption.copyWith(
-              color: _kTheme.colorScheme.onBackground
-                  .withOpacity(kEmphasisLow),
-            ),
-          ),
-        ],
-      ),
-    ),
-    SizedBox(height: kSpacingX12),
-    Wrap(
-      children: [
-        ..._servicesForCategory
-            .map(
-              (item) => Padding(
-            padding: EdgeInsets.only(right: kSpacingX8),
-            child: ChoiceChip(
-              label: Text(item.name),
-              selected: _selectedServices.contains(item.id),
-              onSelected: (selected) {
-                _selectedServices.toggleAddOrRemove(item.id);
+  Widget _buildServicesTab() => Container(
+    color: kGreenColor,
 
-                /// update user
-                _currentUser = _currentUser.copyWith(
-                    services: _selectedServices);
-
-                setState(() {});
-                _updateUserBloc.add(UserEvent.updateUserEvent(
-                    user: _currentUser));
-              },
-              disabledColor: _kTheme.disabledColor,
-              selectedColor: _kTheme.colorScheme.secondary,
-            ),
-          ),
-        )
-            .toList(),
-      ],
-    ),
-    if (_servicesForCategory.isNotEmpty) ...{
-      Padding(
-        padding: EdgeInsets.only(
-          top: kSpacingX24,
-          left: kSpacingX4,
-          bottom: kSpacingX16,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Pricing",
-              style: _kTheme.textTheme.headline6.copyWith(
-                color: _kTheme.colorScheme.onBackground
-                    .withOpacity(kEmphasisMedium),
-              ),
-            ),
-            SizedBox(height: kSpacingX4),
-            Text(
-              "Set prices for your professional services",
-              style: _kTheme.textTheme.caption.copyWith(
-                color: _kTheme.colorScheme.onBackground
-                    .withOpacity(kEmphasisLow),
-              ),
-            ),
-          ],
-        ),
-      ),
-    },
-    if (_servicesForCategory.isNotEmpty) ...{
-      GridView.count(
-        crossAxisCount: 2,
-        crossAxisSpacing: kSpacingX8,
-        mainAxisSpacing: kSpacingX8,
-        children: [
-          for (int i = 0; i < _currentUser.services.length; i++) ...{
-            AnimationConfiguration.staggeredGrid(
-              position: i,
-              columnCount: 2,
-              duration: kSheetDuration,
-              child: ScaleAnimation(
-                duration: kScaleDuration,
-                child: FadeInAnimation(
-                  duration: kScaleDuration,
-                  child: ArtisanServiceListItem(
-                    service: _currentUser.services[i],
-                  ),
-                ),
-              ),
-            ),
-          },
-        ],
-      ),
-    }
-  ];
+  );
 
   /// business profile tab
   Widget _buildBusinessProfileTab() => Container(/*color: kAmberColor*/);
