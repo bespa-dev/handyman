@@ -30,7 +30,7 @@ class _SplashPageState extends State<SplashPage>
   /// blocs
   final _prefsBloc = PrefsBloc(repo: Injection.get());
   final _authBloc = AuthBloc(repo: Injection.get());
-  final _userBloc = UserBloc(repo: Injection.get());
+  final _bookingBloc = BookingBloc(repo: Injection.get());
   final _categoryBloc = CategoryBloc(repo: Injection.get());
 
   /// UI
@@ -42,7 +42,7 @@ class _SplashPageState extends State<SplashPage>
   void dispose() {
     _prefsBloc.close();
     _authBloc.close();
-    _userBloc.close();
+    _bookingBloc.close();
     _categoryBloc.close();
     _animationController.dispose();
     super.dispose();
@@ -299,26 +299,48 @@ class _SplashPageState extends State<SplashPage>
                 CachedNetworkImageProvider(element.avatar), context);
           });
 
-          /// get all featured artisans
-          _userBloc
-            ..add(UserEvent.observeArtisansEvent(
-                category: ServiceCategoryGroup.featured().name()))
-            ..listen((state) {
-              if (state is SuccessState) {
-                if (_animationController.status == AnimationStatus.forward ||
-                    _animationController.status == AnimationStatus.completed) {
-                  _animationController.reverse();
-                } else
-                  _animationController.forward();
-
-                if (mounted)
-                  setState(() {
-                    _isLoading = !_isLoading;
-                    _showPageContent = !_showPageContent;
-                  });
-              }
-            });
+          /// get user id
+          _prefsBloc.add(PrefsEvent.getUserIdEvent());
         }
       });
+
+    _prefsBloc.listen((state) {
+      if (state is SuccessState<String>) {
+        /// get all bookings for current user
+        if (state.data != null)
+          _bookingBloc
+              .add(BookingEvent.observeBookingForArtisan(id: state.data));
+        else if (_animationController.status == AnimationStatus.forward ||
+            _animationController.status == AnimationStatus.completed) {
+          _animationController.reverse();
+        } else {
+          _animationController.forward();
+        }
+
+        if (mounted)
+          setState(() {
+            _isLoading = !_isLoading;
+            _showPageContent = !_showPageContent;
+          });
+      }
+    });
+
+    /// observe booking state
+    _bookingBloc.listen((state) {
+      if (state is SuccessState) {
+        if (_animationController.status == AnimationStatus.forward ||
+            _animationController.status == AnimationStatus.completed) {
+          _animationController.reverse();
+        } else {
+          _animationController.forward();
+        }
+
+        if (mounted)
+          setState(() {
+            _isLoading = !_isLoading;
+            _showPageContent = !_showPageContent;
+          });
+      }
+    });
   }
 }

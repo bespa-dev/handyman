@@ -191,7 +191,7 @@ class _SplashPageState extends State<SplashPage>
                                 width: SizeConfig.screenWidth * 0.85,
                                 onTap: () => context.navigator
                                     .pushAndRemoveUntil(
-                                    Routes.homePage, (route) => false),
+                                        Routes.homePage, (route) => false),
                                 label: "Explore",
                                 color: kTheme.colorScheme.onBackground,
                                 textColor: kTheme.colorScheme.background,
@@ -251,7 +251,7 @@ class _SplashPageState extends State<SplashPage>
                                         TextSpan(
                                           text: "Log in",
                                           style:
-                                          kTheme.textTheme.button.copyWith(
+                                              kTheme.textTheme.button.copyWith(
                                             color: kTheme.colorScheme.secondary,
                                           ),
                                         ),
@@ -281,9 +281,10 @@ class _SplashPageState extends State<SplashPage>
   }
 
   void _animateEntry() async {
-    /// get all featured artisans
-    _userBloc.add(UserEvent.observeArtisansEvent(
-        category: ServiceCategoryGroup.featured().name()));
+    if (mounted) {
+      _isLoading = !_isLoading;
+      setState(() {});
+    }
 
     /// cache all category images for faster load times
     _categoryBloc
@@ -293,26 +294,29 @@ class _SplashPageState extends State<SplashPage>
         if (state is SuccessState<Stream<List<BaseServiceCategory>>>) {
           var list = await state.data.single;
           list.forEach((element) async {
-            logger.i("Caching category images");
             await precacheImage(
                 CachedNetworkImageProvider(element.avatar), context);
           });
 
-          await Future.delayed(kTestDuration);
-          if (mounted)
-            setState(() {
-              _isLoading = true;
-            });
-          await Future.delayed(kSplashDuration);
-          if (_animationController.status == AnimationStatus.forward ||
-              _animationController.status == AnimationStatus.completed) {
-            _animationController.reverse();
-          } else
-            _animationController.forward();
+          /// get all featured artisans
+          _userBloc
+            ..add(UserEvent.observeArtisansEvent(
+                category: ServiceCategoryGroup.featured().name()))
+            ..listen((state) {
+              if (state is SuccessState) {
+                if (_animationController.status == AnimationStatus.forward ||
+                    _animationController.status == AnimationStatus.completed) {
+                  _animationController.reverse();
+                } else {
+                  _animationController.forward();
+                }
 
-          if (mounted)
-            setState(() {
-              _showPageContent = !_showPageContent;
+                if (mounted) {
+                  _isLoading = !_isLoading;
+                  _showPageContent = !_showPageContent;
+                  setState(() {});
+                }
+              }
             });
         }
       });
