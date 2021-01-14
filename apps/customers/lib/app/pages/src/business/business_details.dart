@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,7 +40,6 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   LatLng _businessLocation;
   int _currentPage = 0;
   List<BaseArtisanService> _servicesForCategory = const [];
-  List<String> _selectedServices = [];
 
   /// setup map details
   void _setupMap() async {
@@ -146,47 +147,42 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                                 ? kSpacingNone
                                 : SizeConfig.screenHeight * 0.3,
                             child: AnimatedOpacity(
-                                duration: kScaleDuration,
-                                opacity: _businessLocation == null ? 0 : 1,
-                                child: _businessLocation == null
-                                    ? SizedBox.shrink()
-                                    : Loading()
-
-                                /// fixme -> google maps fix
-                                // : FutureBuilder(
-                                //     future: Future.delayed(kSheetDuration),
-                                //     builder: (_, __) => GoogleMap(
-                                //           initialCameraPosition:
-                                //               CameraPosition(
-                                //             target: _businessLocation,
-                                //             zoom: kSpacingX16,
-                                //           ),
-                                //           zoomControlsEnabled: false,
-                                //           compassEnabled: true,
-                                //           liteModeEnabled: Platform.isAndroid,
-                                //           zoomGesturesEnabled: true,
-                                //           mapToolbarEnabled: false,
-                                //           myLocationButtonEnabled: false,
-                                //           myLocationEnabled: false,
-                                //           tiltGesturesEnabled: true,
-                                //           markers: <Marker>{
-                                //             Marker(
-                                //               markerId:
-                                //                   MarkerId(_business.id),
-                                //               position: _businessLocation,
-                                //               icon: BitmapDescriptor
-                                //                   .defaultMarkerWithHue(
-                                //                       BitmapDescriptor
-                                //                           .hueGreen),
-                                //             ),
-                                //           },
-                                //           onMapCreated: (controller) async {
-                                //             _mapController = controller;
-                                //             _setupMap();
-                                //           },
-                                //           mapType: MapType.normal,
-                                //         )),
-                                ),
+                              duration: kScaleDuration,
+                              opacity: _businessLocation == null ? 0 : 1,
+                              child: _businessLocation == null
+                                  ? SizedBox.shrink()
+                                  : FutureBuilder(
+                                      future: Future.delayed(kSheetDuration),
+                                      builder: (_, __) => GoogleMap(
+                                        initialCameraPosition: CameraPosition(
+                                          target: _businessLocation,
+                                          zoom: kSpacingX16,
+                                        ),
+                                        zoomControlsEnabled: false,
+                                        compassEnabled: true,
+                                        liteModeEnabled: Platform.isAndroid,
+                                        zoomGesturesEnabled: true,
+                                        mapToolbarEnabled: false,
+                                        myLocationButtonEnabled: false,
+                                        myLocationEnabled: false,
+                                        tiltGesturesEnabled: true,
+                                        markers: <Marker>{
+                                          Marker(
+                                            markerId: MarkerId(_business.id),
+                                            position: _businessLocation,
+                                            icon: BitmapDescriptor
+                                                .defaultMarkerWithHue(
+                                                    BitmapDescriptor.hueGreen),
+                                          ),
+                                        },
+                                        onMapCreated: (controller) async {
+                                          _mapController = controller;
+                                          _setupMap();
+                                        },
+                                        mapType: MapType.normal,
+                                      ),
+                                    ),
+                            ),
                           ),
 
                           /// details
@@ -301,41 +297,41 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
       );
 
   /// services tab
-  Widget _buildServicesTab() =>  Padding(
-    padding: EdgeInsets.only(left: kSpacingX4),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Services rendered",
-          style: _kTheme.textTheme.headline6.copyWith(
-            color: _kTheme.colorScheme.onBackground
-                .withOpacity(kEmphasisMedium),
-          ),
-        ),
-        SizedBox(height: kSpacingX4),
-        Text(
-          "Tap to view more details",
-          style: _kTheme.textTheme.caption.copyWith(
-            color: _kTheme.colorScheme.onBackground
-                .withOpacity(kEmphasisLow),
-          ),
-        ),
-        SizedBox(height: kSpacingX24),
-        if (_servicesForCategory.isNotEmpty) ...{
-          ..._servicesForCategory
-              .map(
-                (service) => ArtisanListTile(
-              service: service,
-              onTap: () {},
+  Widget _buildServicesTab() => Padding(
+        padding: EdgeInsets.only(left: kSpacingX4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Services rendered",
+              style: _kTheme.textTheme.headline6.copyWith(
+                color: _kTheme.colorScheme.onBackground
+                    .withOpacity(kEmphasisMedium),
+              ),
             ),
-          )
-              .toList(),
-        }
-      ],
-    ),
-  );
+            SizedBox(height: kSpacingX4),
+            Text(
+              "Tap to view more details",
+              style: _kTheme.textTheme.caption.copyWith(
+                color:
+                    _kTheme.colorScheme.onBackground.withOpacity(kEmphasisLow),
+              ),
+            ),
+            SizedBox(height: kSpacingX24),
+            if (_servicesForCategory.isNotEmpty) ...{
+              ..._servicesForCategory
+                  .map(
+                    (service) => ArtisanListTile(
+                      service: service,
+                      onTap: () {},
+                    ),
+                  )
+                  .toList(),
+            }
+          ],
+        ),
+      );
 
   /// business profile tab
   Widget _buildBusinessProfileTab() => Container(color: kAmberColor);

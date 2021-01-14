@@ -282,9 +282,10 @@ class _SplashPageState extends State<SplashPage>
   }
 
   void _animateEntry() async {
-    /// get all featured artisans
-    _userBloc.add(UserEvent.observeArtisansEvent(
-        category: ServiceCategoryGroup.featured().name()));
+    if (mounted) {
+      _isLoading = !_isLoading;
+      setState(() {});
+    }
 
     /// cache all category images for faster load times
     _categoryBloc
@@ -298,22 +299,24 @@ class _SplashPageState extends State<SplashPage>
                 CachedNetworkImageProvider(element.avatar), context);
           });
 
-          await Future.delayed(kTestDuration);
-          if (mounted)
-            setState(() {
-              _isLoading = !_isLoading;
-            });
-          await Future.delayed(kSplashDuration);
-          if (_animationController.status == AnimationStatus.forward ||
-              _animationController.status == AnimationStatus.completed) {
-            _animationController.reverse();
-          } else
-            _animationController.forward();
+          /// get all featured artisans
+          _userBloc
+            ..add(UserEvent.observeArtisansEvent(
+                category: ServiceCategoryGroup.featured().name()))
+            ..listen((state) {
+              if (state is SuccessState) {
+                if (_animationController.status == AnimationStatus.forward ||
+                    _animationController.status == AnimationStatus.completed) {
+                  _animationController.reverse();
+                } else
+                  _animationController.forward();
 
-          if (mounted)
-            setState(() {
-              _isLoading = !_isLoading;
-              _showPageContent = !_showPageContent;
+                if (mounted)
+                  setState(() {
+                    _isLoading = !_isLoading;
+                    _showPageContent = !_showPageContent;
+                  });
+              }
             });
         }
       });

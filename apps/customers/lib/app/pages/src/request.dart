@@ -79,6 +79,8 @@ class _RequestPageState extends State<RequestPage> {
         _selectedService != null &&
         _userId != null) {
       _formKey.currentState.save();
+      _isRequesting = true;
+      setState(() {});
 
       if (_imageFile != null && _fileUrl == null) {
         /// perform upload
@@ -141,14 +143,6 @@ class _RequestPageState extends State<RequestPage> {
                 if (pickedFile != null) {
                   _imageFile = File(pickedFile.path);
                   if (mounted) setState(() {});
-
-                  /// upload image
-                  _storageBloc.add(
-                    StorageEvent.uploadFile(
-                        path: _timestamp,
-                        filePath: pickedFile.path,
-                        isImage: true),
-                  );
                 }
               },
               items: [
@@ -204,11 +198,8 @@ class _RequestPageState extends State<RequestPage> {
 
       /// get services for category
       _serviceBloc
-        ..add(
-          ArtisanServiceEvent.getArtisanServices(
-            category: widget.artisan.category,
-          ),
-        )
+        ..add(ArtisanServiceEvent.getArtisanServices(
+            category: widget.artisan.category))
         ..listen((state) {
           if (state is SuccessState<List<BaseArtisanService>>) {
             _servicesForCategory = state.data;
@@ -284,10 +275,6 @@ class _RequestPageState extends State<RequestPage> {
           showSnackBarMessage(context, message: "Failed to upload image");
           _isRequesting = false;
           _showActionIcon = true;
-          if (mounted) setState(() {});
-        } else {
-          showSnackBarMessage(context, message: "Uploading file");
-          _showActionIcon = false;
           if (mounted) setState(() {});
         }
       });
@@ -444,184 +431,170 @@ class _RequestPageState extends State<RequestPage> {
       );
 
   /// location picker -> pick a location where service will be rendered
-  Widget _buildLocationPicker() {
-    return _location == null
-        ? Loading()
-        : AnimatedOpacity(
-            opacity: _location == null ? 0 : 1,
-            duration: kSheetDuration,
-            child: Container(
-              height: SizeConfig.screenHeight,
-              width: SizeConfig.screenWidth,
-              child: SlidingSheet(
-                color: kTheme.colorScheme.background,
-                duration: kSheetDuration,
-                addTopViewPaddingOnFullscreen: true,
-                isBackdropInteractable: true,
-                snapSpec: const SnapSpec(snappings: [0.5, 0.7, 1.0]),
-                cornerRadius: kSpacingX8,
-                footerBuilder: (_, __) => SizedBox(
-                  width: SizeConfig.screenWidth,
-                  height: kToolbarHeight,
-                  child: _buildActionButton(text: "Next"),
+  Widget _buildLocationPicker() => _location == null
+      ? Loading()
+      : AnimatedOpacity(
+          opacity: _location == null ? 0 : 1,
+          duration: kSheetDuration,
+          child: Container(
+            height: SizeConfig.screenHeight,
+            width: SizeConfig.screenWidth,
+            child: SlidingSheet(
+              color: kTheme.colorScheme.background,
+              duration: kSheetDuration,
+              addTopViewPaddingOnFullscreen: true,
+              isBackdropInteractable: true,
+              snapSpec: const SnapSpec(snappings: [0.5, 0.7, 1.0]),
+              cornerRadius: kSpacingX8,
+              footerBuilder: (_, __) => SizedBox(
+                width: SizeConfig.screenWidth,
+                height: kToolbarHeight,
+                child: _buildActionButton(text: "Next"),
+              ),
+              builder: (_, __) => Padding(
+                padding: EdgeInsets.only(
+                  top: kSpacingX36,
+                  left: kSpacingX12,
+                  right: kSpacingX12,
+                  bottom: kSpacingX12,
                 ),
-                builder: (_, __) => Padding(
-                  padding: EdgeInsets.only(
-                    top: kSpacingX36,
-                    left: kSpacingX12,
-                    right: kSpacingX12,
-                    bottom: kSpacingX12,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          "Where do you need this service?",
-                          style: kTheme.textTheme.headline6,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Where do you need this service?",
+                        style: kTheme.textTheme.headline6,
+                      ),
+                    ),
+                    SizedBox(height: kSpacingX12),
+                    SearchView(
+                      onQueryComplete: (_) {},
+                      onQueryChange: (_) {},
+                      focusNode: _focusNode,
+                      hint: "Enter a location",
+                    ),
+                    SizedBox(height: kSpacingX12),
+                    SwitchListTile.adaptive(
+                      value: _useCurrentLocation,
+                      secondary: Icon(kLocationIcon),
+                      onChanged: (checked) {
+                        _useCurrentLocation = checked;
+                        setState(() {});
+                        if (_useCurrentLocation)
+                          _locationBloc.add(LocationEvent.getCurrentLocation());
+                      },
+                      title: Text("Use current location"),
+                    ),
+                    BlocBuilder<PrefsBloc, BlocState>(
+                      cubit: _homeAddressBloc,
+                      builder: (_, state) => ListTile(
+                        leading: Icon(kHomeIcon),
+                        title: Text("Add home address"),
+                        trailing: IconButton(
+                          icon: Icon(kEditIcon),
+                          onPressed: _pickHomeAddress,
                         ),
-                      ),
-                      SizedBox(height: kSpacingX12),
-                      SearchView(
-                        onQueryComplete: (_) {},
-                        onQueryChange: (_) {},
-                        focusNode: _focusNode,
-                        hint: "Enter a location",
-                      ),
-                      SizedBox(height: kSpacingX12),
-                      SwitchListTile.adaptive(
-                        value: _useCurrentLocation,
-                        secondary: Icon(kLocationIcon),
-                        onChanged: (checked) {
-                          _useCurrentLocation = checked;
-                          setState(() {});
-                          if (_useCurrentLocation)
-                            _locationBloc
-                                .add(LocationEvent.getCurrentLocation());
+                        subtitle:
+                            state is SuccessState<String> && state.data != null
+                                ? Text(state.data)
+                                : null,
+                        enabled: !_useCurrentLocation,
+                        onTap: () {
+                          _homeAddressBloc
+                            ..add(PrefsEvent.getHomeAddressEvent())
+                            ..listen((addressState) {
+                              if (addressState is SuccessState<String>) {
+                                final address = addressState.data;
+                                if (address != null)
+                                  _locationBloc.add(
+                                      LocationEvent.getLocationCoordinates(
+                                          address: address));
+                                else
+                                  _pickHomeAddress();
+                              }
+                            });
                         },
-                        title: Text("Use current location"),
                       ),
-                      BlocBuilder<PrefsBloc, BlocState>(
-                        cubit: _homeAddressBloc,
-                        builder: (_, state) => ListTile(
-                          leading: Icon(kHomeIcon),
-                          title: Text("Add home address"),
-                          trailing: IconButton(
-                            icon: Icon(kEditIcon),
-                            onPressed: _pickHomeAddress,
-                          ),
-                          subtitle: state is SuccessState<String> &&
-                                  state.data != null
-                              ? Text(state.data)
-                              : null,
-                          enabled: !_useCurrentLocation,
-                          onTap: () {
-                            _homeAddressBloc
-                              ..add(PrefsEvent.getHomeAddressEvent())
-                              ..listen((addressState) {
-                                if (addressState is SuccessState<String>) {
-                                  final address = addressState.data;
-                                  if (address != null)
-                                    _locationBloc.add(
-                                        LocationEvent.getLocationCoordinates(
-                                            address: address));
-                                  else
-                                    _pickHomeAddress();
-                                }
-                              });
-                          },
+                    ),
+                    BlocBuilder<PrefsBloc, BlocState>(
+                      cubit: _workAddressBloc,
+                      builder: (_, state) => ListTile(
+                        leading: Icon(kBriefcaseIcon),
+                        title: Text("Add work address"),
+                        trailing: IconButton(
+                          icon: Icon(kEditIcon),
+                          onPressed: _pickWorkAddress,
                         ),
+                        subtitle:
+                            state is SuccessState<String> && state.data != null
+                                ? Text(state.data)
+                                : null,
+                        enabled: !_useCurrentLocation,
+                        onTap: () {
+                          _workAddressBloc
+                            ..add(PrefsEvent.getWorkAddressEvent())
+                            ..listen((addressState) {
+                              if (addressState is SuccessState<String>) {
+                                final address = addressState.data;
+                                if (address != null)
+                                  _locationBloc.add(
+                                      LocationEvent.getLocationCoordinates(
+                                          address: address));
+                                else
+                                  _pickWorkAddress();
+                              }
+                            });
+                        },
                       ),
-                      BlocBuilder<PrefsBloc, BlocState>(
-                        cubit: _workAddressBloc,
-                        builder: (_, state) => ListTile(
-                          leading: Icon(kBriefcaseIcon),
-                          title: Text("Add work address"),
-                          trailing: IconButton(
-                            icon: Icon(kEditIcon),
-                            onPressed: _pickWorkAddress,
-                          ),
-                          subtitle: state is SuccessState<String> &&
-                                  state.data != null
-                              ? Text(state.data)
-                              : null,
-                          enabled: !_useCurrentLocation,
-                          onTap: () {
-                            _workAddressBloc
-                              ..add(PrefsEvent.getWorkAddressEvent())
-                              ..listen((addressState) {
-                                if (addressState is SuccessState<String>) {
-                                  final address = addressState.data;
-                                  if (address != null)
-                                    _locationBloc.add(
-                                        LocationEvent.getLocationCoordinates(
-                                            address: address));
-                                  else
-                                    _pickWorkAddress();
-                                }
-                              });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                body: BlocBuilder<LocationBloc, BlocState>(
-                  cubit: _locationBloc,
-                  builder: (_, state) => AnimatedContainer(
-                    duration: kSheetDuration,
-                    width: SizeConfig.screenWidth,
-                    height: SizeConfig.screenHeight * 0.6,
-                    alignment: Alignment.center,
-                    color: kTheme.colorScheme.background,
-                    child: state is SuccessState<BaseLocationMetadata>
-                        ? Text(state.data.name)
-                        : state is LoadingState
-                            ? Loading()
-                            : emptyStateUI(context, message: "Oops..."),
-
-                    /// fixme -> add google maps key
-                    /// 1. AndroidManifest file
-                    /// 2. AppDelegate file
-                    /// 3. constants
-                    // child: GoogleMap(
-                    //   initialCameraPosition: CameraPosition(
-                    //     target: LatLng(_location?.lat, _location?.lng),
-                    //     zoom: kSpacingX16,
-                    //   ),
-                    //   zoomControlsEnabled: false,
-                    //   compassEnabled: true,
-                    //   zoomGesturesEnabled: true,
-                    //   mapToolbarEnabled: false,
-                    //   myLocationButtonEnabled: true,
-                    //   myLocationEnabled: true,
-                    //   tiltGesturesEnabled: true,
-                    //   markers: <Marker>{
-                    //     Marker(
-                    //       markerId: MarkerId(widget.artisan.id),
-                    //       position: LatLng(_location?.lat, _location?.lng),
-                    //       icon: BitmapDescriptor.defaultMarkerWithHue(
-                    //           BitmapDescriptor.hueGreen),
-                    //     ),
-                    //   },
-                    //   onMapCreated: (controller) async {
-                    //     _mapController = controller;
-                    //     _setupMap();
-                    //   },
-                    //   onTap: (_) {
-                    //     _location =
-                    //         LocationMetadata(lat: _.latitude, lng: _.longitude);
-                    //     setState(() {});
-                    //   },
-                    //   mapType: MapType.normal,
-                    // ),
-                  ),
+              ),
+              body: BlocBuilder<LocationBloc, BlocState>(
+                cubit: _locationBloc,
+                builder: (_, state) => AnimatedContainer(
+                  duration: kSheetDuration,
+                  width: SizeConfig.screenWidth,
+                  height: SizeConfig.screenHeight * 0.6,
+                  alignment: Alignment.center,
+                  color: kTheme.colorScheme.background,
+                  child: state is SuccessState<BaseLocationMetadata>
+                      ? GoogleMap(
+                          initialCameraPosition: CameraPosition(
+                            target: LatLng(_location?.lat, _location?.lng),
+                            zoom: kSpacingX16,
+                          ),
+                          zoomControlsEnabled: false,
+                          compassEnabled: true,
+                          zoomGesturesEnabled: true,
+                          mapToolbarEnabled: false,
+                          myLocationButtonEnabled: true,
+                          myLocationEnabled: true,
+                          tiltGesturesEnabled: true,
+                          markers: <Marker>{
+                            Marker(
+                              markerId: MarkerId(widget.artisan.id),
+                              position: LatLng(_location?.lat, _location?.lng),
+                              icon: BitmapDescriptor.defaultMarkerWithHue(
+                                  BitmapDescriptor.hueGreen),
+                            ),
+                          },
+                          onMapCreated: (controller) async {
+                            _mapController = controller;
+                            _setupMap();
+                          },
+                          mapType: MapType.normal,
+                        )
+                      : state is LoadingState
+                          ? Loading()
+                          : emptyStateUI(context, message: "Oops..."),
                 ),
               ),
             ),
-          );
-  }
+          ),
+        );
 
   /// request description -> send description with image to artisan
   Widget _buildRequestDescription() => Container(
