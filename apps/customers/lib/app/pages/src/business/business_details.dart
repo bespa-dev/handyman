@@ -123,7 +123,6 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                     /// app bar
                     SliverAppBar(
                       floating: true,
-                      backgroundColor: _kTheme.colorScheme.background,
                       flexibleSpace: FlexibleSpaceBar(
                         collapseMode: CollapseMode.parallax,
                         stretchModes: [
@@ -317,7 +316,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
         ),
         SizedBox(height: kSpacingX4),
         Text(
-          "Tap on \ufffd to view more details",
+          "Tap to view more details",
           style: _kTheme.textTheme.caption.copyWith(
             color: _kTheme.colorScheme.onBackground
                 .withOpacity(kEmphasisLow),

@@ -220,7 +220,7 @@ class _ArtisanListTileState extends State<ArtisanListTile> {
       builder: (_, state) => AnimatedContainer(
         duration: kScaleDuration,
         margin:
-            EdgeInsets.symmetric(horizontal: kSpacingX8, vertical: kSpacingX4),
+            EdgeInsets.symmetric(vertical: kSpacingX4),
         decoration: BoxDecoration(
           border: Border.all(
             color: widget.selected

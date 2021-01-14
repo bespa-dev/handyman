@@ -220,7 +220,7 @@ class _ArtisanListTileState extends State<ArtisanListTile> {
       builder: (_, state) => AnimatedContainer(
         duration: kScaleDuration,
         margin:
-            EdgeInsets.symmetric(horizontal: kSpacingX8, vertical: kSpacingX4),
+        EdgeInsets.symmetric(vertical: kSpacingX4),
         decoration: BoxDecoration(
           border: Border.all(
             color: widget.selected
@@ -240,27 +240,27 @@ class _ArtisanListTileState extends State<ArtisanListTile> {
             ),
           ),
           leading: state is SuccessState<Stream<BaseServiceCategory>> &&
-                  widget.showLeadingIcon
+              widget.showLeadingIcon
               ? StreamBuilder<BaseServiceCategory>(
-                  stream: state.data,
-                  builder: (_, snapshot) => UserAvatar(
-                      url: snapshot.hasData ? snapshot.data.avatar : ""))
+              stream: state.data,
+              builder: (_, snapshot) => UserAvatar(
+                  url: snapshot.hasData ? snapshot.data.avatar : ""))
               : null,
           subtitle: state is SuccessState<Stream<BaseServiceCategory>>
               ? StreamBuilder<BaseServiceCategory>(
-                  stream: state.data,
-                  builder: (_, snapshot) {
-                    return Text(
-                      snapshot.hasData ? snapshot.data.name : "...",
-                      style: TextStyle(
-                        color: widget.selected
-                            ? widget.selectedColor ??
-                                kTheme.colorScheme.secondary
-                            : kTheme.colorScheme.onBackground
-                                .withOpacity(kEmphasisMedium),
-                      ),
-                    );
-                  })
+              stream: state.data,
+              builder: (_, snapshot) {
+                return Text(
+                  snapshot.hasData ? snapshot.data.name : "...",
+                  style: TextStyle(
+                    color: widget.selected
+                        ? widget.selectedColor ??
+                        kTheme.colorScheme.secondary
+                        : kTheme.colorScheme.onBackground
+                        .withOpacity(kEmphasisMedium),
+                  ),
+                );
+              })
               : SizedBox.shrink(),
           trailing: IconButton(
             icon: Icon(kHelpIcon),
