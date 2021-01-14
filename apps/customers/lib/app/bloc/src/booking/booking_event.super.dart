@@ -25,6 +25,7 @@ abstract class BookingEvent<T> extends Equatable {
       @required String customer,
       @required String category,
       @required String description,
+      @required String serviceType,
       @required String image,
       @required double cost,
       @required T location}) = RequestBooking<T>.create;
@@ -315,6 +316,7 @@ abstract class RequestBooking<T> extends BookingEvent<T> {
       @required this.customer,
       @required this.category,
       @required this.description,
+      @required this.serviceType,
       @required this.image,
       @required this.cost,
       @required this.location})
@@ -325,6 +327,7 @@ abstract class RequestBooking<T> extends BookingEvent<T> {
       @required String customer,
       @required String category,
       @required String description,
+      @required String serviceType,
       @required String image,
       @required double cost,
       @required T location}) = _RequestBookingImpl<T>;
@@ -336,6 +339,8 @@ abstract class RequestBooking<T> extends BookingEvent<T> {
   final String category;
 
   final String description;
+
+  final String serviceType;
 
   final String image;
 
@@ -350,6 +355,7 @@ abstract class RequestBooking<T> extends BookingEvent<T> {
       String customer,
       String category,
       String description,
+      String serviceType,
       String image,
       double cost,
       T location});
@@ -362,6 +368,7 @@ class _RequestBookingImpl<T> extends RequestBooking<T> {
       @required this.customer,
       @required this.category,
       @required this.description,
+      @required this.serviceType,
       @required this.image,
       @required this.cost,
       @required this.location})
@@ -370,6 +377,7 @@ class _RequestBookingImpl<T> extends RequestBooking<T> {
             customer: customer,
             category: category,
             description: description,
+            serviceType: serviceType,
             image: image,
             cost: cost,
             location: location);
@@ -387,6 +395,9 @@ class _RequestBookingImpl<T> extends RequestBooking<T> {
   final String description;
 
   @override
+  final String serviceType;
+
+  @override
   final String image;
 
   @override
@@ -401,6 +412,7 @@ class _RequestBookingImpl<T> extends RequestBooking<T> {
           Object customer = superEnum,
           Object category = superEnum,
           Object description = superEnum,
+          Object serviceType = superEnum,
           Object image = superEnum,
           Object cost = superEnum,
           Object location = superEnum}) =>
@@ -410,16 +422,26 @@ class _RequestBookingImpl<T> extends RequestBooking<T> {
         category: category == superEnum ? this.category : category as String,
         description:
             description == superEnum ? this.description : description as String,
+        serviceType:
+            serviceType == superEnum ? this.serviceType : serviceType as String,
         image: image == superEnum ? this.image : image as String,
         cost: cost == superEnum ? this.cost : cost as double,
         location: location == superEnum ? this.location : location as T,
       );
   @override
   String toString() =>
-      'RequestBooking(artisan: ${this.artisan}, customer: ${this.customer}, category: ${this.category}, description: ${this.description}, image: ${this.image}, cost: ${this.cost}, location: ${this.location})';
+      'RequestBooking(artisan: ${this.artisan}, customer: ${this.customer}, category: ${this.category}, description: ${this.description}, serviceType: ${this.serviceType}, image: ${this.image}, cost: ${this.cost}, location: ${this.location})';
   @override
-  List<Object> get props =>
-      [artisan, customer, category, description, image, cost, location];
+  List<Object> get props => [
+        artisan,
+        customer,
+        category,
+        description,
+        serviceType,
+        image,
+        cost,
+        location
+      ];
 }
 
 @immutable

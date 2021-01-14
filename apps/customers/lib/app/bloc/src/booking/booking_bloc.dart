@@ -62,6 +62,7 @@ class BookingBloc extends BaseBloc<BookingEvent> {
           customer: event.customer,
           metadata: event.location,
           cost: event.cost,
+          serviceType: event.serviceType
         ),
       );
       if (result is UseCaseResultSuccess)

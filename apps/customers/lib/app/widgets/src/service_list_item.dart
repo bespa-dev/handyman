@@ -145,7 +145,7 @@ class _ArtisanServiceListViewState extends State<ArtisanServiceListView> {
               final item = widget.services[index];
               return AnimationConfiguration.staggeredList(
                 position: index,
-                child: ScaleAnimation(
+                child: SlideAnimation(
                   duration: kScaleDuration,
                   child: FadeInAnimation(
                     child: ArtisanListTile(

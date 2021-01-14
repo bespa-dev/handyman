@@ -99,6 +99,7 @@ class _RequestPageState extends State<RequestPage> {
             image: _fileUrl,
             cost: 12.99,
             location: _location,
+            serviceType: _selectedService.id,
           ),
         );
       }
@@ -177,6 +178,7 @@ class _RequestPageState extends State<RequestPage> {
     if (mounted) {
       _focusNode = FocusNode();
 
+      /// get user id for upload
       PrefsBloc(repo: Injection.get())
         ..add(PrefsEvent.getUserIdEvent())
         ..listen((state) {
@@ -223,6 +225,10 @@ class _RequestPageState extends State<RequestPage> {
           } else
             _location = state.data;
           if (mounted) setState(() {});
+        } else if (state is SuccessState<String>) {
+          logger.d("Location -> ${state.data}");
+
+          /// todo -> show location name
         }
       });
 
@@ -444,6 +450,9 @@ class _RequestPageState extends State<RequestPage> {
               duration: kSheetDuration,
               addTopViewPaddingOnFullscreen: true,
               isBackdropInteractable: true,
+              extendBody: true,
+              backdropColor:
+                  kTheme.colorScheme.background.withOpacity(kEmphasisLow),
               snapSpec: const SnapSpec(snappings: [0.5, 0.7, 1.0]),
               cornerRadius: kSpacingX8,
               footerBuilder: (_, __) => SizedBox(
@@ -552,44 +561,53 @@ class _RequestPageState extends State<RequestPage> {
                   ],
                 ),
               ),
+              closeOnBackdropTap: true,
               body: BlocBuilder<LocationBloc, BlocState>(
                 cubit: _locationBloc,
-                builder: (_, state) => AnimatedContainer(
-                  duration: kSheetDuration,
+                buildWhen: (p, c) =>
+                    p is SuccessState<BaseLocationMetadata> &&
+                    c is SuccessState<BaseLocationMetadata>,
+                builder: (_, __) => Container(
                   width: SizeConfig.screenWidth,
                   height: SizeConfig.screenHeight * 0.6,
                   alignment: Alignment.center,
                   color: kTheme.colorScheme.background,
-                  child: state is SuccessState<BaseLocationMetadata>
-                      ? GoogleMap(
-                          initialCameraPosition: CameraPosition(
-                            target: LatLng(_location?.lat, _location?.lng),
-                            zoom: kSpacingX16,
-                          ),
-                          zoomControlsEnabled: false,
-                          compassEnabled: true,
-                          zoomGesturesEnabled: true,
-                          mapToolbarEnabled: false,
-                          myLocationButtonEnabled: true,
-                          myLocationEnabled: true,
-                          tiltGesturesEnabled: true,
-                          markers: <Marker>{
-                            Marker(
-                              markerId: MarkerId(widget.artisan.id),
-                              position: LatLng(_location?.lat, _location?.lng),
-                              icon: BitmapDescriptor.defaultMarkerWithHue(
-                                  BitmapDescriptor.hueGreen),
-                            ),
-                          },
-                          onMapCreated: (controller) async {
-                            _mapController = controller;
-                            _setupMap();
-                          },
-                          mapType: MapType.normal,
-                        )
-                      : state is LoadingState
-                          ? Loading()
-                          : emptyStateUI(context, message: "Oops..."),
+                  child: GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(_location?.lat, _location?.lng),
+                      zoom: kSpacingX16,
+                    ),
+                    zoomControlsEnabled: false,
+                    compassEnabled: true,
+                    zoomGesturesEnabled: true,
+                    mapToolbarEnabled: false,
+                    myLocationButtonEnabled: false,
+                    myLocationEnabled: false,
+                    tiltGesturesEnabled: true,
+                    onTap: (_) {
+                      _location =
+                          LocationMetadata(lat: _.latitude, lng: _.longitude);
+                      setState(() {});
+                      _locationBloc.add(
+                          LocationEvent.getLocationName(location: _location));
+                    },
+                    markers: <Marker>{
+                      Marker(
+                        markerId: MarkerId(widget.artisan.id),
+                        position: LatLng(_location?.lat, _location?.lng),
+                        icon: BitmapDescriptor.defaultMarkerWithHue(
+                            BitmapDescriptor.hueGreen),
+                        flat: true,
+                        infoWindow:
+                            InfoWindow(title: _location?.name ?? "Use here"),
+                      ),
+                    },
+                    onMapCreated: (controller) async {
+                      _mapController = controller;
+                      _setupMap();
+                    },
+                    mapType: MapType.normal,
+                  ),
                 ),
               ),
             ),

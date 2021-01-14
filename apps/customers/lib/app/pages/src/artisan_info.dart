@@ -99,6 +99,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                                   width: SizeConfig.screenWidth,
                                   child: ImageView(
                                     imageUrl: artisan.avatar,
+                                    tag: artisan.avatar,
                                     onTap: () => context.navigator
                                         .pushImagePreviewPage(
                                             url: artisan.avatar),
@@ -149,185 +150,174 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                                   kSpacingX16,
                                   kSpacingNone,
                                 ),
-                                child: Container(
-                                  height: SizeConfig.screenHeight,
-                                  width: SizeConfig.screenWidth,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        artisan.name ?? "No username",
-                                        style: kTheme.textTheme.headline5,
-                                      ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      artisan.name ?? "No username",
+                                      style: kTheme.textTheme.headline5,
+                                    ),
 
-                                      /// category & ratings
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          BlocBuilder<CategoryBloc, BlocState>(
-                                            cubit: CategoryBloc(
-                                                repo: Injection.get())
-                                              ..add(
-                                                CategoryEvent
-                                                    .observeCategoryById(
-                                                        id: artisan.category),
-                                              ),
-                                            builder: (_, userCategoryState) =>
-                                                StreamBuilder<
-                                                        BaseServiceCategory>(
-                                                    stream: userCategoryState
-                                                            is SuccessState<
-                                                                Stream<
-                                                                    BaseServiceCategory>>
-                                                        ? userCategoryState.data
-                                                        : Stream.empty(),
-                                                    builder: (_, __) {
-                                                      return Text(
-                                                        __.hasData
-                                                            ? __.data.name
-                                                            : "...",
-                                                        style: kTheme.textTheme
-                                                            .bodyText2,
-                                                      );
-                                                    }),
-                                          ),
-                                          RatingBarIndicator(
-                                            itemBuilder: (_, index) => Icon(
-                                              kRatingStar,
-                                              color: kAmberColor,
+                                    /// category & ratings
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        BlocBuilder<CategoryBloc, BlocState>(
+                                          cubit: CategoryBloc(
+                                              repo: Injection.get())
+                                            ..add(
+                                              CategoryEvent.observeCategoryById(
+                                                  id: artisan.category),
                                             ),
-                                            itemCount: 5,
-                                            itemSize: kSpacingX16,
-                                            rating: artisan.rating,
+                                          builder: (_, userCategoryState) =>
+                                              StreamBuilder<
+                                                      BaseServiceCategory>(
+                                                  stream: userCategoryState
+                                                          is SuccessState<
+                                                              Stream<
+                                                                  BaseServiceCategory>>
+                                                      ? userCategoryState.data
+                                                      : Stream.empty(),
+                                                  builder: (_, __) {
+                                                    return Text(
+                                                      __.hasData
+                                                          ? __.data.name
+                                                          : "...",
+                                                      style: kTheme
+                                                          .textTheme.bodyText2,
+                                                    );
+                                                  }),
+                                        ),
+                                        RatingBarIndicator(
+                                          itemBuilder: (_, index) => Icon(
+                                            kRatingStar,
+                                            color: kAmberColor,
                                           ),
-                                        ],
+                                          itemCount: 5,
+                                          itemSize: kSpacingX16,
+                                          rating: artisan.rating,
+                                        ),
+                                      ],
+                                    ),
+
+                                    SizedBox(height: kSpacingX24),
+
+                                    /// metadata & chat option
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: kSpacingX16,
+                                        horizontal: kSpacingX4,
                                       ),
+                                      decoration: BoxDecoration(
+                                        color: kTheme.cardColor,
+                                        borderRadius:
+                                            BorderRadius.circular(kSpacingX4),
+                                      ),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          /// records
+                                          _buildArtisanMetaInfo(
+                                              artisan.bookingsCount,
+                                              "Bookings"),
+                                          _buildArtisanMetaInfo(
+                                              artisan.reportsCount, "Reports"),
+                                          _buildArtisanMetaInfo(
+                                              artisan.servicesCount,
+                                              "Services"),
 
-                                      SizedBox(height: kSpacingX24),
-
-                                      /// metadata & chat option
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: kSpacingX16,
-                                          horizontal: kSpacingX4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: kTheme.cardColor,
-                                          borderRadius:
-                                              BorderRadius.circular(kSpacingX4),
-                                        ),
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            /// records
-                                            _buildArtisanMetaInfo(
-                                                artisan.bookingsCount,
-                                                "Bookings"),
-                                            _buildArtisanMetaInfo(
-                                                artisan.reportsCount,
-                                                "Reports"),
-                                            _buildArtisanMetaInfo(
-                                                artisan.servicesCount,
-                                                "Services"),
-
-                                            /// chat button
-                                            InkWell(
-                                              onTap: () => context.navigator
-                                                  .pushConversationPage(
-                                                recipientId: artisan.id,
-                                                recipient: artisan,
+                                          /// chat button
+                                          InkWell(
+                                            onTap: () => context.navigator
+                                                .pushConversationPage(
+                                              recipientId: artisan.id,
+                                              recipient: artisan,
+                                            ),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        kSpacingX8),
+                                                color: kTheme
+                                                    .colorScheme.secondary,
                                               ),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          kSpacingX8),
-                                                  color: kTheme
-                                                      .colorScheme.secondary,
-                                                ),
-                                                padding: EdgeInsets.symmetric(
-                                                  horizontal: kSpacingX12,
-                                                  vertical: kSpacingX8,
-                                                ),
-                                                alignment: Alignment.center,
-                                                child: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    Icon(
-                                                      kChatIcon,
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: kSpacingX12,
+                                                vertical: kSpacingX8,
+                                              ),
+                                              alignment: Alignment.center,
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Icon(
+                                                    kChatIcon,
+                                                    color: kTheme.colorScheme
+                                                        .onSecondary,
+                                                  ),
+                                                  SizedBox(width: kSpacingX8),
+                                                  Text(
+                                                    "Message",
+                                                    style: kTheme
+                                                        .textTheme.button
+                                                        .copyWith(
                                                       color: kTheme.colorScheme
                                                           .onSecondary,
                                                     ),
-                                                    SizedBox(width: kSpacingX8),
-                                                    Text(
-                                                      "Message",
-                                                      style: kTheme
-                                                          .textTheme.button
-                                                          .copyWith(
-                                                        color: kTheme
-                                                            .colorScheme
-                                                            .onSecondary,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    /// business profile
+                                    BlocBuilder<BusinessBloc, BlocState>(
+                                      cubit: _businessBloc,
+                                      builder: (_, businessState) =>
+                                          businessState is SuccessState<
+                                                      List<BaseBusiness>> &&
+                                                  businessState.data.isNotEmpty
+                                              ? _buildBusinessList(
+                                                  businessState.data, artisan)
+                                              : SizedBox.shrink(),
+                                    ),
+
+                                    /// reviews
+                                    if (reviews.isNotEmpty) ...{
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          top: kSpacingX12,
+                                          left: kSpacingX16,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "Recent Reviews",
+                                              style: kTheme.textTheme.headline6
+                                                  .copyWith(
+                                                color: kTheme
+                                                    .colorScheme.onBackground
+                                                    .withOpacity(
+                                                        kEmphasisMedium),
                                               ),
                                             ),
                                           ],
                                         ),
                                       ),
-
-                                      /// business profile
-                                      BlocBuilder<BusinessBloc, BlocState>(
-                                        cubit: _businessBloc,
-                                        builder: (_, businessState) =>
-                                            businessState is SuccessState<
-                                                        List<BaseBusiness>> &&
-                                                    businessState
-                                                        .data.isNotEmpty
-                                                ? _buildBusinessList(
-                                                    businessState.data, artisan)
-                                                : SizedBox.shrink(),
-                                      ),
-
-                                      /// reviews
-                                      if (reviews.isNotEmpty) ...{
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                            top: kSpacingX12,
-                                            left: kSpacingX16,
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                "Recent Reviews",
-                                                style: kTheme
-                                                    .textTheme.headline6
-                                                    .copyWith(
-                                                  color: kTheme
-                                                      .colorScheme.onBackground
-                                                      .withOpacity(
-                                                          kEmphasisMedium),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(height: kSpacingX12),
-                                        ...reviews
-                                            .map((e) => _buildReviewItem(e))
-                                            .toList(),
-                                      }
-                                    ],
-                                  ),
+                                      SizedBox(height: kSpacingX12),
+                                      ...reviews
+                                          .map((e) => _buildReviewItem(e))
+                                          .toList(),
+                                    }
+                                  ],
                                 ),
                               ),
                             ),

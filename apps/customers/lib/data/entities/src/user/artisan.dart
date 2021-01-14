@@ -151,6 +151,9 @@ class Artisan extends BaseArtisan {
   int get requestsCount => requests?.length ?? 0;
 
   @override
+  bool get hasHighRatings => rating != null && rating >= 3.5;
+
+  @override
   get model => this;
 
   @override

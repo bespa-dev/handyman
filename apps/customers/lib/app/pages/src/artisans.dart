@@ -50,7 +50,8 @@ class _ArtisansPageState extends State<ArtisansPage> {
             category: ServiceCategoryGroup.featured().name()))
         ..listen((state) {
           if (state is SuccessState<Stream<List<BaseArtisan>>>) {
-            _artisanStream = state.data;
+            _artisanStream = state.data.map((event) =>
+                event.where((element) => element.hasHighRatings).toList());
             if (mounted) setState(() {});
           }
         });
@@ -75,263 +76,270 @@ class _ArtisansPageState extends State<ArtisansPage> {
                 categoryState is SuccessState<Stream<List<BaseServiceCategory>>>
                     ? categoryState.data
                     : Stream.empty(),
-            builder: (_, categoriesSnapshot) {
-              return CustomScrollView(
-                slivers: [
-                  CustomSliverAppBar(title: "Artisans"),
+            builder: (_, categoriesSnapshot) => Container(
+                height: SizeConfig.screenHeight,
+                width: SizeConfig.screenWidth,
+                child: StreamBuilder<List<BaseArtisan>>(
+                    initialData: [],
+                    stream: _artisanStream,
+                    builder: (_, snapshot) {
+                      return CustomScrollView(
+                        slivers: [
+                          /// app bar
+                          CustomSliverAppBar(title: "Artisans"),
 
-                  /// artisans' list
-                  SliverList(
-                    delegate: SliverChildListDelegate.fixed(
-                      <Widget>[
-                        /// artisans header
-                        Padding(
-                          padding: EdgeInsets.only(
-                            left: kSpacingX16,
-                            top: kSpacingX12,
-                          ),
-                          child: Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                    text: "Most Popular\n",
-                                    style: kTheme.textTheme.headline5),
-                                TextSpan(
-                                    text: "Artisans available",
-                                    style: kTheme.textTheme.bodyText2.copyWith(
-                                      color: kTheme.colorScheme.onBackground
-                                          .withOpacity(kEmphasisLow),
-                                    )),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        /// artisans
-                        StreamBuilder<List<BaseArtisan>>(
-                          initialData: [],
-                          stream: _artisanStream,
-                          builder: (_, snapshot) {
-                            return snapshot.connectionState ==
-                                    ConnectionState.waiting
-                                ? Loading()
-                                : snapshot.hasData
-                                    ? _buildArtisanCard(snapshot.data)
-                                    : SizedBox.shrink();
+                          /// featured artisans
+                          if (snapshot.hasData && snapshot.data.isNotEmpty) ...{
+                            _buildArtisanCard(snapshot.data),
                           },
-                        ),
-                      ],
-                      addAutomaticKeepAlives: true,
-                    ),
-                  ),
 
-                  /// categories' list header
-                  SliverList(
-                    delegate: SliverChildListDelegate.fixed(
-                      [
-                        /// header
-                        Padding(
-                          padding: EdgeInsets.only(
-                            top: kSpacingX24,
-                            left: kSpacingX16,
-                            bottom: kSpacingX16,
-                          ),
-                          child: Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                    text: "Services available\n",
-                                    style: kTheme.textTheme.headline5),
-                                TextSpan(
-                                    text: kAppSloganDesc,
-                                    style: kTheme.textTheme.bodyText2.copyWith(
-                                      color: kTheme.colorScheme.onBackground
-                                          .withOpacity(kEmphasisLow),
-                                    )),
+                          /// categories' list header
+                          SliverList(
+                            delegate: SliverChildListDelegate.fixed(
+                              [
+                                /// header
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    top: kSpacingX24,
+                                    left: kSpacingX16,
+                                    bottom: kSpacingX16,
+                                  ),
+                                  child: Text.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                            text: "Services available\n",
+                                            style: kTheme.textTheme.headline5),
+                                        TextSpan(
+                                            text: kAppSloganDesc,
+                                            style: kTheme.textTheme.bodyText2
+                                                .copyWith(
+                                              color: kTheme
+                                                  .colorScheme.onBackground
+                                                  .withOpacity(kEmphasisLow),
+                                            )),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
 
-                  /// categories' list content
-                  SliverGrid.count(
-                    crossAxisCount: 2,
-                    children: [
-                      ...categoriesSnapshot.data
-                          .map(
-                            (e) => GridCategoryCardItem(category: e),
-                          )
-                          .toList()
-                    ],
-                  ),
-                ],
-              );
-            }),
+                          /// categories' list content
+                          SliverGrid.count(
+                            crossAxisCount: 2,
+                            children: [
+                              for (int position = 0;
+                                  position < categoriesSnapshot.data.length;
+                                  position++) ...{
+                                AnimationConfiguration.staggeredGrid(
+                                  position: position,
+                                  columnCount: 2,
+                                  child: SlideAnimation(
+                                    duration: kScaleDuration,
+                                    verticalOffset: kSlideOffset,
+                                    child: FadeInAnimation(
+                                      child: GridCategoryCardItem(
+                                        category:
+                                            categoriesSnapshot.data[position],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              },
+                            ],
+                          ),
+                        ],
+                      );
+                    }))),
       ),
     );
   }
 
   Widget _buildArtisanCard(List<BaseArtisan> data) {
     final cardWidth = kSpacingX230;
-    final cardHeight = SizeConfig.screenHeight * 0.3;
+    final cardHeight = SizeConfig.screenHeight / 3.2;
 
-    return Container(
-      margin: EdgeInsets.only(top: kSpacingX12),
-      height: SizeConfig.screenHeight * 0.3,
-      width: SizeConfig.screenWidth,
-      child: ListView.separated(
-        addAutomaticKeepAlives: true,
-        clipBehavior: Clip.hardEdge,
-        cacheExtent: 200,
-        itemBuilder: (_, index) {
-          final artisan = data[index];
-          return Card(
-            clipBehavior: Clip.hardEdge,
-            elevation: kSpacingNone,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(kSpacingX12),
+    return SliverList(
+      delegate: SliverChildListDelegate.fixed(
+        [
+          /// artisans header
+          Padding(
+            padding: EdgeInsets.only(
+              left: kSpacingX16,
+              top: kSpacingX12,
             ),
-            child: InkWell(
-              onTap: () =>
-                  context.navigator.pushArtisanInfoPage(artisan: artisan),
-              splashColor: kTheme.splashColor,
-              borderRadius: BorderRadius.circular(kSpacingX12),
-              child: Container(
-                height: cardHeight,
-                width: cardWidth,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(kSpacingX12),
-                ),
-                child: Stack(
-                  children: [
-                    /// background
-                    Column(
-                      children: [
-                        Flexible(
-                          flex: 2,
-                          child: Stack(
-                            children: [
-                              /// background
-                              Positioned.fill(
-                                child: ImageView(
-                                  imageUrl: artisan.avatar,
-                                  showErrorIcon: false,
-                                ),
-                              ),
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                      text: "Most Popular\n",
+                      style: kTheme.textTheme.headline5),
+                  TextSpan(
+                    text:
+                        "Artisans with higher ratings based on customer reviews",
+                    style: kTheme.textTheme.bodyText2.copyWith(
+                      color: kTheme.colorScheme.onBackground
+                          .withOpacity(kEmphasisLow),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
 
-                              /// foreground
-                              Positioned.fill(
-                                child: Container(
-                                  color: kTheme.colorScheme.background
-                                      .withOpacity(kEmphasisMedium),
-                                ),
-                              ),
-                            ],
-                          ),
+          SizedBox(
+            width: cardWidth,
+            height: cardHeight,
+            child: ListView.separated(
+              addAutomaticKeepAlives: true,
+              clipBehavior: Clip.hardEdge,
+              cacheExtent: 200,
+              itemBuilder: (_, position) {
+                final artisan = data[position];
+                return AnimationConfiguration.staggeredList(
+                  position: position,
+                  child: SlideAnimation(
+                    duration: kScaleDuration,
+                    horizontalOffset: kSlideOffset,
+                    child: FadeInAnimation(
+                      child: Card(
+                        clipBehavior: Clip.hardEdge,
+                        elevation: kSpacingNone,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(kSpacingX12),
                         ),
-                        Flexible(
-                          flex: 3,
+                        child: InkWell(
+                          onTap: () => context.navigator
+                              .pushArtisanInfoPage(artisan: artisan),
+                          splashColor: kTheme.splashColor,
+                          borderRadius: BorderRadius.circular(kSpacingX12),
                           child: Container(
-                            color: kTheme.cardColor,
+                            height: cardHeight,
                             width: cardWidth,
-                            padding: EdgeInsets.only(
-                              left: kSpacingX8,
-                              top: kSpacingX12,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(kSpacingX12),
                             ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
+                            child: Stack(
                               children: [
-                                Container(
-                                  height: kSpacingX8,
-                                  width: kSpacingX8,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: artisan.isAvailable
-                                        ? kGreenColor
-                                        : kTheme.colorScheme.error,
-                                  ),
+                                /// background
+                                Column(
+                                  children: [
+                                    /// top half
+                                    Flexible(
+                                      flex: 2,
+                                      child: Stack(
+                                        children: [
+                                          /// background
+                                          Positioned.fill(
+                                            child: ImageView(
+                                              imageUrl: artisan.avatar,
+                                              showErrorIcon: false,
+                                            ),
+                                          ),
+
+                                          /// foreground
+                                          Positioned.fill(
+                                            child: Container(
+                                              color: kTheme
+                                                  .colorScheme.background
+                                                  .withOpacity(kEmphasisMedium),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    /// bottom half
+                                    Flexible(
+                                      flex: 3,
+                                      child: Container(
+                                          color: kTheme.cardColor,
+                                          width: cardWidth),
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(width: kSpacingX4),
-                                Text(
-                                  artisan.isAvailable ? "Online" : "Offline",
-                                  style: kTheme.textTheme.caption,
+
+                                /// content
+                                Positioned(
+                                  top: cardHeight * 0.25,
+                                  bottom: kSpacingX12,
+                                  left: kSpacingNone,
+                                  right: kSpacingNone,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      UserAvatar(
+                                        url: artisan.avatar,
+                                        radius: kSpacingX56,
+
+                                      ),
+                                      SizedBox(height: kSpacingX16),
+                                      Text(
+                                        artisan.name ?? "No username",
+                                        style: kTheme.textTheme.headline6,
+                                      ),
+                                      SizedBox(height: kSpacingX6),
+                                      BlocBuilder<CategoryBloc, BlocState>(
+                                        cubit: CategoryBloc(
+                                            repo: Injection.get())
+                                          ..add(
+                                            CategoryEvent.observeCategoryById(
+                                                id: artisan.category),
+                                          ),
+                                        builder: (_, userCategoryState) =>
+                                            StreamBuilder<BaseServiceCategory>(
+                                                stream: userCategoryState
+                                                        is SuccessState<
+                                                            Stream<
+                                                                BaseServiceCategory>>
+                                                    ? userCategoryState.data
+                                                    : Stream.empty(),
+                                                builder: (_, __) {
+                                                  return Text(
+                                                    __.hasData
+                                                        ? __.data.name
+                                                        : "...",
+                                                    style: kTheme
+                                                        .textTheme.bodyText1,
+                                                  );
+                                                }),
+                                      ),
+                                      SizedBox(width: kSpacingX8),
+                                      RatingBarIndicator(
+                                        itemBuilder: (_, index) => Icon(
+                                          kRatingStar,
+                                          color: kAmberColor,
+                                        ),
+                                        itemCount: 5,
+                                        itemSize: kSpacingX16,
+                                        rating: artisan.rating,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                         ),
-                      ],
-                    ),
-
-                    /// content
-                    Positioned(
-                      top: cardHeight * 0.25,
-                      bottom: kSpacingX12,
-                      left: kSpacingNone,
-                      right: kSpacingNone,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          UserAvatar(
-                            url: artisan.avatar,
-                            radius: kSpacingX56,
-                          ),
-                          SizedBox(height: kSpacingX16),
-                          Text(
-                            artisan.name ?? "No username",
-                            style: kTheme.textTheme.headline6,
-                          ),
-                          SizedBox(height: kSpacingX6),
-                          BlocBuilder<CategoryBloc, BlocState>(
-                            cubit: CategoryBloc(repo: Injection.get())
-                              ..add(
-                                CategoryEvent.observeCategoryById(
-                                    id: artisan.category),
-                              ),
-                            builder: (_, userCategoryState) =>
-                                StreamBuilder<BaseServiceCategory>(
-                                    stream: userCategoryState is SuccessState<
-                                            Stream<BaseServiceCategory>>
-                                        ? userCategoryState.data
-                                        : Stream.empty(),
-                                    builder: (_, __) {
-                                      return Text(
-                                        __.hasData ? __.data.name : "...",
-                                        style: kTheme.textTheme.bodyText1,
-                                      );
-                                    }),
-                          ),
-                          SizedBox(width: kSpacingX8),
-                          RatingBarIndicator(
-                            itemBuilder: (_, index) => Icon(
-                              kRatingStar,
-                              color: kAmberColor,
-                            ),
-                            itemCount: 5,
-                            itemSize: kSpacingX16,
-                            rating: artisan.rating,
-                          ),
-                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                );
+              },
+              itemCount: data.length,
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.only(
+                left: kSpacingX12,
+                right: kSpacingX36,
+                top: kSpacingX16,
               ),
+              separatorBuilder: (_, __) => SizedBox(width: kSpacingX8),
             ),
-          );
-        },
-        itemCount: data.length,
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.only(
-          left: kSpacingX12,
-          right: kSpacingX36,
-        ),
-        separatorBuilder: (_, __) => SizedBox(width: kSpacingX8),
+          ),
+        ],
       ),
     );
   }

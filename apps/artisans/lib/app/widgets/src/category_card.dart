@@ -73,11 +73,7 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
                 imageUrl: widget.category.avatar,
                 height: getProportionateScreenHeight(kSpacingX250),
                 width: double.infinity,
-                progressIndicatorBuilder: (context, url, downloadProgress) =>
-                    Center(
-                  child: CircularProgressIndicator(
-                      value: downloadProgress.progress),
-                ),
+                placeholder: (_, __) => Container(color: kPlaceholderColor),
                 fit: BoxFit.cover,
               ),
             ),

@@ -37,6 +37,7 @@ abstract class BaseBooking extends BaseModel {
   double progress;
   String dueDate;
   String currentState;
+  String serviceType;
 
   bool get hasImage;
 
@@ -59,6 +60,7 @@ abstract class BaseBooking extends BaseModel {
     double progress,
     String dueDate,
     String currentState,
+    String serviceType,
   });
 }
 

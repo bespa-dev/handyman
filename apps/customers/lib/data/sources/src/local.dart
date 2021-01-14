@@ -144,7 +144,6 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   @override
   Stream<BaseUser> currentUser() async* {
     var user = customerBox.get(prefsRepo.userId);
-    logger.e("Current user -> $user");
     yield user;
     notifyListeners();
   }

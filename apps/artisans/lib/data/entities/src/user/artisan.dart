@@ -51,12 +51,12 @@ class Artisan extends BaseArtisan {
   bool get isCertified => rating >= 3;
 
   @HiveField(8)
-  @JsonKey(name: "available")
+  @JsonKey(name: 'available')
   @override
   final bool isAvailable;
 
   @HiveField(9)
-  @JsonKey(name: "approved")
+  @JsonKey(name: 'approved')
   @override
   final bool isApproved;
 
@@ -151,7 +151,10 @@ class Artisan extends BaseArtisan {
   int get requestsCount => requests?.length ?? 0;
 
   @override
-  get model => this;
+  bool get hasHighRatings => rating != null && rating >= 3.5;
+
+  @override
+  Artisan get model => this;
 
   @override
   Map<String, dynamic> toJson() => _$ArtisanToJson(this);

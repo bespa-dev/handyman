@@ -40,6 +40,9 @@ abstract class BaseArtisan extends BaseUser {
 
   int get cancelledBookingsCount;
 
+  bool get hasHighRatings;
+
+  @override
   BaseArtisan copyWith({
     String name,
     String email,

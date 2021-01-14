@@ -31,6 +31,7 @@ abstract class BaseBookingRepository extends BaseRepository {
     @required String description,
     @required String image,
     @required double cost,
+    @required String serviceType,
     @required BaseLocationMetadata metadata,
   });
 

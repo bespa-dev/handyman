@@ -104,6 +104,7 @@ class RequestBookingUseCase extends CompletableUseCase<RequestBookingParams> {
         image: params.image,
         cost: params.cost,
         metadata: params.metadata,
+        serviceType: params.serviceType,
       );
       return UseCaseResult.success();
     } on Exception {
@@ -182,6 +183,7 @@ class RequestBookingParams {
   final String category;
   final String description;
   final String image;
+  final String serviceType;
   final double cost;
   final BaseLocationMetadata metadata;
 
@@ -192,6 +194,7 @@ class RequestBookingParams {
     this.description,
     this.image,
     this.metadata,
+    this.serviceType,
     this.cost,
   });
 }

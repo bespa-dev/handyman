@@ -69,6 +69,10 @@ class Booking extends BaseBooking {
   @override
   final String currentState;
 
+  @HiveField(12)
+  @override
+  final String serviceType;
+
   Booking({
     @required this.id,
     @required this.createdAt,
@@ -79,6 +83,7 @@ class Booking extends BaseBooking {
     @required this.description,
     @required this.dueDate,
     @required this.currentState,
+    @required this.serviceType,
     this.position,
     this.cost = 0.0,
     this.progress = 0.0,
@@ -121,6 +126,7 @@ class Booking extends BaseBooking {
     double progress,
     String dueDate,
     String currentState,
+    String serviceType,
   }) =>
       Booking(
         id: this.id,
@@ -134,6 +140,7 @@ class Booking extends BaseBooking {
         cost: cost ?? this.cost,
         progress: progress ?? this.progress,
         dueDate: dueDate ?? this.dueDate,
+        serviceType: serviceType ?? this.serviceType,
         currentState: currentState ?? this.currentState,
       );
 }
