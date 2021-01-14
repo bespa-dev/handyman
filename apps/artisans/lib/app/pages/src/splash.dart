@@ -304,6 +304,13 @@ class _SplashPageState extends State<SplashPage>
                     await precacheImage(
                         CachedNetworkImageProvider(element.avatar), context);
                   });
+                  await Future.delayed(kSplashDuration);
+                  await _animationController.forward();
+                  if (mounted) {
+                    _isLoading = !_isLoading;
+                    _showPageContent = true;
+                    setState(() {});
+                  }
                 }
               });
           } else {

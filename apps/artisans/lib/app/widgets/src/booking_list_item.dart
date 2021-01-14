@@ -122,7 +122,7 @@ class _BookingListItemState extends State<BookingListItem> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                userState.data.name,
+                                userState.data?.name ?? "Anonymous",
                                 style:
                                 kTheme.textTheme.bodyText1.copyWith(
                                   fontFamily: kTheme

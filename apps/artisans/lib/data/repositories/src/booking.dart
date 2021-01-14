@@ -62,19 +62,21 @@ class BookingRepositoryImpl extends BaseBookingRepository {
 
   @override
   Future<void> requestBooking(
-      {String artisan,
-      String customer,
-      String category,
-      String description,
-      String image,
-      double cost,
-      BaseLocationMetadata metadata}) async {
+      {@required String artisan,
+      @required String customer,
+      @required String category,
+      @required String description,
+      @required String image,
+      @required double cost,
+      @required String serviceType,
+      @required BaseLocationMetadata metadata}) async {
     final now = DateTime.now();
     var booking = Booking(
       id: Uuid().v4(),
       createdAt: now.toIso8601String(),
       category: category,
       customerId: customer,
+      serviceType: serviceType,
       artisanId: artisan,
       cost: cost,
       currentState: BookingState.none().name(),
@@ -82,6 +84,7 @@ class BookingRepositoryImpl extends BaseBookingRepository {
       imageUrl: image,
       position: metadata,
       progress: 0.0,
+
       dueDate: DateTime.utc(
         2021,
         now.month,

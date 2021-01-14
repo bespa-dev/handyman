@@ -26,6 +26,7 @@ class BookingAdapter extends TypeAdapter<Booking> {
       description: fields[4] as String,
       dueDate: fields[8] as String,
       currentState: fields[11] as String,
+      serviceType: fields[12] as String,
       position: fields[5] as LocationMetadata,
       cost: fields[6] as double,
       progress: fields[7] as double,
@@ -35,7 +36,7 @@ class BookingAdapter extends TypeAdapter<Booking> {
   @override
   void write(BinaryWriter writer, Booking obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.customerId)
       ..writeByte(1)
@@ -59,7 +60,9 @@ class BookingAdapter extends TypeAdapter<Booking> {
       ..writeByte(10)
       ..write(obj.createdAt)
       ..writeByte(11)
-      ..write(obj.currentState);
+      ..write(obj.currentState)
+      ..writeByte(12)
+      ..write(obj.serviceType);
   }
 
   @override
@@ -88,6 +91,7 @@ Booking _$BookingFromJson(Map<String, dynamic> json) {
     description: json['description'] as String,
     dueDate: json['due_date'] as String,
     currentState: json['current_state'] as String,
+    serviceType: json['service_type'] as String,
     position: json['position'] == null
         ? null
         : LocationMetadata.fromJson(json['position'] as Map<String, dynamic>),
@@ -109,4 +113,5 @@ Map<String, dynamic> _$BookingToJson(Booking instance) => <String, dynamic>{
       'id': instance.id,
       'created_at': instance.createdAt,
       'current_state': instance.currentState,
+      'service_type': instance.serviceType,
     };
