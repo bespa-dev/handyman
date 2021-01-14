@@ -22,12 +22,12 @@ import 'package:lite/shared/shared.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
 class RequestPage extends StatefulWidget {
-  final BaseArtisan artisan;
-
   const RequestPage({
     Key key,
     @required this.artisan,
   }) : super(key: key);
+
+  final BaseArtisan artisan;
 
   @override
   _RequestPageState createState() => _RequestPageState();
@@ -58,10 +58,12 @@ class _RequestPageState extends State<RequestPage> {
   String _fileUrl;
 
   /// UI
-  int _currentPage = 0, _numPages = 3;
+  int _currentPage = 0;
+  final _numPages = 3;
   final _pageController = PageController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  String _userId, _timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+  String _userId;
+  final _timestamp = DateTime.now().millisecondsSinceEpoch.toString();
   bool _isRequesting = false,
       _showActionIcon = true,
       _useCurrentLocation = false,
@@ -103,10 +105,11 @@ class _RequestPageState extends State<RequestPage> {
           ),
         );
       }
-    } else
+    } else {
       showSnackBarMessage(context,
           message:
-              "Please select a service and fill in any required details first");
+              'Please select a service and fill in any required details first');
+    }
   }
 
   /// setup map details
@@ -131,15 +134,16 @@ class _RequestPageState extends State<RequestPage> {
         context: context,
         builder: (_) {
           return MenuItemPickerDialog(
-              title: "Select source",
+              title: 'Select source',
               onComplete: (_) async {
-                logger.d("Item -> ${_.title}");
-                if (_.icon == kGalleryIcon)
+                logger.d('Item -> ${_.title}');
+                if (_.icon == kGalleryIcon) {
                   pickedFile =
                       await picker.getImage(source: ImageSource.gallery);
-                else
+                } else {
                   pickedFile =
                       await picker.getImage(source: ImageSource.camera);
+                }
 
                 if (pickedFile != null) {
                   _imageFile = File(pickedFile.path);
@@ -148,11 +152,11 @@ class _RequestPageState extends State<RequestPage> {
               },
               items: [
                 PickerMenuItem(
-                  title: "Camera",
+                  title: 'Camera',
                   icon: kCameraIcon,
                 ),
                 PickerMenuItem(
-                  title: "Gallery",
+                  title: 'Gallery',
                   icon: kGalleryIcon,
                 ),
               ]);
@@ -222,11 +226,12 @@ class _RequestPageState extends State<RequestPage> {
               ..add(PrefsEvent.saveWorkAddressEvent(address: state.data.name))
               ..add(PrefsEvent.getWorkAddressEvent());
             _isWorkAddress = !_isWorkAddress;
-          } else
+          } else {
             _location = state.data;
+          }
           if (mounted) setState(() {});
         } else if (state is SuccessState<String>) {
-          logger.d("Location -> ${state.data}");
+          logger.d('Location -> ${state.data}');
 
           /// todo -> show location name
         }
@@ -244,13 +249,13 @@ class _RequestPageState extends State<RequestPage> {
             showCustomDialog(
               context: context,
               builder: (_) => InfoDialog(
-                title: "An error occurred",
+                title: 'An error occurred',
                 message: Text(state.failure?.toString() ??
-                    "Failed to complete your booking"),
+                    'Failed to complete your booking'),
               ),
             );
           } else {
-            showSnackBarMessage(context, message: "Request sent successfully");
+            showSnackBarMessage(context, message: 'Request sent successfully');
             context.navigator.pop();
           }
         }
@@ -262,9 +267,7 @@ class _RequestPageState extends State<RequestPage> {
           _fileUrl = state.data;
           _showActionIcon = true;
           if (mounted) setState(() {});
-          if (_isRequesting)
-
-            /// todo -> add service cost
+          if (_isRequesting) {
             _bookingBloc.add(
               BookingEvent.requestBooking(
                 artisan: widget.artisan.id,
@@ -274,11 +277,13 @@ class _RequestPageState extends State<RequestPage> {
                 image: _fileUrl,
                 cost: 12.99,
                 location: _location,
+                serviceType: _selectedService.id,
               ),
             );
+          }
         } else if (state is ErrorState) {
-          logger.e("Failed to upload image");
-          showSnackBarMessage(context, message: "Failed to upload image");
+          logger.e('Failed to upload image');
+          showSnackBarMessage(context, message: 'Failed to upload image');
           _isRequesting = false;
           _showActionIcon = true;
           if (mounted) setState(() {});
@@ -370,7 +375,7 @@ class _RequestPageState extends State<RequestPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Available services...",
+                      'Available services...',
                       style: kTheme.textTheme.headline6.copyWith(
                         color: kTheme.colorScheme.onBackground
                             .withOpacity(kEmphasisHigh),
@@ -378,7 +383,7 @@ class _RequestPageState extends State<RequestPage> {
                     ),
                     SizedBox(height: kSpacingX4),
                     Text(
-                      "Tap on any service below to get started",
+                      'Tap on any service below to get started',
                       style: kTheme.textTheme.caption.copyWith(
                         color: kTheme.colorScheme.onBackground
                             .withOpacity(kEmphasisMedium),
@@ -391,12 +396,12 @@ class _RequestPageState extends State<RequestPage> {
               SearchView(
                 focusNode: _focusNode,
                 onQueryChange: (query) {
-                  if (query.isEmpty)
+                  if (query.isEmpty) {
                     _serviceBloc.add(
                       ArtisanServiceEvent.getArtisanServices(
                           category: widget.artisan.category),
                     );
-                  else {
+                  } else {
                     _servicesForCategory = _servicesForCategory
                         .where((element) => element.name.contains(query))
                         .toList();
@@ -404,7 +409,7 @@ class _RequestPageState extends State<RequestPage> {
                   }
                 },
                 onQueryComplete: (query) {
-                  logger.d("Query -> $query");
+                  logger.d('Query -> $query');
                   _focusNode.unfocus();
                   _serviceBloc.add(
                     ArtisanServiceEvent.getArtisanServices(
@@ -458,7 +463,7 @@ class _RequestPageState extends State<RequestPage> {
               footerBuilder: (_, __) => SizedBox(
                 width: SizeConfig.screenWidth,
                 height: kToolbarHeight,
-                child: _buildActionButton(text: "Next"),
+                child: _buildActionButton(text: 'Next'),
               ),
               builder: (_, __) => Padding(
                 padding: EdgeInsets.only(
@@ -473,7 +478,7 @@ class _RequestPageState extends State<RequestPage> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        "Where do you need this service?",
+                        'Where do you need this service?',
                         style: kTheme.textTheme.headline6,
                       ),
                     ),
@@ -482,7 +487,7 @@ class _RequestPageState extends State<RequestPage> {
                       onQueryComplete: (_) {},
                       onQueryChange: (_) {},
                       focusNode: _focusNode,
-                      hint: "Enter a location",
+                      hint: 'Enter a location',
                     ),
                     SizedBox(height: kSpacingX12),
                     SwitchListTile.adaptive(
@@ -491,16 +496,17 @@ class _RequestPageState extends State<RequestPage> {
                       onChanged: (checked) {
                         _useCurrentLocation = checked;
                         setState(() {});
-                        if (_useCurrentLocation)
+                        if (_useCurrentLocation) {
                           _locationBloc.add(LocationEvent.getCurrentLocation());
+                        }
                       },
-                      title: Text("Use current location"),
+                      title: Text('Use current location'),
                     ),
                     BlocBuilder<PrefsBloc, BlocState>(
                       cubit: _homeAddressBloc,
                       builder: (_, state) => ListTile(
                         leading: Icon(kHomeIcon),
-                        title: Text("Add home address"),
+                        title: Text('Add home address'),
                         trailing: IconButton(
                           icon: Icon(kEditIcon),
                           onPressed: _pickHomeAddress,
@@ -516,12 +522,13 @@ class _RequestPageState extends State<RequestPage> {
                             ..listen((addressState) {
                               if (addressState is SuccessState<String>) {
                                 final address = addressState.data;
-                                if (address != null)
+                                if (address != null) {
                                   _locationBloc.add(
                                       LocationEvent.getLocationCoordinates(
                                           address: address));
-                                else
+                                } else {
                                   _pickHomeAddress();
+                                }
                               }
                             });
                         },
@@ -531,7 +538,7 @@ class _RequestPageState extends State<RequestPage> {
                       cubit: _workAddressBloc,
                       builder: (_, state) => ListTile(
                         leading: Icon(kBriefcaseIcon),
-                        title: Text("Add work address"),
+                        title: Text('Add work address'),
                         trailing: IconButton(
                           icon: Icon(kEditIcon),
                           onPressed: _pickWorkAddress,
@@ -547,12 +554,13 @@ class _RequestPageState extends State<RequestPage> {
                             ..listen((addressState) {
                               if (addressState is SuccessState<String>) {
                                 final address = addressState.data;
-                                if (address != null)
+                                if (address != null) {
                                   _locationBloc.add(
                                       LocationEvent.getLocationCoordinates(
                                           address: address));
-                                else
+                                } else {
                                   _pickWorkAddress();
+                                }
                               }
                             });
                         },
@@ -599,7 +607,7 @@ class _RequestPageState extends State<RequestPage> {
                             BitmapDescriptor.hueGreen),
                         flat: true,
                         infoWindow:
-                            InfoWindow(title: _location?.name ?? "Use here"),
+                            InfoWindow(title: _location?.name ?? 'Use here'),
                       ),
                     },
                     onMapCreated: (controller) async {
@@ -654,10 +662,10 @@ class _RequestPageState extends State<RequestPage> {
                 child: Column(
                   children: [
                     TextFormInput(
-                      labelText: "Short Description*",
+                      labelText: 'Short Description*',
                       controller: _bodyController,
                       validator: (_) => _.isEmpty
-                          ? "Add a short description of your problem"
+                          ? 'Add a short description of your problem'
                           : null,
                       textCapitalization: TextCapitalization.words,
                       enabled: !_isRequesting,
@@ -676,7 +684,7 @@ class _RequestPageState extends State<RequestPage> {
   /// handles back pressed action
   Future<bool> _handleBackPressed() async {
     if (_currentPage != 0) {
-      _pageController.animateToPage(
+      await _pageController.animateToPage(
         --_currentPage,
         duration: kSheetDuration,
         curve: Curves.fastLinearToSlowEaseIn,
@@ -689,24 +697,24 @@ class _RequestPageState extends State<RequestPage> {
   }
 
   /// bottom action button
-  Widget _buildActionButton({String text = "Send Request"}) {
+  Widget _buildActionButton({String text = 'Send Request'}) {
     kTheme = Theme.of(context);
-    bool isLastPage = _currentPage == _numPages - 1;
+    var isLastPage = _currentPage == _numPages - 1;
     return InkWell(
       onTap: isLastPage
           ? _requestService
           : () {
               switch (_currentPage) {
                 case 0:
-                  if (_selectedService == null)
+                  if (_selectedService == null) {
                     showCustomDialog(
                       context: context,
                       builder: (_) => InfoDialog(
-                        title: "Heads up",
-                        message: Text("Select a service first"),
+                        title: 'Heads up',
+                        message: Text('Select a service first'),
                       ),
                     );
-                  else {
+                  } else {
                     _pageController.animateToPage(
                       ++_currentPage,
                       duration: kSheetDuration,
@@ -722,8 +730,8 @@ class _RequestPageState extends State<RequestPage> {
                     showCustomDialog(
                       context: context,
                       builder: (_) => InfoDialog(
-                        title: "Heads up",
-                        message: Text("Select a destination for this service"),
+                        title: 'Heads up',
+                        message: Text('Select a destination for this service'),
                       ),
                     );
                   } else {
@@ -748,7 +756,7 @@ class _RequestPageState extends State<RequestPage> {
                 color: kTheme.colorScheme.onSecondary,
               )
             : Text(
-                isLastPage ? text : "Next",
+                isLastPage ? text : 'Next',
                 style: kTheme.textTheme.button.copyWith(
                   color: kTheme.colorScheme.onSecondary,
                 ),
@@ -758,10 +766,10 @@ class _RequestPageState extends State<RequestPage> {
   }
 
   void _pickHomeAddress() async {
-    String address = await showCustomDialog(
+    var address = await showCustomDialog(
       context: context,
       builder: (_) => ReplyMessageDialog(
-        title: "Home address",
+        title: 'Home address',
         controller: _controller,
       ),
     );
@@ -775,10 +783,10 @@ class _RequestPageState extends State<RequestPage> {
   }
 
   void _pickWorkAddress() async {
-    String address = await showCustomDialog(
+    var address = await showCustomDialog(
       context: context,
       builder: (_) => ReplyMessageDialog(
-        title: "Work address",
+        title: 'Work address',
         controller: _controller,
       ),
     );

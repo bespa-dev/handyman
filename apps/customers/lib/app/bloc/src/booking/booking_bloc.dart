@@ -55,15 +55,14 @@ class BookingBloc extends BaseBloc<BookingEvent> {
     } else if (event is RequestBooking) {
       var result = await RequestBookingUseCase(_repo).execute(
         RequestBookingParams(
-          category: event.category,
-          artisan: event.artisan,
-          description: event.description,
-          image: event.image,
-          customer: event.customer,
-          metadata: event.location,
-          cost: event.cost,
-          serviceType: event.serviceType
-        ),
+            category: event.category,
+            artisan: event.artisan,
+            description: event.description,
+            image: event.image,
+            customer: event.customer,
+            metadata: event.location,
+            cost: event.cost,
+            serviceType: event.serviceType),
       );
       if (result is UseCaseResultSuccess)
         yield BlocState.successState();
