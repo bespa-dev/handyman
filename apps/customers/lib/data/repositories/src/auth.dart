@@ -45,7 +45,7 @@ class AuthRepositoryImpl extends BaseAuthRepository {
     var firebaseUser = credential.user;
     final username = firebaseUser.displayName ?? forcedUsername;
 
-    var user = await _userRepo.getArtisanById(id: firebaseUser.uid);
+    var user = await _userRepo.getCustomerById(id: firebaseUser.uid);
     if (user == null) {
       var timestamp = DateTime.now().toIso8601String();
 
