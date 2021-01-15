@@ -169,7 +169,7 @@ class _SplashPageState extends State<SplashPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Welcome back...",
+                            'Welcome back...',
                             style: kTheme.textTheme.headline6.copyWith(
                               color: kTheme.colorScheme.onPrimary,
                             ),
@@ -311,8 +311,13 @@ class _SplashPageState extends State<SplashPage>
               });
           } else {
             await Future.delayed(kSplashDuration);
-            await _animationController.forward();
             if (mounted) {
+              // if (_animationController.status == AnimationStatus.forward ||
+              //     _animationController.status == AnimationStatus.completed) {
+              //   await _animationController.reverse();
+              // } else {
+              await _animationController.forward();
+              // }
               _isLoading = !_isLoading;
               _showPageContent = true;
               setState(() {});
