@@ -33,7 +33,9 @@ class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController(),
       _nameController = TextEditingController(),
+      _passwordConfirmationController = TextEditingController(),
       _passwordController = TextEditingController();
+  final _passwordFocusNode = FocusNode();
 
   @override
   void dispose() {
@@ -93,14 +95,13 @@ class _RegisterPageState extends State<RegisterPage> {
           Positioned.fill(
             child: Container(
               color: kTheme.colorScheme.primary,
-              padding: EdgeInsets.fromLTRB(
-                kSpacingX24,
-                kSpacingX36,
-                kSpacingX24,
-                kSpacingNone,
-              ),
               child: SingleChildScrollView(
-                padding: EdgeInsets.only(top: kSpacingX36),
+                padding: EdgeInsets.fromLTRB(
+                  kSpacingX24,
+                  kSpacingX64,
+                  kSpacingX24,
+                  kSpacingX16,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -142,40 +143,57 @@ class _RegisterPageState extends State<RegisterPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           TextFormInput(
-                            labelText: "Full Name",
+                            labelText: 'Full Name',
                             controller: _nameController,
                             keyboardType: TextInputType.name,
                             textInputAction: TextInputAction.next,
                             enabled: !_isLoading,
-                            cursorColor: kTheme.colorScheme.onPrimary,
+                            cursorColor: kTheme.colorScheme.onBackground,
                             textCapitalization: TextCapitalization.words,
                             color: kTheme.colorScheme.onPrimary,
-                            validator: (_) => _.isEmpty ? "Required" : null,
+                            validator: (_) =>
+                                _.isEmpty ? 'Name is required' : null,
                           ),
                           TextFormInput(
-                            labelText: "Email address",
+                            labelText: 'Email address',
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.next,
                             color: kTheme.colorScheme.onPrimary,
-                            cursorColor: kTheme.colorScheme.onPrimary,
+                            cursorColor: kTheme.colorScheme.onBackground,
                             enabled: !_isLoading,
-                            validator: (_) => _.isEmpty ? "Required" : null,
+                            validator: (_) =>
+                                _.isEmpty ? 'Email is required' : null,
                           ),
                           PasswordInput(
-                            labelText: "Password",
+                            labelText: 'Password',
                             controller: _passwordController,
-                            textInputAction: TextInputAction.done,
+                            textInputAction: TextInputAction.next,
                             enabled: !_isLoading,
                             color: kTheme.colorScheme.onPrimary,
-                            cursorColor: kTheme.colorScheme.onPrimary,
-                            validator: (_) => _.isEmpty ? "Required" : null,
+                            cursorColor: kTheme.colorScheme.onBackground,
+                            validator: (_) =>
+                                _.isEmpty ? 'Password is required' : null,
+                            onFieldSubmitted: (_) =>
+                                _passwordFocusNode.requestFocus(),
+                          ),
+                          PasswordInput(
+                            labelText: 'Confirm your password',
+                            controller: _passwordConfirmationController,
+                            focusNode: _passwordFocusNode,
+                            textInputAction: TextInputAction.go,
+                            enabled: !_isLoading,
+                            color: kTheme.colorScheme.onPrimary,
+                            cursorColor: kTheme.colorScheme.onBackground,
+                            validator: (_) => _passwordController.text != _
+                                ? 'Passwords do not match'
+                                : null,
                             onFieldSubmitted: (_) => _validateAndSignUp(),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: kSpacingX36),
+                    SizedBox(height: kSpacingX24),
                     if (_isLoading) ...{
                       Loading(color: kTheme.colorScheme.secondary),
                     } else ...{
@@ -183,7 +201,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: ButtonPrimary(
                           width: SizeConfig.screenWidth * 0.85,
                           onTap: () => _validateAndSignUp(),
-                          label: "Sign up",
+                          label: 'Sign up',
                           gravity: ButtonIconGravity.END,
                           icon: kArrowIcon,
                           color: kTheme.colorScheme.onBackground,

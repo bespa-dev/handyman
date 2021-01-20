@@ -21,6 +21,7 @@ import 'package:lite/app/pages/pages.dart';
     CustomRoute(page: ConversationPage),
     CustomRoute(page: CategoryDetailsPage),
     CustomRoute(page: RequestPage),
+    CustomRoute(page: ServiceRatingsPage),
     CustomRoute(page: ImagePreviewPage),
     CustomRoute(page: BookingDetailsPage),
     CustomRoute(page: SearchPage),
@@ -34,7 +35,7 @@ import 'package:lite/app/pages/pages.dart';
     CustomRoute(page: BusinessDetailsPage),
 
     /// keep at the bottom
-    CustomRoute(page: UnknownRoutePage, path: "*"),
+    CustomRoute(page: UnknownRoutePage, path: '*'),
   ],
 )
 class $Router {}

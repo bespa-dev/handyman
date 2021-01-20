@@ -11,11 +11,11 @@ part of 'duration.dart';
 abstract class SnackBarDuration extends Equatable {
   const SnackBarDuration(this._type);
 
-  factory SnackBarDuration.shortLength() = ShortLength.create;
+  factory SnackBarDuration.shortLength() = shortLength.create;
 
-  factory SnackBarDuration.longLength() = LongLength.create;
+  factory SnackBarDuration.longLength() = longLength.create;
 
-  factory SnackBarDuration.infiniteLength() = InfiniteLength.create;
+  factory SnackBarDuration.infiniteLength() = infiniteLength.create;
 
   final _SnackBarDuration _type;
 
@@ -32,11 +32,11 @@ abstract class SnackBarDuration extends Equatable {
       return true;
     }());
     switch (this._type) {
-      case _SnackBarDuration.ShortLength:
+      case _SnackBarDuration.shortLength:
         return shortLength();
-      case _SnackBarDuration.LongLength:
+      case _SnackBarDuration.longLength:
         return longLength();
-      case _SnackBarDuration.InfiniteLength:
+      case _SnackBarDuration.infiniteLength:
         return infiniteLength();
     }
   }
@@ -58,13 +58,13 @@ abstract class SnackBarDuration extends Equatable {
       return true;
     }());
     switch (this._type) {
-      case _SnackBarDuration.ShortLength:
+      case _SnackBarDuration.shortLength:
         if (shortLength == null) break;
         return shortLength();
-      case _SnackBarDuration.LongLength:
+      case _SnackBarDuration.longLength:
         if (longLength == null) break;
         return longLength();
-      case _SnackBarDuration.InfiniteLength:
+      case _SnackBarDuration.infiniteLength:
         if (infiniteLength == null) break;
         return infiniteLength();
     }
@@ -84,13 +84,13 @@ abstract class SnackBarDuration extends Equatable {
       return true;
     }());
     switch (this._type) {
-      case _SnackBarDuration.ShortLength:
+      case _SnackBarDuration.shortLength:
         if (shortLength == null) break;
         return shortLength();
-      case _SnackBarDuration.LongLength:
+      case _SnackBarDuration.longLength:
         if (longLength == null) break;
         return longLength();
-      case _SnackBarDuration.InfiniteLength:
+      case _SnackBarDuration.infiniteLength:
         if (infiniteLength == null) break;
         return infiniteLength();
     }
@@ -101,46 +101,46 @@ abstract class SnackBarDuration extends Equatable {
 }
 
 @immutable
-abstract class ShortLength extends SnackBarDuration {
-  const ShortLength() : super(_SnackBarDuration.ShortLength);
+abstract class shortLength extends SnackBarDuration {
+  const shortLength() : super(_SnackBarDuration.shortLength);
 
-  factory ShortLength.create() = _ShortLengthImpl;
+  factory shortLength.create() = _shortLengthImpl;
 }
 
 @immutable
-class _ShortLengthImpl extends ShortLength {
-  const _ShortLengthImpl() : super();
+class _shortLengthImpl extends shortLength {
+  const _shortLengthImpl() : super();
 
   @override
-  String toString() => 'ShortLength()';
+  String toString() => 'shortLength()';
 }
 
 @immutable
-abstract class LongLength extends SnackBarDuration {
-  const LongLength() : super(_SnackBarDuration.LongLength);
+abstract class longLength extends SnackBarDuration {
+  const longLength() : super(_SnackBarDuration.longLength);
 
-  factory LongLength.create() = _LongLengthImpl;
+  factory longLength.create() = _longLengthImpl;
 }
 
 @immutable
-class _LongLengthImpl extends LongLength {
-  const _LongLengthImpl() : super();
+class _longLengthImpl extends longLength {
+  const _longLengthImpl() : super();
 
   @override
-  String toString() => 'LongLength()';
+  String toString() => 'longLength()';
 }
 
 @immutable
-abstract class InfiniteLength extends SnackBarDuration {
-  const InfiniteLength() : super(_SnackBarDuration.InfiniteLength);
+abstract class infiniteLength extends SnackBarDuration {
+  const infiniteLength() : super(_SnackBarDuration.infiniteLength);
 
-  factory InfiniteLength.create() = _InfiniteLengthImpl;
+  factory infiniteLength.create() = _infiniteLengthImpl;
 }
 
 @immutable
-class _InfiniteLengthImpl extends InfiniteLength {
-  const _InfiniteLengthImpl() : super();
+class _infiniteLengthImpl extends infiniteLength {
+  const _infiniteLengthImpl() : super();
 
   @override
-  String toString() => 'InfiniteLength()';
+  String toString() => 'infiniteLength()';
 }

@@ -82,7 +82,7 @@ class _SplashPageState extends State<SplashPage>
                 if (mounted) {
                   setState(() {});
                   showSnackBarMessage(context,
-                      message: event.message ?? "Authentication failed");
+                      message: event.message ?? 'Authentication failed');
                 }
               } else if (event is AuthenticatedState) {
                 _isLoading = false;
@@ -169,7 +169,7 @@ class _SplashPageState extends State<SplashPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Welcome back...",
+                            'Welcome back...',
                             style: kTheme.textTheme.headline6.copyWith(
                               color: kTheme.colorScheme.onPrimary,
                             ),
@@ -281,11 +281,6 @@ class _SplashPageState extends State<SplashPage>
   }
 
   void _animateEntry() async {
-    if (mounted) {
-      _isLoading = !_isLoading;
-      setState(() {});
-    }
-
     /// observe user id
     _prefsBloc
       ..add(PrefsEvent.getUserIdEvent())
@@ -293,6 +288,9 @@ class _SplashPageState extends State<SplashPage>
         if (state is SuccessState<String>) {
           /// get all bookings for current user
           if (state.data == null) {
+            _isLoading = true;
+            if (mounted) setState(() {});
+
             /// cache all category images for faster load times
             _categoryBloc
               ..add(CategoryEvent.observeAllCategories(
@@ -305,11 +303,11 @@ class _SplashPageState extends State<SplashPage>
                         CachedNetworkImageProvider(element.avatar), context);
                   });
                   await Future.delayed(kSplashDuration);
-                  await _animationController.forward();
                   if (mounted) {
-                    _isLoading = !_isLoading;
+                    _isLoading = false;
                     _showPageContent = true;
                     setState(() {});
+                    await _animationController.forward();
                   }
                 }
               });
@@ -324,11 +322,11 @@ class _SplashPageState extends State<SplashPage>
     _bookingBloc.listen((state) async {
       if (state is SuccessState) {
         await Future.delayed(kSplashDuration);
-        await _animationController.forward();
         if (mounted) {
-          _isLoading = !_isLoading;
+          _isLoading = false;
           _showPageContent = true;
           setState(() {});
+          await _animationController.forward();
         }
       }
     });

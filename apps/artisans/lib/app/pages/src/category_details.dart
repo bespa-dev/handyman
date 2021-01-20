@@ -129,7 +129,6 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
               left: kSpacingX16,
               child: IconButton(
                 icon: Icon(kBackIcon),
-                color: kTheme.colorScheme.onPrimary,
                 onPressed: () => context.navigator.pop(),
               ),
             ),

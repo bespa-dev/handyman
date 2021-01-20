@@ -9,10 +9,11 @@ import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 
 class CategoryDetailsPage extends StatefulWidget {
-  final BaseServiceCategory category;
 
   const CategoryDetailsPage({Key key, @required this.category})
       : super(key: key);
+
+  final BaseServiceCategory category;
 
   @override
   _CategoryDetailsPageState createState() => _CategoryDetailsPageState();
@@ -128,7 +129,6 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                     left: kSpacingX16,
                     child: IconButton(
                       icon: Icon(kBackIcon),
-                      color: kTheme.colorScheme.onPrimary,
                       onPressed: () => context.navigator.pop(),
                     ),
                   ),

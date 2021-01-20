@@ -18,6 +18,7 @@ class Routes {
   static const String conversationPage = '/conversation-page';
   static const String categoryDetailsPage = '/category-details-page';
   static const String requestPage = '/request-page';
+  static const String serviceRatingsPage = '/service-ratings-page';
   static const String imagePreviewPage = '/image-preview-page';
   static const String bookingDetailsPage = '/booking-details-page';
   static const String searchPage = '/search-page';
@@ -36,6 +37,7 @@ class Routes {
     conversationPage,
     categoryDetailsPage,
     requestPage,
+    serviceRatingsPage,
     imagePreviewPage,
     bookingDetailsPage,
     searchPage,
@@ -60,6 +62,7 @@ class Router extends RouterBase {
     RouteDef(Routes.conversationPage, page: ConversationPage),
     RouteDef(Routes.categoryDetailsPage, page: CategoryDetailsPage),
     RouteDef(Routes.requestPage, page: RequestPage),
+    RouteDef(Routes.serviceRatingsPage, page: ServiceRatingsPage),
     RouteDef(Routes.imagePreviewPage, page: ImagePreviewPage),
     RouteDef(Routes.bookingDetailsPage, page: BookingDetailsPage),
     RouteDef(Routes.searchPage, page: SearchPage),
@@ -118,6 +121,13 @@ class Router extends RouterBase {
           key: args.key,
           artisan: args.artisan,
         ),
+        settings: data,
+      );
+    },
+    ServiceRatingsPage: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ServiceRatingsPage(),
         settings: data,
       );
     },
@@ -257,6 +267,9 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
         Routes.requestPage,
         arguments: RequestPageArguments(key: key, artisan: artisan),
       );
+
+  Future<dynamic> pushServiceRatingsPage() =>
+      push<dynamic>(Routes.serviceRatingsPage);
 
   Future<dynamic> pushImagePreviewPage({
     Key key,

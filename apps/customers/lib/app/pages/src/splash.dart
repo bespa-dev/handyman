@@ -115,41 +115,6 @@ class _SplashPageState extends State<SplashPage>
       body: Stack(
         fit: StackFit.expand,
         children: [
-          /// base
-          Positioned.fill(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                kSpacingX24,
-                kSpacingX36,
-                kSpacingX24,
-                kSpacingX24,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image(
-                    image: Svg(kLogoAsset),
-                    height: kSpacingX120,
-                    width: kSpacingX120,
-                  ),
-                  SizedBox(height: kSpacingX16),
-                  Text(
-                    kAppSloganDesc,
-                    textAlign: TextAlign.center,
-                    style: kTheme.textTheme.subtitle1,
-                  ),
-                  SizedBox(height: kSpacingX64),
-                  AnimatedOpacity(
-                    opacity: _isLoading ? 1 : 0,
-                    duration: kSheetDuration,
-                    child: Loading(),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
           /// overlay
           if (_showPageContent) ...{
             Positioned.fill(
@@ -275,6 +240,41 @@ class _SplashPageState extends State<SplashPage>
                 ),
               ),
             ),
+          } else ...{
+            /// base
+            Positioned.fill(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  kSpacingX24,
+                  kSpacingX36,
+                  kSpacingX24,
+                  kSpacingX24,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image(
+                      image: Svg(kLogoAsset),
+                      height: kSpacingX120,
+                      width: kSpacingX120,
+                    ),
+                    SizedBox(height: kSpacingX16),
+                    Text(
+                      kAppSloganDesc,
+                      textAlign: TextAlign.center,
+                      style: kTheme.textTheme.subtitle1,
+                    ),
+                    SizedBox(height: kSpacingX64),
+                    AnimatedOpacity(
+                      opacity: _isLoading ? 1 : 0,
+                      duration: kSheetDuration,
+                      child: Loading(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           }
         ],
       ),
@@ -282,17 +282,15 @@ class _SplashPageState extends State<SplashPage>
   }
 
   void _animateEntry() async {
-    if (mounted) {
-      _isLoading = !_isLoading;
-      setState(() {});
-    }
-
     /// get user id
     _prefsBloc
       ..add(PrefsEvent.getUserIdEvent())
       ..listen((state) async {
         if (state is SuccessState<String>) {
           if (state.data == null) {
+            _isLoading = true;
+            if (mounted) setState(() {});
+
             /// cache all category images for faster load times
             _categoryBloc
               ..add(CategoryEvent.observeAllCategories(
@@ -312,15 +310,10 @@ class _SplashPageState extends State<SplashPage>
           } else {
             await Future.delayed(kSplashDuration);
             if (mounted) {
-              // if (_animationController.status == AnimationStatus.forward ||
-              //     _animationController.status == AnimationStatus.completed) {
-              //   await _animationController.reverse();
-              // } else {
-              await _animationController.forward();
-              // }
-              _isLoading = !_isLoading;
+              _isLoading = false;
               _showPageContent = true;
               setState(() {});
+              await _animationController.forward();
             }
           }
         }
@@ -329,11 +322,11 @@ class _SplashPageState extends State<SplashPage>
     /// observe users state
     _userBloc.listen((state) async {
       if (state is SuccessState) {
-        await _animationController.forward();
         if (mounted) {
           _isLoading = !_isLoading;
           _showPageContent = true;
           setState(() {});
+          await _animationController.forward();
         }
       }
     });

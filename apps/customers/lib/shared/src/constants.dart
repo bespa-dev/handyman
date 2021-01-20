@@ -7,7 +7,6 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:algolia/algolia.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -24,7 +23,7 @@ Future<bool> backPressed(GlobalKey<NavigatorState> _yourKey) async {
   if (_yourKey.currentState.canPop()) {
     // 'maybePop' method handles the decision of 'pop' to another WillPopScope if they exist.
     // If no other WillPopScope exists, it returns true
-    _yourKey.currentState.maybePop();
+    await _yourKey.currentState.maybePop();
     return Future<bool>.value(false);
   }
 
@@ -47,9 +46,9 @@ void showSnackBarMessage(
         content: Text(message),
         behavior: SnackBarBehavior.floating,
         duration: Duration(
-          seconds: duration is ShortLength
+          seconds: duration is shortLength
               ? 5
-              : duration is LongLength
+              : duration is longLength
                   ? 10
                   : 1200,
         ),
@@ -60,7 +59,7 @@ void showSnackBarMessage(
 /// Sets map style
 Future getMapStyle({@required bool isLightTheme}) async =>
     await rootBundle.loadString(
-        isLightTheme ? "assets/map_style.json" : "assets/dark_map_style.json");
+        isLightTheme ? 'assets/map_style.json' : 'assets/dark_map_style.json');
 
 /// Dimensions
 const double kSpacingNone = 0.0;
@@ -103,37 +102,35 @@ const double kEmphasisHigh = 0.9;
 const double kBlurSigma = 5.0;
 
 /// App
-const kAppName = "HandyMan Lite";
-const kAppNameShort = "HandyMan";
+const kAppName = 'HandyMan';
+const kAppNameShort = 'HandyMan';
 const kAppSlogan =
-    "A mobile application to gather all handyman service providers on a single platform and introduce them to potential service seekers and compare between providers and hire the best quote";
-const kAppSloganDesc = "Find & book your services easily with $kAppName";
+    'A mobile application to gather all handyman service providers on a single platform and introduce them to potential service seekers and compare between providers and hire the best quote';
+const kAppSloganDesc = 'Find & book your services easily with $kAppName';
 const kArtisanReviewHelpDialogContent =
-    "Sensitive data (like email addresses, phone numbers, user ids etc) will not be made public to customers on this platform.\nYour ratings are also based on the accumulated reviews by customers you have served over the last 6 months";
+    'Sensitive data (like email addresses, phone numbers, user ids etc) will not be made public to customers on this platform.\nYour ratings are also based on the accumulated reviews by customers you have served over the last 6 months';
 const kPasswordHint =
-    "Your password must be 8 or more characters long & must contain a mix of upper & lower case letters,a number & a symbol";
+    'Your password must be 8 or more characters long & must contain a mix of upper & lower case letters,a number & a symbol';
 const kSignOutText =
-    "Signing out will set you offline until you sign in again. You may not be able to send/receive requests. Do you wish to continue?";
+    'Signing out will set you offline until you sign in again. You may not be able to send/receive requests. Do you wish to continue?';
 const kAccountCompletionHelperText =
-    "In order to complete your mobile registration process, kindly setup your profile information and upload a business document. You will be notified within the next 72 hours. Thank you!";
+    'In order to complete your mobile registration process, kindly setup your profile information and upload a business document. You will be notified within the next 72 hours. Thank you!';
 const kServiceHelperText =
-    "Details on services provided by this artisan are not made public. If you need more information regarding the procedure and arrangement for the performance of this job please contact the artisan directly through the \"chat\" option available on his/her profile.";
-const kArtisanString = "Artisan";
+    'Details on services provided by this artisan are not made public. If you need more information regarding the procedure and arrangement for the performance of this job please contact the artisan directly through the \"chat\" option available on his/her profile.';
 const kFunctionalityUnavailable =
-    "Functionality is currently unavailable. Try again after the next update. Thank you";
-const kCustomerString = "Customer";
-const kLogoAsset = "assets/logo/logo.svg";
-const kWelcomeAsset = "assets/svg/welcome.png";
-const kRegisterAsset = "assets/svg/register.png";
-const kLoginAsset = "assets/svg/login.png";
-const k404Asset = "assets/svg/404.svg";
-const kAlgoliaSvgAsset = "assets/svg/algolia_blue_mark.svg";
+    'Functionality is currently unavailable. Try again after the next update. Thank you';
+const kLogoAsset = 'assets/logo/logo.svg';
+const kWelcomeAsset = 'assets/svg/welcome.png';
+const kRegisterAsset = 'assets/svg/register.png';
+const kLoginAsset = 'assets/svg/login.png';
+const k404Asset = 'assets/svg/404.svg';
+const kLogoDarkAsset = 'assets/logo/logo_dark.svg';
+const kAlgoliaSvgAsset = 'assets/svg/algolia_blue_mark.svg';
 const kBackgroundAsset =
-    "https://images.unsplash.com/photo-1454694220579-9d6672b1ec2a?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8aGFuZHltYW58ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60";
+    'https://images.unsplash.com/photo-1454694220579-9d6672b1ec2a?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8aGFuZHltYW58ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60';
 const kLoremText =
-    "Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cursus sit amet dictum sit amet. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique";
+    'Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cursus sit amet dictum sit amet. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique';
 
-/// icons
 const kBackIcon = AntDesign.back;
 const kPlusIcon = Feather.plus;
 const kRatingStar = Entypo.star;
@@ -163,12 +160,8 @@ const kUserAddIcon = Feather.user_plus;
 const kChatIcon = Entypo.message;
 const kThreeDotsOptionsIcon = Entypo.dots_three_horizontal;
 
-/// [Algolia]
-const kAlgoliaAppId = "AIBRVBFA4W";
-const kAlgoliaKey = "604022a17d65f30d23e80a38f285be57";
-
 /// Others
-const kScrollPhysics = const BouncingScrollPhysics();
+const kScrollPhysics = BouncingScrollPhysics();
 const kSlideOffset = 50.0;
 
 /// Colors
@@ -199,8 +192,8 @@ const kBackgroundDarkColor = Color(0xFF05050B);
 const kSurfaceDarkColor = Color(0xFF222225);
 
 /// Icon Colors
-const kAccentIconLightColor = kPrimaryColor;
-const kPrimaryIconLightColor = kPrimaryColor;
+const kAccentIconLightColor = kBlackColor;
+const kPrimaryIconLightColor = kBlackColor;
 
 const kAccentIconDarkColor = kWhiteColor;
 const kPrimaryIconDarkColor = kWhiteColor;
@@ -218,7 +211,7 @@ const kShadowDarkColor = Color(0xFF7C7C7C);
 
 /// launch [url]
 Future<void> launchUrl({@required String url}) async {
-  logger.d("Launching -> $url");
+  logger.d('Launching -> $url');
   if (await canLaunch(url)) {
     await launch(url);
   }

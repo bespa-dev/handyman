@@ -22,7 +22,7 @@
     <application
         android:name=".HandyManApp"
         android:icon="@mipmap/launcher_icon"
-        android:label="HandyMan Lite">
+        android:label="HandyMan">
         <activity
                 android:name=".MainActivity"
                 android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

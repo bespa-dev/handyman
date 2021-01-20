@@ -252,6 +252,9 @@ Future<void> initAppDependencies() async {
 
   /// inject dependencies
   await Injection.inject();
+
+  /// setup local notifications
+  await setupNotifications();
 }
 
 /// endregion

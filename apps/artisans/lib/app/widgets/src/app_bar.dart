@@ -52,7 +52,6 @@ class ExpandedAppBarContainer extends StatelessWidget {
                   if (showNavIcon) ...{
                     IconButton(
                       icon: Icon(kBackIcon),
-                      color: kTheme.colorScheme.onBackground,
                       onPressed: () {
                         context.navigator.pop();
                       },

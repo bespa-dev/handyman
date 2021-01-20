@@ -5,17 +5,17 @@ part 'duration.super.dart';
 @superEnum
 enum _SnackBarDuration {
   @object
-  ShortLength,
+  shortLength,
   @object
-  LongLength,
+  longLength,
   @object
-  InfiniteLength,
+  infiniteLength,
 }
 
 /// Durations
-const kNoDuration = const Duration(milliseconds: 150);
-const kScaleDuration = const Duration(milliseconds: 350);
-const kTestDuration = const Duration(milliseconds: 2500);
-const kSheetDuration = const Duration(milliseconds: 550);
-const kSplashDuration = const Duration(milliseconds: 2500);
-const kDialogTransitionDuration = const Duration(milliseconds: 150);
+const kNoDuration = Duration(milliseconds: 150);
+const kScaleDuration = Duration(milliseconds: 350);
+const kTestDuration = Duration(milliseconds: 2500);
+const kSheetDuration = Duration(milliseconds: 550);
+const kSplashDuration = Duration(milliseconds: 1500);
+const kDialogTransitionDuration = Duration(milliseconds: 150);

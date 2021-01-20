@@ -14,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/all.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/routes/routes.gr.dart' as gr;
 import 'package:lite/shared/shared.dart';
@@ -26,10 +27,15 @@ class HandyManApp extends StatefulWidget {
 
 class _HandyManAppState extends State<HandyManApp> {
   final _prefsBloc = PrefsBloc(repo: Injection.get());
+  LocalNotificationService _notificationService;
 
   @override
   void initState() {
     super.initState();
+
+    /// setup local notifications
+    _notificationService = ProviderContainer().read(notificationServiceProvider)
+      ..setupNotifications();
 
     /// get current user's id
     if (mounted) _prefsBloc.add(PrefsEvent.getUserIdEvent());
@@ -44,6 +50,7 @@ class _HandyManAppState extends State<HandyManApp> {
   @override
   void dispose() {
     _prefsBloc.close();
+    _notificationService.dispose();
     super.dispose();
   }
 

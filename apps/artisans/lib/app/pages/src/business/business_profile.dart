@@ -344,7 +344,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                           child: TextFormInput(
                             labelText: "Business name",
                             controller: _nameController,
-                            cursorColor: kTheme.colorScheme.onPrimary,
+                            cursorColor: kTheme.colorScheme.onBackground,
                             validator: (_) =>
                                 _.isEmpty ? "Name is required" : null,
                             textCapitalization: TextCapitalization.words,

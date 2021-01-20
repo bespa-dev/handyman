@@ -29,6 +29,12 @@ import 'package:lite/domain/sources/sources.dart';
 import 'package:lite/shared/shared.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// region Services
+
+final notificationServiceProvider = Provider((_) => LocalNotificationService());
+
+/// endregion
+
 /// region Preferences
 final _sharedPreferencesProvider = FutureProvider<SharedPreferences>(
     (_) async => await SharedPreferences.getInstance());
@@ -223,7 +229,7 @@ class Injection {
     _repos.add(await container.read(_searchRepositoryProvider(prefsRepo)));
     _repos.add(container.read(_storageRepositoryProvider));
     _repos.add(await container.read(_userRepositoryProvider(prefsRepo)));
-    logger.i("${_repos.length} repositories injected");
+    logger.i('${_repos.length} repositories injected');
   }
 
   /// retrieves an instance of a repository registered above
@@ -231,7 +237,7 @@ class Injection {
     for (var value in _repos) {
       if (value is R) return value as R;
     }
-    throw Exception("Unknown repository for -> ${R.runtimeType}");
+    throw Exception('Unknown repository for -> ${R.runtimeType}');
   }
 }
 
@@ -255,7 +261,7 @@ Future<void> initAppDependencies() async {
   await Injection.inject();
 }
 
-/// setup notifications plugin
+/// todo -> remove this
 final notificationsPlugin = FlutterLocalNotificationsPlugin();
 
 /// endregion

@@ -19,6 +19,7 @@ import 'package:handyman/shared/shared.dart';
 /// https://stackoverflow.com/questions/63766058/flutter-issues-with-release-mode-only-apk-builds
 /// flutter pub run flutter_launcher_icons:main
 /// flutter pub run flutter_launcher_name:main
+/// flutter packages pub run build_runner watch --delete-conflicting-outputs --verbose
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

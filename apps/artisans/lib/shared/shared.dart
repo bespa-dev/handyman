@@ -8,12 +8,13 @@
  */
 
 export 'src/constants.dart'; // done
+export 'src/duration/duration.dart'; // done
 export 'src/extensions.dart'; // done
 export 'src/injection.dart';
-export 'src/size_config.dart'; // done
-export 'src/theme.dart'; // done
-export 'src/utils.dart';  // done
-export 'src/validators.dart'; // done
-export 'src/duration/duration.dart';  // done
-export 'src/state_ui.dart'; // done
+export 'src/notifications.dart'; // done
 export 'src/parsers.dart'; // done
+export 'src/size_config.dart'; // done
+export 'src/state_ui.dart'; // done
+export 'src/theme.dart'; // done
+export 'src/utils.dart'; // done
+export 'src/validators.dart'; // done
