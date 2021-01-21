@@ -7,6 +7,7 @@ admin.initializeApp();
 const booking_type = "booking";
 const conversation_type = "conversation";
 const token_type = "token";
+const account_approval_type = "approval";
 
 // booking requests
 exports.bookingNotifications = functions.firestore
@@ -258,7 +259,7 @@ exports.artisanDeviceTokenNotifications = functions.firestore
     // device token has not changed
     if (oldToken == newToken) return Promise.resolve();
     // account approval
-    else if(change.after.get('approved') === true) {
+    else if (change.after.get("approved") === true) {
       let message = {
         notification: {
           title: "Account approval",
@@ -266,6 +267,7 @@ exports.artisanDeviceTokenNotifications = functions.firestore
         },
         data: {
           id: context.params.id,
+          type: account_approval_type,
         },
       };
       return await admin.messaging().sendToDevice(newToken, message);
@@ -279,6 +281,7 @@ exports.artisanDeviceTokenNotifications = functions.firestore
         },
         data: {
           id: context.params.id,
+          type: token_type,
         },
       };
       return await admin.messaging().sendToDevice(newToken, message);
@@ -305,6 +308,7 @@ exports.customerDeviceTokenNotifications = functions.firestore
         },
         data: {
           id: context.params.id,
+          type: token_type,
         },
       };
       return await admin.messaging().sendToDevice(newToken, message);
