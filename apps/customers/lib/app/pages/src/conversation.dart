@@ -8,6 +8,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/widgets/widgets.dart';
@@ -144,51 +145,18 @@ class _ConversationPageState extends State<ConversationPage> {
                   automaticallyImplyLeading: false,
                   flexibleSpace: FlexibleSpaceBar(
                     collapseMode: CollapseMode.parallax,
-                    background: Container(
-                      width: SizeConfig.screenWidth,
-                      color: kTheme.colorScheme.primary,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: kSpacingX24,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          UserAvatar(
-                            url: state.data.avatar,
-                            radius: kSpacingX84,
-                            isCircular: true,
-                          ),
-                          SizedBox(height: kSpacingX16),
-                          Text(
-                            'Hi there!',
-                            style: kTheme.textTheme.headline3.copyWith(
-                              color: kTheme.colorScheme.onPrimary,
-                            ),
-                          ),
-                          SizedBox(height: kSpacingX8),
-                          Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(text: 'Welcome to '),
-                                TextSpan(
-                                  text: businessName,
-                                  style: kTheme.textTheme.headline5.copyWith(
-                                    color: kTheme.colorScheme.onPrimary,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                TextSpan(text: '. How can we help you today?'),
-                              ],
-                            ),
-                            style: kTheme.textTheme.headline5.copyWith(
-                              color: kTheme.colorScheme.onPrimary,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    background: _buildBackgroundInfo(state.data, businessName),
+                  ),
+                  backgroundColor: kTheme.colorScheme.primary,
+                  stretch: true,
+                  snap: true,
+                  collapsedHeight: SizeConfig.screenHeight * 0.1,
+                  toolbarHeight: SizeConfig.screenHeight * 0.1,
+                  leadingWidth: kSpacingX48,
+                  systemOverlayStyle: SystemUiOverlayStyle(
+                    statusBarBrightness: kTheme.brightness == Brightness.light
+                        ? Brightness.dark
+                        : Brightness.light,
                   ),
                   actions: [
                     IconButton(
@@ -211,7 +179,10 @@ class _ConversationPageState extends State<ConversationPage> {
                               recipient: _recipient,
                             ),
                           )
-                          .toList()
+                          .toList(),
+
+                      /// spacing at the bottom
+                      SizedBox(height: SizeConfig.screenHeight * 0.09),
                     ],
                   ),
                 ),
@@ -249,7 +220,8 @@ class _ConversationPageState extends State<ConversationPage> {
                       border: InputBorder.none,
                       hintText: 'Type here',
                       hintStyle: TextStyle(
-                        color: kTheme.colorScheme.onBackground.withOpacity(kEmphasisLow),
+                        color: kTheme.colorScheme.onBackground
+                            .withOpacity(kEmphasisLow),
                       ),
                     ),
                     cursorColor: kTheme.colorScheme.onBackground,
@@ -300,6 +272,54 @@ class _ConversationPageState extends State<ConversationPage> {
               ),
             ],
           ),
+        ),
+      );
+
+  /// appbar background info panel
+  Widget _buildBackgroundInfo(BaseArtisan user, String businessName) =>
+      Container(
+        width: SizeConfig.screenWidth,
+        color: kTheme.colorScheme.primary,
+        padding: EdgeInsets.symmetric(
+          horizontal: kSpacingX24,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            UserAvatar(
+              url: user.avatar,
+              radius: kSpacingX84,
+              isCircular: true,
+            ),
+            SizedBox(height: kSpacingX16),
+            Text(
+              'Hi there!',
+              style: kTheme.textTheme.headline3.copyWith(
+                color: kTheme.colorScheme.onPrimary,
+              ),
+            ),
+            SizedBox(height: kSpacingX8),
+            Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(text: 'Welcome to '),
+                  TextSpan(
+                    text: businessName,
+                    style: kTheme.textTheme.headline5.copyWith(
+                      color: kTheme.colorScheme.onPrimary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  TextSpan(text: '. How can we help you today?'),
+                ],
+              ),
+              style: kTheme.textTheme.headline5.copyWith(
+                color: kTheme.colorScheme.onPrimary,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
         ),
       );
 }
