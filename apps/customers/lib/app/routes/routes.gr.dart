@@ -154,6 +154,7 @@ class Router extends RouterBase {
           key: args.key,
           booking: args.booking,
           customer: args.customer,
+          bookingId: args.bookingId,
         ),
         settings: data,
       );
@@ -294,11 +295,15 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
     Key key,
     @required BaseBooking booking,
     @required BaseUser customer,
+    String bookingId,
   }) =>
       push<dynamic>(
         Routes.bookingDetailsPage,
         arguments: BookingDetailsPageArguments(
-            key: key, booking: booking, customer: customer),
+            key: key,
+            booking: booking,
+            customer: customer,
+            bookingId: bookingId),
       );
 
   Future<dynamic> pushSearchPage() => push<dynamic>(Routes.searchPage);
@@ -386,8 +391,12 @@ class BookingDetailsPageArguments {
   final Key key;
   final BaseBooking booking;
   final BaseUser customer;
+  final String bookingId;
   BookingDetailsPageArguments(
-      {this.key, @required this.booking, @required this.customer});
+      {this.key,
+      @required this.booking,
+      @required this.customer,
+      this.bookingId});
 }
 
 /// ArtisanInfoPage arguments holder class

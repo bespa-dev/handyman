@@ -11,14 +11,16 @@ import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 
 class BookingDetailsPage extends StatefulWidget {
-  final BaseBooking booking;
-  final BaseUser customer;
-
   const BookingDetailsPage({
     Key key,
     @required this.booking,
     @required this.customer,
+    this.bookingId,
   }) : super(key: key);
+
+  final BaseBooking booking;
+  final String bookingId;
+  final BaseUser customer;
 
   @override
   _BookingDetailsPageState createState() => _BookingDetailsPageState();
@@ -66,21 +68,22 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
 
     if (mounted) {
       /// observe current booking
-      _bookingBloc.add(BookingEvent.observeBookingById(id: widget.booking.id));
+      _bookingBloc.add(BookingEvent.observeBookingById(
+          id: widget.bookingId ?? widget.booking.id));
 
       /// get current location of user
       _locationBloc
         ..add(LocationEvent.getCurrentLocation())
         ..listen((state) {
           if (state is SuccessState<BaseLocationMetadata>) {
-            final origin = "${state.data.lat},${state.data.lng}";
+            final origin = '${state.data.lat},${state.data.lng}';
             final destination =
-                "${widget.booking.position.lat},${widget.booking.position.lng}";
-            logger.i("Route -> $origin => $destination");
+                '${widget.booking.position.lat},${widget.booking.position.lng}';
+            logger.i('Route -> $origin => $destination');
 
             /// https://developers.google.com/maps/documentation/urls/get-started#forming-the-url
             _mapUrl = Uri.encodeFull(
-                "https://www.google.com/maps/dir/?api=1&origin=$origin&destination=$destination");
+                'https://www.google.com/maps/dir/?api=1&origin=$origin&destination=$destination');
             logger.d(_mapUrl);
             if (mounted) setState(() {});
           }
