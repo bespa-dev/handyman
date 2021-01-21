@@ -125,9 +125,13 @@ class Router extends RouterBase {
       );
     },
     ServiceRatingsPage: (data) {
+      final args = data.getArgs<ServiceRatingsPageArguments>(nullOk: false);
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            ServiceRatingsPage(),
+            ServiceRatingsPage(
+          key: args.key,
+          payload: args.payload,
+        ),
         settings: data,
       );
     },
@@ -268,8 +272,14 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
         arguments: RequestPageArguments(key: key, artisan: artisan),
       );
 
-  Future<dynamic> pushServiceRatingsPage() =>
-      push<dynamic>(Routes.serviceRatingsPage);
+  Future<dynamic> pushServiceRatingsPage({
+    Key key,
+    @required dynamic payload,
+  }) =>
+      push<dynamic>(
+        Routes.serviceRatingsPage,
+        arguments: ServiceRatingsPageArguments(key: key, payload: payload),
+      );
 
   Future<dynamic> pushImagePreviewPage({
     Key key,
@@ -355,6 +365,13 @@ class RequestPageArguments {
   final Key key;
   final BaseArtisan artisan;
   RequestPageArguments({this.key, @required this.artisan});
+}
+
+/// ServiceRatingsPage arguments holder class
+class ServiceRatingsPageArguments {
+  final Key key;
+  final dynamic payload;
+  ServiceRatingsPageArguments({this.key, @required this.payload});
 }
 
 /// ImagePreviewPage arguments holder class

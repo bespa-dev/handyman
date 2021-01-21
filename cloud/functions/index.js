@@ -63,6 +63,10 @@ exports.onArtisanWrite = functions.firestore
           data: {
             body: "New sign in event detected on a different device.",
           },
+          notification: {
+            title: "HandyMan Artisans",
+            body: "New sign in event detected on a different device.",
+          },
           token: registrationToken,
         };
 
@@ -87,7 +91,7 @@ exports.onBookingRequestWrite = functions.firestore
       await clientIndex.saveObject(data);
       console.log("booking request updated");
 
-      if (data.is_accepted) {
+      if (data.current_state === 'Pending') {
         // Get customer id from request and get data from database
         var customerSnapshot = await admin
           .firestore()
@@ -101,7 +105,7 @@ exports.onBookingRequestWrite = functions.firestore
           var message = {
             data: {
               booking: data.id,
-              provider: data.provider_id,
+              provider: data.artisan_id,
               message: "Booking accepted",
             },
             token: registrationToken,
@@ -112,7 +116,7 @@ exports.onBookingRequestWrite = functions.firestore
           await admin.messaging().send(message);
           console.log("Successfully sent message:", response);
         }
-      } else if (data.progress === 1) {
+      } else if (data.current_state === 'Complete') {
         // Get customer id from request and get data from database
         var customerSnapshot = await admin
           .firestore()
@@ -126,8 +130,9 @@ exports.onBookingRequestWrite = functions.firestore
           var message = {
             data: {
               booking: data.id,
-              provider: data.provider_id,
-              message: "Booking completed successfully. Tap here to review and checkout",
+              provider: data.artisan_id,
+              message:
+                "Booking completed successfully. Tap here to review and checkout",
             },
             token: registrationToken,
           };
@@ -141,7 +146,7 @@ exports.onBookingRequestWrite = functions.firestore
         // Get artisan id from request and get data from database
         var artisanSnapshot = await admin
           .firestore()
-          .doc(`artisans/${data.provider_id}`)
+          .doc(`artisans/${data.artisan_id}`)
           .get();
 
         if (artisanSnapshot.data().exists) {
@@ -182,7 +187,7 @@ exports.onBookingRequestWrite = functions.firestore
         var message = {
           data: {
             booking: data.id,
-            provider: data.provider_id,
+            provider: data.artisan_id,
             message: "Booking declined",
           },
           token: registrationToken,

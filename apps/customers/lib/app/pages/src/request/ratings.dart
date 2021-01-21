@@ -8,9 +8,14 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:lite/shared/shared.dart';
 
 /// service ratings page
 class ServiceRatingsPage extends StatefulWidget {
+  const ServiceRatingsPage({Key key, @required this.payload}) : super(key: key);
+
+  final dynamic payload;
+
   @override
   _ServiceRatingsPageState createState() => _ServiceRatingsPageState();
 }
@@ -23,10 +28,21 @@ class _ServiceRatingsPageState extends State<ServiceRatingsPage> {
     kTheme = Theme.of(context);
 
     return Scaffold(
-      body: Center(
-        child: Text(
-          'Hello',
-          style: kTheme.textTheme.headline4,
+      body: Container(
+        width: SizeConfig.screenWidth,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              'Hello',
+              style: kTheme.textTheme.headline4,
+            ),
+            Text(
+              widget.payload?.toString()?? 'no data',
+              style: kTheme.textTheme.bodyText2,
+            ),
+          ],
         ),
       ),
     );

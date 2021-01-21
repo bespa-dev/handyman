@@ -1,10 +1,22 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:handyman/shared/src/constants.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/subjects.dart';
+
+/// channel & ids
+const String conversationChannelId = 'conversation_channel_id';
+const String conversationChannelName = 'Conversations';
+const String conversationChannelDesc = 'For all end-to-end conversations';
+const String bookingChannelId = 'booking_channel_id';
+const String bookingChannelName = 'Job Booking';
+const String bookingChannelDesc = 'For all job bookings';
+const String tokenChannelId = 'token_channel_id';
+const String tokenChannelName = 'Device Token';
+const String tokenChannelDesc = 'New sign in detection for different devices';
 
 /// notification plugin instance
 final FlutterLocalNotificationsPlugin _plugin =
@@ -78,6 +90,20 @@ Future<void> setupNotifications() async {
     },
     onMessage: (_) async {
       logger.i('onMessage -> $_');
+      const androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        tokenChannelId,
+        tokenChannelName,
+        tokenChannelDesc,
+        importance: Importance.max,
+        priority: Priority.high,
+        ticker: 'ticker',
+      );
+      await _plugin.show(
+        DateTime.now().millisecondsSinceEpoch,
+        'Welcome back',
+        /*_['data']['body'].toString()*/kLoremText,
+        NotificationDetails(android: androidPlatformChannelSpecifics),
+      );
     },
     onResume: (_) async {
       logger.i('onResume -> $_');

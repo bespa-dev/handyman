@@ -6,7 +6,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:lite/shared/shared.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/subjects.dart';
-import 'package:timezone/timezone.dart' as tz;
 
 /// channel & ids
 const String conversationChannelId = 'conversation_channel_id';
@@ -55,8 +54,8 @@ class LocalNotificationService {
   /// setup local notifications
   Future<void> setupNotifications() async {
     logger.d('setting up notifications...');
-    final notificationAppLaunchDetails =
-        await _plugin.getNotificationAppLaunchDetails();
+    // final notificationAppLaunchDetails =
+    //     await _plugin.getNotificationAppLaunchDetails();
 
     const initializationSettingsAndroid =
         AndroidInitializationSettings('app_logo');
@@ -94,6 +93,20 @@ class LocalNotificationService {
       },
       onMessage: (_) async {
         logger.i('onMessage -> $_');
+        const androidPlatformChannelSpecifics = AndroidNotificationDetails(
+          bookingChannelId,
+          bookingChannelName,
+          bookingChannelDesc,
+          importance: Importance.max,
+          priority: Priority.high,
+          ticker: 'ticker',
+        );
+        await _plugin.show(
+          DateTime.now().millisecondsSinceEpoch,
+          'Welcome back',
+          /*_['data']['body'].toString()*/kLoremText,
+          NotificationDetails(android: androidPlatformChannelSpecifics),
+        );
       },
       onResume: (_) async {
         logger.i('onResume -> $_');
@@ -103,30 +116,6 @@ class LocalNotificationService {
     _requestPermissions();
     _configureDidReceiveLocalNotificationSubject();
     _configureSelectNotificationSubject();
-
-    await Future.delayed(kTestDuration);
-    const androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      bookingChannelId,
-      bookingChannelName,
-      bookingChannelDesc,
-      importance: Importance.max,
-      priority: Priority.high,
-      ticker: 'ticker',
-    );
-
-    const platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-    await _plugin.show(
-      12,
-      kAppName,
-      kLoremText,
-      // tz.TZDateTime.now(tz.local).add(const Duration(seconds: 2)),
-      platformChannelSpecifics,
-      payload: 'Hello world',
-      // androidAllowWhileIdle: true,
-      // uiLocalNotificationDateInterpretation:
-      //     UILocalNotificationDateInterpretation.absoluteTime,
-    );
   }
 
   Future<void> cancel({bool allNotifications = false, int id}) async {
@@ -159,7 +148,7 @@ class LocalNotificationService {
       logger.d('Stream from selected notification -> $payload');
 
       /// todo -> move to page
-      return ExtendedNavigator.root.pushServiceRatingsPage();
+      return ExtendedNavigator.root.pushServiceRatingsPage(payload: payload);
     });
   }
 

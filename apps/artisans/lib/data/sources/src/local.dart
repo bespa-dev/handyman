@@ -81,7 +81,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
 
   void _performInitLoad() async {
     /// decode categories from json
-    var categorySource = await rootBundle.loadString("assets/categories.json");
+    var categorySource = await rootBundle.loadString('assets/categories.json');
     var decodedCategories = jsonDecode(categorySource) as List;
     for (var json in decodedCategories) {
       final item = ServiceCategory.fromJson(json);
@@ -91,7 +91,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
     }
 
     /// decode services from json
-    var serviceSource = await rootBundle.loadString("assets/services.json");
+    var serviceSource = await rootBundle.loadString('assets/services.json');
     var decodedServices = jsonDecode(serviceSource) as List;
     for (var json in decodedServices) {
       final item = ArtisanService.fromJson(json);
@@ -100,9 +100,8 @@ class HiveLocalDatasource extends BaseLocalDatasource {
       await serviceBox.put(item.id, item);
     }
 
-    /// todo -> set to true if you need to test for requests
-    if (false) {
-      var requestsSource = await rootBundle.loadString("assets/requests.json");
+    if (!kReleaseMode) {
+      var requestsSource = await rootBundle.loadString('assets/requests.json');
       var decodedRequests = jsonDecode(requestsSource) as List;
       for (var json in decodedRequests) {
         final item = Booking.fromJson(json);
@@ -111,16 +110,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
         await bookingBox.put(item.id, item);
       }
 
-      var reviewsSource = await rootBundle.loadString("assets/reviews.json");
-      var decodedReviews = jsonDecode(reviewsSource) as List;
-      for (var json in decodedReviews) {
-        final item = Review.fromJson(json);
-
-        // put each one into box
-        await reviewBox.put(item.id, item);
-      }
-    } else {
-      var reviewsSource = await rootBundle.loadString("assets/reviews.json");
+      var reviewsSource = await rootBundle.loadString('assets/reviews.json');
       var decodedReviews = jsonDecode(reviewsSource) as List;
       for (var json in decodedReviews) {
         final item = Review.fromJson(json);
@@ -289,9 +279,9 @@ class HiveLocalDatasource extends BaseLocalDatasource {
 
   @override
   Future<void> updateUser(BaseUser user) async {
-    if (user is BaseArtisan)
+    if (user is BaseArtisan) {
       await artisanBox.put(user.id, user);
-    else if (user is BaseUser) await customerBox.put(user.id, user);
+    } else if (user is BaseUser) await customerBox.put(user.id, user);
     notifyListeners();
   }
 

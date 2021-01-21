@@ -199,10 +199,15 @@ final _hiveDatasourceProvider = ChangeNotifierProvider.family<
 
 /// endregion Data sources
 
+/// region Misc
+@Exposed()
+final _firebaseMessaging = Provider((_) => FirebaseMessaging());
+/// endregion
+
 /// region Dependency Injection
 class Injection {
   /// list of all repositories
-  static final _repos = <Exposable>[];
+  static final _repos = <dynamic>[];
 
   static Future<void> inject() async {
     var container = ProviderContainer();
@@ -222,15 +227,16 @@ class Injection {
     _repos.add(await container.read(_searchRepositoryProvider(prefsRepo)));
     _repos.add(container.read(_storageRepositoryProvider));
     _repos.add(await container.read(_userRepositoryProvider(prefsRepo)));
-    logger.i("${_repos.length} repositories injected");
+    _repos.add(await container.read(_firebaseMessaging));
+    logger.i('${_repos.length} repositories injected');
   }
 
   /// retrieves an instance of a repository registered above
   static R get<R>() {
     for (var value in _repos) {
-      if (value is R) return value as R;
+      if (value is R) return value;
     }
-    throw Exception("Unknown repository for -> ${R.runtimeType}");
+    throw Exception('Unknown repository for -> ${R.runtimeType}');
   }
 }
 
