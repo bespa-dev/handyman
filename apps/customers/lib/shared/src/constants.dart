@@ -158,6 +158,7 @@ const kNotificationIcon = Feather.bell;
 const kBriefcaseIcon = MaterialCommunityIcons.briefcase;
 const kUserAddIcon = Feather.user_plus;
 const kChatIcon = Entypo.message;
+const kSendIcon = Feather.send;
 const kThreeDotsOptionsIcon = Entypo.dots_three_horizontal;
 
 /// Others
@@ -181,7 +182,8 @@ const kErrorLightColor = Color(0xffE91E63);
 const kAccentLightColor = kSecondaryLightColor;
 const kBackgroundLightColor = Color(0xFFfafafa);
 // const kBackgroundLightColor = Color(0xFFf1f0f2);
-const kCardLightColor = Color(0xFFFFFFFF);
+const kCardLightColor = Color(0xffF5F6FA);
+// const kCardLightColor = Color(0xFFFFFFFF);
 
 const kPrimaryColorDark = Color(0xFF05050B);
 const kSecondaryDarkColor = Color(0xFF8AC185);

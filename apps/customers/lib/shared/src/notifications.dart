@@ -24,8 +24,8 @@ final BehaviorSubject<ReceivedNotification>
     _didReceiveLocalNotificationSubject =
     BehaviorSubject<ReceivedNotification>();
 
-final BehaviorSubject<String> _selectNotificationSubject =
-    BehaviorSubject<String>();
+final BehaviorSubject<dynamic> _selectNotificationSubject =
+    BehaviorSubject<dynamic>();
 
 /// data model for received messages
 class ReceivedNotification {
@@ -93,19 +93,11 @@ class LocalNotificationService {
       },
       onMessage: (_) async {
         logger.i('onMessage -> $_');
-        const androidPlatformChannelSpecifics = AndroidNotificationDetails(
-          bookingChannelId,
-          bookingChannelName,
-          bookingChannelDesc,
-          importance: Importance.max,
-          priority: Priority.high,
-          ticker: 'ticker',
-        );
-        await _plugin.show(
-          DateTime.now().millisecondsSinceEpoch,
-          'Welcome back',
-          /*_['data']['body'].toString()*/ kLoremText,
-          NotificationDetails(android: androidPlatformChannelSpecifics),
+        await _pushNotification(
+          _,
+          channelDesc: bookingChannelDesc,
+          channelName: bookingChannelName,
+          channelId: bookingChannelId,
         );
       },
       onResume: (_) async {
@@ -144,7 +136,7 @@ class LocalNotificationService {
   }
 
   void _configureSelectNotificationSubject() {
-    _selectNotificationSubject.stream.listen((String payload) async {
+    _selectNotificationSubject.stream.listen((dynamic payload) async {
       logger.d('Stream from selected notification -> $payload');
 
       /// todo -> move to page

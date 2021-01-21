@@ -156,15 +156,15 @@ exports.bookingNotifications = functions.firestore
 
 // conversations
 exports.chatNotifications = functions.firestore
-  .document("conversations/{sender}/{recipient}/{id}")
+  .document("conversations/{id}")
   .onWrite(async (change, context) => {
     if (!change.after.exists)
       return Promise.reject(
         "Cannot find conversation. It may have been deleted"
       );
     // get ids of sender & recipient
-    let sender = context.params.sender;
-    let recipient = context.params.recipient;
+    let sender = change.after.get("sender");
+    let recipient = change.after.get("recipient");
 
     // get conversation metadata
     let id = context.params.id;
@@ -249,12 +249,20 @@ exports.chatNotifications = functions.firestore
 // device registration notification
 exports.artisanDeviceTokenNotifications = functions.firestore
   .document("artisans/{id}")
-  .onWrite(async (change, _) => {
+  .onWrite(async (change, context) => {
     // account was deleted from database
     if (change.before.exists && !change.after.exists) return Promise.resolve();
     let oldToken = change.before.get("token");
     let newToken = change.after.get("token");
     let name = change.after.get("name");
+
+    if (change.after.exists) {
+      // save to algolia
+      let clientIndex = client.initIndex("artisans");
+      data.objectID = change.after.id;
+      await clientIndex.saveObject(data);
+      console.log(`${name} saved`);
+    }
 
     // device token has not changed
     if (oldToken == newToken) return Promise.resolve();
@@ -290,12 +298,20 @@ exports.artisanDeviceTokenNotifications = functions.firestore
 
 exports.customerDeviceTokenNotifications = functions.firestore
   .document("customers/{id}")
-  .onWrite(async (change, _) => {
+  .onWrite(async (change, context) => {
     // account was deleted from database
     if (change.before.exists && !change.after.exists) return Promise.resolve();
     let oldToken = change.before.get("token");
     let newToken = change.after.get("token");
     let name = change.after.get("name");
+
+    if (change.after.exists) {
+      // save to algolia
+      let clientIndex = client.initIndex("customers");
+      data.objectID = change.after.id;
+      await clientIndex.saveObject(data);
+      console.log(`${name} saved`);
+    }
 
     // device token has not changed
     if (oldToken == newToken) return Promise.resolve();

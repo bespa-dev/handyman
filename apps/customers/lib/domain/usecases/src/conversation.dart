@@ -15,34 +15,34 @@ import 'usecase/result.dart';
 import 'usecase/usecase.dart';
 
 class SendMessageUseCaseParams {
-  final String sender;
-  final String recipient;
-  final String message;
-  final ConversationFormat type;
-
   const SendMessageUseCaseParams({
     @required this.sender,
     @required this.recipient,
     @required this.message,
     @required this.type,
   });
+
+  final String sender;
+  final String recipient;
+  final String message;
+  final ConversationFormat type;
 }
 
 /// params for getting messages in a conversation
 class GetMessagesForChatUseCaseParams {
-  final String sender;
-  final String recipient;
-
   const GetMessagesForChatUseCaseParams({
     @required this.sender,
     @required this.recipient,
   });
+
+  final String sender;
+  final String recipient;
 }
 
 class SendMessageUseCase extends CompletableUseCase<SendMessageUseCaseParams> {
-  final BaseConversationRepository _repo;
-
   SendMessageUseCase(this._repo);
+
+  final BaseConversationRepository _repo;
 
   @override
   Future<UseCaseResult<void>> execute(SendMessageUseCaseParams params) async {
@@ -55,16 +55,16 @@ class SendMessageUseCase extends CompletableUseCase<SendMessageUseCaseParams> {
       );
       return UseCaseResult.success();
     } on Exception {
-      return UseCaseResult.error("Unable to send message");
+      return UseCaseResult.error('Unable to send message');
     }
   }
 }
 
 class GetMessagesForChatUseCase extends ObservableUseCase<
     List<BaseConversation>, GetMessagesForChatUseCaseParams> {
-  final BaseConversationRepository _repo;
-
   GetMessagesForChatUseCase(this._repo);
+
+  final BaseConversationRepository _repo;
 
   @override
   Future<UseCaseResult<Stream<List<BaseConversation>>>> execute(
@@ -75,7 +75,7 @@ class GetMessagesForChatUseCase extends ObservableUseCase<
       return UseCaseResult<Stream<List<BaseConversation>>>.success(
           conversation.asBroadcastStream());
     } on Exception {
-      return UseCaseResult.error("Unable to send message");
+      return UseCaseResult.error('Unable to send message');
     }
   }
 }

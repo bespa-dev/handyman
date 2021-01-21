@@ -191,8 +191,8 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
       {@required String sender, @required String recipient}) async* {
     yield* firestore
         .collection(RefUtils.kConversationRef)
-        .where("author", isLessThanOrEqualTo: sender)
-        .where("recipient", isLessThanOrEqualTo: recipient)
+        .where('author', isEqualTo: sender)
+        .where('recipient', isEqualTo: recipient)
         .snapshots()
         .map((event) =>
             event.docs.map((e) => Conversation.fromJson(e.data())).toList());

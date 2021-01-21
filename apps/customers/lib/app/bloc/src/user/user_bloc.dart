@@ -18,11 +18,10 @@ import 'package:meta/meta.dart';
 import 'user_event.dart';
 
 class UserBloc extends BaseBloc<UserEvent> {
-  final BaseUserRepository _repo;
-
   UserBloc({@required BaseUserRepository repo})
       : assert(repo != null),
         _repo = repo;
+  final BaseUserRepository _repo;
 
   @override
   Stream<BlocState> mapEventToState(
