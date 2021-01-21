@@ -11,7 +11,7 @@ const token_type = "token";
 // booking requests
 exports.bookingNotifications = functions.firestore
   .document("bookings/{id}")
-  .onWrite(async (change, context) => {
+  .onWrite(async (change, _) => {
     // no new booking found
     if (change.after == null || !change.after.exists)
       return Promise.reject("No booking found");
@@ -154,5 +154,159 @@ exports.bookingNotifications = functions.firestore
   });
 
 // conversations
+exports.chatNotifications = functions.firestore
+  .document("conversations/{sender}/{recipient}/{id}")
+  .onWrite(async (change, context) => {
+    if (!change.after.exists)
+      return Promise.reject(
+        "Cannot find conversation. It may have been deleted"
+      );
+    // get ids of sender & recipient
+    let sender = context.params.sender;
+    let recipient = context.params.recipient;
 
-// registration token
+    // get conversation metadata
+    let id = context.params.id;
+    let body = change.after.get("body");
+
+    let _as = await admin.firestore().doc(`artisans/${recipient}`).get();
+    let _cs = await admin.firestore().doc(`customers/${recipient}`).get();
+
+    if (_as.exists) {
+      // case 1: customer -> artisan
+      // get customer snapshot
+      let _customer__snapshot = await admin
+        .firestore()
+        .doc(`customers/${sender}`)
+        .get();
+
+      // validate
+      if (!_customer__snapshot.exists) {
+        return Promise.reject("customer (recipient) does not exist");
+      } else {
+        // get customer's metadata
+        let token = _customer__snapshot.get("token");
+        let avatar = _customer__snapshot.get("avatar");
+        let name = _customer__snapshot.get("name");
+        let uid = _customer__snapshot.get("id");
+
+        // create message payload
+        let message = {
+          notification: {
+            title: `Message from ${name}`,
+            body: body,
+          },
+          data: {
+            id: id,
+            type: conversation_type,
+            sender: uid,
+            avatar: avatar,
+          },
+        };
+
+        return await admin.messaging().sendToDevice(token, message);
+      }
+    } else if (_cs.exists) {
+      // case 2: artisan -> customer
+      // get artisan snapshot
+      let _artisan__snapshot = await admin
+        .firestore()
+        .doc(`artisans/${sender}`)
+        .get();
+
+      // validate
+      if (!_artisan__snapshot.exists) {
+        return Promise.reject("artisan (recipient) does not exist");
+      } else {
+        // get customer's metadata
+        let token = _artisan__snapshot.get("token");
+        let avatar = _artisan__snapshot.get("avatar");
+        let name = _artisan__snapshot.get("name");
+        let uid = _artisan__snapshot.get("id");
+
+        // create message payload
+        let message = {
+          notification: {
+            title: `Message from ${name}`,
+            body: body,
+          },
+          data: {
+            id: id,
+            type: conversation_type,
+            sender: uid,
+            avatar: avatar,
+          },
+        };
+
+        return await admin.messaging().sendToDevice(token, message);
+      }
+    } else {
+      return Promise.resolve();
+    }
+  });
+
+// device registration notification
+exports.artisanDeviceTokenNotifications = functions.firestore
+  .document("artisans/{id}")
+  .onWrite(async (change, _) => {
+    // account was deleted from database
+    if (change.before.exists && !change.after.exists) return Promise.resolve();
+    let oldToken = change.before.get("token");
+    let newToken = change.after.get("token");
+    let name = change.after.get("name");
+
+    // device token has not changed
+    if (oldToken == newToken) return Promise.resolve();
+    // account approval
+    else if(change.after.get('approved') === true) {
+      let message = {
+        notification: {
+          title: "Account approval",
+          body: `Hello 👋 ${name}, your request for account approval on HandyMan was successful. You will now receive job requests from your prospective customers. We are happy to serve you 😄`,
+        },
+        data: {
+          id: context.params.id,
+        },
+      };
+      return await admin.messaging().sendToDevice(newToken, message);
+    }
+    // notify user of token update
+    else {
+      let message = {
+        notification: {
+          title: "New login to HandyMan",
+          body: `We noticed a new login 🔐 to your account ${name} from a new device. Was this you?`,
+        },
+        data: {
+          id: context.params.id,
+        },
+      };
+      return await admin.messaging().sendToDevice(newToken, message);
+    }
+  });
+
+exports.customerDeviceTokenNotifications = functions.firestore
+  .document("customers/{id}")
+  .onWrite(async (change, _) => {
+    // account was deleted from database
+    if (change.before.exists && !change.after.exists) return Promise.resolve();
+    let oldToken = change.before.get("token");
+    let newToken = change.after.get("token");
+    let name = change.after.get("name");
+
+    // device token has not changed
+    if (oldToken == newToken) return Promise.resolve();
+    // notify user of token update
+    else {
+      let message = {
+        notification: {
+          title: "New login to HandyMan",
+          body: `We noticed a new login to your account ${name} from a new device. Was this you?`,
+        },
+        data: {
+          id: context.params.id,
+        },
+      };
+      return await admin.messaging().sendToDevice(newToken, message);
+    }
+  });
