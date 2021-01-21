@@ -3,202 +3,156 @@ const admin = require("firebase-admin");
 const client = require("./algolia");
 admin.initializeApp();
 
-// exports.showConfigDiff = functions.remoteConfig.onUpdate((versionMetadata) => {
-//   return admin.credential
-//     .applicationDefault()
-//     .getAccessToken()
-//     .then((accessTokenObj) => {
-//       return accessTokenObj.access_token;
-//     })
-//     .then((accessToken) => {
-//       const currentVersion = versionMetadata.versionNumber;
-//       const templatePromises = [];
-//       templatePromises.push(getTemplate(currentVersion, accessToken));
-//       templatePromises.push(getTemplate(currentVersion - 1, accessToken));
+// notification types
+const booking_type = "booking";
+const conversation_type = "conversation";
+const token_type = "token";
 
-//       return Promise.all(templatePromises);
-//     })
-//     .then((results) => {
-//       const currentTemplate = results[0];
-//       const previousTemplate = results[1];
-
-//       const diff = jsonDiff.diffString(previousTemplate, currentTemplate);
-
-//       console.log(diff);
-
-//       return null;
-//     })
-//     .catch((error) => {
-//       console.error(error);
-//       return null;
-//     });
-// });
-
-// invoked when an artisan is created, updated or deleted
-exports.onArtisanWrite = functions.firestore
-  .document("artisans/{id}")
-  .onWrite(async (change, _context) => {
-    let clientIndex = client.initIndex("artisans");
-
-    if (change.after.data()) {
-      let data = change.after.data();
-      data.objectID = change.after.id;
-      await clientIndex.saveObject(data);
-      console.log("artisan updated");
-    } else if (!change.after.exists) {
-      let data = change.before.data();
-      data.objectID = change.before.id;
-      await clientIndex.deleteObject(data.objectID);
-      console.log("artisan deleted");
-    }
-
-    if (change.before.exists) {
-      var isTokenUpdated =
-        change.before.data().token != change.after.data().token;
-      if (isTokenUpdated) {
-        // This registration token comes from the client FCM SDKs.
-        var registrationToken = change.after.data().token;
-
-        var message = {
-          data: {
-            body: "New sign in event detected on a different device.",
-          },
-          notification: {
-            title: "HandyMan Artisans",
-            body: "New sign in event detected on a different device.",
-          },
-          token: registrationToken,
-        };
-
-        // Send a message to the device corresponding to the provided
-        // registration token.
-        await admin.messaging().send(message);
-        console.log("Successfully sent message:", response);
-      }
-    }
-
-    return Promise.resolve();
-  });
-
-// invoked when a booking record is created, updated or deleted
-exports.onBookingRequestWrite = functions.firestore
+// booking requests
+exports.bookingNotifications = functions.firestore
   .document("bookings/{id}")
-  .onWrite(async (change, _context) => {
-    let clientIndex = client.initIndex("bookings");
-    if (change.after.data()) {
-      let data = change.after.data();
+  .onWrite(async (change, context) => {
+    // no new booking found
+    if (change.after == null || !change.after.exists)
+      return Promise.reject("No booking found");
+
+    // get data
+    let data = change.after.data();
+    let state = change.after.get("current_state");
+    let customer = change.after.get("customer_id");
+    let artisan = change.after.get("artisan_id");
+
+    // get state info
+    let pending = state === "Pending";
+    let none = state === "None";
+    let complete = state === "Complete";
+    let cancelled = state === "Cancelled";
+
+    if (change.after.exists) {
+      // save to algolia
+      let clientIndex = client.initIndex("bookings");
       data.objectID = change.after.id;
       await clientIndex.saveObject(data);
-      console.log("booking request updated");
-
-      if (data.current_state === 'Pending') {
-        // Get customer id from request and get data from database
-        var customerSnapshot = await admin
-          .firestore()
-          .doc(`customers/${data.customer_id}`)
-          .get();
-
-        if (customerSnapshot.data().exists) {
-          // This registration token comes from the client FCM SDKs.
-          var registrationToken = customerSnapshot.data().token;
-
-          var message = {
-            data: {
-              booking: data.id,
-              provider: data.artisan_id,
-              message: "Booking accepted",
-            },
-            token: registrationToken,
-          };
-
-          // Send a message to the device corresponding to the provided
-          // registration token.
-          await admin.messaging().send(message);
-          console.log("Successfully sent message:", response);
-        }
-      } else if (data.current_state === 'Complete') {
-        // Get customer id from request and get data from database
-        var customerSnapshot = await admin
-          .firestore()
-          .doc(`customers/${data.customer_id}`)
-          .get();
-
-        if (customerSnapshot.data().exists) {
-          // This registration token comes from the client FCM SDKs.
-          var registrationToken = customerSnapshot.data().token;
-
-          var message = {
-            data: {
-              booking: data.id,
-              provider: data.artisan_id,
-              message:
-                "Booking completed successfully. Tap here to review and checkout",
-            },
-            token: registrationToken,
-          };
-
-          // Send a message to the device corresponding to the provided
-          // registration token.
-          await admin.messaging().send(message);
-          console.log("Successfully sent message:", response);
-        }
-      } else {
-        // Get artisan id from request and get data from database
-        var artisanSnapshot = await admin
-          .firestore()
-          .doc(`artisans/${data.artisan_id}`)
-          .get();
-
-        if (artisanSnapshot.data().exists) {
-          // This registration token comes from the client FCM SDKs.
-          var registrationToken = artisanSnapshot.data().token;
-
-          var message = {
-            data: {
-              booking: data.id,
-              customer: data.customer_id,
-              message: "Booking accepted",
-            },
-            token: registrationToken,
-          };
-
-          // Send a message to the device corresponding to the provided
-          // registration token.
-          await admin.messaging().send(message);
-          console.log("Successfully sent message:", response);
-        }
-      }
-    } else if (!change.after.exists) {
-      let data = change.before.data();
-      data.objectID = change.before.id;
-      await clientIndex.deleteObject(data.objectID);
-      console.log("booking request deleted");
-
-      // Get customer id from request and get data from database
-      var customerSnapshot = await admin
-        .firestore()
-        .doc(`customers/${data.customer_id}`)
-        .get();
-
-      if (customerSnapshot.data().exists) {
-        // This registration token comes from the client FCM SDKs.
-        var registrationToken = customerSnapshot.data().token;
-
-        var message = {
-          data: {
-            booking: data.id,
-            provider: data.artisan_id,
-            message: "Booking declined",
-          },
-          token: registrationToken,
-        };
-
-        // Send a message to the device corresponding to the provided
-        // registration token.
-        await admin.messaging().send(message);
-        console.log("Successfully sent message:", response);
-      }
+      console.log("job request saved");
     }
 
-    return Promise.resolve();
+    if (none) {
+      // new booking
+      let snapshot = await admin.firestore().doc(`artisans/${artisan}`).get();
+
+      if (snapshot.exists && snapshot.data() != null) {
+        // create message payload
+        let message = {
+          notification: {
+            title: `New job request`,
+            body: `Tap here for more info`,
+          },
+          data: {
+            id: change.after.id,
+            type: booking_type,
+            click_action: "FLUTTER_NOTIFICATION_CLICK",
+          },
+        };
+
+        // send notification to artisan
+        return await admin
+          .messaging()
+          .sendToDevice(snapshot.get("token"), message);
+      } else {
+        return Promise.reject(`artisan with id: ${artisan} not found`);
+      }
+    } else if (pending) {
+      // accepted booking
+      let snapshot = await admin.firestore().doc(`customers/${customer}`).get();
+
+      if (snapshot.exists && snapshot.data() != null) {
+        // create message payload
+        let message = {
+          notification: {
+            title: `Request accepted`,
+            body: `Your job request has been accepted. Tap here for more details`,
+          },
+          data: {
+            id: change.after.id,
+            type: booking_type,
+            click_action: "FLUTTER_NOTIFICATION_CLICK",
+          },
+        };
+
+        // send notification to artisan
+        return await admin
+          .messaging()
+          .sendToDevice(snapshot.get("token"), message);
+      } else {
+        return Promise.reject(`customer with id: ${customer} not found`);
+      }
+    } else if (cancelled) {
+      // declined booking
+      let _as = await admin.firestore().doc(`artisans/${artisan}`).get();
+      let _cs = await admin.firestore().doc(`customers/${customer}`).get();
+
+      if (_as.exists && _cs.exists) {
+        // create message payload
+        let message = {
+          notification: {
+            title: `Job cancelled`,
+            body: `This job request has been cancelled successfully`,
+          },
+          data: {
+            id: change.after.id,
+            type: booking_type,
+            click_action: "FLUTTER_NOTIFICATION_CLICK",
+          },
+        };
+
+        // send notification to artisan
+        let artisanMessage = admin
+          .messaging()
+          .sendToDevice(_as.get("token"), message);
+
+        // send notification to customer
+        let customerMessage = admin
+          .messaging()
+          .sendToDevice(_cs.get("token"), message);
+        return Promise.all([artisanMessage, customerMessage]);
+      } else {
+        return Promise.reject(`unable to cancel job request`);
+      }
+    } else if (complete) {
+      // completed booking
+      let _as = await admin.firestore().doc(`artisans/${artisan}`).get();
+      let _cs = await admin.firestore().doc(`customers/${customer}`).get();
+
+      if (_as.exists && _cs.exists) {
+        // create message payload
+        let message = {
+          notification: {
+            title: `Job completed successfully`,
+            body: `Tap here for more details`,
+          },
+          data: {
+            id: change.after.id,
+            type: booking_type,
+            click_action: "FLUTTER_NOTIFICATION_CLICK",
+          },
+        };
+
+        // send notification to artisan
+        let artisanMessage = admin
+          .messaging()
+          .sendToDevice(_as.get("token"), message);
+
+        // send notification to customer
+        let customerMessage = admin
+          .messaging()
+          .sendToDevice(_cs.get("token"), message);
+        return Promise.all([artisanMessage, customerMessage]);
+      } else {
+        return Promise.reject(`unable to complete job request`);
+      }
+    }
   });
+
+// conversations
+
+// registration token

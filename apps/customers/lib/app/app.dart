@@ -10,6 +10,7 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +18,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/routes/routes.gr.dart' as gr;
+import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 
 /// application instance -> entry point
@@ -26,8 +28,16 @@ class HandyManApp extends StatefulWidget {
 }
 
 class _HandyManAppState extends State<HandyManApp> {
+  /// blocs
   final _prefsBloc = PrefsBloc(repo: Injection.get());
+  final _userBloc = UserBloc(repo: Injection.get());
+
+  /// notification
   LocalNotificationService _notificationService;
+
+  /// User
+  BaseUser _currentUser;
+  var _userId;
 
   @override
   void initState() {
@@ -38,7 +48,31 @@ class _HandyManAppState extends State<HandyManApp> {
       ..setupNotifications();
 
     /// get current user's id
-    if (mounted) _prefsBloc.add(PrefsEvent.getUserIdEvent());
+    if (mounted) {
+      _userBloc.listen((state) async {
+        if (state is SuccessState<BaseUser>) {
+          _currentUser = state.data;
+          if (mounted) setState(() {});
+          var messaging = Injection.get<FirebaseMessaging>();
+          var token = await messaging.getToken();
+          _currentUser = _currentUser?.copyWith(token: token);
+          UserBloc(repo: Injection.get())
+              .add(UserEvent.updateUserEvent(user: _currentUser));
+        }
+      });
+
+      _prefsBloc
+        ..add(PrefsEvent.getUserIdEvent())
+        ..listen((state) {
+          if (state is SuccessState<String>) {
+            _userId = state.data;
+            if (_userId != null) {
+              _userBloc.add(UserEvent.getCustomerByIdEvent(id: state.data));
+            }
+            if (mounted) setState(() {});
+          }
+        });
+    }
   }
 
   @override
@@ -50,6 +84,7 @@ class _HandyManAppState extends State<HandyManApp> {
   @override
   void dispose() {
     _prefsBloc.close();
+    _userBloc.close();
     _notificationService.dispose();
     super.dispose();
   }

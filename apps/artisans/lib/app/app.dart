@@ -14,6 +14,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/all.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/routes/routes.gr.dart' as gr;
 import 'package:handyman/domain/models/models.dart';
@@ -30,6 +31,9 @@ class _HandyManAppState extends State<HandyManApp> {
   final _prefsBloc = PrefsBloc(repo: Injection.get());
   final _userBloc = UserBloc(repo: Injection.get());
 
+  /// notification
+  LocalNotificationService _notificationService;
+
   /// User
   BaseArtisan _currentUser;
   var _userId;
@@ -37,6 +41,10 @@ class _HandyManAppState extends State<HandyManApp> {
   @override
   void initState() {
     super.initState();
+
+    /// setup local notifications
+    _notificationService = ProviderContainer().read(notificationServiceProvider)
+      ..setupNotifications();
 
     /// get current user's id
     if (mounted) {
@@ -76,6 +84,7 @@ class _HandyManAppState extends State<HandyManApp> {
   void dispose() {
     _prefsBloc.close();
     _userBloc.close();
+    _notificationService.dispose();
     super.dispose();
   }
 

@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:lite/shared/shared.dart';
+import 'package:handyman/shared/shared.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/subjects.dart';
 
@@ -14,6 +13,9 @@ const String conversationChannelDesc = 'For all end-to-end conversations';
 const String bookingChannelId = 'booking_channel_id';
 const String bookingChannelName = 'Job Booking';
 const String bookingChannelDesc = 'For all job bookings';
+const String tokenChannelId = 'token_channel_id';
+const String tokenChannelName = 'Device Token';
+const String tokenChannelDesc = 'New sign in detection for different devices';
 
 /// notification plugin instance
 final FlutterLocalNotificationsPlugin _plugin =
@@ -93,19 +95,11 @@ class LocalNotificationService {
       },
       onMessage: (_) async {
         logger.i('onMessage -> $_');
-        const androidPlatformChannelSpecifics = AndroidNotificationDetails(
-          bookingChannelId,
-          bookingChannelName,
-          bookingChannelDesc,
-          importance: Importance.max,
-          priority: Priority.high,
-          ticker: 'ticker',
-        );
-        await _plugin.show(
-          DateTime.now().millisecondsSinceEpoch,
-          'Welcome back',
-          /*_['data']['body'].toString()*/ kLoremText,
-          NotificationDetails(android: androidPlatformChannelSpecifics),
+        await _pushNotification(
+          _,
+          channelId: bookingChannelId,
+          channelName: bookingChannelName,
+          channelDesc: bookingChannelDesc,
         );
       },
       onResume: (_) async {
@@ -148,7 +142,7 @@ class LocalNotificationService {
       logger.d('Stream from selected notification -> $payload');
 
       /// todo -> move to page
-      return ExtendedNavigator.root.pushServiceRatingsPage(payload: payload);
+      // return ExtendedNavigator.root.pushServiceRatingsPage(payload: payload);
     });
   }
 
@@ -174,6 +168,7 @@ Future<void> _pushNotification(
     priority: Priority.high,
     ticker: 'ticker',
   );
+
   var notification = data['notification'];
 
   await _plugin.show(

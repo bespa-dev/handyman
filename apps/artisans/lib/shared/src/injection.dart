@@ -28,6 +28,14 @@ import 'package:hive/hive.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// region Services
+
+final notificationServiceProvider = Provider((_) => LocalNotificationService());
+
+final _firebaseMessaging = Provider((_) => FirebaseMessaging());
+
+/// endregion
+
 /// region Preferences
 final _sharedPreferencesProvider = FutureProvider<SharedPreferences>(
     (_) async => await SharedPreferences.getInstance());
@@ -199,11 +207,6 @@ final _hiveDatasourceProvider = ChangeNotifierProvider.family<
 
 /// endregion Data sources
 
-/// region Misc
-@Exposed()
-final _firebaseMessaging = Provider((_) => FirebaseMessaging());
-/// endregion
-
 /// region Dependency Injection
 class Injection {
   /// list of all repositories
@@ -258,9 +261,6 @@ Future<void> initAppDependencies() async {
 
   /// inject dependencies
   await Injection.inject();
-
-  /// setup local notifications
-  await setupNotifications();
 }
 
 /// endregion

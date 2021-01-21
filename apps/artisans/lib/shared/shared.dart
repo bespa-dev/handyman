@@ -11,7 +11,7 @@ export 'src/constants.dart'; // done
 export 'src/duration/duration.dart'; // done
 export 'src/extensions.dart'; // done
 export 'src/injection.dart';
-export 'src/notifications.dart'; // done
+export 'src/notification/notifications.dart'; // done
 export 'src/parsers.dart'; // done
 export 'src/size_config.dart'; // done
 export 'src/state_ui.dart'; // done

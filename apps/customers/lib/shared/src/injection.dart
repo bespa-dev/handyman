@@ -32,6 +32,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// region Services
 
 final notificationServiceProvider = Provider((_) => LocalNotificationService());
+final _firebaseMessaging = Provider((_) => FirebaseMessaging());
 
 /// endregion
 
@@ -209,7 +210,7 @@ final _hiveDatasourceProvider = ChangeNotifierProvider.family<
 /// region Dependency Injection
 class Injection {
   /// list of all repositories
-  static final _repos = <Exposable>[];
+  static final _repos = <dynamic>[];
 
   static Future<void> inject() async {
     var container = ProviderContainer();
@@ -229,6 +230,7 @@ class Injection {
     _repos.add(await container.read(_searchRepositoryProvider(prefsRepo)));
     _repos.add(container.read(_storageRepositoryProvider));
     _repos.add(await container.read(_userRepositoryProvider(prefsRepo)));
+    _repos.add(await container.read(_firebaseMessaging));
     logger.i('${_repos.length} repositories injected');
   }
 
