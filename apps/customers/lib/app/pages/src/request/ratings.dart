@@ -10,7 +10,7 @@
 import 'package:flutter/material.dart';
 import 'package:lite/shared/shared.dart';
 
-/// service ratings page
+/// todo -> service ratings page
 class ServiceRatingsPage extends StatefulWidget {
   const ServiceRatingsPage({Key key, @required this.payload}) : super(key: key);
 

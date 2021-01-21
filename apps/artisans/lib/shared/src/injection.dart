@@ -37,11 +37,11 @@ final _firebaseMessaging = Provider((_) => FirebaseMessaging());
 /// endregion
 
 /// region Preferences
-final _sharedPreferencesProvider = FutureProvider<SharedPreferences>(
+final sharedPreferencesProvider = FutureProvider<SharedPreferences>(
     (_) async => await SharedPreferences.getInstance());
 
 @Exposed()
-final _prefsRepositoryProvider =
+final prefsRepositoryProvider =
     ChangeNotifierProvider.family<BasePreferenceRepository, SharedPreferences>(
         (_, prefs) {
   return PreferenceRepositoryImpl(prefs: prefs);
@@ -53,8 +53,8 @@ final _prefsRepositoryProvider =
 @Exposed()
 final _authRepositoryProvider =
     FutureProvider.autoDispose<BaseAuthRepository>((_) async {
-  final sharedPrefs = await _.watch(_sharedPreferencesProvider.future);
-  var prefs = _.read(_prefsRepositoryProvider(sharedPrefs));
+  final sharedPrefs = await _.watch(sharedPreferencesProvider.future);
+  var prefs = _.read(prefsRepositoryProvider(sharedPrefs));
   return _.watch(_firebaseAuthRepositoryProvider(prefs).future);
 });
 
@@ -62,24 +62,24 @@ final _authRepositoryProvider =
 final _bookingRepositoryProvider =
     Provider.family<BaseBookingRepository, BasePreferenceRepository>(
         (_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
+  var local = _.read(localDatasourceProvider(prefs));
+  var remote = _.read(remoteDatasourceProvider(prefs));
   return BookingRepositoryImpl(local: local, remote: remote);
 });
 
 final _businessRepositoryProvider =
     Provider.family<BaseBusinessRepository, BasePreferenceRepository>(
         (_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
+  var local = _.read(localDatasourceProvider(prefs));
+  var remote = _.read(remoteDatasourceProvider(prefs));
   return BusinessRepositoryImpl(local: local, remote: remote);
 });
 
 final _serviceRepositoryProvider =
     Provider.family<BaseArtisanServiceRepository, BasePreferenceRepository>(
         (_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
+  var local = _.read(localDatasourceProvider(prefs));
+  var remote = _.read(remoteDatasourceProvider(prefs));
   return ArtisanServiceRepositoryImpl(local: local, remote: remote);
 });
 
@@ -87,8 +87,8 @@ final _serviceRepositoryProvider =
 final _categoryRepositoryProvider =
     Provider.family<BaseCategoryRepository, BasePreferenceRepository>(
         (_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
+  var local = _.read(localDatasourceProvider(prefs));
+  var remote = _.read(remoteDatasourceProvider(prefs));
   return CategoryRepositoryImpl(local: local, remote: remote);
 });
 
@@ -96,8 +96,8 @@ final _categoryRepositoryProvider =
 final _conversationRepositoryProvider =
     Provider.family<BaseConversationRepository, BasePreferenceRepository>(
         (_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
+  var local = _.read(localDatasourceProvider(prefs));
+  var remote = _.read(remoteDatasourceProvider(prefs));
   return ConversationRepositoryImpl(local: local, remote: remote);
 });
 
@@ -105,8 +105,8 @@ final _conversationRepositoryProvider =
 final _galleryRepositoryProvider =
     Provider.family<BaseGalleryRepository, BasePreferenceRepository>(
         (_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
+  var local = _.read(localDatasourceProvider(prefs));
+  var remote = _.read(remoteDatasourceProvider(prefs));
   return GalleryRepositoryImpl(local: local, remote: remote);
 });
 
@@ -118,16 +118,16 @@ final _locationRepositoryProvider = Provider<BaseLocationRepository>((_) {
 
 final _reviewRepositoryProvider =
     Provider.family<BaseReviewRepository, BasePreferenceRepository>((_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
+  var local = _.read(localDatasourceProvider(prefs));
+  var remote = _.read(remoteDatasourceProvider(prefs));
   return ReviewRepositoryImpl(local: local, remote: remote);
 });
 
 @Exposed()
 final _searchRepositoryProvider =
     Provider.family<BaseSearchRepository, BasePreferenceRepository>((_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
+  var local = _.read(localDatasourceProvider(prefs));
+  var remote = _.read(remoteDatasourceProvider(prefs));
   final dotenv = DotEnv();
   final algolia = Algolia.init(
     applicationId: dotenv.env['applicationId'],
@@ -144,8 +144,8 @@ final _storageRepositoryProvider =
 
 final _userRepositoryProvider =
     Provider.family<BaseUserRepository, BasePreferenceRepository>((_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
+  var local = _.read(localDatasourceProvider(prefs));
+  var remote = _.read(remoteDatasourceProvider(prefs));
   return UserRepositoryImpl(local: local, remote: remote);
 });
 
@@ -171,12 +171,12 @@ final _firebaseStorageRepositoryProvider = Provider<BaseStorageRepository>((_) {
 /// endregion
 
 /// region Data sources
-final _remoteDatasourceProvider =
+final remoteDatasourceProvider =
     Provider.family<BaseRemoteDatasource, BasePreferenceRepository>((_, prefs) {
   return _.watch(_firebaseRemoteDatasourceProvider(prefs));
 });
 
-final _localDatasourceProvider =
+final localDatasourceProvider =
     Provider.family<BaseLocalDatasource, BasePreferenceRepository>((_, prefs) {
   return _.watch(_hiveDatasourceProvider(prefs));
 });
@@ -214,8 +214,8 @@ class Injection {
 
   static Future<void> inject() async {
     var container = ProviderContainer();
-    final prefs = await container.read(_sharedPreferencesProvider.future);
-    var prefsRepo = container.read(_prefsRepositoryProvider(prefs));
+    final prefs = await container.read(sharedPreferencesProvider.future);
+    var prefsRepo = container.read(prefsRepositoryProvider(prefs));
     _repos.add(await container.read(_authRepositoryProvider.future));
     _repos.add(await container.read(_bookingRepositoryProvider(prefsRepo)));
     _repos.add(await container.read(_businessRepositoryProvider(prefsRepo)));

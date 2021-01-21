@@ -7,6 +7,7 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -89,6 +90,13 @@ class _ConversationPageState extends State<ConversationPage> {
             );
           }
         });
+
+      /// observe scroll position
+      // _scrollController.animateTo(
+      //   100.0,
+      //   duration: kScaleDuration,
+      //   curve: Curves.easeIn,
+      // );
     }
   }
 
@@ -138,25 +146,71 @@ class _ConversationPageState extends State<ConversationPage> {
       builder: (_, state) => state is SuccessState<BaseArtisan>
           ? CustomScrollView(
               controller: _scrollController,
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              clipBehavior: Clip.hardEdge,
               slivers: [
                 /// app bar
                 SliverAppBar(
-                  expandedHeight: SizeConfig.screenHeight * 0.4,
+                  elevation: kSpacingX8,
+                  expandedHeight: SizeConfig.screenHeight * 0.3,
                   automaticallyImplyLeading: false,
                   flexibleSpace: FlexibleSpaceBar(
                     collapseMode: CollapseMode.parallax,
                     background: _buildBackgroundInfo(state.data, businessName),
+                    centerTitle: false,
+                    stretchModes: [
+                      StretchMode.blurBackground,
+                      StretchMode.fadeTitle,
+                    ],
+                    // title: Row(
+                    //   mainAxisSize: MainAxisSize.min,
+                    //   children: [
+                    //     UserAvatar(
+                    //       url: state.data.avatar,
+                    //       radius: kSpacingX36,
+                    //       isCircular: true,
+                    //     ),
+                    //     SizedBox(width: kSpacingX8),
+                    //     Column(
+                    //       mainAxisSize: MainAxisSize.min,
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         Text(
+                    //           state.data.name,
+                    //           style: kTheme.textTheme.headline6.copyWith(
+                    //             color: kTheme.colorScheme.onPrimary,
+                    //           ),
+                    //         ),
+                    //         Text(
+                    //           state.data.isAvailable ? 'Online' : 'Offline',
+                    //           style: kTheme.textTheme.bodyText1.copyWith(
+                    //             color: kTheme.colorScheme.onPrimary
+                    //                 .withOpacity(kEmphasisMedium),
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ],
+                    // ),
+                    // titlePadding: EdgeInsetsDirectional.only(
+                    //   start: kSpacingX12,
+                    //   bottom: kSpacingX16,
+                    // ),
                   ),
                   backgroundColor: kTheme.colorScheme.primary,
-                  stretch: true,
-                  snap: true,
-                  collapsedHeight: SizeConfig.screenHeight * 0.1,
-                  toolbarHeight: SizeConfig.screenHeight * 0.1,
+                  collapsedHeight: SizeConfig.screenHeight * 0.09,
+                  toolbarHeight: SizeConfig.screenHeight * 0.09,
+                  forceElevated: true,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(kSpacingX16),
+                      bottomRight: Radius.circular(kSpacingX16),
+                    ),
+                  ),
                   leadingWidth: kSpacingX48,
                   systemOverlayStyle: SystemUiOverlayStyle(
-                    statusBarBrightness: kTheme.brightness == Brightness.light
-                        ? Brightness.dark
-                        : Brightness.light,
+                    statusBarBrightness: Brightness.dark,
                   ),
                   actions: [
                     IconButton(
@@ -165,6 +219,7 @@ class _ConversationPageState extends State<ConversationPage> {
                       onPressed: () => context.navigator.pop(),
                     ),
                   ],
+                  brightness: Brightness.dark,
                   floating: true,
                 ),
 
@@ -207,26 +262,26 @@ class _ConversationPageState extends State<ConversationPage> {
             children: [
               Expanded(
                 child: Container(
-                  margin: EdgeInsets.only(right: kSpacingX16),
+                  margin: EdgeInsets.only(right: kSpacingX8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(kSpacingX24),
                     color: kTheme.cardColor,
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: kSpacingX12),
+                  padding: EdgeInsets.symmetric(horizontal: kSpacingX16),
                   clipBehavior: Clip.hardEdge,
                   child: TextField(
                     controller: _messageController,
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'Type here',
+                      hintText: 'Type here...',
                       hintStyle: TextStyle(
                         color: kTheme.colorScheme.onBackground
                             .withOpacity(kEmphasisLow),
                       ),
                     ),
                     cursorColor: kTheme.colorScheme.onBackground,
-                    textCapitalization: TextCapitalization.words,
-                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.sentences,
+                    keyboardType: TextInputType.multiline,
                     textInputAction: TextInputAction.send,
                     autocorrect: true,
                     enableInteractiveSelection: true,
@@ -237,6 +292,7 @@ class _ConversationPageState extends State<ConversationPage> {
                 borderRadius: BorderRadius.circular(kSpacingX42),
                 onTap: () {
                   var message = _messageController.text?.trim();
+                  logger.d('Composed message -> $message');
                   if (message.isNotEmpty) {
                     /// send message
                     _sendMessageBloc.add(
@@ -266,6 +322,7 @@ class _ConversationPageState extends State<ConversationPage> {
                       shape: BoxShape.circle, color: kTheme.cardColor),
                   child: Icon(
                     kSendIcon,
+                    size: kSpacingX20,
                     color: kTheme.colorScheme.onBackground,
                   ),
                 ),
@@ -279,23 +336,34 @@ class _ConversationPageState extends State<ConversationPage> {
   Widget _buildBackgroundInfo(BaseArtisan user, String businessName) =>
       Container(
         width: SizeConfig.screenWidth,
-        color: kTheme.colorScheme.primary,
-        padding: EdgeInsets.symmetric(
-          horizontal: kSpacingX24,
+        decoration: BoxDecoration(
+          color: kTheme.colorScheme.primary,
+          image: DecorationImage(
+            image: CachedNetworkImageProvider(user.avatar),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              kTheme.colorScheme.background,
+              BlendMode.color,
+            ),
+          ),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(kSpacingX16),
+            bottomRight: Radius.circular(kSpacingX16),
+          ),
+        ),
+        clipBehavior: Clip.hardEdge,
+        padding: EdgeInsets.only(
+          left: kSpacingX24,
+          right: kSpacingX24,
+          bottom: kSpacingX16,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            UserAvatar(
-              url: user.avatar,
-              radius: kSpacingX84,
-              isCircular: true,
-            ),
-            SizedBox(height: kSpacingX16),
             Text(
               'Hi there!',
-              style: kTheme.textTheme.headline3.copyWith(
+              style: kTheme.textTheme.headline4.copyWith(
                 color: kTheme.colorScheme.onPrimary,
               ),
             ),

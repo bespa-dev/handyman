@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:handyman/app/routes/routes.gr.dart';
 import 'package:handyman/shared/shared.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/subjects.dart';
@@ -103,7 +106,26 @@ class LocalNotificationService {
         );
       },
       onResume: (_) async {
-        logger.i('onResume -> $_');
+        logger.i('onResume -> ${_['data']}');
+        var container = ProviderContainer();
+        final prefs = await container.read(sharedPreferencesProvider.future);
+        var prefsRepo = container.read(prefsRepositoryProvider(prefs));
+        var datasource = container.read(remoteDatasourceProvider(prefsRepo));
+
+        /// nav to appropriate screen
+        if (_['data']['type'] == 'booking') {
+          var user =
+              await datasource.getCustomerById(id: _['data']['customer']);
+          var booking =
+              await datasource.getBookingById(id: _['data']['id']).first;
+          return ExtendedNavigator.root.pushBookingDetailsPage(
+            customer: user,
+            booking: booking,
+            bookingId: _['data']['id'],
+          );
+        } else if (_['data']['type'] == 'conversation') {
+        } else if (_['data']['type'] == 'token') {
+        } else if (_['data']['type'] == 'approval') {}
       },
     );
 
@@ -168,11 +190,12 @@ Future<void> _pushNotification(
     priority: Priority.high,
     ticker: 'ticker',
   );
+  logger.i('payload info -> $data');
 
   var notification = data['notification'];
 
   await _plugin.show(
-    DateTime.now().millisecondsSinceEpoch,
+    DateTime.now().millisecondsSinceEpoch.toInt(),
     notification['title'],
     notification['body'],
     NotificationDetails(android: androidPlatformChannelSpecifics),

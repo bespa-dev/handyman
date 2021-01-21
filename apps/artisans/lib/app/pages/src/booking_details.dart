@@ -76,15 +76,13 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
         ..add(LocationEvent.getCurrentLocation())
         ..listen((state) {
           if (state is SuccessState<BaseLocationMetadata>) {
-            final origin = "${state.data.lat},${state.data.lng}";
+            final origin = '${state.data.lat},${state.data.lng}';
             final destination =
                 '${widget.booking.position.lat},${widget.booking.position.lng}';
-            logger.i('Route -> $origin => $destination');
 
             /// https://developers.google.com/maps/documentation/urls/get-started#forming-the-url
             _mapUrl = Uri.encodeFull(
                 'https://www.google.com/maps/dir/?api=1&origin=$origin&destination=$destination');
-            logger.d(_mapUrl);
             if (mounted) setState(() {});
           }
         });
@@ -170,9 +168,9 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                                           child: Text.rich(
                                             TextSpan(
                                               children: [
-                                                TextSpan(text: customer.name),
+                                                TextSpan(text: customer?.name ?? 'Customer'),
                                                 TextSpan(
-                                                  text: "\nrequests that...",
+                                                  text: '\nrequests that...',
                                                   style: kTheme
                                                       .textTheme.bodyText1,
                                                 ),
@@ -320,7 +318,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                                             ),
                                             SizedBox(width: kSpacingX8),
                                             UserAvatar(
-                                              url: customer.avatar,
+                                              url: customer?.avatar,
                                               radius: kSpacingX48,
                                             ),
                                           ],

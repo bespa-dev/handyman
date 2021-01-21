@@ -7,6 +7,7 @@
  * author: codelbas.quabynah@gmail.com
  */
 import 'package:flutter/material.dart';
+import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 
@@ -25,15 +26,21 @@ class ChatListItem extends StatefulWidget {
 }
 
 class _ChatListItemState extends State<ChatListItem> {
-  bool _isAuthor = false;
+  bool _isAuthor = true;
 
   @override
   void initState() {
     super.initState();
-
     if (mounted) {
-      _isAuthor = widget.recipient.id == widget.message.recipient;
-      setState(() {});
+      PrefsBloc(repo: Injection.get())
+        ..add(PrefsEvent.getUserIdEvent())
+        ..listen((state) {
+          if (state is SuccessState<String>) {
+            _isAuthor = state.data == widget.message.author;
+            if (mounted) setState(() {});
+            logger.d('is author -> $_isAuthor');
+          }
+        });
     }
   }
 
@@ -41,43 +48,70 @@ class _ChatListItemState extends State<ChatListItem> {
   Widget build(BuildContext context) {
     var kTheme = Theme.of(context);
 
-    return Container(
-      margin: EdgeInsets.only(
-        top: kSpacingX8,
-        left: _isAuthor ? kSpacingNone : kSpacingX12,
-        right: _isAuthor ? kSpacingX12 : kSpacingNone,
-      ),
-      width: SizeConfig.screenWidth,
-      child: Column(
-        crossAxisAlignment:
-            _isAuthor ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          Container(
-            constraints: BoxConstraints(maxWidth: SizeConfig.screenWidth * 0.7),
-            clipBehavior: Clip.hardEdge,
-            padding: EdgeInsets.all(kSpacingX20),
-            decoration: BoxDecoration(
-              color: _isAuthor ? kTheme.colorScheme.primary : kTheme.cardColor,
-              borderRadius: BorderRadius.only(
-                bottomLeft:
-                    Radius.circular(_isAuthor ? kSpacingX36 : kSpacingNone),
-                bottomRight:
-                    Radius.circular(_isAuthor ? kSpacingNone : kSpacingX36),
-                topRight: Radius.circular(kSpacingX36),
-                topLeft: Radius.circular(kSpacingX36),
-              ),
-            ),
-            alignment: _isAuthor ? Alignment.centerLeft : Alignment.centerRight,
-            child: Text(
-              widget.message.body,
-              style: kTheme.textTheme.bodyText1.copyWith(
-                color: _isAuthor
-                    ? kTheme.colorScheme.onPrimary
-                    : kTheme.colorScheme.onBackground,
-              ),
+    return Align(
+      alignment: _isAuthor
+          ? FractionalOffset.centerRight
+          : FractionalOffset.centerLeft,
+      child: Container(
+        margin: EdgeInsets.only(
+          top: kSpacingX8,
+          left: _isAuthor ? kSpacingNone : kSpacingX12,
+          right: _isAuthor ? kSpacingX12 : kSpacingNone,
+        ),
+        child: Container(
+          constraints: BoxConstraints(
+            maxWidth: SizeConfig.screenWidth * 0.7,
+            minWidth: kSpacingX24,
+          ),
+          clipBehavior: Clip.hardEdge,
+          padding: EdgeInsets.symmetric(
+            horizontal: kSpacingX20,
+            vertical: kSpacingX12,
+          ),
+          decoration: BoxDecoration(
+            color: _isAuthor ? kTheme.colorScheme.primary : kTheme.cardColor,
+            borderRadius: BorderRadius.only(
+              bottomLeft:
+                  Radius.circular(_isAuthor ? kSpacingX36 : kSpacingNone),
+              bottomRight:
+                  Radius.circular(_isAuthor ? kSpacingNone : kSpacingX36),
+              topRight: Radius.circular(kSpacingX36),
+              topLeft: Radius.circular(kSpacingX36),
             ),
           ),
-        ],
+          alignment: _isAuthor ? Alignment.centerRight : Alignment.centerLeft,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment:
+                _isAuthor ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.message.body,
+                softWrap: true,
+                style: kTheme.textTheme.bodyText1.copyWith(
+                  color: _isAuthor
+                      ? kTheme.colorScheme.onPrimary
+                      : kTheme.colorScheme.onBackground,
+                ),
+              ),
+              SizedBox(height: kSpacingX4),
+              Text(
+                parseFromTimestamp(
+                  widget.message.createdAt,
+                  isChatFormat: true,
+                ),
+                textAlign: TextAlign.end,
+                style: kTheme.textTheme.caption.copyWith(
+                  color: _isAuthor
+                      ? kTheme.colorScheme.onPrimary
+                          .withOpacity(kEmphasisMedium)
+                      : kTheme.colorScheme.onBackground
+                          .withOpacity(kEmphasisMedium),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

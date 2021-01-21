@@ -51,6 +51,8 @@ exports.bookingNotifications = functions.firestore
           data: {
             id: change.after.id,
             type: booking_type,
+            customer: customer,
+            artisan: artisan,
             click_action: "FLUTTER_NOTIFICATION_CLICK",
           },
         };
@@ -76,6 +78,8 @@ exports.bookingNotifications = functions.firestore
           data: {
             id: change.after.id,
             type: booking_type,
+            customer: customer,
+            artisan: artisan,
             click_action: "FLUTTER_NOTIFICATION_CLICK",
           },
         };
@@ -102,6 +106,8 @@ exports.bookingNotifications = functions.firestore
           data: {
             id: change.after.id,
             type: booking_type,
+            customer: customer,
+            artisan: artisan,
             click_action: "FLUTTER_NOTIFICATION_CLICK",
           },
         };
@@ -134,6 +140,8 @@ exports.bookingNotifications = functions.firestore
           data: {
             id: change.after.id,
             type: booking_type,
+            customer: customer,
+            artisan: artisan,
             click_action: "FLUTTER_NOTIFICATION_CLICK",
           },
         };
