@@ -157,9 +157,9 @@ class _SplashPageState extends State<SplashPage>
                                 onTap: () => context.navigator
                                     .pushAndRemoveUntil(
                                         Routes.homePage, (route) => false),
-                                label: "Explore",
-                                color: kTheme.colorScheme.onBackground,
-                                textColor: kTheme.colorScheme.background,
+                                label: 'Explore',
+                                color: kTheme.colorScheme.secondary,
+                                textColor: kTheme.colorScheme.onSecondary,
                               ),
                             )
                           } else ...{

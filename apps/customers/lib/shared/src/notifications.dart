@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_riverpod/all.dart';
 import 'package:lite/shared/shared.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/subjects.dart';
@@ -105,6 +106,26 @@ class LocalNotificationService {
       },
       onResume: (_) async {
         logger.i('onResume -> $_');
+
+        var container = ProviderContainer();
+        final prefs = await container.read(sharedPreferencesProvider.future);
+        var prefsRepo = container.read(prefsRepositoryProvider(prefs));
+        var datasource = container.read(remoteDatasourceProvider(prefsRepo));
+
+        /// nav to appropriate screen
+        if (_['data']['type'] == 'booking') {
+          var user =
+          await datasource.getArtisanById(id: _['data']['artisan']);
+          var booking =
+          await datasource.getBookingById(id: _['data']['id']).first;
+          return ExtendedNavigator.root.pushBookingDetailsPage(
+            customer: user,
+            booking: booking,
+            bookingId: _['data']['id'],
+          );
+        } else if (_['data']['type'] == 'conversation') {
+        } else if (_['data']['type'] == 'token') {
+        } else if (_['data']['type'] == 'approval') {}
       },
     );
 
@@ -165,7 +186,7 @@ Future<void> _pushNotification(
     channelId,
     channelName,
     channelDesc,
-    importance: Importance.high,
+    importance: Importance.max,
     priority: Priority.high,
     ticker: 'ticker',
   );

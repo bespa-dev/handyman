@@ -124,6 +124,7 @@ class LocalNotificationService {
             bookingId: _['data']['id'],
           );
         } else if (_['data']['type'] == 'conversation') {
+
         } else if (_['data']['type'] == 'token') {
         } else if (_['data']['type'] == 'approval') {}
       },

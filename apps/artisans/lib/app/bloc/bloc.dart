@@ -17,6 +17,8 @@ export 'src/business/business_bloc.dart';
 export 'src/business/business_event.dart';
 export 'src/category/category_bloc.dart';
 export 'src/category/category_event.dart';
+export 'src/conversation/conversation_bloc.dart';
+export 'src/conversation/conversation_event.dart';
 export 'src/location/location_bloc.dart';
 export 'src/location/location_event.dart';
 export 'src/prefs/prefs_bloc.dart';

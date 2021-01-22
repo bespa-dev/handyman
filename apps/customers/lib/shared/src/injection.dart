@@ -32,83 +32,84 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// region Services
 
 final notificationServiceProvider = Provider((_) => LocalNotificationService());
+
 final _firebaseMessaging = Provider((_) => FirebaseMessaging());
 
 /// endregion
 
 /// region Preferences
-final _sharedPreferencesProvider = FutureProvider<SharedPreferences>(
-    (_) async => await SharedPreferences.getInstance());
+final sharedPreferencesProvider = FutureProvider<SharedPreferences>(
+        (_) async => await SharedPreferences.getInstance());
 
 @Exposed()
-final _prefsRepositoryProvider =
-    ChangeNotifierProvider.family<BasePreferenceRepository, SharedPreferences>(
+final prefsRepositoryProvider =
+ChangeNotifierProvider.family<BasePreferenceRepository, SharedPreferences>(
         (_, prefs) {
-  return PreferenceRepositoryImpl(prefs: prefs);
-});
+      return PreferenceRepositoryImpl(prefs: prefs);
+    });
 
 /// endregion Preferences
 
 /// region Repositories
 @Exposed()
 final _authRepositoryProvider =
-    FutureProvider.autoDispose<BaseAuthRepository>((_) async {
-  final sharedPrefs = await _.watch(_sharedPreferencesProvider.future);
-  var prefs = _.read(_prefsRepositoryProvider(sharedPrefs));
+FutureProvider.autoDispose<BaseAuthRepository>((_) async {
+  final sharedPrefs = await _.watch(sharedPreferencesProvider.future);
+  var prefs = _.read(prefsRepositoryProvider(sharedPrefs));
   return _.watch(_firebaseAuthRepositoryProvider(prefs).future);
 });
 
 @Exposed()
 final _bookingRepositoryProvider =
-    Provider.family<BaseBookingRepository, BasePreferenceRepository>(
+Provider.family<BaseBookingRepository, BasePreferenceRepository>(
         (_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
-  return BookingRepositoryImpl(local: local, remote: remote);
-});
+      var local = _.read(localDatasourceProvider(prefs));
+      var remote = _.read(remoteDatasourceProvider(prefs));
+      return BookingRepositoryImpl(local: local, remote: remote);
+    });
 
 final _businessRepositoryProvider =
-    Provider.family<BaseBusinessRepository, BasePreferenceRepository>(
+Provider.family<BaseBusinessRepository, BasePreferenceRepository>(
         (_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
-  return BusinessRepositoryImpl(local: local, remote: remote);
-});
+      var local = _.read(localDatasourceProvider(prefs));
+      var remote = _.read(remoteDatasourceProvider(prefs));
+      return BusinessRepositoryImpl(local: local, remote: remote);
+    });
 
 final _serviceRepositoryProvider =
-    Provider.family<BaseArtisanServiceRepository, BasePreferenceRepository>(
+Provider.family<BaseArtisanServiceRepository, BasePreferenceRepository>(
         (_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
-  return ArtisanServiceRepositoryImpl(local: local, remote: remote);
-});
+      var local = _.read(localDatasourceProvider(prefs));
+      var remote = _.read(remoteDatasourceProvider(prefs));
+      return ArtisanServiceRepositoryImpl(local: local, remote: remote);
+    });
 
 @Exposed()
 final _categoryRepositoryProvider =
-    Provider.family<BaseCategoryRepository, BasePreferenceRepository>(
+Provider.family<BaseCategoryRepository, BasePreferenceRepository>(
         (_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
-  return CategoryRepositoryImpl(local: local, remote: remote);
-});
+      var local = _.read(localDatasourceProvider(prefs));
+      var remote = _.read(remoteDatasourceProvider(prefs));
+      return CategoryRepositoryImpl(local: local, remote: remote);
+    });
 
 @Exposed()
 final _conversationRepositoryProvider =
-    Provider.family<BaseConversationRepository, BasePreferenceRepository>(
+Provider.family<BaseConversationRepository, BasePreferenceRepository>(
         (_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
-  return ConversationRepositoryImpl(local: local, remote: remote);
-});
+      var local = _.read(localDatasourceProvider(prefs));
+      var remote = _.read(remoteDatasourceProvider(prefs));
+      return ConversationRepositoryImpl(local: local, remote: remote);
+    });
 
 @Exposed()
 final _galleryRepositoryProvider =
-    Provider.family<BaseGalleryRepository, BasePreferenceRepository>(
+Provider.family<BaseGalleryRepository, BasePreferenceRepository>(
         (_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
-  return GalleryRepositoryImpl(local: local, remote: remote);
-});
+      var local = _.read(localDatasourceProvider(prefs));
+      var remote = _.read(remoteDatasourceProvider(prefs));
+      return GalleryRepositoryImpl(local: local, remote: remote);
+    });
 
 @Exposed()
 final _locationRepositoryProvider = Provider<BaseLocationRepository>((_) {
@@ -117,17 +118,17 @@ final _locationRepositoryProvider = Provider<BaseLocationRepository>((_) {
 });
 
 final _reviewRepositoryProvider =
-    Provider.family<BaseReviewRepository, BasePreferenceRepository>((_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
+Provider.family<BaseReviewRepository, BasePreferenceRepository>((_, prefs) {
+  var local = _.read(localDatasourceProvider(prefs));
+  var remote = _.read(remoteDatasourceProvider(prefs));
   return ReviewRepositoryImpl(local: local, remote: remote);
 });
 
 @Exposed()
 final _searchRepositoryProvider =
-    Provider.family<BaseSearchRepository, BasePreferenceRepository>((_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
+Provider.family<BaseSearchRepository, BasePreferenceRepository>((_, prefs) {
+  var local = _.read(localDatasourceProvider(prefs));
+  var remote = _.read(remoteDatasourceProvider(prefs));
   final dotenv = DotEnv();
   final algolia = Algolia.init(
     applicationId: dotenv.env['applicationId'],
@@ -138,30 +139,30 @@ final _searchRepositoryProvider =
 
 @Exposed()
 final _storageRepositoryProvider =
-    Provider.autoDispose<BaseStorageRepository>((_) {
+Provider.autoDispose<BaseStorageRepository>((_) {
   return _.watch(_firebaseStorageRepositoryProvider);
 });
 
 final _userRepositoryProvider =
-    Provider.family<BaseUserRepository, BasePreferenceRepository>((_, prefs) {
-  var local = _.read(_localDatasourceProvider(prefs));
-  var remote = _.read(_remoteDatasourceProvider(prefs));
+Provider.family<BaseUserRepository, BasePreferenceRepository>((_, prefs) {
+  var local = _.read(localDatasourceProvider(prefs));
+  var remote = _.read(remoteDatasourceProvider(prefs));
   return UserRepositoryImpl(local: local, remote: remote);
 });
 
 @Exposed()
 final _firebaseAuthRepositoryProvider =
-    FutureProvider.family<BaseAuthRepository, BasePreferenceRepository>(
+FutureProvider.family<BaseAuthRepository, BasePreferenceRepository>(
         (_, prefs) async {
-  var userRepo = _.read(_userRepositoryProvider(prefs));
-  return AuthRepositoryImpl(
-    auth: FirebaseAuth.instance,
-    messaging: FirebaseMessaging(),
-    googleSignIn: GoogleSignIn(),
-    prefsRepo: prefs,
-    userRepo: userRepo,
-  );
-});
+      var userRepo = _.read(_userRepositoryProvider(prefs));
+      return AuthRepositoryImpl(
+        auth: FirebaseAuth.instance,
+        messaging: FirebaseMessaging(),
+        googleSignIn: GoogleSignIn(),
+        prefsRepo: prefs,
+        userRepo: userRepo,
+      );
+    });
 
 final _firebaseStorageRepositoryProvider = Provider<BaseStorageRepository>((_) {
   final bucket = FirebaseStorage.instance.ref().child(RefUtils.kBucketRef);
@@ -171,19 +172,19 @@ final _firebaseStorageRepositoryProvider = Provider<BaseStorageRepository>((_) {
 /// endregion
 
 /// region Data sources
-final _remoteDatasourceProvider =
-    Provider.family<BaseRemoteDatasource, BasePreferenceRepository>((_, prefs) {
+final remoteDatasourceProvider =
+Provider.family<BaseRemoteDatasource, BasePreferenceRepository>((_, prefs) {
   return _.watch(_firebaseRemoteDatasourceProvider(prefs));
 });
 
-final _localDatasourceProvider =
-    Provider.family<BaseLocalDatasource, BasePreferenceRepository>((_, prefs) {
+final localDatasourceProvider =
+Provider.family<BaseLocalDatasource, BasePreferenceRepository>((_, prefs) {
   return _.watch(_hiveDatasourceProvider(prefs));
 });
 
 /// FIREBASE datasource provider -> remote source
 final _firebaseRemoteDatasourceProvider =
-    Provider.family<BaseRemoteDatasource, BasePreferenceRepository>((_, prefs) {
+Provider.family<BaseRemoteDatasource, BasePreferenceRepository>((_, prefs) {
   return FirebaseRemoteDatasource(
       prefsRepo: prefs, firestore: FirebaseFirestore.instance);
 });
@@ -214,8 +215,8 @@ class Injection {
 
   static Future<void> inject() async {
     var container = ProviderContainer();
-    final prefs = await container.read(_sharedPreferencesProvider.future);
-    var prefsRepo = container.read(_prefsRepositoryProvider(prefs));
+    final prefs = await container.read(sharedPreferencesProvider.future);
+    var prefsRepo = container.read(prefsRepositoryProvider(prefs));
     _repos.add(await container.read(_authRepositoryProvider.future));
     _repos.add(await container.read(_bookingRepositoryProvider(prefsRepo)));
     _repos.add(await container.read(_businessRepositoryProvider(prefsRepo)));
@@ -237,7 +238,7 @@ class Injection {
   /// retrieves an instance of a repository registered above
   static R get<R>() {
     for (var value in _repos) {
-      if (value is R) return value as R;
+      if (value is R) return value;
     }
     throw Exception('Unknown repository for -> ${R.runtimeType}');
   }
@@ -262,8 +263,5 @@ Future<void> initAppDependencies() async {
   /// inject dependencies
   await Injection.inject();
 }
-
-/// todo -> remove this
-final notificationsPlugin = FlutterLocalNotificationsPlugin();
 
 /// endregion

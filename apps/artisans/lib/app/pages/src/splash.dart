@@ -193,8 +193,8 @@ class _SplashPageState extends State<SplashPage>
                                     .pushAndRemoveUntil(
                                         Routes.homePage, (route) => false),
                                 label: "Explore",
-                                color: kTheme.colorScheme.onBackground,
-                                textColor: kTheme.colorScheme.background,
+                                color: kTheme.colorScheme.secondary,
+                                textColor: kTheme.colorScheme.onSecondary,
                               ),
                             )
                           } else ...{
@@ -209,8 +209,8 @@ class _SplashPageState extends State<SplashPage>
                                 icon: kGoogleIcon,
                                 gravity: ButtonIconGravity.START,
                                 label: "Continue with Google",
-                                color: kTheme.colorScheme.onBackground,
-                                textColor: kTheme.colorScheme.background,
+                                color: kTheme.colorScheme.secondary,
+                                textColor: kTheme.colorScheme.onSecondary,
                               ),
                             ),
                             SizedBox(height: kSpacingX12),

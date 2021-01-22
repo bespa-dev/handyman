@@ -13,7 +13,7 @@ export 'src/booking_list_item.dart';
 export 'src/business_list_item.dart';
 export 'src/buttons.dart';
 export 'src/category_card.dart';
-export 'src/chat-list_item.dart';
+export 'src/chat_list_item.dart';
 export 'src/dialogs.dart';
 export 'src/emergency_ping_button.dart';
 export 'src/fields.dart';
