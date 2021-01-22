@@ -93,16 +93,21 @@ class _ConversationPageState extends State<ConversationPage> {
       /// observe scroll position
       _messageBloc.listen((state) async {
         if (state is SuccessState<Stream<List<BaseConversation>>>) {
-          await Future.delayed(kSplashDuration);
-
-          await _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: kSheetDuration,
-            curve: Curves.fastOutSlowIn,
-          );
+          await Future.delayed(kSheetDuration);
+          await _scrollToBottom();
         }
       });
     }
+  }
+
+  /// scroll to bottom of chat
+  /// https://stackoverflow.com/questions/43485529/programmatically-scrolling-to-the-end-of-a-listview
+  Future<void> _scrollToBottom([var duration = kSplashDuration]) async {
+    await _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: duration,
+      curve: Curves.fastOutSlowIn,
+    );
   }
 
   @override
@@ -128,6 +133,13 @@ class _ConversationPageState extends State<ConversationPage> {
                     ? Scaffold(
                         appBar: AppBar(
                           automaticallyImplyLeading: false,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(kSpacingX16),
+                              bottomRight: Radius.circular(kSpacingX16),
+                            ),
+                          ),
+                          titleSpacing: kSpacingNone,
                           leading: IconButton(
                             icon: Icon(kCloseIcon),
                             onPressed: () => context.navigator.pop(),
@@ -160,10 +172,11 @@ class _ConversationPageState extends State<ConversationPage> {
                               SizedBox(height: kSpacingX4),
                               Text(
                                 userState.data.isAvailable
-                                    ? 'Online'
-                                    : 'Offline',
+                                    ? 'Available'
+                                    : 'Unavailable',
                                 style: kTheme.textTheme.caption.copyWith(
-                                  color: kTheme.colorScheme.onPrimary,
+                                  color: kTheme.colorScheme.onPrimary.withOpacity(kEmphasisMedium),
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ],
@@ -352,9 +365,8 @@ class _ConversationPageState extends State<ConversationPage> {
   }
 
   /// send message
-  void _sendMessage() {
+  void _sendMessage() async {
     var message = _messageController.text?.trim();
-    logger.d('Composed message -> $message');
     if (message.isNotEmpty) {
       /// send message
       _sendMessageBloc.add(
@@ -374,6 +386,9 @@ class _ConversationPageState extends State<ConversationPage> {
 
       /// clear field
       _messageController.clear();
+
+      await _scrollToBottom(kNoDuration);
     }
   }
+
 }

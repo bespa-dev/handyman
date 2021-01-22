@@ -19,6 +19,7 @@ export 'src/emergency_ping_button.dart';
 export 'src/fields.dart';
 export 'src/image.dart';
 export 'src/loaders.dart';
+export 'src/search_result_card.dart';
 export 'src/menu_icon.dart';
 export 'src/page_indicator.dart';
 export 'src/review_list_item.dart';

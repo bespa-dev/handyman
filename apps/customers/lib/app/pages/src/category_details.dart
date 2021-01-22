@@ -9,7 +9,6 @@ import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 
 class CategoryDetailsPage extends StatefulWidget {
-
   const CategoryDetailsPage({Key key, @required this.category})
       : super(key: key);
 
@@ -59,34 +58,20 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                         builder: (_, snapshot) {
                           final artisans = snapshot.data ?? [];
                           if (snapshot.connectionState ==
-                              ConnectionState.waiting)
+                              ConnectionState.waiting) {
                             return Loading();
-                          else if (snapshot.hasError || artisans.isEmpty)
+                          } else if (snapshot.hasError || artisans.isEmpty) {
                             return Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    kEmptyIcon,
-                                    size: getProportionateScreenHeight(
-                                        kSpacingX96),
-                                    color: kTheme.colorScheme.onBackground,
-                                  ),
-                                  SizedBox(
-                                    height: getProportionateScreenHeight(
-                                        kSpacingX16),
-                                  ),
-                                  Text(
-                                    "No artisans available",
-                                    style: kTheme.textTheme.bodyText2.copyWith(
-                                      color: kTheme.colorScheme.onBackground,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
+                              child: emptyStateUI(
+                                context,
+                                message: 'No artisans found',
+                                onTap: () => _userBloc.add(
+                                  UserEvent.observeArtisansEvent(
+                                      category: widget.category.groupName),
+                                ),
                               ),
                             );
+                          }
                           return SafeArea(
                             child: Container(
                               width: SizeConfig.screenWidth,
@@ -103,7 +88,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                                       height: getProportionateScreenHeight(
                                           kSpacingX8)),
                                   Text(
-                                    "Showing results for...",
+                                    'Showing results for...',
                                     style: kTheme.textTheme.caption,
                                   ),
                                   Text(

@@ -16,7 +16,6 @@ import 'package:handyman/shared/shared.dart';
 import 'package:meta/meta.dart';
 
 class SearchRepositoryImpl extends BaseSearchRepository {
-  final Algolia _algolia;
 
   const SearchRepositoryImpl({
     @required BaseLocalDatasource local,
@@ -24,6 +23,8 @@ class SearchRepositoryImpl extends BaseSearchRepository {
     @required Algolia algolia,
   })  : _algolia = algolia,
         super(local, remote);
+
+  final Algolia _algolia;
 
   @override
   Future<List<BaseUser>> searchFor({String query, String categoryId}) async {

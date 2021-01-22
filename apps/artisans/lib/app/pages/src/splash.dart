@@ -133,18 +133,14 @@ class _SplashPageState extends State<SplashPage>
                     height: kSpacingX120,
                     width: kSpacingX120,
                   ),
-                  SizedBox(height: kSpacingX16),
-                  Text(
-                    kAppSloganDesc,
-                    textAlign: TextAlign.center,
-                    style: kTheme.textTheme.subtitle1,
-                  ),
-                  SizedBox(height: kSpacingX64),
-                  AnimatedOpacity(
-                    opacity: _isLoading ? 1 : 0,
-                    duration: kSheetDuration,
-                    child: Loading(),
-                  ),
+                  if (_isLoading) ...{
+                    SizedBox(height: kSpacingX64),
+                    AnimatedOpacity(
+                      opacity: _isLoading ? 1 : 0,
+                      duration: kSheetDuration,
+                      child: Loading(),
+                    ),
+                  }
                 ],
               ),
             ),
@@ -169,7 +165,7 @@ class _SplashPageState extends State<SplashPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Welcome back...',
+                            'Welcome back',
                             style: kTheme.textTheme.headline6.copyWith(
                               color: kTheme.colorScheme.onPrimary,
                             ),
@@ -189,11 +185,9 @@ class _SplashPageState extends State<SplashPage>
                               alignment: Alignment.center,
                               child: ButtonPrimary(
                                 width: SizeConfig.screenWidth * 0.85,
-                                // onTap: () => context.navigator
-                                //     .pushAndRemoveUntil(
-                                //         Routes.homePage, (route) => false),
-                                /// todo -> fix chat
-                                onTap: () => context.navigator.pushConversationPage(recipientId: 'fXYrXtbwUwQUTgWSWdeX26NOr2l2'),
+                                onTap: () => context.navigator
+                                    .pushAndRemoveUntil(
+                                        Routes.homePage, (route) => false),
                                 label: 'Explore',
                                 color: kTheme.colorScheme.secondary,
                                 textColor: kTheme.colorScheme.onSecondary,
@@ -211,8 +205,8 @@ class _SplashPageState extends State<SplashPage>
                                 icon: kGoogleIcon,
                                 gravity: ButtonIconGravity.START,
                                 label: 'Continue with Google',
-                                color: kTheme.colorScheme.secondary,
-                                textColor: kTheme.colorScheme.onSecondary,
+                                color: kTheme.colorScheme.onBackground,
+                                textColor: kTheme.colorScheme.background,
                               ),
                             ),
                             SizedBox(height: kSpacingX12),

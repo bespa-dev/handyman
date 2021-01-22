@@ -22,6 +22,7 @@ export 'src/loaders.dart';
 export 'src/menu_icon.dart';
 export 'src/page_indicator.dart';
 export 'src/review_list_item.dart';
+export 'src/search_result_card.dart';
 export 'src/search_view.dart';
 export 'src/service_list_item.dart';
 export 'src/sign_out_button.dart';

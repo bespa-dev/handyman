@@ -46,10 +46,10 @@ class ButtonOutlined extends StatelessWidget {
         width: width,
         height: height ?? kMinInteractiveDimension,
         decoration: BoxDecoration(
-          color: themeData.scaffoldBackgroundColor,
+          color: themeData.colorScheme.background,
           border: Border.all(
             color: enabled
-                ? themeData.colorScheme.primary
+                ? themeData.colorScheme.secondary
                 : themeData.disabledColor,
           ),
           borderRadius:
@@ -67,7 +67,7 @@ class ButtonOutlined extends StatelessWidget {
               label,
               style: themeData.textTheme.button.copyWith(
                 color: enabled
-                    ? themeData.colorScheme.primary
+                    ? themeData.colorScheme.secondary
                     : themeData.disabledColor,
               ),
             ),

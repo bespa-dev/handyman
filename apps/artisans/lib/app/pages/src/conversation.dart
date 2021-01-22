@@ -86,12 +86,23 @@ class _ConversationPageState extends State<ConversationPage> {
         });
 
       /// observe scroll position
-      // _scrollController.animateTo(
-      //   100.0,
-      //   duration: kScaleDuration,
-      //   curve: Curves.easeIn,
-      // );
+      _messageBloc.listen((state) async {
+        if (state is SuccessState<Stream<List<BaseConversation>>>) {
+          await Future.delayed(kSheetDuration);
+          await _scrollToBottom();
+        }
+      });
     }
+  }
+
+  /// scroll to bottom of chat
+  /// https://stackoverflow.com/questions/43485529/programmatically-scrolling-to-the-end-of-a-listview
+  Future<void> _scrollToBottom([var duration = kSplashDuration]) async {
+    await _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: duration,
+      curve: Curves.fastOutSlowIn,
+    );
   }
 
   @override
@@ -114,7 +125,13 @@ class _ConversationPageState extends State<ConversationPage> {
                   ? Scaffold(
                       extendBody: true,
                       appBar: AppBar(
-                        // shape: ,
+                        titleSpacing: kSpacingNone,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(kSpacingX16),
+                            bottomRight: Radius.circular(kSpacingX16),
+                          ),
+                        ),
                         toolbarHeight: kSpacingX64,
                         automaticallyImplyLeading: false,
                         leading: IconButton(
@@ -270,7 +287,7 @@ class _ConversationPageState extends State<ConversationPage> {
       );
 
   /// send message
-  void _sendMessage() {
+  void _sendMessage() async {
     var message = _messageController.text?.trim();
     if (message.isNotEmpty) {
       /// send message
@@ -291,6 +308,8 @@ class _ConversationPageState extends State<ConversationPage> {
 
       /// clear field
       _messageController.clear();
+
+      await _scrollToBottom(kNoDuration);
     }
   }
 }

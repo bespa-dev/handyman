@@ -52,17 +52,6 @@ Future registerHiveDatabase() async {
 }
 
 class HiveLocalDatasource extends BaseLocalDatasource {
-  final BasePreferenceRepository prefsRepo;
-  final Box<Booking> bookingBox;
-  final Box<Customer> customerBox;
-  final Box<Artisan> artisanBox;
-  final Box<Review> reviewBox;
-  final Box<Gallery> galleryBox;
-  final Box<Conversation> conversationBox;
-  final Box<ServiceCategory> categoryBox;
-  final Box<Business> businessBox;
-  final Box<ArtisanService> serviceBox;
-
   HiveLocalDatasource({
     @required this.prefsRepo,
     @required this.bookingBox,
@@ -79,9 +68,20 @@ class HiveLocalDatasource extends BaseLocalDatasource {
     _performInitLoad();
   }
 
+  final BasePreferenceRepository prefsRepo;
+  final Box<Booking> bookingBox;
+  final Box<Customer> customerBox;
+  final Box<Artisan> artisanBox;
+  final Box<Review> reviewBox;
+  final Box<Gallery> galleryBox;
+  final Box<Conversation> conversationBox;
+  final Box<ServiceCategory> categoryBox;
+  final Box<Business> businessBox;
+  final Box<ArtisanService> serviceBox;
+
   void _performInitLoad() async {
     /// decode categories from json
-    var categorySource = await rootBundle.loadString("assets/categories.json");
+    var categorySource = await rootBundle.loadString('assets/categories.json');
     var decodedCategories = jsonDecode(categorySource) as List;
     for (var json in decodedCategories) {
       final item = ServiceCategory.fromJson(json);
@@ -91,7 +91,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
     }
 
     /// decode services from json
-    var serviceSource = await rootBundle.loadString("assets/services.json");
+    var serviceSource = await rootBundle.loadString('assets/services.json');
     var decodedServices = jsonDecode(serviceSource) as List;
     for (var json in decodedServices) {
       final item = ArtisanService.fromJson(json);
@@ -100,7 +100,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
       await serviceBox.put(item.id, item);
     }
 
-    if (!kReleaseMode) {
+    /*if (!kReleaseMode) {
       var requestsSource = await rootBundle.loadString('assets/requests.json');
       var decodedRequests = jsonDecode(requestsSource) as List;
       for (var json in decodedRequests) {
@@ -118,7 +118,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
         // put each one into box
         await reviewBox.put(item.id, item);
       }
-    }
+    }*/
   }
 
   @override
@@ -248,7 +248,14 @@ class HiveLocalDatasource extends BaseLocalDatasource {
     return artisanBox.values
         .where((item) =>
             item != null &&
-            (item.email.contains(query) || item.name.contains(query)))
+                item.isAvailable &&
+                item.isApproved &&
+                item.email.contains(query) ||
+            item.category.contains(query) ||
+            (item.services != null && item.services.contains(query)) ||
+            (item.reports != null && item.reports.contains(query)) ||
+            item.name.contains(query))
+        .sortByDescending<String>((r) => r.rating.toString())
         .toList();
   }
 
@@ -278,9 +285,9 @@ class HiveLocalDatasource extends BaseLocalDatasource {
 
   @override
   Future<void> updateUser(BaseUser user) async {
-    if (user is BaseArtisan)
+    if (user is BaseArtisan) {
       await artisanBox.put(user.id, user);
-    else if (user is BaseUser) await customerBox.put(user.id, user);
+    } else if (user is BaseUser) await customerBox.put(user.id, user);
     notifyListeners();
   }
 

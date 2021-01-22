@@ -25,12 +25,12 @@ class _SearchPageState extends State<SearchPage> {
   final _serviceBloc = ArtisanServiceBloc(repo: Injection.get());
 
   /// UI
-  bool _isSearching = false, _shouldShowMoreSuggestions = true;
-  String _query = "";
+  bool _isSearching = false, _shouldShowMoreSuggestions = false;
+  String _query = '';
   ThemeData kTheme;
   final _searchController = TextEditingController();
 
-  FocusNode _focusNode = FocusNode();
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void dispose() {
@@ -74,103 +74,92 @@ class _SearchPageState extends State<SearchPage> {
             left: kSpacingX16,
             right: kSpacingX16,
           ),
+          color: kTheme.colorScheme.background,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ConstrainedBox(
                 constraints:
                     BoxConstraints.tightFor(width: SizeConfig.screenWidth),
-                child: Form(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        constraints: BoxConstraints(
-                          maxHeight: kToolbarHeight * 1.5,
-                        ),
-                        width: SizeConfig.screenWidth * 0.9,
-                        padding: EdgeInsets.only(
-                          left: getProportionateScreenWidth(kSpacingX16),
-                          right: getProportionateScreenWidth(kSpacingX16),
-                          top: getProportionateScreenHeight(kSpacingX2),
-                          bottom: getProportionateScreenHeight(kSpacingX2),
-                        ),
-                        decoration: BoxDecoration(
-                          color: kTheme.colorScheme.background,
-                          borderRadius: BorderRadius.circular(kSpacingX8),
-                        ),
-                        child: TextFormField(
-                          keyboardType: TextInputType.text,
-                          textInputAction: TextInputAction.search,
-                          controller: _searchController,
-                          cursorColor: kTheme.colorScheme.onBackground,
-                          autofocus: false,
-                          focusNode: _focusNode,
-                          onTap: () {
-                            _isSearching = false;
-                            setState(() {});
-                          },
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "\tSearch",
-                            suffixIcon: IconButton(
-                              icon: Icon(kSearchIcon),
-                              color: kTheme.unselectedWidgetColor,
-                              onPressed: () {
-                                if (_searchController.text.isNotEmpty) {
-                                  _query = _searchController.text?.trim();
-                                  _searchBloc.add(SearchEvent.searchAllUsers(
-                                      query: _query));
-                                }
-                              },
-                            ),
-                            helperStyle: kTheme.textTheme.caption,
-                            hintStyle: kTheme.textTheme.headline4.copyWith(
-                              color: kTheme.colorScheme.onBackground
-                                  .withOpacity(kEmphasisLow),
-                            ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      constraints: BoxConstraints(
+                        maxHeight: kToolbarHeight * 1.5,
+                      ),
+                      width: SizeConfig.screenWidth * 0.9,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: kSpacingX16,
+                        vertical: kSpacingX2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: kTheme.colorScheme.background,
+                        borderRadius: BorderRadius.circular(kSpacingX8),
+                      ),
+                      child: TextField(
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.search,
+                        controller: _searchController,
+                        cursorColor: kTheme.colorScheme.onBackground,
+                        autofocus: false,
+                        focusNode: _focusNode,
+                        enableSuggestions: true,
+                        onTap: () {
+                          _isSearching = false;
+                          setState(() {});
+                        },
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: '\tSearch',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                                _focusNode.hasFocus ? kSearchIcon : kCloseIcon),
+                            color: kTheme.unselectedWidgetColor,
+                            onPressed: () {
+                              if (_searchController.text.isNotEmpty) {
+                                _searchController.clear();
+                              } else {
+                                _performSearch();
+                              }
+                            },
                           ),
-                          onFieldSubmitted: (_) {
-                            if (_.isNotEmpty) {
-                              _query = _?.trim();
-                              _searchBloc.add(
-                                  SearchEvent.searchAllUsers(query: _query));
-                            }
-                          },
-                          maxLines: 3,
-                          style: kTheme.textTheme.headline4
-                              .copyWith(color: kTheme.colorScheme.onBackground),
+                          fillColor: kTheme.colorScheme.background,
+                          helperStyle: kTheme.textTheme.caption,
+                          hintStyle: kTheme.textTheme.headline4.copyWith(
+                            color: kTheme.colorScheme.onBackground
+                                .withOpacity(kEmphasisLow),
+                          ),
                         ),
+                        onSubmitted: (_) => _performSearch(),
+                        maxLines: 3,
+                        style: kTheme.textTheme.headline4
+                            .copyWith(color: kTheme.colorScheme.onBackground),
                       ),
-                      SizedBox(
-                        height: getProportionateScreenHeight(kSpacingX8),
-                      ),
-                      Divider(
-                        endIndent: getProportionateScreenWidth(kSpacingX64),
-                      ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(
+                      height: getProportionateScreenHeight(kSpacingX8),
+                    ),
+                    Divider(
+                      endIndent: getProportionateScreenWidth(kSpacingX64),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(
                 height: getProportionateScreenHeight(kSpacingX12),
               ),
               Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: getProportionateScreenWidth(kSpacingX24),
-                  ),
-                  child: BlocBuilder<SearchBloc, BlocState>(
-                      cubit: _searchBloc,
-                      builder: (_, state) {
-                        return state is SuccessState && !_focusNode.hasFocus
-                            ? _buildResults()
-                            : _isSearching
-                                ? Loading()
-                                : _buildSuggestions();
-                      }),
-                ),
+                child: BlocBuilder<SearchBloc, BlocState>(
+                    cubit: _searchBloc,
+                    builder: (_, state) {
+                      return state is SuccessState && !_focusNode.hasFocus
+                          ? _buildResults()
+                          : _isSearching
+                              ? Loading()
+                              : _buildSuggestions();
+                    }),
               ),
             ],
           ),
@@ -187,7 +176,7 @@ class _SearchPageState extends State<SearchPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    "Recommended searches...",
+                    'Recommended searches...',
                     style: kTheme.textTheme.headline6.copyWith(
                       fontSize: kTheme.textTheme.bodyText1.fontSize,
                     ),
@@ -206,13 +195,12 @@ class _SearchPageState extends State<SearchPage> {
                         return ListTile(
                           contentPadding: EdgeInsets.zero,
                           onTap: () {
-                            _query = item.name;
-                            _searchBloc
-                                .add(SearchEvent.searchAllUsers(query: _query));
+                            _searchController.text = item.name;
+                            _performSearch(item.id);
                           },
                           title: Text(
                             item.name,
-                            style: kTheme.textTheme.headline4,
+                            style: kTheme.textTheme.headline5,
                           ),
                         );
                       },
@@ -264,22 +252,28 @@ class _SearchPageState extends State<SearchPage> {
         width: SizeConfig.screenWidth,
         child: emptyStateUI(
           context,
-          message: "Nothing found",
+          message: 'Nothing found',
           icon: kSearchIcon,
+          onTap: () => _performSearch(),
         ),
       );
 
-  Widget _buildResults() {
-    /// fixme -> load search results card
-    return BlocBuilder<SearchBloc, BlocState>(
-      cubit: _searchBloc,
-      builder: (_, state) => state is SuccessState<List<BaseModel>>
-          ? state.data.isEmpty
-              ? _buildNoResults()
-              : /*SearchResultsCard(results: state.data)*/ Container()
-          : state is ErrorState
-              ? _buildNoResults()
-              : Loading(),
-    );
+  Widget _buildResults() => BlocBuilder<SearchBloc, BlocState>(
+        cubit: _searchBloc,
+        builder: (_, state) => state is SuccessState<List<BaseUser>>
+            ? state.data.isEmpty
+                ? _buildNoResults()
+                : SearchResultsCard(results: state.data)
+            : state is ErrorState
+                ? _buildNoResults()
+                : Loading(),
+      );
+
+  void _performSearch([String query]) {
+    if (_searchController.text.isNotEmpty) {
+      _query = query ?? _searchController.text?.trim();
+      if (mounted) setState(() {});
+      _searchBloc.add(SearchEvent.searchAllUsers(query: _query));
+    }
   }
 }

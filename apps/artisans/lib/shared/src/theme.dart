@@ -50,7 +50,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
           fontFamily: _kBodyFontFamily,
           fontWeight: FontWeight.normal,
         ),
-        fillColor: kCardLightColor,
+        // fillColor: kCardLightColor,
         filled: true,
       ),
       tabBarTheme: TabBarTheme(

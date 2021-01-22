@@ -58,10 +58,6 @@ class LocalNotificationService {
 
   /// setup local notifications
   Future<void> setupNotifications() async {
-    logger.d('setting up notifications...');
-    // final notificationAppLaunchDetails =
-    //     await _plugin.getNotificationAppLaunchDetails();
-
     const initializationSettingsAndroid =
         AndroidInitializationSettings('app_logo');
 
@@ -116,17 +112,14 @@ class LocalNotificationService {
 
         /// nav to appropriate screen
         if (data['type'] == 'booking') {
-          var user =
-          await datasource.getCustomerById(id: data['customer']);
-          var booking =
-          await datasource.getBookingById(id: data['id']).first;
+          var user = await datasource.getCustomerById(id: data['customer']);
+          var booking = await datasource.getBookingById(id: data['id']).first;
           return navigator.pushBookingDetailsPage(
             customer: user,
             booking: booking,
             bookingId: data['id'],
           );
         } else if (data['type'] == 'conversation') {
-
           return navigator.pushConversationPage(recipientId: data['sender']);
         } else if (data['type'] == 'token') {
         } else if (data['type'] == 'approval') {}

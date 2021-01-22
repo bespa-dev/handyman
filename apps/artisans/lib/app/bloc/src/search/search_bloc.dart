@@ -7,11 +7,11 @@ import 'package:meta/meta.dart';
 import 'search_event.dart';
 
 class SearchBloc extends BaseBloc<SearchEvent> {
-  final BaseSearchRepository _repo;
-
   SearchBloc({@required BaseSearchRepository repo})
       : assert(repo != null),
         _repo = repo;
+
+  final BaseSearchRepository _repo;
 
   @override
   Stream<BlocState> mapEventToState(SearchEvent event) async* {
@@ -20,12 +20,11 @@ class SearchBloc extends BaseBloc<SearchEvent> {
 
       var result = await SearchUseCase(_repo).execute(event.query);
 
-      if (result is UseCaseResultSuccess<List<BaseUser>>)
+      if (result is UseCaseResultSuccess<List<BaseUser>>) {
         yield BlocState<List<BaseUser>>.successState(data: result.value);
-      else
+      } else {
         BlocState.errorState(failure: []);
+      }
     }
   }
 }
-
-// SearchUseCase

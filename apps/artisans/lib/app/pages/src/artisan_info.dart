@@ -187,7 +187,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                       },
                     ),
                     ListTile(
-                      title: Text("Share this Profile"),
+                      title: Text('Share this Profile'),
                       onTap: () {
                         context.navigator.pop();
                         Share.share(

@@ -74,7 +74,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
             return CustomScrollView(
               slivers: [
                 /// app bar
-                CustomSliverAppBar(title: "Notifications"),
+                CustomSliverAppBar(title: 'Notifications'),
 
                 SliverList(
                   delegate: SliverChildListDelegate.fixed(
@@ -89,7 +89,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                             bottom: kSpacingX16,
                           ),
                           child: Text(
-                            "Recent Job Requests",
+                            'Recent Job Requests',
                             style: kTheme.textTheme.headline6.copyWith(
                               color: kTheme.colorScheme.onBackground
                                   .withOpacity(kEmphasisMedium),
@@ -98,19 +98,26 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         ),
 
                         if (bookings.isEmpty) ...{
-                          emptyStateUI(context,
-                              message: "No new notifications"),
+                          emptyStateUI(
+                            context,
+                            message: 'No recent job requests',
+                            onTap: () => _bookingBloc.add(
+                              BookingEvent.observeBookingForArtisan(
+                                  id: _userId),
+                            ),
+                          ),
                         } else ...{
                           /// bookings list
                           ...bookings
                               .map((item) => BookingListItem(
                                     booking: item,
                                     shouldUpdateUI: (_) {
-                                      if (_)
+                                      if (_) {
                                         _bookingBloc.add(
                                           BookingEvent.observeBookingForArtisan(
                                               id: _userId),
                                         );
+                                      }
                                     },
                                   ))
                               .toList(),

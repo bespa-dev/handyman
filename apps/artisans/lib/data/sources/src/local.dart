@@ -52,17 +52,6 @@ Future registerHiveDatabase() async {
 }
 
 class HiveLocalDatasource extends BaseLocalDatasource {
-  final BasePreferenceRepository prefsRepo;
-  final Box<Booking> bookingBox;
-  final Box<Customer> customerBox;
-  final Box<Artisan> artisanBox;
-  final Box<Review> reviewBox;
-  final Box<Gallery> galleryBox;
-  final Box<Conversation> conversationBox;
-  final Box<ServiceCategory> categoryBox;
-  final Box<Business> businessBox;
-  final Box<ArtisanService> serviceBox;
-
   HiveLocalDatasource({
     @required this.prefsRepo,
     @required this.bookingBox,
@@ -78,6 +67,17 @@ class HiveLocalDatasource extends BaseLocalDatasource {
     /// load initial data from assets
     _performInitLoad();
   }
+
+  final BasePreferenceRepository prefsRepo;
+  final Box<Booking> bookingBox;
+  final Box<Customer> customerBox;
+  final Box<Artisan> artisanBox;
+  final Box<Review> reviewBox;
+  final Box<Gallery> galleryBox;
+  final Box<Conversation> conversationBox;
+  final Box<ServiceCategory> categoryBox;
+  final Box<Business> businessBox;
+  final Box<ArtisanService> serviceBox;
 
   void _performInitLoad() async {
     /// decode categories from json
@@ -100,7 +100,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
       await serviceBox.put(item.id, item);
     }
 
-    if (!kReleaseMode) {
+    /*if (!kReleaseMode) {
       var requestsSource = await rootBundle.loadString('assets/requests.json');
       var decodedRequests = jsonDecode(requestsSource) as List;
       for (var json in decodedRequests) {
@@ -118,7 +118,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
         // put each one into box
         await reviewBox.put(item.id, item);
       }
-    }
+    }*/
   }
 
   @override
@@ -247,10 +247,15 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   Future<List<BaseUser>> searchFor({String query, String categoryId}) async {
     return artisanBox.values
         .where((item) =>
-            item.email.contains(query) ||
+            item != null &&
+                item.isAvailable &&
+                item.isApproved &&
+                item.email.contains(query) ||
             item.category.contains(query) ||
-            item.phone.contains(query) ||
+            (item.services != null && item.services.contains(query)) ||
+            (item.reports != null && item.reports.contains(query)) ||
             item.name.contains(query))
+        .sortByDescending<String>((r) => r.rating.toString())
         .toList();
   }
 

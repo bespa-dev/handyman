@@ -453,9 +453,11 @@ class _DashboardPageState extends State<DashboardPage> {
                       return snapshot.connectionState == ConnectionState.waiting
                           ? Loading()
                           : snapshot.data.isEmpty
-                              ? emptyStateUI(context,
-                                  message: "No reviews found",
-                                  icon: kRatingStar)
+                              ? emptyStateUI(
+                                  context,
+                                  message: 'No reviews found',
+                                  icon: kRatingStar,
+                                )
                               : Column(
                                   children: [
                                     /// reviews title

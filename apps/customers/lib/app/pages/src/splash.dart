@@ -82,7 +82,7 @@ class _SplashPageState extends State<SplashPage>
                 if (mounted) {
                   setState(() {});
                   showSnackBarMessage(context,
-                      message: event.message ?? "Authentication failed");
+                      message: event.message ?? 'Authentication failed');
                 }
               } else if (event is AuthenticatedState) {
                 _isLoading = false;
@@ -134,7 +134,7 @@ class _SplashPageState extends State<SplashPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Welcome back...',
+                            'Welcome back',
                             style: kTheme.textTheme.headline6.copyWith(
                               color: kTheme.colorScheme.onPrimary,
                             ),
@@ -173,7 +173,7 @@ class _SplashPageState extends State<SplashPage>
                                 },
                                 icon: kGoogleIcon,
                                 gravity: ButtonIconGravity.START,
-                                label: "Continue with Google",
+                                label: 'Continue with Google',
                                 color: kTheme.colorScheme.onBackground,
                                 textColor: kTheme.colorScheme.background,
                               ),
@@ -187,7 +187,7 @@ class _SplashPageState extends State<SplashPage>
                                     context.navigator.pushRegisterPage(),
                                 icon: kMailIcon,
                                 gravity: ButtonIconGravity.START,
-                                label: "Sign up with email",
+                                label: 'Sign up with email',
                                 color: lightTheme
                                     ? kTheme.colorScheme.background
                                     : kTheme.colorScheme.secondary,
@@ -213,9 +213,9 @@ class _SplashPageState extends State<SplashPage>
                                       children: [
                                         TextSpan(
                                             text:
-                                                "Already have an account?\t\t"),
+                                                'Already have an account?\t\t'),
                                         TextSpan(
-                                          text: "Log in",
+                                          text: 'Log in',
                                           style:
                                               kTheme.textTheme.button.copyWith(
                                             color: kTheme.colorScheme.secondary,
@@ -259,18 +259,14 @@ class _SplashPageState extends State<SplashPage>
                       height: kSpacingX120,
                       width: kSpacingX120,
                     ),
-                    SizedBox(height: kSpacingX16),
-                    Text(
-                      kAppSloganDesc,
-                      textAlign: TextAlign.center,
-                      style: kTheme.textTheme.subtitle1,
-                    ),
-                    SizedBox(height: kSpacingX64),
-                    AnimatedOpacity(
-                      opacity: _isLoading ? 1 : 0,
-                      duration: kSheetDuration,
-                      child: Loading(),
-                    ),
+                    if (_isLoading) ...{
+                      SizedBox(height: kSpacingX64),
+                      AnimatedOpacity(
+                        opacity: _isLoading ? 1 : 0,
+                        duration: kSheetDuration,
+                        child: Loading(),
+                      ),
+                    }
                   ],
                 ),
               ),
