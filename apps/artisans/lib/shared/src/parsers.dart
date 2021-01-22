@@ -11,7 +11,7 @@ String parseFromTimestamp(
   return fromNow
       ? Jiffy.unix(timestamp.millisecondsSinceEpoch).fromNow()
       : isChatFormat
-          ? Jiffy.unix(timestamp.millisecondsSinceEpoch).jm
+          ? Jiffy.unix(timestamp.millisecondsSinceEpoch).Hm
           : isDetailedFormat
               ? Jiffy.unix(timestamp.millisecondsSinceEpoch).yMMMEd
               : Jiffy.unix(timestamp.millisecondsSinceEpoch).yMMMd;

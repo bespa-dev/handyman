@@ -111,21 +111,25 @@ class LocalNotificationService {
         final prefs = await container.read(sharedPreferencesProvider.future);
         var prefsRepo = container.read(prefsRepositoryProvider(prefs));
         var datasource = container.read(remoteDatasourceProvider(prefsRepo));
+        var navigator = ExtendedNavigator.root;
+        var data = _['data'];
 
         /// nav to appropriate screen
-        if (_['data']['type'] == 'booking') {
+        if (data['type'] == 'booking') {
           var user =
-          await datasource.getArtisanById(id: _['data']['artisan']);
+          await datasource.getArtisanById(id: data['artisan']);
           var booking =
-          await datasource.getBookingById(id: _['data']['id']).first;
-          return ExtendedNavigator.root.pushBookingDetailsPage(
+          await datasource.getBookingById(id: data['id']).first;
+          return navigator.pushBookingDetailsPage(
             customer: user,
             booking: booking,
-            bookingId: _['data']['id'],
+            bookingId: data['id'],
           );
-        } else if (_['data']['type'] == 'conversation') {
-        } else if (_['data']['type'] == 'token') {
-        } else if (_['data']['type'] == 'approval') {}
+        } else if (data['type'] == 'conversation') {
+          
+          return navigator.pushConversationPage(recipientId: data['sender']);
+        } else if (data['type'] == 'token') {
+        } else if (data['type'] == 'approval') {}
       },
     );
 

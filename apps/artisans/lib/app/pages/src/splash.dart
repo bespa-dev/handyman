@@ -189,10 +189,12 @@ class _SplashPageState extends State<SplashPage>
                               alignment: Alignment.center,
                               child: ButtonPrimary(
                                 width: SizeConfig.screenWidth * 0.85,
-                                onTap: () => context.navigator
-                                    .pushAndRemoveUntil(
-                                        Routes.homePage, (route) => false),
-                                label: "Explore",
+                                // onTap: () => context.navigator
+                                //     .pushAndRemoveUntil(
+                                //         Routes.homePage, (route) => false),
+                                /// todo -> fix chat
+                                onTap: () => context.navigator.pushConversationPage(recipientId: 'fXYrXtbwUwQUTgWSWdeX26NOr2l2'),
+                                label: 'Explore',
                                 color: kTheme.colorScheme.secondary,
                                 textColor: kTheme.colorScheme.onSecondary,
                               ),
@@ -208,7 +210,7 @@ class _SplashPageState extends State<SplashPage>
                                 },
                                 icon: kGoogleIcon,
                                 gravity: ButtonIconGravity.START,
-                                label: "Continue with Google",
+                                label: 'Continue with Google',
                                 color: kTheme.colorScheme.secondary,
                                 textColor: kTheme.colorScheme.onSecondary,
                               ),
@@ -222,7 +224,7 @@ class _SplashPageState extends State<SplashPage>
                                     context.navigator.pushRegisterPage(),
                                 icon: kMailIcon,
                                 gravity: ButtonIconGravity.START,
-                                label: "Sign up with email",
+                                label: 'Sign up with email',
                                 color: lightTheme
                                     ? kTheme.colorScheme.background
                                     : kTheme.colorScheme.secondary,
@@ -247,9 +249,9 @@ class _SplashPageState extends State<SplashPage>
                                     TextSpan(
                                       children: [
                                         TextSpan(
-                                            text: "Already have an account?\t"),
+                                            text: 'Already have an account?\t'),
                                         TextSpan(
-                                          text: "Log in",
+                                          text: 'Log in',
                                           style:
                                               kTheme.textTheme.button.copyWith(
                                             color: kTheme.colorScheme.secondary,

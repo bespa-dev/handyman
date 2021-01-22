@@ -131,82 +131,14 @@ class _ConversationPageState extends State<ConversationPage> {
                 shrinkWrap: true,
                 clipBehavior: Clip.hardEdge,
                 slivers: [
-                  /// app bar
-                  SliverAppBar(
-                    elevation: kSpacingX8,
-                    expandedHeight: SizeConfig.screenHeight * 0.3,
-                    automaticallyImplyLeading: false,
-                    flexibleSpace: FlexibleSpaceBar(
-                      collapseMode: CollapseMode.parallax,
-                      background: _buildBackgroundInfo(state.data),
-                      centerTitle: false,
-                      stretchModes: [
-                        StretchMode.blurBackground,
-                        StretchMode.fadeTitle,
-                      ],
-                      // title: Row(
-                      //   mainAxisSize: MainAxisSize.min,
-                      //   children: [
-                      //     UserAvatar(
-                      //       url: state.data.avatar,
-                      //       radius: kSpacingX36,
-                      //       isCircular: true,
-                      //     ),
-                      //     SizedBox(width: kSpacingX8),
-                      //     Column(
-                      //       mainAxisSize: MainAxisSize.min,
-                      //       crossAxisAlignment: CrossAxisAlignment.start,
-                      //       children: [
-                      //         Text(
-                      //           state.data.name,
-                      //           style: kTheme.textTheme.headline6.copyWith(
-                      //             color: kTheme.colorScheme.onPrimary,
-                      //           ),
-                      //         ),
-                      //         Text(
-                      //           state.data.isAvailable ? 'Online' : 'Offline',
-                      //           style: kTheme.textTheme.bodyText1.copyWith(
-                      //             color: kTheme.colorScheme.onPrimary
-                      //                 .withOpacity(kEmphasisMedium),
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ],
-                      // ),
-                      // titlePadding: EdgeInsetsDirectional.only(
-                      //   start: kSpacingX12,
-                      //   bottom: kSpacingX16,
-                      // ),
-                    ),
-                    backgroundColor: kTheme.colorScheme.primary,
-                    collapsedHeight: SizeConfig.screenHeight * 0.09,
-                    toolbarHeight: SizeConfig.screenHeight * 0.09,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(kSpacingX16),
-                        bottomRight: Radius.circular(kSpacingX16),
-                      ),
-                    ),
-                    leadingWidth: kSpacingX48,
-                    systemOverlayStyle: SystemUiOverlayStyle(
-                      statusBarBrightness: Brightness.dark,
-                    ),
-                    actions: [
-                      IconButton(
-                        icon: Icon(kCloseIcon),
-                        color: kTheme.colorScheme.onPrimary,
-                        onPressed: () => context.navigator.pop(),
-                      ),
-                    ],
-                    brightness: Brightness.dark,
-                    floating: false,
-                  ),
-
                   /// messages list
                   SliverList(
                     delegate: SliverChildListDelegate.fixed(
                       [
+                        /// app bar
+                        _buildBackgroundInfo(state.data),
+
+                        /// messages
                         ...messages
                             .map(
                               (message) => ChatListItem(
@@ -230,29 +162,27 @@ class _ConversationPageState extends State<ConversationPage> {
   Widget _buildMessagePanel() => Align(
         alignment: Alignment.bottomCenter,
         child: Container(
-          height: SizeConfig.screenHeight * 0.08,
-          width: SizeConfig.screenWidth,
-          decoration: BoxDecoration(
-            color: kTheme.colorScheme.background,
-          ),
-          padding: EdgeInsets.symmetric(horizontal: kSpacingX16),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.only(right: kSpacingX8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(kSpacingX24),
-                    color: kTheme.cardColor,
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: kSpacingX16),
-                  clipBehavior: Clip.hardEdge,
+          height: SizeConfig.screenHeight * 0.07,
+          alignment: Alignment.center,
+          color: kTheme.colorScheme.background,
+          child: Container(
+            height: SizeConfig.screenHeight * 0.06,
+            width: SizeConfig.screenWidth,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(kSpacingX24),
+              color: kTheme.cardColor,
+            ),
+            clipBehavior: Clip.hardEdge,
+            margin: EdgeInsets.symmetric(horizontal: kSpacingX16),
+            padding: EdgeInsets.only(left: kSpacingX16, right: kSpacingX8),
+            child: Row(
+              children: [
+                Expanded(
                   child: TextField(
                     controller: _messageController,
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'Type here...',
+                      hintText: 'Type your message',
                       hintStyle: TextStyle(
                         color: kTheme.colorScheme.onBackground
                             .withOpacity(kEmphasisLow),
@@ -266,47 +196,54 @@ class _ConversationPageState extends State<ConversationPage> {
                     enableInteractiveSelection: true,
                   ),
                 ),
-              ),
-              InkWell(
-                borderRadius: BorderRadius.circular(kSpacingX42),
-                onTap: () {
-                  var message = _messageController.text?.trim();
-                  logger.d('Composed message -> $message');
-                  if (message.isNotEmpty) {
-                    /// send message
-                    _sendMessageBloc.add(
-                      ConversationEvent.sendMessage(
-                        sender: _sender,
-                        recipient: _recipient?.id,
-                        message: message,
-                        type: ConversationFormat.textFormat(),
-                      ),
-                    );
+                SizedBox(width: kSpacingX8),
+                InkWell(
+                  borderRadius: BorderRadius.circular(kSpacingX42),
+                  onTap: () {
+                    var message = _messageController.text?.trim();
+                    logger.d('Composed message -> $message');
+                    if (message.isNotEmpty) {
+                      /// send message
+                      _sendMessageBloc.add(
+                        ConversationEvent.sendMessage(
+                          sender: _sender,
+                          recipient: _recipient?.id,
+                          message: message,
+                          type: ConversationFormat.textFormat(),
+                        ),
+                      );
 
-                    /// reload messages
-                    _messageBloc.add(
-                      ConversationEvent.getMessages(
-                          sender: _sender, recipient: _recipient?.id),
-                    );
+                      /// reload messages
+                      _messageBloc.add(
+                        ConversationEvent.getMessages(
+                            sender: _sender, recipient: _recipient?.id),
+                      );
 
-                    /// clear field
-                    _messageController.clear();
-                  }
-                },
-                child: Container(
-                  height: kSpacingX42,
-                  width: kSpacingX42,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: kTheme.cardColor),
-                  child: Icon(
-                    kSendIcon,
-                    size: kSpacingX20,
-                    color: kTheme.colorScheme.onBackground,
+                      /// clear field
+                      _messageController.clear();
+                    }
+                  },
+                  child: Container(
+                    height: kSpacingX42,
+                    width: kSpacingX42,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: kTheme.brightness == Brightness.light
+                          ? kTheme.colorScheme.primary
+                          : kTheme.colorScheme.background,
+                    ),
+                    child: Icon(
+                      kSendIcon,
+                      size: kSpacingX20,
+                      color: kTheme.brightness == Brightness.light
+                          ? kTheme.colorScheme.onPrimary
+                          : kTheme.colorScheme.onBackground,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );
@@ -332,7 +269,7 @@ class _ConversationPageState extends State<ConversationPage> {
           ),
         ),
         clipBehavior: Clip.hardEdge,
-        alignment: Alignment.centerLeft,
+        alignment: Alignment.bottomLeft,
         padding: EdgeInsets.only(
           left: kSpacingX24,
           right: kSpacingX24,

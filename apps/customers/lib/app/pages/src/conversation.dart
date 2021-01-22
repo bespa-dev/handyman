@@ -220,7 +220,6 @@ class _ConversationPageState extends State<ConversationPage> {
                   borderRadius: BorderRadius.circular(kSpacingX42),
                   onTap: () {
                     var message = _messageController.text?.trim();
-                    logger.d('Composed message -> $message');
                     if (message.isNotEmpty) {
                       /// send message
                       _sendMessageBloc.add(

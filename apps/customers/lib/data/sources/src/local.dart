@@ -100,9 +100,8 @@ class HiveLocalDatasource extends BaseLocalDatasource {
       await serviceBox.put(item.id, item);
     }
 
-    /// todo -> set to true if you need to test for requests
-    if (false) {
-      var requestsSource = await rootBundle.loadString("assets/requests.json");
+    if (!kReleaseMode) {
+      var requestsSource = await rootBundle.loadString('assets/requests.json');
       var decodedRequests = jsonDecode(requestsSource) as List;
       for (var json in decodedRequests) {
         final item = Booking.fromJson(json);
@@ -111,16 +110,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
         await bookingBox.put(item.id, item);
       }
 
-      var reviewsSource = await rootBundle.loadString("assets/reviews.json");
-      var decodedReviews = jsonDecode(reviewsSource) as List;
-      for (var json in decodedReviews) {
-        final item = Review.fromJson(json);
-
-        // put each one into box
-        await reviewBox.put(item.id, item);
-      }
-    } else {
-      var reviewsSource = await rootBundle.loadString("assets/reviews.json");
+      var reviewsSource = await rootBundle.loadString('assets/reviews.json');
       var decodedReviews = jsonDecode(reviewsSource) as List;
       for (var json in decodedReviews) {
         final item = Review.fromJson(json);
@@ -228,6 +218,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
         .where((item) => item.author == sender || item.recipient == sender)
         .where(
             (item) => item.author == recipient || item.recipient == recipient)
+        .sortBy<String>((r) => r.createdAt)
         .toList();
   }
 

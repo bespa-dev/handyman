@@ -218,6 +218,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
         .where((item) => item.author == sender || item.recipient == sender)
         .where(
             (item) => item.author == recipient || item.recipient == recipient)
+        .sortBy<String>((r) => r.createdAt)
         .toList();
   }
 

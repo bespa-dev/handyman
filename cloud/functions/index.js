@@ -215,6 +215,7 @@ exports.chatNotifications = functions.firestore
           },
         };
 
+        console.log('message sent to artisan');
         return await admin.messaging().sendToDevice(token, message);
       }
     } else if (_cs.exists) {
@@ -249,6 +250,7 @@ exports.chatNotifications = functions.firestore
           },
         };
 
+        console.log('message sent to customer');
         return await admin.messaging().sendToDevice(token, message);
       }
     } else {

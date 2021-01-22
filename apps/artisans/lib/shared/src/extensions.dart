@@ -47,3 +47,14 @@ extension TimeOfDayExtensionX on TimeOfDay {
     return DateTime(now.year, now.month, now.day, this.hour, this.minute);
   }
 }
+
+/// extensions on [Iterable]
+/// https://stackoverflow.com/questions/53547997/sort-a-list-of-objects-in-flutter-dart-by-property-value
+extension IterableX<T> on Iterable<T> {
+  Iterable<T> sortBy<R extends Comparable<R>>(R Function(T) selector) =>
+      toList()..sort((a, b) => selector(a).compareTo(selector(b)));
+
+  Iterable<T> sortByDescending<R extends Comparable<R>>(
+          R Function(T) selector) =>
+      sortBy(selector).toList().reversed;
+}
