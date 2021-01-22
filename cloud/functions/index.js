@@ -166,12 +166,14 @@ exports.bookingNotifications = functions.firestore
 exports.chatNotifications = functions.firestore
   .document("conversations/{id}")
   .onWrite(async (change, context) => {
-    if (!change.after.exists)
+    if (!change.after.exists) {
       return Promise.reject(
         "Cannot find conversation. It may have been deleted"
       );
+    }
+
     // get ids of sender & recipient
-    let sender = change.after.get("sender");
+    let sender = change.after.get("author");
     let recipient = change.after.get("recipient");
 
     // get conversation metadata

@@ -14,6 +14,9 @@ const String conversationChannelDesc = 'For all end-to-end conversations';
 const String bookingChannelId = 'booking_channel_id';
 const String bookingChannelName = 'Job Booking';
 const String bookingChannelDesc = 'For all job bookings';
+const String tokenChannelId = 'token_channel_id';
+const String tokenChannelName = 'Device Token';
+const String tokenChannelDesc = 'New sign in detection for different devices';
 
 /// notification plugin instance
 final FlutterLocalNotificationsPlugin _plugin =
