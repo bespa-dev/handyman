@@ -108,9 +108,8 @@ class _ChatListItemState extends State<ChatListItem> {
               ),
             ),
             alignment: Alignment.centerRight,
-            child: ConstrainedBox(
-              constraints:
-                  BoxConstraints(maxWidth: SizeConfig.screenWidth * 0.6),
+            child: LimitedBox(
+              maxWidth: SizeConfig.screenWidth * 0.6,
               child: Text(
                 widget.message.body,
                 softWrap: true,
@@ -143,8 +142,8 @@ class _ChatListItemState extends State<ChatListItem> {
             ),
             SizedBox(width: kSpacingX8),
             InkWell(
-              onTap: () =>
-                  setState(() => _showTimestampDetails = !_showTimestampDetails),
+              onTap: () => setState(
+                  () => _showTimestampDetails = !_showTimestampDetails),
               splashColor: kTheme.splashColor,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(kSpacingX6),
@@ -168,9 +167,8 @@ class _ChatListItemState extends State<ChatListItem> {
                   ),
                 ),
                 alignment: Alignment.centerLeft,
-                child: ConstrainedBox(
-                  constraints:
-                      BoxConstraints(maxWidth: SizeConfig.screenWidth * 0.5),
+                child: LimitedBox(
+                  maxWidth: SizeConfig.screenWidth * 0.5,
                   child: Text(
                     widget.message.body,
                     softWrap: true,

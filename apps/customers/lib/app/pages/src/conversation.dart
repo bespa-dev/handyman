@@ -216,6 +216,7 @@ class _ConversationPageState extends State<ConversationPage> {
         controller: _scrollController,
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
+        reverse: true,
         clipBehavior: Clip.hardEdge,
         slivers: [
           /// messages list
