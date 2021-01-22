@@ -91,11 +91,17 @@ class _ConversationPageState extends State<ConversationPage> {
         });
 
       /// observe scroll position
-      // _scrollController.animateTo(
-      //   100.0,
-      //   duration: kScaleDuration,
-      //   curve: Curves.easeIn,
-      // );
+      _messageBloc.listen((state) async {
+        if (state is SuccessState<Stream<List<BaseConversation>>>) {
+          await Future.delayed(kSplashDuration);
+
+          await _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: kSheetDuration,
+            curve: Curves.fastOutSlowIn,
+          );
+        }
+      });
     }
   }
 
@@ -115,19 +121,76 @@ class _ConversationPageState extends State<ConversationPage> {
             builder: (_, msgSnapshot) {
               var messages = msgSnapshot.data;
 
-              return Scaffold(
-                  body: Stack(
-                fit: StackFit.expand,
-                children: [
-                  _buildPageContent(
-                    messages,
-                    businessState is SuccessState<List<BaseBusiness>>
-                        ? businessState.data
-                        : [],
-                  ),
-                  _buildMessagePanel(),
-                ],
-              ));
+              return BlocBuilder<UserBloc, BlocState>(
+                cubit: _userBloc,
+                builder: (_, userState) => userState
+                        is SuccessState<BaseArtisan>
+                    ? Scaffold(
+                        appBar: AppBar(
+                          automaticallyImplyLeading: false,
+                          leading: IconButton(
+                            icon: Icon(kCloseIcon),
+                            onPressed: () => context.navigator.pop(),
+                            tooltip: 'Back',
+                            color: kTheme.colorScheme.onPrimary,
+                          ),
+                          actions: [
+                            if (userState.data.phone != null) ...{
+                              IconButton(
+                                icon: Icon(kCallIcon),
+                                iconSize: kSpacingX20,
+                                color: kTheme.colorScheme.onPrimary,
+                                tooltip: 'Voice call',
+                                onPressed: () => launchUrl(
+                                    url: 'tel:${userState.data.phone}'),
+                              )
+                            }
+                          ],
+                          centerTitle: false,
+                          title: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                userState.data.name,
+                                style: kTheme.textTheme.headline6.copyWith(
+                                  color: kTheme.colorScheme.onPrimary,
+                                ),
+                              ),
+                              SizedBox(height: kSpacingX4),
+                              Text(
+                                userState.data.isAvailable
+                                    ? 'Online'
+                                    : 'Offline',
+                                style: kTheme.textTheme.caption.copyWith(
+                                  color: kTheme.colorScheme.onPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                          bottom: PreferredSize(
+                            child: _buildBackgroundInfo(
+                              userState.data,
+                              businessState is SuccessState<List<BaseBusiness>>
+                                  ? businessState.data
+                                  : [],
+                            ),
+                            preferredSize:
+                                Size.fromHeight(SizeConfig.screenHeight * 0.15),
+                          ),
+                          brightness: Brightness.dark,
+                          backgroundColor: kTheme.colorScheme.primary,
+                        ),
+                        body: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            _buildPageContent(messages, userState.data),
+                            _buildMessagePanel(),
+                          ],
+                        ),
+                      )
+                    : Loading(),
+              );
             }),
       ),
     );
@@ -135,47 +198,34 @@ class _ConversationPageState extends State<ConversationPage> {
 
   /// page content
   Widget _buildPageContent(
-      List<BaseConversation> messages, List<BaseBusiness> businesses) {
-    var businessName = businesses.isNotEmpty
-        ? businesses?.first?.name
-        : 'our business enterprise';
+          List<BaseConversation> messages, BaseArtisan artisan) =>
+      CustomScrollView(
+        controller: _scrollController,
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        clipBehavior: Clip.hardEdge,
+        slivers: [
+          /// messages list
+          SliverList(
+            delegate: SliverChildListDelegate.fixed(
+              [
+                /// messages
+                ...messages
+                    .map(
+                      (message) => ChatListItem(
+                        message: message,
+                        recipient: _recipient,
+                      ),
+                    )
+                    .toList(),
 
-    return BlocBuilder<UserBloc, BlocState>(
-      cubit: _userBloc,
-      builder: (_, state) => state is SuccessState<BaseArtisan>
-          ? CustomScrollView(
-              controller: _scrollController,
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              clipBehavior: Clip.hardEdge,
-              slivers: [
-                /// messages list
-                SliverList(
-                  delegate: SliverChildListDelegate.fixed(
-                    [
-                      /// app bar
-                      _buildBackgroundInfo(state.data, businessName),
-
-                      /// messages
-                      ...messages
-                          .map(
-                            (message) => ChatListItem(
-                              message: message,
-                              recipient: _recipient,
-                            ),
-                          )
-                          .toList(),
-
-                      /// spacing at the bottom
-                      SizedBox(height: SizeConfig.screenHeight * 0.08),
-                    ],
-                  ),
-                ),
+                /// spacing at the bottom
+                SizedBox(height: SizeConfig.screenHeight * 0.08),
               ],
-            )
-          : Loading(),
-    );
-  }
+            ),
+          ),
+        ],
+      );
 
   /// message composing panel
   Widget _buildMessagePanel() => Align(
@@ -246,65 +296,60 @@ class _ConversationPageState extends State<ConversationPage> {
       );
 
   /// appbar background info panel
-  Widget _buildBackgroundInfo(BaseArtisan user, String businessName) =>
-      Container(
-        height: SizeConfig.screenHeight * 0.3,
-        width: SizeConfig.screenWidth,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              kTheme.colorScheme.primary.withOpacity(kEmphasisLow),
-              kTheme.colorScheme.primary.withOpacity(kEmphasisMedium),
-              kTheme.colorScheme.primary.withOpacity(kEmphasisHigh),
-              kTheme.colorScheme.primary,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(kSpacingX16),
-            bottomRight: Radius.circular(kSpacingX16),
-          ),
+  Widget _buildBackgroundInfo(BaseArtisan user, List<BaseBusiness> businesses) {
+    var businessName = businesses.isNotEmpty
+        ? businesses?.first?.name
+        : 'our business enterprise';
+
+    return Container(
+      width: SizeConfig.screenWidth,
+      decoration: BoxDecoration(
+        color: kTheme.colorScheme.primary,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(kSpacingX16),
+          bottomRight: Radius.circular(kSpacingX16),
         ),
-        clipBehavior: Clip.hardEdge,
-        padding: EdgeInsets.only(
-          left: kSpacingX24,
-          right: kSpacingX24,
-          bottom: kSpacingX16,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text(
-              'Hi there!',
-              style: kTheme.textTheme.headline4.copyWith(
-                color: kTheme.colorScheme.onPrimary,
-              ),
+      ),
+      clipBehavior: Clip.hardEdge,
+      padding: EdgeInsets.only(
+        left: kSpacingX24,
+        right: kSpacingX24,
+        bottom: kSpacingX16,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Text(
+            'Hi there!',
+            style: kTheme.textTheme.headline5.copyWith(
+              color: kTheme.colorScheme.onPrimary,
             ),
-            SizedBox(height: kSpacingX8),
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(text: 'Welcome to '),
-                  TextSpan(
-                    text: businessName,
-                    style: kTheme.textTheme.headline5.copyWith(
-                      color: kTheme.colorScheme.onPrimary,
-                      fontWeight: FontWeight.w600,
-                    ),
+          ),
+          SizedBox(height: kSpacingX8),
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: 'Welcome to '),
+                TextSpan(
+                  text: businessName,
+                  style: kTheme.textTheme.headline6.copyWith(
+                    color: kTheme.colorScheme.onPrimary,
+                    fontWeight: FontWeight.w600,
                   ),
-                  TextSpan(text: '. How can we help you today?'),
-                ],
-              ),
-              style: kTheme.textTheme.headline5.copyWith(
-                color: kTheme.colorScheme.onPrimary,
-                fontWeight: FontWeight.w400,
-              ),
+                ),
+                TextSpan(text: '. How can we help you today?'),
+              ],
             ),
-          ],
-        ),
-      );
+            style: kTheme.textTheme.headline6.copyWith(
+              color: kTheme.colorScheme.onPrimary,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   /// send message
   void _sendMessage() {

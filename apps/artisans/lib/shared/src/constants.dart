@@ -161,6 +161,7 @@ const kUserAddIcon = Feather.user_plus;
 const kChatIcon = Entypo.message;
 const kSendIcon = Feather.send;
 const kImageIcon = Feather.image;
+const kCallIcon = Feather.phone;
 const kThreeDotsOptionsIcon = Entypo.dots_three_horizontal;
 
 /// Others

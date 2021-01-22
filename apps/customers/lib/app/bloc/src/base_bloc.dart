@@ -18,8 +18,9 @@ abstract class BaseBloc<E> extends Bloc<E, BlocState> {
 
   @override
   Future<Function> close() {
-    logger.d('Closing $runtimeType');
-    return super.close();
+    // logger.d('Closing $runtimeType');
+    super.close();
+    return null;
   }
 
   @override

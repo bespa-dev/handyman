@@ -108,54 +108,97 @@ class _ConversationPageState extends State<ConversationPage> {
           builder: (_, msgSnapshot) {
             var messages = msgSnapshot.data;
 
-            return Scaffold(
-                body: Stack(
-              fit: StackFit.expand,
-              children: [
-                _buildPageContent(messages),
-                _buildMessagePanel(),
-              ],
-            ));
+            return BlocBuilder<UserBloc, BlocState>(
+              cubit: _userBloc,
+              builder: (_, state) => state is SuccessState<BaseUser>
+                  ? Scaffold(
+                      extendBody: true,
+                      appBar: AppBar(
+                        // shape: ,
+                        toolbarHeight: kSpacingX64,
+                        automaticallyImplyLeading: false,
+                        leading: IconButton(
+                          icon: Icon(kCloseIcon),
+                          onPressed: () => context.navigator.pop(),
+                          tooltip: 'Back',
+                          color: kTheme.colorScheme.onPrimary,
+                        ),
+                        brightness: Brightness.dark,
+                        actions: [
+                          if (state.data.phone != null) ...{
+                            IconButton(
+                              icon: Icon(kCallIcon),
+                              iconSize: kSpacingX20,
+                              color: kTheme.colorScheme.onPrimary,
+                              tooltip: 'Voice call',
+                              onPressed: () =>
+                                  launchUrl(url: 'tel:${state.data.phone}'),
+                            )
+                          }
+                        ],
+                        centerTitle: false,
+                        title: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              state.data.name,
+                              style: kTheme.textTheme.headline6.copyWith(
+                                color: kTheme.colorScheme.onPrimary,
+                              ),
+                            ),
+                            SizedBox(height: kSpacingX4),
+                            Text(
+                              'Joined ${parseFromTimestamp(state.data.createdAt, fromNow: true)}',
+                              style: kTheme.textTheme.caption.copyWith(
+                                color: kTheme.colorScheme.onPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        backgroundColor: kTheme.colorScheme.primary,
+                        primary: true,
+                      ),
+                      body: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          _buildPageContent(messages),
+                          _buildMessagePanel(),
+                        ],
+                      ))
+                  : Loading(),
+            );
           }),
     );
   }
 
   /// page content
-  Widget _buildPageContent(List<BaseConversation> messages) =>
-      BlocBuilder<UserBloc, BlocState>(
-        cubit: _userBloc,
-        builder: (_, state) => state is SuccessState<BaseUser>
-            ? CustomScrollView(
-                controller: _scrollController,
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                clipBehavior: Clip.hardEdge,
-                slivers: [
-                  /// messages list
-                  SliverList(
-                    delegate: SliverChildListDelegate.fixed(
-                      [
-                        /// app bar
-                        _buildBackgroundInfo(state.data),
+  Widget _buildPageContent(List<BaseConversation> messages) => CustomScrollView(
+        controller: _scrollController,
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        clipBehavior: Clip.hardEdge,
+        slivers: [
+          /// messages list
+          SliverList(
+            delegate: SliverChildListDelegate.fixed(
+              [
+                /// messages
+                ...messages
+                    .map(
+                      (message) => ChatListItem(
+                        message: message,
+                        recipient: _recipient,
+                      ),
+                    )
+                    .toList(),
 
-                        /// messages
-                        ...messages
-                            .map(
-                              (message) => ChatListItem(
-                                message: message,
-                                recipient: _recipient,
-                              ),
-                            )
-                            .toList(),
-
-                        /// spacing at the bottom
-                        SizedBox(height: SizeConfig.screenHeight * 0.09),
-                      ],
-                    ),
-                  ),
-                ],
-              )
-            : Loading(),
+                /// spacing at the bottom
+                SizedBox(height: SizeConfig.screenHeight * 0.09),
+              ],
+            ),
+          ),
+        ],
       );
 
   /// message composing panel
@@ -226,45 +269,9 @@ class _ConversationPageState extends State<ConversationPage> {
         ),
       );
 
-  /// appbar background info panel
-  Widget _buildBackgroundInfo(BaseUser user) => Container(
-        height: SizeConfig.screenHeight * 0.15,
-        width: SizeConfig.screenWidth,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              kTheme.colorScheme.primary.withOpacity(kEmphasisLow),
-              kTheme.colorScheme.primary.withOpacity(kEmphasisMedium),
-              kTheme.colorScheme.primary.withOpacity(kEmphasisHigh),
-              kTheme.colorScheme.primary,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(kSpacingX16),
-            bottomRight: Radius.circular(kSpacingX16),
-          ),
-        ),
-        clipBehavior: Clip.hardEdge,
-        alignment: Alignment.bottomLeft,
-        padding: EdgeInsets.only(
-          left: kSpacingX24,
-          right: kSpacingX24,
-          bottom: kSpacingX16,
-        ),
-        child: Text(
-          user.name ?? 'Anonymous customer',
-          style: kTheme.textTheme.headline4.copyWith(
-            color: kTheme.colorScheme.onPrimary,
-          ),
-        ),
-      );
-
   /// send message
   void _sendMessage() {
     var message = _messageController.text?.trim();
-    logger.d('Composed message -> $message');
     if (message.isNotEmpty) {
       /// send message
       _sendMessageBloc.add(
