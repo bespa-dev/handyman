@@ -192,6 +192,7 @@ class _ConversationPageState extends State<ConversationPage> {
                     textCapitalization: TextCapitalization.sentences,
                     keyboardType: TextInputType.multiline,
                     textInputAction: TextInputAction.send,
+                    onSubmitted: (_) => _sendMessage(),
                     autocorrect: true,
                     enableInteractiveSelection: true,
                   ),
@@ -199,30 +200,7 @@ class _ConversationPageState extends State<ConversationPage> {
                 SizedBox(width: kSpacingX8),
                 InkWell(
                   borderRadius: BorderRadius.circular(kSpacingX42),
-                  onTap: () {
-                    var message = _messageController.text?.trim();
-                    logger.d('Composed message -> $message');
-                    if (message.isNotEmpty) {
-                      /// send message
-                      _sendMessageBloc.add(
-                        ConversationEvent.sendMessage(
-                          sender: _sender,
-                          recipient: _recipient?.id,
-                          message: message,
-                          type: ConversationFormat.textFormat(),
-                        ),
-                      );
-
-                      /// reload messages
-                      _messageBloc.add(
-                        ConversationEvent.getMessages(
-                            sender: _sender, recipient: _recipient?.id),
-                      );
-
-                      /// clear field
-                      _messageController.clear();
-                    }
-                  },
+                  onTap: _sendMessage,
                   child: Container(
                     height: kSpacingX42,
                     width: kSpacingX42,
@@ -282,4 +260,30 @@ class _ConversationPageState extends State<ConversationPage> {
           ),
         ),
       );
+
+  /// send message
+  void _sendMessage() {
+    var message = _messageController.text?.trim();
+    logger.d('Composed message -> $message');
+    if (message.isNotEmpty) {
+      /// send message
+      _sendMessageBloc.add(
+        ConversationEvent.sendMessage(
+          sender: _sender,
+          recipient: _recipient?.id,
+          message: message,
+          type: ConversationFormat.textFormat(),
+        ),
+      );
+
+      /// reload messages
+      _messageBloc.add(
+        ConversationEvent.getMessages(
+            sender: _sender, recipient: _recipient?.id),
+      );
+
+      /// clear field
+      _messageController.clear();
+    }
+  }
 }

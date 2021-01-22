@@ -18,27 +18,25 @@ abstract class BaseBloc<E> extends Bloc<E, BlocState> {
 
   @override
   Future<Function> close() {
-    logger.d("Closing ${this.runtimeType}");
-    super.close();
-    return null;
+    logger.d('Closing $runtimeType');
+    return super.close();
   }
 
   @override
   void onError(Object error, StackTrace stackTrace) {
-    logger.e("error encountered in ${this.runtimeType} -> $error");
+    logger.e('error encountered in $runtimeType -> $error');
     super.onError(error, stackTrace);
   }
 
   @override
   void onTransition(Transition<E, BlocState> transition) {
-    logger.d(
-        "onTransition ${this.runtimeType}: ${transition.currentState} -> ${transition.nextState}");
+    // logger.d('onTransition $runtimeType: ${transition.currentState} -> ${transition.nextState}');
     super.onTransition(transition);
   }
 
   @override
   void onEvent(E event) {
-    logger.d("onEvent ${this.runtimeType} -> ${event.runtimeType}");
+    // logger.d('onEvent $runtimeType -> ${event.runtimeType}');
     super.onEvent(event);
   }
 }
