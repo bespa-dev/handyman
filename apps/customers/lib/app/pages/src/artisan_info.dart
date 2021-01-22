@@ -7,12 +7,10 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:lite/app/bloc/bloc.dart';
-import 'package:lite/app/routes/routes.gr.dart';
 import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
@@ -20,9 +18,9 @@ import 'package:share/share.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
 class ArtisanInfoPage extends StatefulWidget {
-  final BaseArtisan artisan;
-
   const ArtisanInfoPage({Key key, @required this.artisan}) : super(key: key);
+
+  final BaseArtisan artisan;
 
   @override
   _ArtisanInfoPageState createState() => _ArtisanInfoPageState();
@@ -153,10 +151,12 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      artisan.name ?? "No username",
-                                      style: kTheme.textTheme.headline5,
-                                    ),
+                                    if (artisan.name != null) ...{
+                                      Text(
+                                        artisan.name,
+                                        style: kTheme.textTheme.headline5,
+                                      ),
+                                    },
 
                                     /// category & ratings
                                     Row(
@@ -183,7 +183,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                                                     return Text(
                                                       __.hasData
                                                           ? __.data.name
-                                                          : "...",
+                                                          : '...',
                                                       style: kTheme
                                                           .textTheme.bodyText2,
                                                     );
@@ -223,55 +223,12 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                                           /// records
                                           _buildArtisanMetaInfo(
                                               artisan.bookingsCount,
-                                              "Bookings"),
+                                              'Bookings'),
                                           _buildArtisanMetaInfo(
-                                              artisan.reportsCount, "Reports"),
+                                              artisan.reportsCount, 'Reports'),
                                           _buildArtisanMetaInfo(
                                               artisan.servicesCount,
-                                              "Services"),
-
-                                          /// chat button
-                                          InkWell(
-                                            onTap: () => context.navigator
-                                                .pushConversationPage(
-                                              recipientId: artisan.id,
-                                              recipient: artisan,
-                                            ),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        kSpacingX8),
-                                                color: kTheme
-                                                    .colorScheme.secondary,
-                                              ),
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: kSpacingX12,
-                                                vertical: kSpacingX8,
-                                              ),
-                                              alignment: Alignment.center,
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Icon(
-                                                    kChatIcon,
-                                                    color: kTheme.colorScheme
-                                                        .onSecondary,
-                                                  ),
-                                                  SizedBox(width: kSpacingX8),
-                                                  Text(
-                                                    "Message",
-                                                    style: kTheme
-                                                        .textTheme.button
-                                                        .copyWith(
-                                                      color: kTheme.colorScheme
-                                                          .onSecondary,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
+                                              'Services'),
                                         ],
                                       ),
                                     ),
@@ -300,7 +257,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              "Recent Reviews",
+                                              'Recent Reviews',
                                               style: kTheme.textTheme.headline6
                                                   .copyWith(
                                                 color: kTheme
@@ -323,27 +280,39 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                             ),
                           ),
 
-                          /// request artisan FAB
-                          Positioned(
-                            right: kSpacingX24,
-                            top: SizeConfig.screenHeight * 0.37,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(kSpacingX48),
-                              onTap: () => context.navigator
-                                  .pushRequestPage(artisan: artisan),
-                              child: Container(
-                                height: kSpacingX48,
-                                width: kSpacingX48,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: kTheme.colorScheme.secondary,
-                                ),
-                                child: Icon(
-                                  kUserAddIcon,
-                                  size: kSpacingX20,
-                                  color: kTheme.colorScheme.onSecondary,
-                                ),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: kSpacingX16,
+                                vertical: kSpacingX4,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: ButtonPrimary(
+                                      color: kTheme.colorScheme.secondary,
+                                      textColor: kTheme.colorScheme.onSecondary,
+                                      width: SizeConfig.screenWidth,
+                                      onTap: () => context.navigator
+                                          .pushRequestPage(artisan: artisan),
+                                      label: 'Request service',
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: kSpacingX12),
+                                    child: ButtonIconOnly(
+                                      color: kTheme.colorScheme.secondary,
+                                      iconColor: kTheme.colorScheme.secondary,
+                                      icon: kChatIcon,
+                                      onPressed: () => context.navigator
+                                          .pushConversationPage(
+                                        recipientId: artisan.id,
+                                        recipient: artisan,
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
                           ),
@@ -378,14 +347,14 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                 child: ListView(
                   children: [
                     ListTile(
-                      title: Text("Report"),
+                      title: Text('Report'),
                       onTap: () {
                         context.navigator.pop();
                         _showReportBottomSheet();
                       },
                     ),
                     ListTile(
-                      title: Text("Share this Profile"),
+                      title: Text('Share this Profile'),
                       onTap: () {
                         context.navigator.pop();
                         Share.share(
@@ -441,7 +410,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
               child: ListView(
                 children: [
                   ListTile(
-                    title: Text("State your reason for this action..."),
+                    title: Text('State your reason for this action...'),
                   ),
                   ..._reportMessages
                       .map((reason) => ListTile(
@@ -459,19 +428,20 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
       );
     });
 
-    logger.d("Report -> $report");
-    if (mounted && report != null)
+    logger.d('Report -> $report');
+    if (mounted && report != null) {
       showSnackBarMessage(context,
           message: "${widget.artisan.name ?? "Artisan"} reported");
+    }
 
     /// todo -> send report to server
   }
 
   /// messages to be used for reporting an artisan
   final _reportMessages = const <String>[
-    "Inappropriate account activities",
-    "Impersonation and Identity theft",
-    "It's a spam"
+    'Inappropriate account activities',
+    'Impersonation and Identity theft',
+    'It\'s a spam'
   ];
 
   /// metadata info
@@ -481,7 +451,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            "$value",
+            '$value',
             style: kTheme.textTheme.headline5.copyWith(
               fontFamily: kTheme.textTheme.bodyText1.fontFamily,
             ),
@@ -517,7 +487,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Business profile",
+                    'Business profile',
                     style: kTheme.textTheme.headline6.copyWith(
                       color: kTheme.colorScheme.onBackground
                           .withOpacity(kEmphasisMedium),
