@@ -165,7 +165,7 @@ exports.bookingNotifications = functions.firestore
 // conversations
 exports.chatNotifications = functions.firestore
   .document("conversations/{id}")
-  .onWrite(async (change, context) => {
+  .onWrite(async (change, _) => {
     if (!change.after.exists) {
       return Promise.reject(
         "Cannot find conversation. It may have been deleted"
@@ -177,13 +177,14 @@ exports.chatNotifications = functions.firestore
     let recipient = change.after.get("recipient");
 
     // get conversation metadata
-    let id = context.params.id;
+    let id = change.after.id;
     let body = change.after.get("body");
 
     let _as = await admin.firestore().doc(`artisans/${recipient}`).get();
     let _cs = await admin.firestore().doc(`customers/${recipient}`).get();
 
     if (_as.exists) {
+      console.log('found artisan ' + _as.id + ' for chat');
       // case 1: customer -> artisan
       // get customer snapshot
       let _customer__snapshot = await admin
@@ -215,7 +216,7 @@ exports.chatNotifications = functions.firestore
           },
         };
 
-        console.log('message sent to artisan');
+        console.log("message sent to artisan");
         return await admin.messaging().sendToDevice(token, message);
       }
     } else if (_cs.exists) {
@@ -250,7 +251,7 @@ exports.chatNotifications = functions.firestore
           },
         };
 
-        console.log('message sent to customer');
+        console.log("message sent to customer");
         return await admin.messaging().sendToDevice(token, message);
       }
     } else {
