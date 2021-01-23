@@ -58,4 +58,13 @@ extension IterableX<T> on Iterable<T> {
   Iterable<T> sortByDescending<R extends Comparable<R>>(
           R Function(T) selector) =>
       sortBy(selector).toList().reversed;
+
+  Map<K, List<T>> groupBy<K>(K Function(T) selector) => fold(
+        <K, List<T>>{},
+        (Map<K, List<T>> map, T element) => map
+          ..putIfAbsent(
+            selector(element),
+            () => <T>[],
+          ).add(element),
+      );
 }

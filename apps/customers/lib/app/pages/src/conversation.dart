@@ -104,7 +104,7 @@ class _ConversationPageState extends State<ConversationPage> {
   /// https://stackoverflow.com/questions/43485529/programmatically-scrolling-to-the-end-of-a-listview
   Future<void> _scrollToBottom([var duration = kSplashDuration]) async {
     await _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
+      _scrollController.position.minScrollExtent,
       duration: duration,
       curve: Curves.fastOutSlowIn,
     );
@@ -175,7 +175,8 @@ class _ConversationPageState extends State<ConversationPage> {
                                     ? 'Available'
                                     : 'Unavailable',
                                 style: kTheme.textTheme.caption.copyWith(
-                                  color: kTheme.colorScheme.onPrimary.withOpacity(kEmphasisMedium),
+                                  color: kTheme.colorScheme.onPrimary
+                                      .withOpacity(kEmphasisMedium),
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -197,7 +198,7 @@ class _ConversationPageState extends State<ConversationPage> {
                         body: Stack(
                           fit: StackFit.expand,
                           children: [
-                            _buildPageContent(messages, userState.data),
+                            _buildPageContent(messages ?? [], userState.data),
                             _buildMessagePanel(),
                           ],
                         ),
@@ -211,35 +212,38 @@ class _ConversationPageState extends State<ConversationPage> {
 
   /// page content
   Widget _buildPageContent(
-          List<BaseConversation> messages, BaseArtisan artisan) =>
-      CustomScrollView(
-        controller: _scrollController,
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        reverse: true,
-        clipBehavior: Clip.hardEdge,
-        slivers: [
-          /// messages list
-          SliverList(
-            delegate: SliverChildListDelegate.fixed(
-              [
-                /// messages
-                ...messages
-                    .map(
-                      (message) => ChatListItem(
-                        message: message,
-                        recipient: _recipient,
-                      ),
-                    )
-                    .toList(),
+      List<BaseConversation> messages, BaseArtisan artisan) {
+    // fixme -> remove this
+    // logger.d(messages
+    //     .sortByDescending((r) => r.createdAt)
+    //     .groupBy((r) => r.author)
+    //     .values
+    //     .first);
 
-                /// spacing at the bottom
-                SizedBox(height: SizeConfig.screenHeight * 0.08),
-              ],
-            ),
+    return CustomScrollView(
+      controller: _scrollController,
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      reverse: true,
+      clipBehavior: Clip.hardEdge,
+      slivers: [
+        /// messages list
+        SliverList(
+          delegate: SliverChildListDelegate.fixed(
+            [
+              /// spacing at the top
+              SizedBox(height: SizeConfig.screenHeight * 0.08),
+
+              /// messages
+              for (int index = 0; index < messages.length; index++) ...{
+                ChatListItem(message: messages[index], recipient: _recipient)
+              },
+            ],
           ),
-        ],
-      );
+        ),
+      ],
+    );
+  }
 
   /// message composing panel
   Widget _buildMessagePanel() => Align(
@@ -391,5 +395,4 @@ class _ConversationPageState extends State<ConversationPage> {
       await _scrollToBottom(kNoDuration);
     }
   }
-
 }

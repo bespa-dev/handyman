@@ -57,7 +57,7 @@ class _ConversationPageState extends State<ConversationPage> {
   void initState() {
     super.initState();
     if (mounted) {
-      /// get artisan's info
+      /// get customer's info
       _userBloc
         ..add(UserEvent.getCustomerByIdEvent(
             id: widget.recipientId ?? widget.recipient.id))
@@ -142,7 +142,7 @@ class _ConversationPageState extends State<ConversationPage> {
                         ),
                         brightness: Brightness.dark,
                         actions: [
-                          if (state.data.phone != null) ...{
+                          if (state.data?.phone != null) ...{
                             IconButton(
                               icon: Icon(kCallIcon),
                               iconSize: kSpacingX20,
@@ -159,14 +159,14 @@ class _ConversationPageState extends State<ConversationPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              state.data.name,
+                              state.data?.name ?? 'Anonymous',
                               style: kTheme.textTheme.headline6.copyWith(
                                 color: kTheme.colorScheme.onPrimary,
                               ),
                             ),
                             SizedBox(height: kSpacingX4),
                             Text(
-                              'Joined ${parseFromTimestamp(state.data.createdAt, fromNow: true)}',
+                              'Joined ${parseFromTimestamp(state.data?.createdAt, fromNow: true)}',
                               style: kTheme.textTheme.caption.copyWith(
                                 color: kTheme.colorScheme.onPrimary,
                               ),
@@ -194,12 +194,16 @@ class _ConversationPageState extends State<ConversationPage> {
         controller: _scrollController,
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
+        reverse: true,
         clipBehavior: Clip.hardEdge,
         slivers: [
           /// messages list
           SliverList(
             delegate: SliverChildListDelegate.fixed(
               [
+                /// spacing at the top
+                SizedBox(height: SizeConfig.screenHeight * 0.09),
+
                 /// messages
                 ...messages
                     .map(
@@ -209,9 +213,6 @@ class _ConversationPageState extends State<ConversationPage> {
                       ),
                     )
                     .toList(),
-
-                /// spacing at the bottom
-                SizedBox(height: SizeConfig.screenHeight * 0.09),
               ],
             ),
           ),

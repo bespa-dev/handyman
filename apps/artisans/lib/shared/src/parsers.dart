@@ -7,7 +7,8 @@ String parseFromTimestamp(
   bool isDetailedFormat = false,
   bool fromNow = false,
 }) {
-  final timestamp = DateTime.parse(time);
+  if(time == null) return '';
+  final timestamp = DateTime.tryParse(time);
   return fromNow
       ? Jiffy.unix(timestamp.millisecondsSinceEpoch).fromNow()
       : isChatFormat
