@@ -7,15 +7,28 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:handyman/domain/models/models.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:handyman/domain/models/models.dart';
 
 part 'customer.g.dart';
 
 @HiveType(typeId: 6)
 @JsonSerializable()
 class Customer extends BaseUser {
+  factory Customer.fromJson(Map<String, dynamic> json) =>
+      _$CustomerFromJson(json);
+
+  Customer({
+    this.name,
+    this.email,
+    this.avatar,
+    this.token,
+    this.phone,
+    this.id,
+    this.createdAt,
+  });
+
   @HiveField(0)
   @override
   final String name;
@@ -44,24 +57,11 @@ class Customer extends BaseUser {
   @override
   final String createdAt;
 
-  Customer({
-    this.name,
-    this.email,
-    this.avatar,
-    this.token,
-    this.phone,
-    this.id,
-    this.createdAt,
-  });
-
   @override
-  get model => this;
+  Customer get model => this;
 
   @override
   Map<String, dynamic> toJson() => _$CustomerToJson(this);
-
-  factory Customer.fromJson(Map<String, dynamic> json) =>
-      _$CustomerFromJson(json);
 
   @override
   BaseUser copyWith({
@@ -72,11 +72,11 @@ class Customer extends BaseUser {
     String phone,
   }) =>
       Customer(
-        id: this.id,
+        id: id,
         name: name ?? this.name,
         email: email ?? this.email,
         avatar: avatar ?? this.avatar,
-        createdAt: this.createdAt,
+        createdAt: createdAt,
         token: token ?? this.token,
         phone: phone ?? this.phone,
       );

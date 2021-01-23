@@ -182,7 +182,7 @@ class LocalNotificationService {
             bookingId: data['id'],
           );
         } else if (data['type'] == 'conversation') {
-          var user = await datasource.getCustomerById(id: data['customer']);
+          var user = await datasource.getCustomerById(id: data['sender']);
           return navigator.pushConversationPage(
             recipientId: data['sender'],
             recipient: user,

@@ -22,7 +22,7 @@ class ChatListItem extends StatefulWidget {
     this.bottom = false,
   }) : super(key: key);
 
-  final BaseArtisan recipient;
+  final BaseUser recipient;
   final BaseConversation message;
   final bool top;
   final bool middle;

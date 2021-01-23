@@ -197,7 +197,11 @@ class LocalNotificationService {
             bookingId: data['id'],
           );
         } else if (data['type'] == 'conversation') {
-          return navigator.pushConversationPage(recipientId: data['sender']);
+          var user = await datasource.getArtisanById(id: data['sender']);
+          return navigator.pushConversationPage(
+            recipientId: data['sender'],
+            recipient: user,
+          );
         } else if (data['type'] == 'token') {
         } else if (data['type'] == 'approval') {}
       },

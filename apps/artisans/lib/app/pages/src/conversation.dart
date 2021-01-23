@@ -99,7 +99,7 @@ class _ConversationPageState extends State<ConversationPage> {
   /// https://stackoverflow.com/questions/43485529/programmatically-scrolling-to-the-end-of-a-listview
   Future<void> _scrollToBottom([var duration = kSplashDuration]) async {
     await _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
+      _scrollController.position.minScrollExtent,
       duration: duration,
       curve: Curves.fastOutSlowIn,
     );
