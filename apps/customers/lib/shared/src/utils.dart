@@ -10,24 +10,24 @@
 import 'constants.dart';
 
 class RefUtils {
-  static const String kBookingRef = "bookings";
-  static const String kConversationRef = "conversations";
-  static const String kArtisanRef = "artisans";
-  static const String kCustomerRef = "customers";
-  static const String kGalleryRef = "galleries";
-  static const String kCategoryRef = "categories";
-  static const String kReviewRef = "reviews";
-  static const String kBusinessRef = "businesses";
-  static const String kServiceRef = "artisan_services";
-  static String kBucketRef = kAppName.toLowerCase().replaceAll(" ", "_");
+  static const String kBookingRef = 'bookings';
+  static const String kConversationRef = 'conversations';
+  static const String kArtisanRef = 'artisans';
+  static const String kCustomerRef = 'customers';
+  static const String kGalleryRef = 'galleries';
+  static const String kCategoryRef = 'categories';
+  static const String kReviewRef = 'reviews';
+  static const String kBusinessRef = 'businesses';
+  static const String kServiceRef = 'artisan_services';
+  static String kBucketRef = kAppName.toLowerCase().replaceAll(' ', '_');
 }
 
 class PrefUtils {
-  static const String kUserId = "user_id";
-  static const String kHomeAddress = "home_address";
-  static const String kWorkAddress = "work_address";
-  static const String kEmergencyContact = "emergency_contact";
-  static const String kTheme = "theme_mode";
-  static const String kShowSplash = "show_splash";
-  static const String kStandardView = "use_standard_view";
+  static const String kUserId = 'user_id';
+  static const String kHomeAddress = 'home_address';
+  static const String kWorkAddress = 'work_address';
+  static const String kEmergencyContact = 'emergency_contact';
+  static const String kTheme = 'theme_mode';
+  static const String kShowSplash = 'show_splash';
+  static const String kStandardView = 'use_standard_view';
 }

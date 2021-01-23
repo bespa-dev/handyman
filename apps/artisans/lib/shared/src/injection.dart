@@ -32,7 +32,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final notificationServiceProvider = Provider((_) => LocalNotificationService());
 
-final _firebaseMessaging = Provider((_) => FirebaseMessaging());
+final firebaseMessaging = Provider((_) => FirebaseMessaging());
 
 /// endregion
 
@@ -230,7 +230,7 @@ class Injection {
     _repos.add(await container.read(_searchRepositoryProvider(prefsRepo)));
     _repos.add(container.read(_storageRepositoryProvider));
     _repos.add(await container.read(_userRepositoryProvider(prefsRepo)));
-    _repos.add(await container.read(_firebaseMessaging));
+    _repos.add(await container.read(firebaseMessaging));
     logger.i('${_repos.length} repositories injected');
   }
 

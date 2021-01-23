@@ -39,7 +39,7 @@ class _ServiceRatingsPageState extends State<ServiceRatingsPage> {
               style: kTheme.textTheme.headline4,
             ),
             Text(
-              widget.payload?.toString()?? 'no data',
+              widget.payload?.toString() ?? 'no data',
               style: kTheme.textTheme.bodyText2,
             ),
           ],

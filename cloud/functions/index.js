@@ -49,6 +49,8 @@ exports.bookingNotifications = functions.firestore
             body: `Tap here for more info`,
           },
           data: {
+            title: `New job request`,
+            body: `Tap here for more info`,
             id: change.after.id,
             type: booking_type,
             customer: customer,
@@ -76,6 +78,8 @@ exports.bookingNotifications = functions.firestore
             body: `Your job request has been accepted. Tap here for more details`,
           },
           data: {
+            title: `Request accepted`,
+            body: `Your job request has been accepted. Tap here for more details`,
             id: change.after.id,
             type: booking_type,
             customer: customer,
@@ -104,6 +108,8 @@ exports.bookingNotifications = functions.firestore
             body: `This job request has been cancelled successfully`,
           },
           data: {
+            title: `Job cancelled`,
+            body: `This job request has been cancelled successfully`,
             id: change.after.id,
             type: booking_type,
             customer: customer,
@@ -138,6 +144,8 @@ exports.bookingNotifications = functions.firestore
             body: `Tap here for more details`,
           },
           data: {
+            title: `Job completed successfully`,
+            body: `Tap here for more details`,
             id: change.after.id,
             type: booking_type,
             customer: customer,
@@ -184,7 +192,7 @@ exports.chatNotifications = functions.firestore
     let _cs = await admin.firestore().doc(`customers/${recipient}`).get();
 
     if (_as.exists) {
-      console.log('found artisan ' + _as.id + ' for chat');
+      console.log("found artisan " + _as.id + " for chat -> " + id);
       // case 1: customer -> artisan
       // get customer snapshot
       let _customer__snapshot = await admin
@@ -197,7 +205,7 @@ exports.chatNotifications = functions.firestore
         return Promise.reject("customer (recipient) does not exist");
       } else {
         // get customer's metadata
-        let token = _customer__snapshot.get("token");
+        let token = _as.get("token");
         let avatar = _customer__snapshot.get("avatar");
         let name = _customer__snapshot.get("name");
         let uid = _customer__snapshot.get("id");
@@ -209,17 +217,21 @@ exports.chatNotifications = functions.firestore
             body: body,
           },
           data: {
+            title: `Message from ${name}`,
+            body: body,
             id: id,
             type: conversation_type,
             sender: uid,
             avatar: avatar,
+            click_action: "FLUTTER_NOTIFICATION_CLICK",
           },
         };
 
-        console.log("message sent to artisan");
+        console.log("message sent to artisan => " + message.data);
         return await admin.messaging().sendToDevice(token, message);
       }
     } else if (_cs.exists) {
+      console.log("found customer " + _cs.id + " for chat -> " + id);
       // case 2: artisan -> customer
       // get artisan snapshot
       let _artisan__snapshot = await admin
@@ -232,7 +244,7 @@ exports.chatNotifications = functions.firestore
         return Promise.reject("artisan (recipient) does not exist");
       } else {
         // get customer's metadata
-        let token = _artisan__snapshot.get("token");
+        let token = _cs.get("token");
         let avatar = _artisan__snapshot.get("avatar");
         let name = _artisan__snapshot.get("name");
         let uid = _artisan__snapshot.get("id");
@@ -244,10 +256,13 @@ exports.chatNotifications = functions.firestore
             body: body,
           },
           data: {
+            title: `Message from ${name}`,
+            body: body,
             id: id,
             type: conversation_type,
             sender: uid,
             avatar: avatar,
+            click_action: "FLUTTER_NOTIFICATION_CLICK",
           },
         };
 
@@ -272,6 +287,7 @@ exports.artisanDeviceTokenNotifications = functions.firestore
     if (change.after.exists) {
       // save to algolia
       let clientIndex = client.initIndex("artisans");
+      let data = change.after.data();
       data.objectID = change.after.id;
       await clientIndex.saveObject(data);
       console.log(`${name} saved`);
@@ -289,6 +305,7 @@ exports.artisanDeviceTokenNotifications = functions.firestore
         data: {
           id: context.params.id,
           type: account_approval_type,
+          click_action: "FLUTTER_NOTIFICATION_CLICK",
         },
       };
       return await admin.messaging().sendToDevice(newToken, message);
@@ -301,8 +318,11 @@ exports.artisanDeviceTokenNotifications = functions.firestore
           body: `We noticed a new login 🔐 to your account ${name} from a new device. Was this you?`,
         },
         data: {
+          title: "New login to HandyMan",
+          body: `We noticed a new login 🔐 to your account ${name} from a new device. Was this you?`,
           id: context.params.id,
           type: token_type,
+          click_action: "FLUTTER_NOTIFICATION_CLICK",
         },
       };
       return await admin.messaging().sendToDevice(newToken, message);
@@ -321,6 +341,7 @@ exports.customerDeviceTokenNotifications = functions.firestore
     if (change.after.exists) {
       // save to algolia
       let clientIndex = client.initIndex("customers");
+      let data = change.after.data();
       data.objectID = change.after.id;
       await clientIndex.saveObject(data);
       console.log(`${name} saved`);
@@ -336,8 +357,11 @@ exports.customerDeviceTokenNotifications = functions.firestore
           body: `We noticed a new login to your account ${name} from a new device. Was this you?`,
         },
         data: {
+          title: "New login to HandyMan",
+          body: `We noticed a new login to your account ${name} from a new device. Was this you?`,
           id: context.params.id,
           type: token_type,
+          click_action: "FLUTTER_NOTIFICATION_CLICK",
         },
       };
       return await admin.messaging().sendToDevice(newToken, message);

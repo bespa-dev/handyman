@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -19,6 +20,9 @@ const String bookingChannelDesc = 'For all job bookings';
 const String tokenChannelId = 'token_channel_id';
 const String tokenChannelName = 'Device Token';
 const String tokenChannelDesc = 'New sign in detection for different devices';
+const String approvalChannelId = 'approval_channel_id';
+const String approvalChannelName = 'Account Approval';
+const String approvalChannelDesc = 'Artisan account approval';
 
 /// notification plugin instance
 final FlutterLocalNotificationsPlugin _plugin =
@@ -86,19 +90,77 @@ class LocalNotificationService {
     });
 
     /// setup firebase messaging
-    var messaging = FirebaseMessaging();
+    var messaging =
+        ProviderContainer().read<FirebaseMessaging>(firebaseMessaging);
     messaging.configure(
       onBackgroundMessage: _onBackgroundMessageHandler,
       onLaunch: (_) async {
         logger.i('onLaunch -> $_');
+
+        var data = _['data'];
+        var id = data['type'] == 'booking'
+            ? bookingChannelId
+            : data['type'] == 'conversation'
+                ? conversationChannelId
+                : data['type'] == 'token'
+                    ? tokenChannelId
+                    : approvalChannelId;
+
+        var name = data['type'] == 'booking'
+            ? bookingChannelName
+            : data['type'] == 'conversation'
+                ? conversationChannelName
+                : data['type'] == 'token'
+                    ? tokenChannelName
+                    : approvalChannelName;
+
+        var desc = data['type'] == 'booking'
+            ? bookingChannelDesc
+            : data['type'] == 'conversation'
+                ? conversationChannelDesc
+                : data['type'] == 'token'
+                    ? tokenChannelDesc
+                    : approvalChannelDesc;
+
+        await _pushNotification(
+          data,
+          channelId: id,
+          channelName: name,
+          channelDesc: desc,
+        );
       },
       onMessage: (_) async {
         logger.i('onMessage -> $_');
+
+        var data = _['data'];
+        var id = data['type'] == 'booking'
+            ? bookingChannelId
+            : data['type'] == 'conversation'
+                ? conversationChannelId
+                : data['type'] == 'token'
+                    ? tokenChannelId
+                    : approvalChannelId;
+
+        var name = data['type'] == 'booking'
+            ? bookingChannelName
+            : data['type'] == 'conversation'
+                ? conversationChannelName
+                : data['type'] == 'token'
+                    ? tokenChannelName
+                    : approvalChannelName;
+
+        var desc = data['type'] == 'booking'
+            ? bookingChannelDesc
+            : data['type'] == 'conversation'
+                ? conversationChannelDesc
+                : data['type'] == 'token'
+                    ? tokenChannelDesc
+                    : approvalChannelDesc;
         await _pushNotification(
-          _,
-          channelId: bookingChannelId,
-          channelName: bookingChannelName,
-          channelDesc: bookingChannelDesc,
+          data,
+          channelId: id,
+          channelName: name,
+          channelDesc: desc,
         );
       },
       onResume: (_) async {
@@ -120,7 +182,11 @@ class LocalNotificationService {
             bookingId: data['id'],
           );
         } else if (data['type'] == 'conversation') {
-          return navigator.pushConversationPage(recipientId: data['sender']);
+          var user = await datasource.getCustomerById(id: data['customer']);
+          return navigator.pushConversationPage(
+            recipientId: data['sender'],
+            recipient: user,
+          );
         } else if (data['type'] == 'token') {
         } else if (data['type'] == 'approval') {}
       },
@@ -129,6 +195,44 @@ class LocalNotificationService {
     _requestPermissions();
     _configureDidReceiveLocalNotificationSubject();
     _configureSelectNotificationSubject();
+
+    /// fixme -> register notification channels
+    // await _pushNotification(
+    //   {
+    //     'title': kAppName,
+    //     'body': kLoremText,
+    //   },
+    //   channelId: conversationChannelId,
+    //   channelName: conversationChannelName,
+    //   channelDesc: conversationChannelDesc,
+    // );
+    // await _pushNotification(
+    //   {
+    //     'title': kAppName,
+    //     'body': kLoremText,
+    //   },
+    //   channelId: bookingChannelId,
+    //   channelName: bookingChannelName,
+    //   channelDesc: bookingChannelDesc,
+    // );
+    // await _pushNotification(
+    //   {
+    //     'title': kAppName,
+    //     'body': kLoremText,
+    //   },
+    //   channelId: tokenChannelId,
+    //   channelName: tokenChannelName,
+    //   channelDesc: tokenChannelDesc,
+    // );
+    // await _pushNotification(
+    //   {
+    //     'title': kAppName,
+    //     'body': kLoremText,
+    //   },
+    //   channelId: approvalChannelId,
+    //   channelName: approvalChannelName,
+    //   channelDesc: approvalChannelDesc,
+    // );
   }
 
   Future<void> cancel({bool allNotifications = false, int id}) async {
@@ -159,9 +263,6 @@ class LocalNotificationService {
   void _configureSelectNotificationSubject() {
     _selectNotificationSubject.stream.listen((String payload) async {
       logger.d('Stream from selected notification -> $payload');
-
-      /// todo -> move to page
-      // return ExtendedNavigator.root.pushServiceRatingsPage(payload: payload);
     });
   }
 
@@ -174,7 +275,7 @@ class LocalNotificationService {
 
 /// send push notification
 Future<void> _pushNotification(
-  Map<String, dynamic> data, {
+  Map<String, dynamic> notification, {
   @required String channelId,
   @required String channelName,
   @required String channelDesc,
@@ -183,16 +284,16 @@ Future<void> _pushNotification(
     channelId,
     channelName,
     channelDesc,
-    importance: Importance.high,
+    channelShowBadge: true,
+    channelAction: AndroidNotificationChannelAction.createIfNotExists,
+    enableVibration: true,
+    importance: Importance.max,
     priority: Priority.high,
     ticker: 'ticker',
   );
-  logger.i('payload info -> $data');
-
-  var notification = data['notification'];
 
   await _plugin.show(
-    DateTime.now().millisecondsSinceEpoch.toInt(),
+    Random().nextInt(9999),
     notification['title'],
     notification['body'],
     NotificationDetails(android: androidPlatformChannelSpecifics),

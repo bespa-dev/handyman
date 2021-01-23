@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -51,8 +52,34 @@ class LocalNotificationService {
 
   /// background message handler
   static Future<void> _onBackgroundMessageHandler(
-      Map<String, dynamic> message) async {
-    logger.i('onBackground -> $message');
+      Map<String, dynamic> _) async {
+    logger.i('onBackground -> $_');
+
+    var data = _['data'];
+    var id = data['type'] == 'booking'
+        ? bookingChannelId
+        : data['type'] == 'conversation'
+            ? conversationChannelId
+            : tokenChannelId;
+
+    var name = data['type'] == 'booking'
+        ? bookingChannelName
+        : data['type'] == 'conversation'
+            ? conversationChannelName
+            : tokenChannelName;
+
+    var desc = data['type'] == 'booking'
+        ? bookingChannelDesc
+        : data['type'] == 'conversation'
+            ? conversationChannelDesc
+            : tokenChannelDesc;
+
+    await _pushNotification(
+      data,
+      channelId: id,
+      channelName: name,
+      channelDesc: desc,
+    );
   }
 
   /// setup local notifications
@@ -62,14 +89,17 @@ class LocalNotificationService {
 
     /// Request permission on iOS
     final initializationSettingsIOS = IOSInitializationSettings(
-        requestAlertPermission: false,
-        requestBadgePermission: false,
-        requestSoundPermission: false,
-        onDidReceiveLocalNotification:
-            (int id, String title, String body, String payload) async {
-          _didReceiveLocalNotificationSubject.add(ReceivedNotification(
-              id: id, title: title, body: body, payload: payload));
-        });
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+      onDidReceiveLocalNotification:
+          (int id, String title, String body, String payload) async {
+        _didReceiveLocalNotificationSubject.add(
+          ReceivedNotification(
+              id: id, title: title, body: body, payload: payload),
+        );
+      },
+    );
 
     final initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -77,7 +107,7 @@ class LocalNotificationService {
     );
 
     await _plugin.initialize(initializationSettings,
-        onSelectNotification: (String payload) async {
+        onSelectNotification: (dynamic payload) async {
       if (payload != null) {
         logger.d('notification payload: $payload');
       }
@@ -85,19 +115,66 @@ class LocalNotificationService {
     });
 
     /// setup firebase messaging
-    var messaging = FirebaseMessaging();
+    var messaging =
+        ProviderContainer().read<FirebaseMessaging>(firebaseMessaging);
     messaging.configure(
       onBackgroundMessage: _onBackgroundMessageHandler,
       onLaunch: (_) async {
         logger.i('onLaunch -> $_');
+
+        var data = _['data'];
+        var id = data['type'] == 'booking'
+            ? bookingChannelId
+            : data['type'] == 'conversation'
+                ? conversationChannelId
+                : tokenChannelId;
+
+        var name = data['type'] == 'booking'
+            ? bookingChannelName
+            : data['type'] == 'conversation'
+                ? conversationChannelName
+                : tokenChannelName;
+
+        var desc = data['type'] == 'booking'
+            ? bookingChannelDesc
+            : data['type'] == 'conversation'
+                ? conversationChannelDesc
+                : tokenChannelDesc;
+
+        await _pushNotification(
+          data,
+          channelId: id,
+          channelName: name,
+          channelDesc: desc,
+        );
       },
       onMessage: (_) async {
-        logger.i('onMessage -> $_');
+        var data = _['data'];
+
+        logger.i('onMessage -> $data');
+        var id = data['type'] == 'booking'
+            ? bookingChannelId
+            : data['type'] == 'conversation'
+                ? conversationChannelId
+                : tokenChannelId;
+
+        var name = data['type'] == 'booking'
+            ? bookingChannelName
+            : data['type'] == 'conversation'
+                ? conversationChannelName
+                : tokenChannelName;
+
+        var desc = data['type'] == 'booking'
+            ? bookingChannelDesc
+            : data['type'] == 'conversation'
+                ? conversationChannelDesc
+                : tokenChannelDesc;
+
         await _pushNotification(
-          _,
-          channelDesc: bookingChannelDesc,
-          channelName: bookingChannelName,
-          channelId: bookingChannelId,
+          data,
+          channelId: id,
+          channelName: name,
+          channelDesc: desc,
         );
       },
       onResume: (_) async {
@@ -129,6 +206,35 @@ class LocalNotificationService {
     _requestPermissions();
     _configureDidReceiveLocalNotificationSubject();
     _configureSelectNotificationSubject();
+
+    /// fixme -> register notification channels
+    // await _pushNotification(
+    //   {
+    //     'title': kAppName,
+    //     'body': kLoremText,
+    //   },
+    //   channelId: conversationChannelId,
+    //   channelName: conversationChannelName,
+    //   channelDesc: conversationChannelDesc,
+    // );
+    // await _pushNotification(
+    //   {
+    //     'title': kAppName,
+    //     'body': kLoremText,
+    //   },
+    //   channelId: bookingChannelId,
+    //   channelName: bookingChannelName,
+    //   channelDesc: bookingChannelDesc,
+    // );
+    // await _pushNotification(
+    //   {
+    //     'title': kAppName,
+    //     'body': kLoremText,
+    //   },
+    //   channelId: tokenChannelId,
+    //   channelName: tokenChannelName,
+    //   channelDesc: tokenChannelDesc,
+    // );
   }
 
   Future<void> cancel({bool allNotifications = false, int id}) async {
@@ -159,9 +265,6 @@ class LocalNotificationService {
   void _configureSelectNotificationSubject() {
     _selectNotificationSubject.stream.listen((dynamic payload) async {
       logger.d('Stream from selected notification -> $payload');
-
-      /// todo -> move to page
-      return ExtendedNavigator.root.pushServiceRatingsPage(payload: payload);
     });
   }
 
@@ -174,7 +277,7 @@ class LocalNotificationService {
 
 /// send push notification
 Future<void> _pushNotification(
-  Map<String, dynamic> data, {
+  Map<String, dynamic> notification, {
   @required String channelId,
   @required String channelName,
   @required String channelDesc,
@@ -183,14 +286,15 @@ Future<void> _pushNotification(
     channelId,
     channelName,
     channelDesc,
+    channelShowBadge: true,
+    channelAction: AndroidNotificationChannelAction.createIfNotExists,
+    enableVibration: true,
     importance: Importance.max,
     priority: Priority.high,
     ticker: 'ticker',
   );
-  var notification = data['notification'];
-
   await _plugin.show(
-    DateTime.now().millisecondsSinceEpoch,
+    Random().nextInt(9999),
     notification['title'],
     notification['body'],
     NotificationDetails(android: androidPlatformChannelSpecifics),

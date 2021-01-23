@@ -210,9 +210,6 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
 
       yield messages;
     });
-    // yield* firestore.collection(RefUtils.kConversationRef).snapshots().map(
-    //     (event) =>
-    //         event.docs.map((e) => Conversation.fromJson(e.data())).toList());
   }
 
   @override

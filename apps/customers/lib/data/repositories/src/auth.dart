@@ -62,7 +62,7 @@ class AuthRepositoryImpl extends BaseAuthRepository {
       _prefsRepo.userId = newUser.id;
       _onAuthStateChangedController
           .add(AuthState.authenticatedState(user: newUser));
-      _onMessageChangedController.add("New account created successfully");
+      _onMessageChangedController.add('New account created successfully');
       return newUser;
     } else {
       _prefsRepo.userId = user.id;
@@ -169,7 +169,7 @@ class AuthRepositoryImpl extends BaseAuthRepository {
       var account = await _googleSignIn.signIn();
       if (account == null) {
         _onAuthStateChangedController
-            .add(AuthState.authFailedState(message: "Sign in was cancelled"));
+            .add(AuthState.authFailedState(message: 'Sign in was cancelled'));
         return null;
       }
       var authentication = await account.authentication;
@@ -181,8 +181,8 @@ class AuthRepositoryImpl extends BaseAuthRepository {
       return _getOrCreateUserFromCredential(credential);
     } on Exception catch (ex) {
       _onAuthStateChangedController
-          .add(AuthState.authFailedState(message: "Unable to sign in\n$ex"));
-      _onMessageChangedController.add("Unable to sign in");
+          .add(AuthState.authFailedState(message: 'Unable to sign in\n$ex'));
+      _onMessageChangedController.add('Unable to sign in');
       return null;
     }
   }

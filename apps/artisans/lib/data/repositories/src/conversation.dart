@@ -33,7 +33,6 @@ class ConversationRepositoryImpl extends BaseConversationRepository {
           await local.sendMessage(conversation: value);
         }
       }
-      yield* local.observeConversation(sender: sender, recipient: recipient);
     });
   }
 
