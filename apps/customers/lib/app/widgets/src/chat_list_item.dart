@@ -6,6 +6,7 @@
  *
  * author: codelbas.quabynah@gmail.com
  */
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/widgets/widgets.dart';
@@ -34,14 +35,23 @@ class ChatListItem extends StatefulWidget {
 }
 
 class _ChatListItemState extends State<ChatListItem> {
-  bool _isAuthor = true, _showTimestampDetails = false;
+  bool _isAuthor, _showTimestampDetails = false;
   ThemeData kTheme;
+
+  /// blocs
+  final _prefsBloc = PrefsBloc(repo: Injection.get());
+
+  @override
+  void dispose() {
+    _prefsBloc.close();
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
     if (mounted) {
-      PrefsBloc(repo: Injection.get())
+      _prefsBloc
         ..add(PrefsEvent.getUserIdEvent())
         ..listen((state) {
           if (state is SuccessState<String>) {
@@ -62,7 +72,11 @@ class _ChatListItemState extends State<ChatListItem> {
         left: kSpacingX20,
         right: kSpacingX20,
       ),
-      child: _buildChatWidget(),
+      child: AnimatedOpacity(
+        opacity: _isAuthor == null ? 0 : 1,
+        duration: kSheetDuration,
+        child: _isAuthor == null ? SizedBox.shrink() : _buildChatWidget(),
+      ),
     );
   }
 
