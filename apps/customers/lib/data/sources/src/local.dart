@@ -217,12 +217,10 @@ class HiveLocalDatasource extends BaseLocalDatasource {
       {String sender, String recipient}) async* {
     yield conversationBox.values
         .where((item) =>
-            item.author == sender ||
-            item.author == recipient && item.recipient == sender ||
-            item.recipient == recipient)
+            (item.author == sender || item.author == recipient) &&
+            (item.recipient == sender || item.recipient == recipient))
         .sortByDescending<String>((r) => r.createdAt)
         .toList();
-
   }
 
   @override

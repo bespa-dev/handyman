@@ -214,11 +214,13 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   @override
   Stream<List<BaseConversation>> observeConversation(
       {String sender, String recipient}) async* {
+    logger.d(conversationBox.values.toList());
+
+
     yield conversationBox.values
         .where((item) =>
-            item.author == sender ||
-            item.author == recipient && item.recipient == sender ||
-            item.recipient == recipient)
+            (item.author == sender || item.author == recipient) &&
+            (item.recipient == sender || item.recipient == recipient))
         .sortByDescending<String>((r) => r.createdAt)
         .toList();
   }

@@ -383,12 +383,6 @@ class _ConversationPageState extends State<ConversationPage> {
         ),
       );
 
-      /// reload messages
-      _messageBloc.add(
-        ConversationEvent.getMessages(
-            sender: _sender, recipient: _recipient?.id),
-      );
-
       /// clear field
       _messageController.clear();
 

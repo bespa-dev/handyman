@@ -189,27 +189,17 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   @override
   Stream<List<BaseConversation>> observeConversation(
       {@required String sender, @required String recipient}) async* {
-    firestore
+    yield* firestore
         .collection(RefUtils.kConversationRef)
         .snapshots()
-        .listen((event) async* {
-      var messages = event.docs
-          .where((element) {
-            if (element.exists) {
-              var conversation = Conversation.fromJson(element.data());
-              return conversation.author == sender ||
-                  conversation.author == recipient &&
-                      conversation.author == sender ||
-                  conversation.recipient == recipient;
-            } else {
-              return false;
-            }
-          })
-          .map((element) => Conversation.fromJson(element.data()))
-          .toList();
-
-      yield messages;
-    });
+        .map((element) => element.docs
+            .map((e) => Conversation.fromJson(e.data()))
+            .where((item) =>
+                (item.author == sender || item.author == recipient) &&
+                (item.recipient == sender || item.recipient == recipient))
+            .sortByDescending<String>((r) => r.createdAt)
+            .toList())
+        .asBroadcastStream();
   }
 
   @override

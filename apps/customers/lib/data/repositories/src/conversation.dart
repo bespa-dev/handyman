@@ -25,16 +25,19 @@ class ConversationRepositoryImpl extends BaseConversationRepository {
   @override
   Stream<List<BaseConversation>> observeConversation(
       {String sender, String recipient}) async* {
-    yield* local.observeConversation(sender: sender, recipient: recipient);
-    remote.observeConversation(sender: sender, recipient: recipient)
-      ..listen((event) async {
-        for (var value in event) {
-          if (value != null) {
-            logger.d('Adding new message -> ${value.id}');
-            await local.sendMessage(conversation: value);
-          }
+    yield* remote.observeConversation(sender: sender, recipient: recipient);
+
+    remote
+        .observeConversation(sender: sender, recipient: recipient)
+        .listen((event) async* {
+      for (var value in event) {
+        if (value != null) {
+          logger.d('Adding new message -> ${value.id}');
+          await local.sendMessage(conversation: value);
         }
-      });
+      }
+      yield* local.observeConversation(sender: sender, recipient: recipient);
+    });
   }
 
   @override
