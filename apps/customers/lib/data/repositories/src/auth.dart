@@ -73,7 +73,7 @@ class AuthRepositoryImpl extends BaseAuthRepository {
       );
       _onAuthStateChangedController
           .add(AuthState.authenticatedState(user: user));
-      _onMessageChangedController.add("Signed in successfully");
+      _onMessageChangedController.add('Signed in successfully');
       return user;
     }
   }

@@ -215,7 +215,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   Stream<List<BaseReview>> observeReviewsByCustomer(String id) async* {
     yield* firestore
         .collection(RefUtils.kReviewRef)
-        .where("customer_id", isLessThanOrEqualTo: id)
+        .where('customer_id', isLessThanOrEqualTo: id)
         .snapshots()
         .map((event) =>
             event.docs.map((e) => Review.fromJson(e.data())).toList());
