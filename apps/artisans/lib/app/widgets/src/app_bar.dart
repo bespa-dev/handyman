@@ -16,11 +16,6 @@ import 'package:handyman/shared/shared.dart';
 import 'package:uuid/uuid.dart';
 
 class ExpandedAppBarContainer extends StatelessWidget {
-  final String title;
-  final Widget child;
-  final Widget actionButton;
-  final bool showNavIcon;
-
   const ExpandedAppBarContainer({
     Key key,
     @required this.title,
@@ -28,6 +23,11 @@ class ExpandedAppBarContainer extends StatelessWidget {
     this.showNavIcon = false,
     this.actionButton,
   }) : super(key: key);
+
+  final String title;
+  final Widget child;
+  final Widget actionButton;
+  final bool showNavIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -87,21 +87,21 @@ class ExpandedAppBarContainer extends StatelessWidget {
 
 /// sliver app bar
 class CustomSliverAppBar extends StatefulWidget {
-  final String title;
-  final String backgroundImage;
-
   const CustomSliverAppBar({
     Key key,
     this.title = kAppName,
     this.backgroundImage = kBackgroundAsset,
   }) : super(key: key);
 
+  final String title;
+  final String backgroundImage;
+
   @override
   _CustomSliverAppBarState createState() => _CustomSliverAppBarState();
 }
 
 class _CustomSliverAppBarState extends State<CustomSliverAppBar> {
-  String _appVersion = "...";
+  String _appVersion = '...';
 
   /// gets the application's version
   void _getAppVersion() async {
@@ -135,7 +135,7 @@ class _CustomSliverAppBarState extends State<CustomSliverAppBar> {
       title: Text.rich(
         TextSpan(
           children: [
-            TextSpan(text: "${widget.title}\n"),
+            TextSpan(text: '${widget.title}\n'),
             TextSpan(
               text: _appVersion,
               style: kTheme.textTheme.caption,
@@ -156,8 +156,11 @@ class _CustomSliverAppBarState extends State<CustomSliverAppBar> {
           fit: StackFit.expand,
           children: [
             Positioned.fill(
-              child:
-                  ImageView(tag: Uuid().v4(), imageUrl: widget.backgroundImage),
+              child: ImageView(
+                tag: Uuid().v4(),
+                imageUrl: widget.backgroundImage,
+                isAssetImage: widget.backgroundImage.startsWith('assets/'),
+              ),
             ),
             Positioned.fill(
               child: Container(
