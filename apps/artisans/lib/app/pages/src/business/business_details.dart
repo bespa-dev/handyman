@@ -3,24 +3,21 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/routes/routes.gr.dart';
-import 'package:handyman/app/widgets/src/service_list_item.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
 
-/// todo -> complete other tabs
 class BusinessDetailsPage extends StatefulWidget {
-  final BaseBusiness business;
-  final BaseArtisan artisan;
-
   const BusinessDetailsPage({
     Key key,
     @required this.business,
     this.artisan,
   }) : super(key: key);
+
+  final BaseBusiness business;
+  final BaseArtisan artisan;
 
   @override
   _BusinessDetailsPageState createState() => _BusinessDetailsPageState();
@@ -105,15 +102,16 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                 _updateUserBloc.add(
                   UserEvent.updateUserEvent(user: _currentUser),
                 );
-              } else
+              } else {
                 _selectedServices = _currentUser.services;
+              }
               if (mounted) setState(() {});
 
               /// get services for category
               _serviceBloc.add(
                 ArtisanServiceEvent.getArtisanServices(
                   category:
-                      user.category /*"bb7c0d03-add2-49cb-bdd5-9a55f67adb30"*/,
+                      /*user.category */ 'bb7c0d03-add2-49cb-bdd5-9a55f67adb30',
                 ),
               );
             });
@@ -148,6 +146,9 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                   slivers: [
                     /// app bar
                     SliverAppBar(
+                      expandedHeight: _businessLocation == null
+                          ? kSpacingNone
+                          : SizeConfig.screenHeight * 0.35,
                       actions: [
                         IconButton(
                           icon: Icon(kEditIcon),
@@ -162,6 +163,40 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                           StretchMode.zoomBackground,
                           StretchMode.blurBackground,
                         ],
+                        background: _businessLocation == null
+                            ? SizedBox.shrink()
+                            : SizedBox(
+                                width: SizeConfig.screenWidth,
+                                height: SizeConfig.screenHeight * 0.35,
+                                child: GoogleMap(
+                                  initialCameraPosition: CameraPosition(
+                                    target: _businessLocation,
+                                    zoom: kSpacingX16,
+                                  ),
+                                  zoomControlsEnabled: false,
+                                  compassEnabled: true,
+                                  liteModeEnabled: Platform.isAndroid,
+                                  zoomGesturesEnabled: true,
+                                  mapToolbarEnabled: false,
+                                  myLocationButtonEnabled: false,
+                                  myLocationEnabled: false,
+                                  tiltGesturesEnabled: true,
+                                  markers: <Marker>{
+                                    Marker(
+                                      markerId: MarkerId(_business.id),
+                                      position: _businessLocation,
+                                      icon:
+                                          BitmapDescriptor.defaultMarkerWithHue(
+                                              BitmapDescriptor.hueGreen),
+                                    ),
+                                  },
+                                  onMapCreated: (controller) async {
+                                    _mapController = controller;
+                                    _setupMap();
+                                  },
+                                  mapType: MapType.normal,
+                                ),
+                              ),
                       ),
                       leading: IconButton(
                         icon: Icon(kBackIcon),
@@ -173,54 +208,6 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                     SliverList(
                       delegate: SliverChildListDelegate.fixed(
                         [
-                          /// map
-                          AnimatedContainer(
-                            duration: kScaleDuration,
-                            width: SizeConfig.screenWidth,
-                            height: _businessLocation == null
-                                ? kSpacingNone
-                                : SizeConfig.screenHeight * 0.3,
-                            child: AnimatedOpacity(
-                              duration: kScaleDuration,
-                              opacity: _businessLocation == null ? 0 : 1,
-                              child: _businessLocation == null
-                                  ? SizedBox.shrink()
-                                  : FutureBuilder(
-                                      future: Future.delayed(kSheetDuration),
-                                      builder: (_, __) => GoogleMap(
-                                            initialCameraPosition:
-                                                CameraPosition(
-                                              target: _businessLocation,
-                                              zoom: kSpacingX16,
-                                            ),
-                                            zoomControlsEnabled: false,
-                                            compassEnabled: true,
-                                            liteModeEnabled: Platform.isAndroid,
-                                            zoomGesturesEnabled: true,
-                                            mapToolbarEnabled: false,
-                                            myLocationButtonEnabled: false,
-                                            myLocationEnabled: false,
-                                            tiltGesturesEnabled: true,
-                                            markers: <Marker>{
-                                              Marker(
-                                                markerId:
-                                                    MarkerId(_business.id),
-                                                position: _businessLocation,
-                                                icon: BitmapDescriptor
-                                                    .defaultMarkerWithHue(
-                                                        BitmapDescriptor
-                                                            .hueGreen),
-                                              ),
-                                            },
-                                            onMapCreated: (controller) async {
-                                              _mapController = controller;
-                                              _setupMap();
-                                            },
-                                            mapType: MapType.normal,
-                                          )),
-                            ),
-                          ),
-
                           /// body
                           AnimatedPadding(
                             duration: kScaleDuration,
@@ -258,19 +245,14 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     _buildTabItem(
-                                      title: "Services",
+                                      title: 'Services',
                                       index: 0,
                                       active: _currentPage == 0,
                                     ),
                                     _buildTabItem(
-                                      title: "Profile",
+                                      title: 'Profile',
                                       index: 1,
                                       active: _currentPage == 1,
-                                    ),
-                                    _buildTabItem(
-                                      title: "Earnings",
-                                      index: 2,
-                                      active: _currentPage == 2,
                                     ),
                                   ],
                                 ),
@@ -278,10 +260,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                                 /// pages
                                 if (_currentPage == 0) ...{
                                   _buildServicesTab()
-                                } else if (_currentPage == 1) ...{
-                                  _buildBusinessProfileTab()
                                 } else ...{
-                                  _buildEarningsTab()
+                                  _buildBusinessProfileTab()
                                 },
                               ],
                             ),
@@ -334,14 +314,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
       );
 
   /// services tab
-  Widget _buildServicesTab() => Container(
-    color: kGreenColor,
-
-  );
+  Widget _buildServicesTab() => Container(color: kGreenColor);
 
   /// business profile tab
-  Widget _buildBusinessProfileTab() => Container(/*color: kAmberColor*/);
-
-  /// earnings tab
-  Widget _buildEarningsTab() => Container(/*color: _kTheme.colorScheme.error*/);
+  Widget _buildBusinessProfileTab() => Container(color: kAmberColor);
 }
