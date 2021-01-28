@@ -45,6 +45,7 @@ class TextFormInput extends TextFormField {
             helperText: helperText,
             suffixIcon: suffixIcon,
             enabled: enabled,
+            fillColor: color,
           ),
           focusNode: focusNode,
           onFieldSubmitted: onFieldSubmitted,
