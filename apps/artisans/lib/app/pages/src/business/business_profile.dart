@@ -17,9 +17,8 @@ import 'package:uuid/uuid.dart';
 
 /// https://pub.dev/packages/google_maps_place_picker
 class BusinessProfilePage extends StatefulWidget {
-  final BaseBusiness business;
-
   const BusinessProfilePage({Key key, this.business}) : super(key: key);
+  final BaseBusiness business;
 
   @override
   _BusinessProfilePageState createState() => _BusinessProfilePageState();
@@ -76,15 +75,16 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
         } else if (state is SuccessState<void>) {
           if (mounted) {
             showSnackBarMessage(context,
-                message: "Business registered successfully");
+                message: 'Business registered successfully');
             context.navigator.pushAndRemoveUntil(
               Routes.homePage,
               (route) => false,
             );
           }
         } else if (state is ErrorState) {
-          if (mounted)
-            showSnackBarMessage(context, message: "Failed to update profile");
+          if (mounted) {
+            showSnackBarMessage(context, message: 'Failed to update profile');
+          }
         }
       });
 
@@ -94,7 +94,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
         ..listen((state) {
           if (state is SuccessState<BaseLocationMetadata>) {
             _initialLocation = LatLng(state.data.lat, state.data.lng);
-            logger.d("Location -> ${state.data}");
+            logger.d('Location -> ${state.data}');
             if (mounted) setState(() {});
           }
         });
@@ -109,15 +109,15 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
           if (mounted) {
             setState(() {});
             showSnackBarMessage(context,
-                message: "Failed to save business information");
+                message: 'Failed to save business information');
           }
         } else if (state is SuccessState) {
           _isLoading = false;
           if (mounted) {
             setState(() {});
             showSnackBarMessage(context,
-                message: "Uploaded business profile completed");
-            if (state.data != null)
+                message: 'Uploaded business profile completed');
+            if (state.data != null) {
               _userBloc.add(
                 UserEvent.updateUserEvent(
                   user: _currentUser.copyWith(
@@ -127,8 +127,9 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                   ),
                 ),
               );
-            else
+            } else {
               context.navigator.pop();
+            }
           }
         }
       });
@@ -144,13 +145,13 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
           if (mounted) {
             setState(() {});
             showSnackBarMessage(context,
-                message: "Failed to save business information");
+                message: 'Failed to save business information');
           }
         } else if (state is SuccessState<String>) {
           _docUrl = state.data;
           _isLoading = false;
           if (mounted) setState(() {});
-          logger.i("Document upload complete");
+          logger.i('Document upload complete');
         }
       });
 
@@ -184,8 +185,8 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
     bool birthCert = false,
     bool nationalId = false,
   }) async {
-    FilePickerResult result = await FilePicker.platform.pickFiles(
-      allowedExtensions: ["pdf"], // only pdf document files
+    var result = await FilePicker.platform.pickFiles(
+      allowedExtensions: ['pdf'], // only pdf document files
       allowCompression: true,
       type: FileType.custom,
       withData: true,
@@ -255,9 +256,9 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
 
   /// pick user's location
   void _pickLocation() async {
-    var apiKey = DotEnv().env["mapsKey"];
+    var apiKey = DotEnv().env['mapsKey'];
 
-    Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => PlacePicker(
@@ -274,8 +275,8 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
           initialMapType: MapType.normal,
           usePinPointingSearch: true,
           forceAndroidLocationManager: Platform.isAndroid,
-          searchingText: "Search business address",
-          autocompleteComponents: [Component(Component.country, "gh")],
+          searchingText: 'Search business address',
+          autocompleteComponents: [Component(Component.country, 'gh')],
         ),
       ),
     );
@@ -285,7 +286,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
     final result = await showCustomDialog(
       context: context,
       builder: (_) => BasicDialog(
-        message: "Do you wish to cancel your business registration?",
+        message: 'Do you wish to cancel your business registration?',
         onComplete: () {
           context.navigator.pop();
         },
@@ -320,18 +321,17 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                       kSpacingX8,
                     ),
                     child: Column(
-                      // mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Business Profile",
+                          'Business Profile',
                           style: kTheme.textTheme.headline4.copyWith(
                             color: kTheme.colorScheme.onPrimary,
                           ),
                         ),
                         SizedBox(height: kSpacingX8),
                         Text(
-                          "Complete your business profile details by uploading a supporting document for approval",
+                          'Complete your business profile details by uploading a supporting document for approval',
                           style: kTheme.textTheme.bodyText1.copyWith(
                             color: kTheme.colorScheme.onPrimary,
                           ),
@@ -342,11 +342,12 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                         Form(
                           key: _formKey,
                           child: TextFormInput(
-                            labelText: "Business name",
+                            labelText: 'Business name',
                             controller: _nameController,
+                            color: kTheme.colorScheme.onPrimary,
                             cursorColor: kTheme.colorScheme.onBackground,
                             validator: (_) =>
-                                _.isEmpty ? "Name is required" : null,
+                                _.isEmpty ? 'Name is required' : null,
                             textCapitalization: TextCapitalization.words,
                             enabled: !_isLoading,
                           ),
@@ -356,11 +357,11 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                         Card(
                           child: ListTile(
                             onTap: _pickDocument,
-                            title: Text("Upload Business Document"),
+                            title: Text('Upload Business Document'),
                             subtitle: Text(
                               _busFileName == null
-                                  ? "This is required for approval (Only PDFs supported)"
-                                  : "File uploaded",
+                                  ? 'This is required for approval (Only PDFs supported)'
+                                  : 'File uploaded',
                             ),
                             dense: true,
                             trailing: Icon(
@@ -375,11 +376,11 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                           Card(
                             child: ListTile(
                               onTap: () => _pickDocument(birthCert: true),
-                              title: Text("Upload Birth Certificate"),
+                              title: Text('Upload Birth Certificate'),
                               subtitle: Text(
                                 _birthCertFileName == null
-                                    ? "This is required for approval (Only PDFs supported)"
-                                    : "File uploaded",
+                                    ? 'This is required for approval (Only PDFs supported)'
+                                    : 'File uploaded',
                               ),
                               dense: true,
                               trailing: Icon(
@@ -397,11 +398,11 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                           Card(
                             child: ListTile(
                               onTap: () => _pickDocument(nationalId: true),
-                              title: Text("Upload National ID"),
+                              title: Text('Upload National ID'),
                               subtitle: Text(
                                 _idFileName == null
-                                    ? "This is required for approval (Only PDFs supported)"
-                                    : "File uploaded",
+                                    ? 'This is required for approval (Only PDFs supported)'
+                                    : 'File uploaded',
                               ),
                               dense: true,
                               trailing: Icon(
@@ -416,11 +417,9 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                         Card(
                           child: ListTile(
                             onTap: _pickLocation,
-                            title: Text("Business Location"),
+                            title: Text('Business Location'),
                             subtitle: Text(
-                              _locationName == null
-                                  ? "This is required for approval"
-                                  : _locationName,
+                              _locationName ?? 'This is required for approval',
                             ),
                             dense: true,
                             trailing: Icon(
@@ -457,7 +456,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                         context: context,
                         builder: (_) => BasicDialog(
                           message:
-                              "This will reset all fields and selected files. Do you wish to continue?",
+                              'This will reset all fields and selected files. Do you wish to continue?',
                           onComplete: () {
                             _locationName = null;
                             _busFileName = null;
@@ -485,7 +484,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                         _formKey.currentState.save();
 
                         /// save business
-                        if (widget.business == null)
+                        if (widget.business == null) {
                           _businessBloc.add(
                             BusinessEvent.uploadBusiness(
                               docUrl: _docUrl,
@@ -494,7 +493,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                               location: _locationName,
                             ),
                           );
-                        else {
+                        } else {
                           _businessBloc.add(BusinessEvent.updateBusiness(
                             business: widget.business.copyWith(
                               docUrl: _docUrl,
@@ -517,7 +516,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Save & Continue",
+                              'Save & Continue',
                               style: kTheme.textTheme.button.copyWith(
                                 color: kTheme.colorScheme.onSecondary,
                               ),
