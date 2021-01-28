@@ -106,7 +106,8 @@ const kAppName = 'HandyMan Artisans';
 const kAppNameShort = 'HandyMan';
 const kAppSlogan =
     'A mobile application to gather all handyman service providers on a single platform and introduce them to potential service seekers and compare between providers and hire the best quote';
-const kAppSloganDesc = '$kAppName...\n\nReach more customers, become more productive';
+const kAppSloganDesc =
+    '$kAppName...\n\nreach more customers, become more productive';
 const kArtisanReviewHelpDialogContent =
     'Sensitive data (like email addresses, phone numbers, user ids etc) will not be made public to customers on this platform.\nYour ratings are also based on the accumulated reviews by customers you have served over the last 6 months';
 const kPasswordHint =

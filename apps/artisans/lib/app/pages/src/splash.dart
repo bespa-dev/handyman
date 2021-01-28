@@ -171,8 +171,24 @@ class _SplashPageState extends State<SplashPage>
                             ),
                           ),
                           SizedBox(height: kSpacingX8),
-                          Text(
-                            kAppSloganDesc,
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: kAppSloganDesc.substring(
+                                    0,
+                                    kAppSloganDesc.indexOf('.'),
+                                  ),
+                                ),
+                                TextSpan(
+                                    text: '\n${kAppSloganDesc.substring(
+                                          kAppSloganDesc.indexOf('.'),
+                                        ).replaceAll('\n', '')}',
+                                    style: kTheme.textTheme.bodyText2.copyWith(
+                                      color: kTheme.colorScheme.onPrimary,
+                                    )),
+                              ],
+                            ),
                             style: kTheme.textTheme.headline4.copyWith(
                               color: kTheme.colorScheme.onPrimary,
                             ),
@@ -188,10 +204,6 @@ class _SplashPageState extends State<SplashPage>
                                 onTap: () => context.navigator
                                     .pushAndRemoveUntil(
                                         Routes.homePage, (route) => false),
-                                // onTap: () =>
-                                //     context.navigator.pushConversationPage(
-                                //   recipientId: 'fXYrXtbwUwQUTgWSWdeX26NOr2l2',
-                                // ),
                                 label: 'Explore',
                                 color: kTheme.colorScheme.secondary,
                                 textColor: kTheme.colorScheme.onSecondary,
