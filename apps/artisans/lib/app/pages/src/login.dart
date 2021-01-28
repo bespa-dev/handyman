@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
               if (mounted) {
                 setState(() {});
                 showSnackBarMessage(context,
-                    message: event.message ?? "Authentication failed");
+                    message: event.message ?? 'Authentication failed');
               }
             } else if (event is AuthenticatedState) {
               _isLoading = false;
@@ -119,13 +119,13 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           Text(
                             "Let\'s sign you in",
-                            style: kTheme.textTheme.headline4.copyWith(
+                            style: kTheme.textTheme.headline5.copyWith(
                               color: kTheme.colorScheme.onPrimary,
                             ),
                           ),
                           SizedBox(height: kSpacingX8),
                           Text(
-                            "You have been missed!",
+                            'You have been missed!',
                             style: kTheme.textTheme.headline6.copyWith(
                               color: kTheme.colorScheme.onPrimary
                                   .withOpacity(kEmphasisMedium),
@@ -141,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                         width: SizeConfig.screenWidth * 0.9,
                         onTap: () =>
                             _authBloc.add(AuthEvent.federatedOAuthEvent()),
-                        label: "Sign in with Google",
+                        label: 'Sign in with Google',
                         color: kTheme.colorScheme.onBackground,
                         textColor: kTheme.colorScheme.background,
                         icon: kGoogleIcon,
@@ -168,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                               horizontal: kSpacingX6,
                             ),
                             child: Text(
-                              "Or",
+                              'Or',
                               style: kTheme.textTheme.headline6.copyWith(
                                 color: kTheme.colorScheme.onPrimary
                                     .withOpacity(kEmphasisMedium),
@@ -192,23 +192,23 @@ class _LoginPageState extends State<LoginPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           TextFormInput(
-                            labelText: "Email address",
+                            labelText: 'Email address',
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.next,
                             enabled: !_isLoading,
                             cursorColor: kTheme.colorScheme.onPrimary,
                             color: kTheme.colorScheme.onPrimary,
-                            validator: (_) => _.isEmpty ? "Required" : null,
+                            validator: (_) => _.isEmpty ? 'Required' : null,
                           ),
                           PasswordInput(
-                            labelText: "Password",
+                            labelText: 'Password',
                             controller: _passwordController,
                             textInputAction: TextInputAction.done,
                             cursorColor: kTheme.colorScheme.onPrimary,
                             enabled: !_isLoading,
                             color: kTheme.colorScheme.onPrimary,
-                            validator: (_) => _.isEmpty ? "Required" : null,
+                            validator: (_) => _.isEmpty ? 'Required' : null,
                             onFieldSubmitted: (_) => _validateAndLogin(),
                           ),
                         ],
@@ -222,7 +222,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: ButtonPrimary(
                           width: SizeConfig.screenWidth * 0.9,
                           onTap: () => _validateAndLogin(),
-                          label: "Sign in",
+                          label: 'Sign in',
                           gravity: ButtonIconGravity.END,
                           icon: kArrowIcon,
                           color: lightTheme
@@ -253,7 +253,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       TextSpan(text: "Don\'t have an account?\t"),
                       TextSpan(
-                        text: "Sign up here",
+                        text: 'Sign up here',
                         style: kTheme.textTheme.button.copyWith(
                           color: kTheme.colorScheme.secondary,
                         ),

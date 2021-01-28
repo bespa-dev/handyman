@@ -164,12 +164,15 @@ class _SplashPageState extends State<SplashPage>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Welcome back',
-                            style: kTheme.textTheme.headline6.copyWith(
-                              color: kTheme.colorScheme.onPrimary,
+                          if (state is SuccessState<String> &&
+                              state.data != null) ...{
+                            Text(
+                              'Welcome back to...',
+                              style: kTheme.textTheme.headline6.copyWith(
+                                color: kTheme.colorScheme.onPrimary,
+                              ),
                             ),
-                          ),
+                          },
                           SizedBox(height: kSpacingX8),
                           Text.rich(
                             TextSpan(
