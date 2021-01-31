@@ -25,9 +25,11 @@ class RequestPage extends StatefulWidget {
   const RequestPage({
     Key key,
     @required this.artisan,
+    this.service,
   }) : super(key: key);
 
   final BaseArtisan artisan;
+  final BaseArtisanService service;
 
   @override
   _RequestPageState createState() => _RequestPageState();
@@ -181,6 +183,13 @@ class _RequestPageState extends State<RequestPage> {
 
     if (mounted) {
       _focusNode = FocusNode();
+
+      if (widget.service != null) {
+        setState(() {
+          _selectedService = widget.service;
+          _currentPage++;
+        });
+      }
 
       /// get user id for upload
       PrefsBloc(repo: Injection.get())

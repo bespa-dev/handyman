@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/routes/routes.gr.dart';
+import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
 
@@ -134,187 +135,174 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
 
     return Scaffold(
       body: BlocBuilder<BusinessBloc, BlocState>(
-          cubit: _businessBloc,
-          builder: (_, state) => StreamBuilder<BaseBusiness>(
-              initialData: widget.business,
-              stream: state is SuccessState<Stream<BaseBusiness>>
-                  ? state.data
-                  : widget.business.asStream(),
-              builder: (_, snapshot) {
-                _business = snapshot.data;
-                return CustomScrollView(
-                  slivers: [
-                    /// app bar
-                    SliverAppBar(
-                      expandedHeight: _businessLocation == null
-                          ? kSpacingNone
-                          : SizeConfig.screenHeight * 0.35,
-                      actions: [
-                        IconButton(
-                          icon: Icon(kEditIcon),
-                          onPressed: () => context.navigator
-                              .pushBusinessProfilePage(business: _business),
-                        ),
-                      ],
-                      floating: true,
-                      flexibleSpace: FlexibleSpaceBar(
-                        collapseMode: CollapseMode.parallax,
-                        stretchModes: [
-                          StretchMode.zoomBackground,
-                          StretchMode.blurBackground,
-                        ],
-                        background: _businessLocation == null
-                            ? SizedBox.shrink()
-                            : SizedBox(
-                                width: SizeConfig.screenWidth,
-                                height: SizeConfig.screenHeight * 0.35,
-                                child: GoogleMap(
-                                  initialCameraPosition: CameraPosition(
-                                    target: _businessLocation,
-                                    zoom: kSpacingX16,
-                                  ),
-                                  zoomControlsEnabled: false,
-                                  compassEnabled: true,
-                                  liteModeEnabled: Platform.isAndroid,
-                                  zoomGesturesEnabled: true,
-                                  mapToolbarEnabled: false,
-                                  myLocationButtonEnabled: false,
-                                  myLocationEnabled: false,
-                                  tiltGesturesEnabled: true,
-                                  markers: <Marker>{
-                                    Marker(
-                                      markerId: MarkerId(_business.id),
-                                      position: _businessLocation,
-                                      icon:
-                                          BitmapDescriptor.defaultMarkerWithHue(
-                                              BitmapDescriptor.hueGreen),
-                                    ),
-                                  },
-                                  onMapCreated: (controller) async {
-                                    _mapController = controller;
-                                    _setupMap();
-                                  },
-                                  mapType: MapType.normal,
-                                ),
-                              ),
-                      ),
-                      leading: IconButton(
-                        icon: Icon(kBackIcon),
-                        onPressed: () => context.navigator.pop(),
-                      ),
-                    ),
-
-                    /// content
-                    SliverList(
-                      delegate: SliverChildListDelegate.fixed(
-                        [
-                          /// body
-                          AnimatedPadding(
-                            duration: kScaleDuration,
-                            padding: EdgeInsets.only(
-                              top: _businessLocation == null
-                                  ? kSpacingX24
-                                  : kSpacingX16,
-                              left: kSpacingX16,
-                              right: kSpacingX16,
-                              bottom: kSpacingNone,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.business.name,
-                                  style: _kTheme.textTheme.headline5,
-                                ),
-                                SizedBox(height: kSpacingX8),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(kLocationIcon, size: kSpacingX12),
-                                    SizedBox(width: kSpacingX6),
-                                    Text(
-                                      widget.business.location,
-                                      style: _kTheme.textTheme.bodyText1,
-                                    ),
-                                  ],
-                                ),
-
-                                /// tabs
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    _buildTabItem(
-                                      title: 'Services',
-                                      index: 0,
-                                      active: _currentPage == 0,
-                                    ),
-                                    _buildTabItem(
-                                      title: 'Profile',
-                                      index: 1,
-                                      active: _currentPage == 1,
-                                    ),
-                                  ],
-                                ),
-
-                                /// pages
-                                if (_currentPage == 0) ...{
-                                  _buildServicesTab()
-                                } else ...{
-                                  _buildBusinessProfileTab()
-                                },
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+        cubit: _businessBloc,
+        builder: (_, state) => StreamBuilder<BaseBusiness>(
+          initialData: widget.business,
+          stream: state is SuccessState<Stream<BaseBusiness>>
+              ? state.data
+              : widget.business.asStream(),
+          builder: (_, snapshot) {
+            _business = snapshot.data;
+            return CustomScrollView(
+              slivers: [
+                /// app bar
+                SliverAppBar(
+                  expandedHeight: _businessLocation == null
+                      ? kSpacingNone
+                      : SizeConfig.screenHeight * 0.35,
+                  actions: [
+                    IconButton(
+                      icon: Icon(kEditIcon),
+                      onPressed: () => context.navigator
+                          .pushBusinessProfilePage(business: _business),
                     ),
                   ],
-                );
-              })),
+                  floating: true,
+                  flexibleSpace: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.parallax,
+                    stretchModes: [
+                      StretchMode.zoomBackground,
+                      StretchMode.blurBackground,
+                    ],
+                    background: _businessLocation == null
+                        ? SizedBox.shrink()
+                        : SizedBox(
+                            width: SizeConfig.screenWidth,
+                            height: SizeConfig.screenHeight * 0.35,
+                            child: GoogleMap(
+                              initialCameraPosition: CameraPosition(
+                                target: _businessLocation,
+                                zoom: kSpacingX16,
+                              ),
+                              zoomControlsEnabled: false,
+                              compassEnabled: true,
+                              liteModeEnabled: Platform.isAndroid,
+                              zoomGesturesEnabled: true,
+                              mapToolbarEnabled: false,
+                              myLocationButtonEnabled: false,
+                              myLocationEnabled: false,
+                              tiltGesturesEnabled: true,
+                              markers: <Marker>{
+                                Marker(
+                                  markerId: MarkerId(_business.id),
+                                  position: _businessLocation,
+                                  icon: BitmapDescriptor.defaultMarkerWithHue(
+                                      BitmapDescriptor.hueGreen),
+                                ),
+                              },
+                              onMapCreated: (controller) async {
+                                _mapController = controller;
+                                _setupMap();
+                              },
+                              mapType: MapType.normal,
+                            ),
+                          ),
+                  ),
+                  leading: IconButton(
+                    icon: Icon(kBackIcon),
+                    onPressed: () => context.navigator.pop(),
+                  ),
+                ),
+
+                /// content
+                SliverList(
+                  delegate: SliverChildListDelegate.fixed(
+                    [
+                      /// body
+                      AnimatedPadding(
+                        duration: kScaleDuration,
+                        padding: EdgeInsets.only(
+                          top: _businessLocation == null
+                              ? kSpacingX24
+                              : kSpacingX16,
+                          left: kSpacingX16,
+                          right: kSpacingX16,
+                          bottom: kSpacingNone,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.business.name,
+                              style: _kTheme.textTheme.headline5,
+                            ),
+                            SizedBox(height: kSpacingX8),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(kLocationIcon, size: kSpacingX12),
+                                SizedBox(width: kSpacingX6),
+                                Text(
+                                  widget.business.location,
+                                  style: _kTheme.textTheme.bodyText1,
+                                ),
+                              ],
+                            ),
+
+                            /// tabs
+                            TabSelector(
+                              tabs: ['Services', 'Profile'],
+                              onTabChanged: (index) =>
+                                  setState(() => _currentPage = index),
+                            ),
+
+                            /// pages
+                            AnimatedContainer(
+                              duration: kScaleDuration,
+                              child: _currentPage == 0
+                                  ? _buildServicesTab()
+                                  : _buildBusinessProfileTab(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 
-  /// tab item
-  Widget _buildTabItem(
-          {@required String title, @required int index, bool active = false}) =>
-      Padding(
-        padding: EdgeInsets.only(bottom: kSpacingX16, top: kSpacingX24),
-        child: InkWell(
-          splashColor: kTransparent,
-          borderRadius:
-              BorderRadius.circular(active ? kSpacingX24 : kSpacingNone),
-          onTap: () {
-            _currentPage = index;
-            setState(() {});
-          },
-          child: AnimatedContainer(
-            duration: kScaleDuration,
-            width: SizeConfig.screenWidth * 0.25,
-            height: kSpacingX36,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: active ? _kTheme.colorScheme.onBackground : kTransparent,
-              ),
-              borderRadius:
-                  BorderRadius.circular(active ? kSpacingX24 : kSpacingNone),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              title,
-              style: _kTheme.textTheme.button.copyWith(
-                color: active
-                    ? _kTheme.colorScheme.onBackground
-                    : _kTheme.colorScheme.onBackground
-                        .withOpacity(kEmphasisLow),
+  /// services tab
+  Widget _buildServicesTab() => Padding(
+        padding: EdgeInsets.only(left: kSpacingX4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Services rendered',
+              style: _kTheme.textTheme.headline6.copyWith(
+                color: _kTheme.colorScheme.onBackground
+                    .withOpacity(kEmphasisMedium),
               ),
             ),
-          ),
+            SizedBox(height: kSpacingX4),
+            Text(
+              'Tap to view more details',
+              style: _kTheme.textTheme.caption.copyWith(
+                color:
+                    _kTheme.colorScheme.onBackground.withOpacity(kEmphasisLow),
+              ),
+            ),
+            SizedBox(height: kSpacingX24),
+            if (_servicesForCategory.isNotEmpty) ...{
+              ..._servicesForCategory
+                  .map(
+                    (service) => ArtisanListTile(
+                      service: service,
+                      onTap: () {},
+                    ),
+                  )
+                  .toList(),
+            }
+          ],
         ),
       );
-
-  /// services tab
-  Widget _buildServicesTab() => Container(color: kGreenColor);
 
   /// business profile tab
   Widget _buildBusinessProfileTab() => Container(color: kAmberColor);

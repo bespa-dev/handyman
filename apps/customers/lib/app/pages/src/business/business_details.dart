@@ -11,14 +11,14 @@ import 'package:lite/shared/shared.dart';
 
 /// todo -> complete other tabs
 class BusinessDetailsPage extends StatefulWidget {
-  final BaseBusiness business;
-  final BaseArtisan artisan;
-
   const BusinessDetailsPage({
     Key key,
     @required this.business,
     this.artisan,
   }) : super(key: key);
+
+  final BaseBusiness business;
+  final BaseArtisan artisan;
 
   @override
   _BusinessDetailsPageState createState() => _BusinessDetailsPageState();
@@ -217,35 +217,19 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                                 ),
 
                                 /// tabs
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    _buildTabItem(
-                                      title: "Services",
-                                      index: 0,
-                                      active: _currentPage == 0,
-                                    ),
-                                    _buildTabItem(
-                                      title: "Profile",
-                                      index: 1,
-                                      active: _currentPage == 1,
-                                    ),
-                                    _buildTabItem(
-                                      title: "Earnings",
-                                      index: 2,
-                                      active: _currentPage == 2,
-                                    ),
-                                  ],
+                                TabSelector(
+                                  tabs: ['Services', 'Profile'],
+                                  onTabChanged: (index) =>
+                                      setState(() => _currentPage = index),
                                 ),
 
-                                if (_currentPage == 0) ...{
-                                  _buildServicesTab()
-                                } else if (_currentPage == 1) ...{
-                                  _buildBusinessProfileTab()
-                                } else ...{
-                                  _buildEarningsTab()
-                                },
+                                /// pages
+                                AnimatedContainer(
+                                  duration: kSheetDuration,
+                                  child: _currentPage == 0
+                                      ? _buildBusinessProfileTab()
+                                      : _buildServicesTab(),
+                                ),
                               ],
                             ),
                           ),
@@ -258,44 +242,6 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
     );
   }
 
-  /// tab item
-  Widget _buildTabItem(
-          {@required String title, @required int index, bool active = false}) =>
-      Padding(
-        padding: EdgeInsets.only(bottom: kSpacingX16, top: kSpacingX24),
-        child: InkWell(
-          splashColor: kTransparent,
-          borderRadius:
-              BorderRadius.circular(active ? kSpacingX24 : kSpacingNone),
-          onTap: () {
-            _currentPage = index;
-            setState(() {});
-          },
-          child: AnimatedContainer(
-            duration: kScaleDuration,
-            width: SizeConfig.screenWidth * 0.25,
-            height: kSpacingX36,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: active ? _kTheme.colorScheme.onBackground : kTransparent,
-              ),
-              borderRadius:
-                  BorderRadius.circular(active ? kSpacingX24 : kSpacingNone),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              title,
-              style: _kTheme.textTheme.button.copyWith(
-                color: active
-                    ? _kTheme.colorScheme.onBackground
-                    : _kTheme.colorScheme.onBackground
-                        .withOpacity(kEmphasisLow),
-              ),
-            ),
-          ),
-        ),
-      );
-
   /// services tab
   Widget _buildServicesTab() => Padding(
         padding: EdgeInsets.only(left: kSpacingX4),
@@ -304,7 +250,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Services rendered",
+              'Services rendered',
               style: _kTheme.textTheme.headline6.copyWith(
                 color: _kTheme.colorScheme.onBackground
                     .withOpacity(kEmphasisMedium),
@@ -312,7 +258,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
             ),
             SizedBox(height: kSpacingX4),
             Text(
-              "Tap to view more details",
+              'Tap to view more details',
               style: _kTheme.textTheme.caption.copyWith(
                 color:
                     _kTheme.colorScheme.onBackground.withOpacity(kEmphasisLow),
@@ -324,7 +270,13 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                   .map(
                     (service) => ArtisanListTile(
                       service: service,
-                      onTap: () {},
+                      onTap: () async => await BasicDialog(
+                        message: 'Do you wish to request for this service?',
+                        onComplete: () => context.navigator.pushRequestPage(
+                          artisan: widget.artisan,
+                          service: service,
+                        ),
+                      ),
                     ),
                   )
                   .toList(),
@@ -333,9 +285,6 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
         ),
       );
 
-  /// business profile tab
+  /// todo -> business profile tab
   Widget _buildBusinessProfileTab() => Container(color: kAmberColor);
-
-  /// earnings tab
-  Widget _buildEarningsTab() => Container(color: _kTheme.colorScheme.error);
 }

@@ -120,6 +120,7 @@ class Router extends RouterBase {
         pageBuilder: (context, animation, secondaryAnimation) => RequestPage(
           key: args.key,
           artisan: args.artisan,
+          service: args.service,
         ),
         settings: data,
       );
@@ -267,10 +268,12 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
   Future<dynamic> pushRequestPage({
     Key key,
     @required BaseArtisan artisan,
+    BaseArtisanService service,
   }) =>
       push<dynamic>(
         Routes.requestPage,
-        arguments: RequestPageArguments(key: key, artisan: artisan),
+        arguments:
+            RequestPageArguments(key: key, artisan: artisan, service: service),
       );
 
   Future<dynamic> pushServiceRatingsPage({
@@ -369,7 +372,8 @@ class CategoryDetailsPageArguments {
 class RequestPageArguments {
   final Key key;
   final BaseArtisan artisan;
-  RequestPageArguments({this.key, @required this.artisan});
+  final BaseArtisanService service;
+  RequestPageArguments({this.key, @required this.artisan, this.service});
 }
 
 /// ServiceRatingsPage arguments holder class
