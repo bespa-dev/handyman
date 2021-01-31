@@ -20,6 +20,7 @@ export 'src/fields.dart';
 export 'src/image.dart';
 export 'src/loaders.dart';
 export 'src/menu_icon.dart';
+export 'src/notifications.dart';
 export 'src/page_indicator.dart';
 export 'src/review_list_item.dart';
 export 'src/search_result_card.dart';

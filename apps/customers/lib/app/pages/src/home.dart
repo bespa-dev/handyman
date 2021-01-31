@@ -131,42 +131,53 @@ class _HomePageState extends State<HomePage> {
             top: _navStates[_currentPage] == _artisansNavKey ||
                 _navStates[_currentPage] == _profileNavKey,
             bottom: true,
-            child: IndexedStack(
-              index: _currentPage,
+            child: Column(
               children: [
-                /// artisans
-                Navigator(
-                  key: _artisansNavKey,
-                  onGenerateRoute: (route) => MaterialPageRoute(
-                      settings: route, builder: (__) => ArtisansPage()),
-                ),
+                if (_navStates[_currentPage] != _profileNavKey &&
+                    _navStates[_currentPage] != _searchNavKey) ...{
+                  CustomAppBar(title: 'Artisans')
+                },
+                Expanded(
+                  child: IndexedStack(
+                    index: _currentPage,
+                    children: [
+                      /// artisans
+                      Navigator(
+                        key: _artisansNavKey,
+                        onGenerateRoute: (route) => MaterialPageRoute(
+                            settings: route, builder: (__) => ArtisansPage()),
+                      ),
 
-                /// search
-                Navigator(
-                  key: _searchNavKey,
-                  onGenerateRoute: (route) => MaterialPageRoute(
-                      settings: route, builder: (__) => SearchPage()),
-                ),
+                      /// search
+                      Navigator(
+                        key: _searchNavKey,
+                        onGenerateRoute: (route) => MaterialPageRoute(
+                            settings: route, builder: (__) => SearchPage()),
+                      ),
 
-                /// profile
-                Navigator(
-                  key: _profileNavKey,
-                  onGenerateRoute: (route) => MaterialPageRoute(
-                      settings: route, builder: (__) => ProfilePage()),
-                ),
+                      /// profile
+                      Navigator(
+                        key: _profileNavKey,
+                        onGenerateRoute: (route) => MaterialPageRoute(
+                            settings: route, builder: (__) => ProfilePage()),
+                      ),
 
-                /// notifications
-                Navigator(
-                  key: _notificationsNavKey,
-                  onGenerateRoute: (route) => MaterialPageRoute(
-                      settings: route, builder: (__) => NotificationsPage()),
-                ),
+                      /// notifications
+                      Navigator(
+                        key: _notificationsNavKey,
+                        onGenerateRoute: (route) => MaterialPageRoute(
+                            settings: route,
+                            builder: (__) => NotificationsPage()),
+                      ),
 
-                /// bookings
-                Navigator(
-                  key: _bookingsNavKey,
-                  onGenerateRoute: (route) => MaterialPageRoute(
-                      settings: route, builder: (__) => BookingsPage()),
+                      /// bookings
+                      Navigator(
+                        key: _bookingsNavKey,
+                        onGenerateRoute: (route) => MaterialPageRoute(
+                            settings: route, builder: (__) => BookingsPage()),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

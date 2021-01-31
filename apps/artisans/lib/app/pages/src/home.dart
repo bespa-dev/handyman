@@ -12,6 +12,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/pages/pages.dart';
 import 'package:handyman/app/widgets/widgets.dart';
@@ -26,8 +27,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   /// UI
   ThemeData _kTheme;
-  bool _isLoggedIn = false;
+  bool _isLoggedIn = false,
+      _showApprovalState = false,
+      _showServicesRegisteredState = false;
   int _currentPage = 0;
+
+  /// Navigation
   final _navStates = <GlobalKey<NavigatorState>>[];
   final _dashboardNavKey = GlobalKey<NavigatorState>();
   final _searchNavKey = GlobalKey<NavigatorState>();
@@ -101,6 +106,20 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     if (mounted) {
+      _userBloc.listen((state) {
+        if (state is SuccessState<BaseArtisan>) {
+          var artisan = state.data;
+          if (artisan == null) return;
+          _showApprovalState = !artisan.isApproved;
+          _showServicesRegisteredState = artisan.services.isEmpty ||
+              artisan.category == null ||
+              artisan.categoryGroup == null;
+          logger.d(
+              'Approved -> $_showApprovalState & hasServices -> $_showServicesRegisteredState');
+          if (mounted) setState(() {});
+        }
+      });
+
       /// observe current user's id
       _prefsBloc
         ..add(PrefsEvent.getUserIdEvent())
@@ -109,7 +128,10 @@ class _HomePageState extends State<HomePage> {
             _isLoggedIn = state.data.isNotEmpty;
 
             /// observe current user
-            if (_isLoggedIn) _userBloc.add(UserEvent.currentUserEvent());
+            if (_isLoggedIn) {
+              _userBloc.add(UserEvent.getArtisanByIdEvent(id: state.data));
+              _userBloc.add(UserEvent.currentUserEvent());
+            }
             if (mounted) setState(() {});
           }
         });
@@ -130,37 +152,78 @@ class _HomePageState extends State<HomePage> {
             top: _navStates[_currentPage] == _dashboardNavKey ||
                 _navStates[_currentPage] == _profileNavKey,
             bottom: true,
-            child: IndexedStack(
-              index: _currentPage,
-              children: [
-                /// dashboard
-                Navigator(
-                  key: _dashboardNavKey,
-                  onGenerateRoute: (route) => MaterialPageRoute(
-                      settings: route, builder: (__) => DashboardPage()),
-                ),
+            child: AnimationLimiter(
+              child: AnimationConfiguration.synchronized(
+                duration: kScaleDuration,
+                child: Column(
+                  children: [
+                    /// app bar
+                    if (_showApprovalState) ...{
+                      NotificationContainer(
+                        title: 'Account approval pending',
+                        description: kAccountApprovalHelperText,
+                        onTap: () => setState(
+                            () => _showApprovalState = !_showApprovalState),
+                      )
+                    } else if (_showServicesRegisteredState) ...{
+                      NotificationContainer(
+                        title: 'Complete your business profile',
+                        description: kServiceSelectionHelperText,
+                        icon: kMoneyIcon,
+                        buttonText: _isLoggedIn ? 'Configure' : 'Dismiss',
+                        onTap: () => _isLoggedIn
+                            ? _onTabPressed(3)
+                            : setState(
+                                () => _showServicesRegisteredState =
+                                    !_showServicesRegisteredState,
+                              ),
+                      )
+                    } else if (_navStates[_currentPage] != _profileNavKey &&
+                        _navStates[_currentPage] != _searchNavKey) ...{
+                      CustomAppBar(title: 'Dashboard')
+                    },
 
-                /// search
-                Navigator(
-                  key: _searchNavKey,
-                  onGenerateRoute: (route) => MaterialPageRoute(
-                      settings: route, builder: (__) => SearchPage()),
-                ),
+                    Expanded(
+                      child: IndexedStack(
+                        index: _currentPage,
+                        sizing: StackFit.expand,
+                        children: [
+                          /// dashboard
+                          Navigator(
+                            key: _dashboardNavKey,
+                            onGenerateRoute: (route) => MaterialPageRoute(
+                                settings: route,
+                                builder: (__) => DashboardPage()),
+                          ),
 
-                /// notifications
-                Navigator(
-                  key: _notificationsNavKey,
-                  onGenerateRoute: (route) => MaterialPageRoute(
-                      settings: route, builder: (__) => NotificationsPage()),
-                ),
+                          /// search
+                          Navigator(
+                            key: _searchNavKey,
+                            onGenerateRoute: (route) => MaterialPageRoute(
+                                settings: route, builder: (__) => SearchPage()),
+                          ),
 
-                /// profile
-                Navigator(
-                  key: _profileNavKey,
-                  onGenerateRoute: (route) => MaterialPageRoute(
-                      settings: route, builder: (__) => ProfilePage()),
+                          /// notifications
+                          Navigator(
+                            key: _notificationsNavKey,
+                            onGenerateRoute: (route) => MaterialPageRoute(
+                                settings: route,
+                                builder: (__) => NotificationsPage()),
+                          ),
+
+                          /// profile
+                          Navigator(
+                            key: _profileNavKey,
+                            onGenerateRoute: (route) => MaterialPageRoute(
+                                settings: route,
+                                builder: (__) => ProfilePage()),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
           bottomNavigationBar: Container(

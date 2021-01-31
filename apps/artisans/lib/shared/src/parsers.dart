@@ -7,7 +7,7 @@ String parseFromTimestamp(
   bool isDetailedFormat = false,
   bool fromNow = false,
 }) {
-  if(time == null) return '';
+  if (time == null) return '';
   final timestamp = DateTime.tryParse(time);
   return fromNow
       ? Jiffy.unix(timestamp.millisecondsSinceEpoch).fromNow()
@@ -26,6 +26,6 @@ String countDownFrom(String first) =>
 
 String formatCurrency(double amount) {
   var cediFormat = NumberFormat.currency(
-      decimalDigits: 2, locale: "en_GH", symbol: "\u00a2");
+      decimalDigits: 2, locale: 'en_GH', symbol: '\u00a2');
   return cediFormat.format(amount);
 }

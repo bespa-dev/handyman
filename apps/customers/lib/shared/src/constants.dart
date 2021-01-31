@@ -160,6 +160,7 @@ const kChatIcon = Entypo.message;
 const kSendIcon = Feather.send;
 const kImageIcon = Feather.image;
 const kCallIcon = Feather.phone;
+const kMoneyIcon = Entypo.wallet;
 const kThreeDotsOptionsIcon = Entypo.dots_three_horizontal;
 
 /// Others

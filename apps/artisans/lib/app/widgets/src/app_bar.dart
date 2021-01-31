@@ -86,8 +86,8 @@ class ExpandedAppBarContainer extends StatelessWidget {
 }
 
 /// sliver app bar
-class CustomSliverAppBar extends StatefulWidget {
-  const CustomSliverAppBar({
+class CustomAppBar extends StatefulWidget {
+  const CustomAppBar({
     Key key,
     this.title = kAppName,
     this.backgroundImage = kBackgroundAsset,
@@ -97,10 +97,10 @@ class CustomSliverAppBar extends StatefulWidget {
   final String backgroundImage;
 
   @override
-  _CustomSliverAppBarState createState() => _CustomSliverAppBarState();
+  _CustomAppBarState createState() => _CustomAppBarState();
 }
 
-class _CustomSliverAppBarState extends State<CustomSliverAppBar> {
+class _CustomAppBarState extends State<CustomAppBar> {
   String _appVersion = '...';
 
   /// gets the application's version
@@ -118,7 +118,7 @@ class _CustomSliverAppBarState extends State<CustomSliverAppBar> {
   @override
   Widget build(BuildContext context) {
     final kTheme = Theme.of(context);
-    return SliverAppBar(
+    return AppBar(
       toolbarHeight: kToolbarHeight,
       toolbarTextStyle: kTheme.appBarTheme.textTheme.headline6,
       textTheme: kTheme.appBarTheme.textTheme,
@@ -147,27 +147,32 @@ class _CustomSliverAppBarState extends State<CustomSliverAppBar> {
         ),
       ),
       centerTitle: false,
-      pinned: true,
       backgroundColor: kTheme.colorScheme.background,
-      expandedHeight: SizeConfig.screenHeight * 0.15,
       flexibleSpace: FlexibleSpaceBar(
         collapseMode: CollapseMode.parallax,
-        background: Stack(
-          fit: StackFit.expand,
-          children: [
-            Positioned.fill(
-              child: ImageView(
-                tag: Uuid().v4(),
-                imageUrl: widget.backgroundImage,
-                isAssetImage: widget.backgroundImage.startsWith('assets/'),
+        background: ConstrainedBox(
+          constraints: BoxConstraints.tightFor(
+            width: SizeConfig.screenWidth,
+            height: SizeConfig.screenHeight * 0.15,
+          ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Positioned.fill(
+                child: ImageView(
+                  tag: Uuid().v4(),
+                  imageUrl: widget.backgroundImage,
+                  isAssetImage: widget.backgroundImage.startsWith('assets/'),
+                ),
               ),
-            ),
-            Positioned.fill(
-              child: Container(
-                color: kTheme.colorScheme.background.withOpacity(kEmphasisLow),
+              Positioned.fill(
+                child: Container(
+                  color:
+                      kTheme.colorScheme.background.withOpacity(kEmphasisLow),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         titlePadding: EdgeInsets.zero,
       ),

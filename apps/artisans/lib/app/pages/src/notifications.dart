@@ -73,9 +73,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 .toList();
             return CustomScrollView(
               slivers: [
-                /// app bar
-                CustomSliverAppBar(title: 'Notifications'),
-
                 SliverList(
                   delegate: SliverChildListDelegate.fixed(
                     [

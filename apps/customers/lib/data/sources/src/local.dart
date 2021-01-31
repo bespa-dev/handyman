@@ -81,6 +81,8 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   final Box<ArtisanService> serviceBox;
 
   void _performInitLoad() async {
+    if (prefsRepo.isLoggedIn) return;
+
     /// decode categories from json
     var categorySource = await rootBundle.loadString('assets/categories.json');
     var decodedCategories = jsonDecode(categorySource) as List;
@@ -100,26 +102,6 @@ class HiveLocalDatasource extends BaseLocalDatasource {
       /// put each one into box
       await serviceBox.put(item.id, item);
     }
-
-    /*if (!kReleaseMode) {
-      var requestsSource = await rootBundle.loadString('assets/requests.json');
-      var decodedRequests = jsonDecode(requestsSource) as List;
-      for (var json in decodedRequests) {
-        final item = Booking.fromJson(json);
-
-        // put each one into box
-        await bookingBox.put(item.id, item);
-      }
-
-      var reviewsSource = await rootBundle.loadString('assets/reviews.json');
-      var decodedReviews = jsonDecode(reviewsSource) as List;
-      for (var json in decodedReviews) {
-        final item = Review.fromJson(json);
-
-        // put each one into box
-        await reviewBox.put(item.id, item);
-      }
-    }*/
   }
 
   @override
@@ -186,6 +168,8 @@ class HiveLocalDatasource extends BaseLocalDatasource {
     yield artisanBox.values
         .where((item) => item.categoryGroup.contains(category))
         .where((item) => item.id != prefsRepo.userId)
+        .where((item) => item.isApproved)
+        .where((item) => item.isAvailable)
         .toList();
   }
 

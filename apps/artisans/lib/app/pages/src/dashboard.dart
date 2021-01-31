@@ -8,7 +8,6 @@
  */
 
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -103,9 +102,6 @@ class _DashboardPageState extends State<DashboardPage> {
 
               return CustomScrollView(
                 slivers: [
-                  /// app bar
-                  CustomSliverAppBar(title: "Dashboard"),
-
                   SliverList(
                     delegate: SliverChildListDelegate.fixed(
                       [
@@ -122,7 +118,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               Padding(
                                 padding: EdgeInsets.only(left: kSpacingX4),
                                 child: Text(
-                                  "Progress",
+                                  'Progress',
                                   style: kTheme.textTheme.headline6.copyWith(
                                     color: kTheme.colorScheme.onBackground
                                         .withOpacity(kEmphasisMedium),
@@ -145,7 +141,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                             BorderRadius.circular(kSpacingX4),
                                         splashColor: kTheme.splashColor,
                                         onTap: () {
-                                          /// fixme -> add to v1.2.1
+                                          /// fixme -> add to v1.3.0
                                           /// todo -> nav to earnings page
                                         },
                                         child: Container(
@@ -181,7 +177,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                               ),
                                               SizedBox(height: kSpacingX12),
                                               Text(
-                                                "Weekly Earnings",
+                                                'Weekly Earnings',
                                                 style: kTheme
                                                     .textTheme.bodyText1
                                                     .copyWith(
@@ -194,7 +190,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                               ),
                                               SizedBox(height: kSpacingX2),
                                               Text(
-                                                "This is how much you earned during the week",
+                                                'This is how much you earned during the week',
                                                 textAlign: TextAlign.center,
                                                 style: kTheme.textTheme.caption
                                                     .copyWith(
@@ -210,7 +206,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                     horizontal: kSpacingX16),
                                                 child: Text(
                                                   /// todo -> show earnings here
-                                                  formatCurrency(0.99),
+                                                  formatCurrency(0.00),
                                                   style: kTheme
                                                       .textTheme.headline6
                                                       .copyWith(
@@ -270,7 +266,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                               ),
                                               SizedBox(height: kSpacingX12),
                                               Text(
-                                                "Ratings",
+                                                'Ratings',
                                                 style: kTheme
                                                     .textTheme.bodyText1
                                                     .copyWith(
@@ -283,7 +279,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                               ),
                                               SizedBox(height: kSpacingX2),
                                               Text(
-                                                "Based on reviews made by customers served",
+                                                'Based on reviews made by customers served',
                                                 textAlign: TextAlign.center,
                                                 style: kTheme.textTheme.caption
                                                     .copyWith(
@@ -330,7 +326,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "My Business profile",
+                                  'My Business profile',
                                   style: kTheme.textTheme.headline6.copyWith(
                                     color: kTheme.colorScheme.onBackground
                                         .withOpacity(kEmphasisMedium),
@@ -369,8 +365,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           ),
                         },
 
-                        if (bookingState
-                            is SuccessState<Stream<List<BaseBooking>>>) ...{
+                        if (bookings.isNotEmpty) ...{
                           /// bookings
                           Padding(
                             padding: EdgeInsets.only(
@@ -382,21 +377,12 @@ class _DashboardPageState extends State<DashboardPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Jobs",
+                                  'Jobs',
                                   style: kTheme.textTheme.headline6.copyWith(
                                     color: kTheme.colorScheme.onBackground
                                         .withOpacity(kEmphasisMedium),
                                   ),
                                 ),
-                                if (!kReleaseMode) ...{
-                                  IconButton(
-                                    icon: Icon(kFilterIcon),
-                                    onPressed: () {
-                                      /// todo -> filter requests
-                                    },
-                                    iconSize: kSpacingX16,
-                                  ),
-                                }
                               ],
                             ),
                           ),
@@ -407,10 +393,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 (item) => BookingListItem(
                                   booking: item,
                                   shouldUpdateUI: (_) {
-                                    if (_)
+                                    if (_) {
                                       _bookingBloc.add(
                                           BookingEvent.observeBookingForArtisan(
                                               id: _currentUser?.id));
+                                    }
                                   },
                                 ),
                               )
@@ -506,7 +493,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   Text.rich(
                     TextSpan(children: [
                       TextSpan(
-                        text: "$length ",
+                        text: '$length ',
                         style: kTheme.textTheme.headline6.copyWith(
                           fontWeight: FontWeight.w700,
                           color: kTheme.colorScheme.onBackground
@@ -532,7 +519,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                   SizedBox(width: kSpacingX4),
                   Text(
-                    "${_currentUser.rating}",
+                    '${_currentUser.rating}',
                     style: kTheme.textTheme.button.copyWith(
                       color: kAmberColor,
                     ),

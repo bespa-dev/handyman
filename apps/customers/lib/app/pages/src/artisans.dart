@@ -85,9 +85,6 @@ class _ArtisansPageState extends State<ArtisansPage> {
                     builder: (_, snapshot) {
                       return CustomScrollView(
                         slivers: [
-                          /// app bar
-                          CustomSliverAppBar(title: "Artisans"),
-
                           /// featured artisans
                           if (snapshot.hasData && snapshot.data.isNotEmpty) ...{
                             _buildArtisanCard(snapshot.data),
@@ -108,7 +105,7 @@ class _ArtisansPageState extends State<ArtisansPage> {
                                     TextSpan(
                                       children: [
                                         TextSpan(
-                                            text: "Services available\n",
+                                            text: 'Services available\n',
                                             style: kTheme.textTheme.headline5),
                                         TextSpan(
                                             text: kAppSloganDesc,
@@ -174,11 +171,11 @@ class _ArtisansPageState extends State<ArtisansPage> {
               TextSpan(
                 children: [
                   TextSpan(
-                      text: "Most Popular\n",
+                      text: 'Most Popular\n',
                       style: kTheme.textTheme.headline5),
                   TextSpan(
                     text:
-                        "Artisans with higher ratings based on customer reviews",
+                        'Artisans with higher ratings based on customer reviews',
                     style: kTheme.textTheme.bodyText2.copyWith(
                       color: kTheme.colorScheme.onBackground
                           .withOpacity(kEmphasisLow),
@@ -274,11 +271,10 @@ class _ArtisansPageState extends State<ArtisansPage> {
                                       UserAvatar(
                                         url: artisan.avatar,
                                         radius: kSpacingX56,
-
                                       ),
                                       SizedBox(height: kSpacingX16),
                                       Text(
-                                        artisan.name ?? "No username",
+                                        artisan.name ?? 'No username',
                                         style: kTheme.textTheme.headline6,
                                       ),
                                       SizedBox(height: kSpacingX6),
@@ -301,7 +297,7 @@ class _ArtisansPageState extends State<ArtisansPage> {
                                                   return Text(
                                                     __.hasData
                                                         ? __.data.name
-                                                        : "...",
+                                                        : '...',
                                                     style: kTheme
                                                         .textTheme.bodyText1,
                                                   );

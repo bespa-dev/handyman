@@ -19,18 +19,20 @@ import 'package:lite/shared/shared.dart';
 import 'package:meta/meta.dart';
 
 class FirebaseRemoteDatasource implements BaseRemoteDatasource {
-  final BasePreferenceRepository prefsRepo;
-  final FirebaseFirestore firestore;
-
   FirebaseRemoteDatasource(
       {@required this.prefsRepo, @required this.firestore}) {
     /// load initial data from assets
     _performInitLoad();
   }
 
+  final BasePreferenceRepository prefsRepo;
+  final FirebaseFirestore firestore;
+
   void _performInitLoad() async {
+    if (prefsRepo.isLoggedIn) return;
+
     /// decode categories from json
-    var source = await rootBundle.loadString("assets/categories.json");
+    var source = await rootBundle.loadString('assets/categories.json');
     var decoded = jsonDecode(source) as List;
     for (var json in decoded) {
       final item = ServiceCategory.fromJson(json);
@@ -48,8 +50,8 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
       String customerId, String artisanId) async* {
     yield* firestore
         .collection(RefUtils.kBookingRef)
-        .where("customer_id", isEqualTo: customerId)
-        .where("artisan_id", isEqualTo: artisanId)
+        .where('customer_id', isEqualTo: customerId)
+        .where('artisan_id', isEqualTo: artisanId)
         .snapshots()
         .map((event) =>
             event.docs.map((e) => Booking.fromJson(e.data())).toList());
@@ -100,8 +102,8 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
       {@required String dueDate, @required String artisanId}) async* {
     yield* firestore
         .collection(RefUtils.kBookingRef)
-        .where("due_date", isLessThanOrEqualTo: dueDate)
-        .where("artisan_id", isEqualTo: artisanId)
+        .where('due_date', isLessThanOrEqualTo: dueDate)
+        .where('artisan_id', isEqualTo: artisanId)
         .snapshots()
         .map((event) =>
             event.docs.map((e) => Booking.fromJson(e.data())).toList());
@@ -119,7 +121,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
       {@required String userId}) async* {
     yield* firestore
         .collection(RefUtils.kGalleryRef)
-        .where("user_id", isEqualTo: userId)
+        .where('user_id', isEqualTo: userId)
         .snapshots()
         .map((event) =>
             event.docs.map((e) => Gallery.fromJson(e.data())).toList());
@@ -139,7 +141,9 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
       {@required String category}) async* {
     yield* firestore
         .collection(RefUtils.kArtisanRef)
-        .where("category_group", isEqualTo: category)
+        .where('category_group', isEqualTo: category)
+        .where('approved', isEqualTo: true)
+        .where('available', isEqualTo: true)
         .snapshots()
         .map((event) =>
             event.docs.map((e) => Artisan.fromJson(e.data())).toList());
@@ -149,7 +153,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   Stream<List<BaseBooking>> observeBookingsForArtisan(String id) async* {
     yield* firestore
         .collection(RefUtils.kBookingRef)
-        .where("artisan_id", isEqualTo: id)
+        .where('artisan_id', isEqualTo: id)
         .snapshots()
         .map((event) =>
             event.docs.map((e) => Booking.fromJson(e.data())).toList());
@@ -159,7 +163,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   Stream<List<BaseBooking>> observeBookingsForCustomer(String id) async* {
     yield* firestore
         .collection(RefUtils.kBookingRef)
-        .where("customer_id", isEqualTo: id)
+        .where('customer_id', isEqualTo: id)
         .snapshots()
         .map((event) =>
             event.docs.map((e) => Booking.fromJson(e.data())).toList());
@@ -170,7 +174,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
       {@required ServiceCategoryGroup categoryGroup}) async* {
     yield* firestore
         .collection(RefUtils.kCategoryRef)
-        .where("group_name", isEqualTo: categoryGroup.name())
+        .where('group_name', isEqualTo: categoryGroup.name())
         .snapshots()
         .map((event) =>
             event.docs.map((e) => ServiceCategory.fromJson(e.data())).toList());
@@ -225,7 +229,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   Stream<List<BaseReview>> observeReviewsForArtisan(String id) async* {
     yield* firestore
         .collection(RefUtils.kReviewRef)
-        .where("artisan_id", isLessThanOrEqualTo: id)
+        .where('artisan_id', isLessThanOrEqualTo: id)
         .snapshots()
         .map((event) =>
             event.docs.map((e) => Review.fromJson(e.data())).toList());
@@ -281,7 +285,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
       {@required String artisan}) async {
     var snapshot = await firestore
         .collection(RefUtils.kBusinessRef)
-        .where("artisan_id", isEqualTo: artisan)
+        .where('artisan_id', isEqualTo: artisan)
         .get();
     return snapshot.docs.map((e) => Business.fromJson(e.data())).toList();
   }
