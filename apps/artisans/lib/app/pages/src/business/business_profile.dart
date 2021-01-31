@@ -18,6 +18,7 @@ import 'package:uuid/uuid.dart';
 /// https://pub.dev/packages/google_maps_place_picker
 class BusinessProfilePage extends StatefulWidget {
   const BusinessProfilePage({Key key, this.business}) : super(key: key);
+
   final BaseBusiness business;
 
   @override

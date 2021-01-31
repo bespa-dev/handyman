@@ -11,6 +11,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:handyman/data/entities/entities.dart';
 import 'package:handyman/domain/models/models.dart';
@@ -19,15 +20,6 @@ import 'package:handyman/shared/shared.dart';
 import 'package:meta/meta.dart';
 
 class AuthRepositoryImpl extends BaseAuthRepository {
-  final GoogleSignIn _googleSignIn;
-  final FirebaseAuth _auth;
-  final BasePreferenceRepository _prefsRepo;
-  final BaseUserRepository _userRepo;
-  final FirebaseMessaging _messaging;
-
-  final _onAuthStateChangedController = StreamController<AuthState>.broadcast();
-  final _onMessageChangedController = StreamController<String>.broadcast();
-
   AuthRepositoryImpl({
     @required GoogleSignIn googleSignIn,
     @required FirebaseAuth auth,
@@ -39,6 +31,15 @@ class AuthRepositoryImpl extends BaseAuthRepository {
         _prefsRepo = prefsRepo,
         _messaging = messaging,
         _userRepo = userRepo;
+
+  final GoogleSignIn _googleSignIn;
+  final FirebaseAuth _auth;
+  final BasePreferenceRepository _prefsRepo;
+  final BaseUserRepository _userRepo;
+  final FirebaseMessaging _messaging;
+
+  final _onAuthStateChangedController = StreamController<AuthState>.broadcast();
+  final _onMessageChangedController = StreamController<String>.broadcast();
 
   Future<BaseUser> _getOrCreateUserFromCredential(UserCredential credential,
       {String forcedUsername}) async {
@@ -58,6 +59,8 @@ class AuthRepositoryImpl extends BaseAuthRepository {
         avatar: firebaseUser.photoURL,
         startWorkingHours: timestamp,
         endWorkingHours: timestamp,
+        category: kReleaseMode ? null : '8ecf642d-429f-4b51-805b-0678a9af8e28',
+        categoryGroup: kReleaseMode ? null : 'Mechanics',
       );
       await _userRepo.updateUser(user: newUser);
       _prefsRepo.userId = newUser.id;

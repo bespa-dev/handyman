@@ -38,15 +38,17 @@ class CategoryBloc extends BaseBloc<CategoryEvent> {
       if (result is UseCaseResultSuccess<Stream<List<BaseServiceCategory>>>) {
         yield BlocState<Stream<List<BaseServiceCategory>>>.successState(
             data: result.value);
-      } else
-        yield BlocState.errorState(failure: "Failed to get categories");
+      } else {
+        yield BlocState.errorState(failure: 'Failed to get categories');
+      }
     } else if (event is ObserveCategoryById) {
       var result = await ObserveCategoryByIdUseCase(_repo).execute(event.id);
       if (result is UseCaseResultSuccess<Stream<BaseServiceCategory>>) {
         yield BlocState<Stream<BaseServiceCategory>>.successState(
             data: result.value);
-      } else
-        yield BlocState.errorState(failure: "Failed to get category");
+      } else {
+        yield BlocState.errorState(failure: 'Failed to get category');
+      }
     }
   }
 }

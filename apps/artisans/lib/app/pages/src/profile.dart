@@ -33,6 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final _authBloc = AuthBloc(repo: Injection.get());
   final _prefsBloc = PrefsBloc(repo: Injection.get());
   final _userBloc = UserBloc(repo: Injection.get());
+  final _categoryBloc = CategoryBloc(repo: Injection.get());
   final _updateUserBloc = UserBloc(repo: Injection.get());
   final _storageBloc = StorageBloc(repo: Injection.get());
 
@@ -43,12 +44,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
   /// User
   BaseArtisan _currentUser;
+  BaseServiceCategory _category;
 
   @override
   void dispose() {
     _authBloc.close();
     _prefsBloc.close();
     _userBloc.close();
+    _categoryBloc.close();
     _storageBloc.close();
     _updateUserBloc.close();
     super.dispose();
@@ -69,6 +72,18 @@ class _ProfilePageState extends State<ProfilePage> {
           }
         });
 
+      /// get category of artisan
+      _categoryBloc.listen((state) {
+        if (state is SuccessState<Stream<BaseServiceCategory>>) {
+          state.data.listen((event) {
+            _category = event;
+            if (mounted) setState(() {});
+            logger.d('Category -> ${_category?.name}');
+          });
+        }
+      });
+
+      /// observe upload state
       _storageBloc.listen((state) {
         if (state is SuccessState<String>) {
           _avatarFile = null;
@@ -129,7 +144,15 @@ class _ProfilePageState extends State<ProfilePage> {
           ? StreamBuilder<BaseArtisan>(
               stream: state.data,
               builder: (_, snapshot) {
-                if (_currentUser == null) _currentUser = snapshot.data;
+                if (_currentUser == null) {
+                  _currentUser = snapshot.data;
+                  if (_currentUser.category != null) {
+                    _categoryBloc.add(
+                      CategoryEvent.observeCategoryById(
+                          id: _currentUser.category),
+                    );
+                  }
+                }
                 return AnimatedOpacity(
                   opacity: _currentUser == null ? 0 : 1,
                   duration: kScaleDuration,
@@ -160,7 +183,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           width: SizeConfig.screenWidth * 0.7,
                                         ),
                                         child: Text(
-                                          _currentUser?.name ?? "No username",
+                                          _currentUser?.name ?? 'No username',
                                           style: kTheme.textTheme.headline6,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -170,7 +193,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       Text.rich(
                                         TextSpan(
                                           children: [
-                                            TextSpan(text: "Joined on\t"),
+                                            TextSpan(text: 'Joined on\t'),
                                             TextSpan(
                                                 text: parseFromTimestamp(
                                                     _currentUser?.createdAt),
@@ -180,7 +203,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                       .colorScheme.secondary,
                                                 )),
                                             TextSpan(
-                                              text: "\n${_currentUser.email}",
+                                              text: '\n${_currentUser.email}',
                                             ),
                                           ],
                                         ),
@@ -206,7 +229,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  "Personal profile",
+                                  'Personal profile',
                                   textAlign: TextAlign.start,
                                   style: kTheme.textTheme.headline6.copyWith(
                                     color: kTheme.colorScheme.onBackground
@@ -224,15 +247,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                         .withOpacity(kEmphasisLow),
                                   ),
                                   title:
-                                      Text(_currentUser?.name ?? "No username"),
-                                  subtitle: Text("Tap to edit"),
+                                      Text(_currentUser?.name ?? 'No username'),
+                                  subtitle: Text('Tap to edit'),
                                   dense: true,
                                   onTap: () async {
                                     _textController.text = _currentUser?.name;
                                     final data = await showCustomDialog(
                                       context: context,
                                       builder: (_) => ReplyMessageDialog(
-                                        title: "Full Name",
+                                        title: 'Full Name',
                                         controller: _textController,
                                         maxLines: 1,
                                         hintText: _currentUser?.name,
@@ -260,15 +283,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                         .withOpacity(kEmphasisLow),
                                   ),
                                   title: Text(
-                                      _currentUser?.phone ?? "No number set"),
-                                  subtitle: Text("Tap to edit"),
+                                      _currentUser?.phone ?? 'No number set'),
+                                  subtitle: Text('Tap to edit'),
                                   dense: true,
                                   onTap: () async {
                                     _textController.text = _currentUser?.phone;
                                     final data = await showCustomDialog(
                                       context: context,
                                       builder: (_) => ReplyMessageDialog(
-                                        title: "Phone number",
+                                        title: 'Phone number',
                                         controller: _textController,
                                         maxLines: 1,
                                         hintText: _currentUser?.phone,
@@ -302,12 +325,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                           _currentUser?.startWorkingHours,
                                           isChatFormat: true,
                                         ) ??
-                                        "Start working hours",
+                                        'Start working hours',
                                   ),
-                                  subtitle: Text("Start working hours"),
+                                  subtitle: Text('Start working hours'),
                                   dense: true,
                                   onTap: () async {
-                                    Navigator.of(context).push(
+                                    await Navigator.of(context).push(
                                       showPicker(
                                         context: context,
                                         value: DateTime.parse(
@@ -343,12 +366,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                           _currentUser?.endWorkingHours,
                                           isChatFormat: true,
                                         ) ??
-                                        "Closing work hours",
+                                        'Closing work hours',
                                   ),
-                                  subtitle: Text("Closing work hours"),
+                                  subtitle: Text('Closing work hours'),
                                   dense: true,
                                   onTap: () async {
-                                    Navigator.of(context).push(
+                                    await Navigator.of(context).push(
                                       showPicker(
                                         context: context,
                                         value: DateTime.parse(
@@ -391,7 +414,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ),
                                   );
                                 },
-                                label: "Sign out",
+                                label: 'Sign out',
                               ),
                             ],
                           ),
@@ -449,14 +472,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       ctx.navigator
                           .pushImagePreviewPage(url: _currentUser?.avatar);
                     },
-                    title: Text("View picture"),
+                    title: Text('View picture'),
                   ),
                   ListTile(
                     onTap: () {
                       sheetController.hide();
                       _pickAvatar();
                     },
-                    title: Text("Update profile picture"),
+                    title: Text('Update profile picture'),
                   ),
                 ],
               ),
