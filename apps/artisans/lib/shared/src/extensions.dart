@@ -62,5 +62,5 @@ extension IterableX<T> on Iterable<T> {
 /// extension on any [Object]
 extension ItemX on Object {
   /// convert any object to a stream
-  Stream asStream() => Stream.value(this);
+  Stream<T> asStream<T>() => Stream<T>.value(this as T);
 }
