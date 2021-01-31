@@ -58,3 +58,9 @@ extension IterableX<T> on Iterable<T> {
           R Function(T) selector) =>
       sortBy(selector).toList().reversed;
 }
+
+/// extension on any [Object]
+extension ItemX on Object {
+  /// convert any object to a stream
+  Stream asStream() => Stream.value(this);
+}

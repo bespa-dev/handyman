@@ -139,7 +139,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
               initialData: widget.business,
               stream: state is SuccessState<Stream<BaseBusiness>>
                   ? state.data
-                  : Stream.value(widget.business),
+                  : widget.business.asStream(),
               builder: (_, snapshot) {
                 _business = snapshot.data;
                 return CustomScrollView(
