@@ -270,11 +270,14 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                   .map(
                     (service) => ArtisanListTile(
                       service: service,
-                      onTap: () async => await BasicDialog(
-                        message: 'Do you wish to request for this service?',
-                        onComplete: () => context.navigator.pushRequestPage(
-                          artisan: widget.artisan,
-                          service: service,
+                      onTap: () async => await showCustomDialog(
+                        context: context,
+                        builder: (_) => BasicDialog(
+                          message: 'Do you wish to request for this service?',
+                          onComplete: () => context.navigator.pushRequestPage(
+                            artisan: widget.artisan,
+                            service: service,
+                          ),
                         ),
                       ),
                     ),

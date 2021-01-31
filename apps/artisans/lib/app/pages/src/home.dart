@@ -7,7 +7,10 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/pages/pages.dart';
@@ -41,7 +44,7 @@ class _HomePageState extends State<HomePage> {
 
   /// handles tab changes
   void _onTabPressed(int index) {
-    if (_currentPage == index)
+    if (_currentPage == index) {
       switch (_currentPage) {
         case 0:
           _dashboardNavKey.currentState.popUntil((route) => route.isFirst);
@@ -56,10 +59,9 @@ class _HomePageState extends State<HomePage> {
           _profileNavKey.currentState.popUntil((route) => route.isFirst);
           break;
       }
-    else if (mounted)
-      setState(() {
-        _currentPage = index;
-      });
+    } else if (mounted) {
+      setState(() => _currentPage = index);
+    }
   }
 
   /// handles back press
@@ -68,8 +70,8 @@ class _HomePageState extends State<HomePage> {
       final state = await showCustomDialog(
         context: context,
         builder: (_) => BasicDialog(
-          message: "Do you wish to exit $kAppName?",
-          onComplete: () async {},
+          message: 'Do you wish to exit $kAppName?',
+          onComplete: () => SystemNavigator.pop(animated: Platform.isIOS),
         ),
       );
       return Future<bool>.value(state ?? false);
@@ -99,22 +101,12 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     if (mounted) {
-      _updateUserBloc.listen((state) {
-        if (state is SuccessState<BaseArtisan>) {
-          _currentUser = state.data;
-          if (mounted) setState(() {});
-        }
-      });
-
       /// observe current user's id
       _prefsBloc
         ..add(PrefsEvent.getUserIdEvent())
         ..listen((state) {
           if (state is SuccessState<String> && state.data != null) {
             _isLoggedIn = state.data.isNotEmpty;
-
-            /// get current artisan by id
-            _updateUserBloc.add(UserEvent.getArtisanByIdEvent(id: state.data));
 
             /// observe current user
             if (_isLoggedIn) _userBloc.add(UserEvent.currentUserEvent());
@@ -206,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                               context: context,
                               builder: (_) => BasicDialog(
                                 message:
-                                    "Do you wish to go offline?\nYou will not receive new requests from prospective customers until you turn this back on.",
+                                    'Do you wish to go offline?\nYou will not receive new requests from prospective customers until you turn this back on.',
                                 onComplete: () {
                                   /// toggle offline mode
                                   _currentUser = _currentUser.copyWith(
@@ -287,8 +279,9 @@ class _HomePageState extends State<HomePage> {
                           stream: state.data,
                           builder: (_, snapshot) {
                             /// update current user info
-                            if (_currentUser == null && snapshot.hasData)
+                            if (_currentUser == null && snapshot.hasData) {
                               _currentUser = snapshot.data;
+                            }
                             return InkWell(
                               splashColor: _kTheme.splashColor,
                               borderRadius: BorderRadius.circular(kSpacingX36),

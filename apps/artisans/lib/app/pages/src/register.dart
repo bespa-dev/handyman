@@ -64,7 +64,7 @@ class _RegisterPageState extends State<RegisterPage> {
               if (mounted) {
                 setState(() {});
                 showSnackBarMessage(context,
-                    message: event.message ?? "Authentication failed");
+                    message: event.message ?? 'Authentication failed');
               }
             } else if (event is AuthenticatedState) {
               _isLoading = false;
@@ -119,14 +119,14 @@ class _RegisterPageState extends State<RegisterPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Let\'s create your new account",
+                            'Let\'s create your new account',
                             style: kTheme.textTheme.headline4.copyWith(
                               color: kTheme.colorScheme.onPrimary,
                             ),
                           ),
                           SizedBox(height: kSpacingX8),
                           Text(
-                            "Enter your details below to get started",
+                            'Enter your details below to get started',
                             style: kTheme.textTheme.headline6.copyWith(
                               color: kTheme.colorScheme.onPrimary
                                   .withOpacity(kEmphasisMedium),

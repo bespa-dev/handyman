@@ -6,6 +6,7 @@ import 'package:lite/shared/shared.dart';
 Widget emptyStateUI(
   BuildContext context, {
   String message = 'No content found',
+  String buttonText = 'Retry',
   IconData icon = kEmptyIcon,
   Function onTap,
 }) {
@@ -34,7 +35,7 @@ Widget emptyStateUI(
           ButtonOutlined(
             width: SizeConfig.screenWidth * 0.4,
             onTap: onTap,
-            label: 'Retry',
+            label: buttonText,
           ),
         }
       ],

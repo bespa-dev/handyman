@@ -110,10 +110,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
 
               /// get services for category
               _serviceBloc.add(
-                ArtisanServiceEvent.getArtisanServices(
-                  category:
-                      /*user.category */ 'bb7c0d03-add2-49cb-bdd5-9a55f67adb30',
-                ),
+                ArtisanServiceEvent.getArtisanServices(category: user.category),
               );
             });
           }
@@ -295,10 +292,21 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                   .map(
                     (service) => ArtisanListTile(
                       service: service,
-                      onTap: () {},
+                      onTap: () {
+                        /// todo -> set prices for each service
+                      },
                     ),
                   )
                   .toList(),
+            } else ...{
+              emptyStateUI(
+                context,
+                message: 'No services registered yet',
+                buttonText: 'Add new',
+                onTap: () {
+                  /// todo -> add a new service. show bottom sheet with services for artisan
+                },
+              ),
             }
           ],
         ),

@@ -17,6 +17,7 @@ class CategoryPickerPage extends StatefulWidget {
 class _CategoryPickerPageState extends State<CategoryPickerPage> {
   /// blocs
   final _userBloc = UserBloc(repo: Injection.get());
+  final _updateUserBloc = UserBloc(repo: Injection.get());
   final _prefsBloc = PrefsBloc(repo: Injection.get());
   final _categoryBloc = CategoryBloc(repo: Injection.get());
 
@@ -29,6 +30,7 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
   @override
   void dispose() {
     _userBloc.close();
+    _updateUserBloc.close();
     _prefsBloc.close();
     _categoryBloc.close();
     super.dispose();
@@ -48,28 +50,35 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
         }
       });
 
-    /// user update status
+    /// get current user
     _userBloc.listen((state) {
       if (state is SuccessState<BaseArtisan>) {
         _currentUser = state.data;
         if (mounted) setState(() {});
-      } else if (state is SuccessState<void>) {
+      }
+    });
+
+    /// user update status
+    _updateUserBloc.listen((state) {
+      if (state is SuccessState<void>) {
         if (mounted) {
-          showSnackBarMessage(context, message: "Profile updated successfully");
+          showSnackBarMessage(context, message: 'Profile updated successfully');
+          _isLoading = !_isLoading;
+          setState(() {});
           context.navigator.pushBusinessProfilePage();
         }
       } else if (state is ErrorState) {
-        if (mounted)
-          showSnackBarMessage(context, message: "Failed to update profile");
+        if (mounted) {
+          showSnackBarMessage(context, message: 'Failed to update profile');
+          _isLoading = !_isLoading;
+          setState(() {});
+        }
       }
     });
 
     /// observe categories
-    _categoryBloc.add(
-      CategoryEvent.observeAllCategories(
-        group: ServiceCategoryGroup.featured(),
-      ),
-    );
+    _categoryBloc.add(CategoryEvent.observeAllCategories(
+        group: ServiceCategoryGroup.featured()));
   }
 
   @override
@@ -81,7 +90,7 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
         backgroundColor: kTheme.colorScheme.primary,
         body: SafeArea(
           child: _isLoading
-              ? Loading()
+              ? Loading(color: kTheme.colorScheme.secondary)
               : Stack(
                   children: [
                     /// content
@@ -95,14 +104,14 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Select your favorite service",
+                              'Select your favorite service',
                               style: kTheme.textTheme.headline4.copyWith(
                                 color: kTheme.colorScheme.onPrimary,
                               ),
                             ),
                             SizedBox(height: kSpacingX4),
                             Text(
-                              "Select some of your favorite services to help us connect you to more customers",
+                              'Select some of your favorite services to help us connect you to more customers',
                               style: kTheme.textTheme.bodyText2.copyWith(
                                 color: kTheme.colorScheme.onPrimary,
                               ),
@@ -139,10 +148,10 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
                       child: InkWell(
                         splashColor: kTheme.splashColor,
                         onTap: () {
-                          if (_selectedCategory == null)
+                          if (_selectedCategory == null) {
                             showSnackBarMessage(context,
-                                message: "Please select a service first");
-                          else {
+                                message: 'Please select a service first');
+                          } else {
                             final updatedUser = _currentUser.copyWith(
                               category: _selectedCategory,
                               categoryGroup:
@@ -150,11 +159,11 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
                             );
 
                             /// update user profile information
-                            _userBloc.add(UserEvent.updateUserEvent(
-                              user: updatedUser,
-                            ));
+                            UserBloc(repo: Injection.get()).add(
+                              UserEvent.updateUserEvent(user: updatedUser),
+                            );
                             showSnackBarMessage(context,
-                                message: "Updating profile");
+                                message: 'Updating profile');
                           }
                         },
                         child: Container(
@@ -169,7 +178,7 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                "Next",
+                                'Next',
                                 style: kTheme.textTheme.button.copyWith(
                                   color: kTheme.colorScheme.onSecondary,
                                 ),

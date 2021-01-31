@@ -7,7 +7,10 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/pages/pages.dart';
@@ -68,8 +71,8 @@ class _HomePageState extends State<HomePage> {
       final state = await showCustomDialog(
         context: context,
         builder: (_) => BasicDialog(
-          message: "Do you wish to exit $kAppName?",
-          onComplete: () async {},
+          message: 'Do you wish to exit $kAppName?',
+          onComplete: () => SystemNavigator.pop(animated: Platform.isIOS),
         ),
       );
       return Future<bool>.value(state ?? false);
