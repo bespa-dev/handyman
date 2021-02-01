@@ -148,33 +148,27 @@ class _CustomAppBarState extends State<CustomAppBar> {
       ),
       centerTitle: false,
       backgroundColor: kTheme.colorScheme.background,
-      flexibleSpace: FlexibleSpaceBar(
-        collapseMode: CollapseMode.parallax,
-        background: ConstrainedBox(
-          constraints: BoxConstraints.tightFor(
-            width: SizeConfig.screenWidth,
-            height: SizeConfig.screenHeight * 0.15,
-          ),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Positioned.fill(
-                child: ImageView(
-                  tag: Uuid().v4(),
-                  imageUrl: widget.backgroundImage,
-                  isAssetImage: widget.backgroundImage.startsWith('assets/'),
-                ),
+      flexibleSpace: SizedBox(
+        height: SizeConfig.screenHeight * 0.2,
+        width: SizeConfig.screenWidth,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Positioned.fill(
+              child: ImageView(
+                tag: Uuid().v4(),
+                imageUrl: widget.backgroundImage,
+                isAssetImage: widget.backgroundImage.startsWith('assets/'),
               ),
-              Positioned.fill(
-                child: Container(
-                  color:
-                      kTheme.colorScheme.background.withOpacity(kEmphasisLow),
-                ),
+            ),
+            Positioned.fill(
+              child: Container(
+                color:
+                kTheme.colorScheme.background.withOpacity(kEmphasisLow),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-        titlePadding: EdgeInsets.zero,
       ),
     );
   }

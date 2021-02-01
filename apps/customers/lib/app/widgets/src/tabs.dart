@@ -69,6 +69,7 @@ class _TabSelectorState extends State<TabSelector> {
               (tab) => _buildTabItem(
                 title: tab,
                 index: widget.tabs.indexOf(tab),
+                active: widget.activeIndex == widget.tabs.indexOf(tab),
               ),
             )
             .toList(),

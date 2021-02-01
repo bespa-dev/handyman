@@ -34,7 +34,11 @@ class _NotificationContainerState extends State<NotificationContainer> {
 
     return Container(
       width: SizeConfig.screenWidth,
-      margin: EdgeInsets.only(bottom: kSpacingX16),
+      margin: EdgeInsets.only(
+        bottom: kSpacingX12,
+        left: kSpacingX12,
+        right: kSpacingX12,
+      ),
       decoration: BoxDecoration(
         color: widget.background ?? kTheme.colorScheme.background,
         borderRadius: BorderRadius.circular(kSpacingX8),
@@ -43,35 +47,38 @@ class _NotificationContainerState extends State<NotificationContainer> {
         ),
       ),
       padding:
-          EdgeInsets.symmetric(vertical: kSpacingX16, horizontal: kSpacingX20),
+          EdgeInsets.symmetric(vertical: kSpacingX12, horizontal: kSpacingX16),
       child: Column(
         children: [
           /// title & icon
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               /// icon
               Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(kSpacingX4),
-                  color: kTheme.colorScheme.primary.withOpacity(kEmphasisLow),
+                  color: kTheme.colorScheme.secondary.withOpacity(kEmphasisLow),
                 ),
                 padding: EdgeInsets.all(kSpacingX12),
                 margin: EdgeInsets.only(right: kSpacingX12),
                 child: Icon(
                   widget.icon,
                   size: kSpacingX20,
-                  color: kTheme.colorScheme.onPrimary,
+                  color: kTheme.colorScheme.onSecondary,
                 ),
               ),
 
               /// title
-              Text(
-                widget.title,
-                style: kTheme.textTheme.headline6,
-                textAlign: TextAlign.start,
+              Expanded(
+                child: Text(
+                  widget.title,
+                  style: kTheme.textTheme.headline6
+                      .copyWith(fontSize: kSpacingX16),
+                  textAlign: TextAlign.start,
+                ),
               ),
             ],
           ),
@@ -79,7 +86,7 @@ class _NotificationContainerState extends State<NotificationContainer> {
             padding: EdgeInsets.only(top: kSpacingX12, bottom: kSpacingX12),
             child: Text(
               widget.description,
-              style: kTheme.textTheme.bodyText2,
+              style: kTheme.textTheme.subtitle2,
             ),
           ),
           Align(
@@ -100,7 +107,7 @@ class _NotificationContainerState extends State<NotificationContainer> {
                   widget.buttonText,
                   style: kTheme.textTheme.button.copyWith(
                     color: widget.buttonTextColor ??
-                        kTheme.colorScheme.onBackground,
+                        kTheme.colorScheme.secondary,
                   ),
                 ),
               ),

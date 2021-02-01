@@ -117,7 +117,7 @@ const kSignOutText =
 const kServiceSelectionHelperText =
     'In order to attract more customers, $kAppNameShort recommends that you take a minute or two to configure the base prices for services under your selected business category. Customers will see these prices and make requests accordingly';
 const kAccountApprovalHelperText =
-    'Your account is awaiting approval. In the meantime, you can update your business \& personal profile details. However, you will not receive notifications on new requests. This process normally takes at most 48 hours.\n\nContact the help desk from your profile page for more information. Thank you!';
+    'Your account is awaiting approval. In the meantime, you can update your business \& personal profile details. However, you will not receive notifications on new requests. This process normally takes at most 48 hours. Contact the help desk from your profile page for more information. Thank you!';
 const kAccountCompletionHelperText =
     'In order to complete your mobile registration process, kindly setup your profile information and upload a business document. You will be notified within the next 72 hours. Thank you!';
 const kServiceHelperText =

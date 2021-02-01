@@ -239,6 +239,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                             /// tabs
                             TabSelector(
                               tabs: ['Services', 'Profile'],
+                              activeIndex: _currentPage,
                               onTabChanged: (index) =>
                                   setState(() => _currentPage = index),
                             ),

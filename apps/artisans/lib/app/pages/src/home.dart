@@ -12,7 +12,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/pages/pages.dart';
 import 'package:handyman/app/widgets/widgets.dart';
@@ -28,6 +27,7 @@ class _HomePageState extends State<HomePage> {
   /// UI
   ThemeData _kTheme;
   bool _isLoggedIn = false,
+      _dismissAllNotifications = true,
       _showApprovalState = false,
       _showServicesRegisteredState = false;
   int _currentPage = 0;
@@ -114,8 +114,8 @@ class _HomePageState extends State<HomePage> {
           _showServicesRegisteredState = artisan.services.isEmpty ||
               artisan.category == null ||
               artisan.categoryGroup == null;
-          logger.d(
-              'Approved -> $_showApprovalState & hasServices -> $_showServicesRegisteredState');
+          _dismissAllNotifications =
+              !_showApprovalState || !_showServicesRegisteredState;
           if (mounted) setState(() {});
         }
       });
@@ -148,41 +148,15 @@ class _HomePageState extends State<HomePage> {
       child: BlocBuilder<UserBloc, BlocState>(
         cubit: _userBloc,
         builder: (_, state) => Scaffold(
-          body: SafeArea(
-            top: _navStates[_currentPage] == _dashboardNavKey ||
-                _navStates[_currentPage] == _profileNavKey,
-            bottom: true,
-            child: AnimationLimiter(
-              child: AnimationConfiguration.synchronized(
-                duration: kScaleDuration,
-                child: Column(
+          body: _dismissAllNotifications
+              ? Column(
                   children: [
-                    /// app bar
-                    if (_showApprovalState) ...{
-                      NotificationContainer(
-                        title: 'Account approval pending',
-                        description: kAccountApprovalHelperText,
-                        onTap: () => setState(
-                            () => _showApprovalState = !_showApprovalState),
-                      )
-                    } else if (_showServicesRegisteredState) ...{
-                      NotificationContainer(
-                        title: 'Complete your business profile',
-                        description: kServiceSelectionHelperText,
-                        icon: kMoneyIcon,
-                        buttonText: _isLoggedIn ? 'Configure' : 'Dismiss',
-                        onTap: () => _isLoggedIn
-                            ? _onTabPressed(3)
-                            : setState(
-                                () => _showServicesRegisteredState =
-                                    !_showServicesRegisteredState,
-                              ),
-                      )
-                    } else if (_navStates[_currentPage] != _profileNavKey &&
+                    if (_navStates[_currentPage] != _profileNavKey &&
                         _navStates[_currentPage] != _searchNavKey) ...{
                       CustomAppBar(title: 'Dashboard')
                     },
 
+                    /// pages
                     Expanded(
                       child: IndexedStack(
                         index: _currentPage,
@@ -222,48 +196,107 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ],
-                ),
-              ),
-            ),
-          ),
-          bottomNavigationBar: Container(
-            height: getProportionateScreenHeight(kSpacingX64),
-            decoration: BoxDecoration(color: _kTheme.colorScheme.primary),
-            child: Material(
-              type: MaterialType.transparency,
-              elevation: kSpacingX2,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: kSpacingX16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                )
+              : Column(
                   children: [
-                    IconButton(
-                      icon: Icon(kHomeIcon),
-                      color: _kTheme.colorScheme.onPrimary,
-                      onPressed: () => _onTabPressed(0),
-                    ),
-                    IconButton(
-                      icon: Icon(kSearchIcon),
-                      color: _kTheme.colorScheme.onPrimary,
-                      onPressed: () => _onTabPressed(1),
-                    ),
-
-                    /// toggle availability
-                    if (_isLoggedIn &&
-                        state is SuccessState<Stream<BaseArtisan>>) ...{
-                      InkWell(
-                        borderRadius: BorderRadius.circular(kSpacingX16),
+                    /// app bar
+                    if (_showApprovalState) ...{
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.symmetric(
+                          vertical: kSpacingX12,
+                          horizontal: kSpacingX20,
+                        ),
+                        child: Text(
+                          'Notifications',
+                          style: _kTheme.textTheme.headline6,
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                      NotificationContainer(
+                        title: 'Account approval pending',
+                        description: kAccountApprovalHelperText,
+                        onTap: () => setState(
+                            () => _showApprovalState = !_showApprovalState),
+                      )
+                    },
+                    if (_showServicesRegisteredState) ...{
+                      NotificationContainer(
+                        title: 'Complete your business profile',
+                        description: kServiceSelectionHelperText,
+                        icon: kMoneyIcon,
+                        buttonText: _isLoggedIn ? 'Configure' : 'Dismiss',
                         onTap: () {
-                          if (available) {
-                            /// show confirmation dialog
-                            showCustomDialog(
-                              context: context,
-                              builder: (_) => BasicDialog(
-                                message:
-                                    'Do you wish to go offline?\nYou will not receive new requests from prospective customers until you turn this back on.',
-                                onComplete: () {
-                                  /// toggle offline mode
+                          if (_isLoggedIn) _onTabPressed(3);
+                          setState(
+                            () {
+                              _dismissAllNotifications = true;
+                              _showServicesRegisteredState =
+                                  !_showServicesRegisteredState;
+                            },
+                          );
+                        },
+                      )
+                    },
+                  ],
+                ),
+          bottomNavigationBar: _dismissAllNotifications
+              ? Container(
+                  height: getProportionateScreenHeight(kSpacingX64),
+                  decoration: BoxDecoration(color: _kTheme.colorScheme.primary),
+                  child: Material(
+                    type: MaterialType.transparency,
+                    elevation: kSpacingX2,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: kSpacingX16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: Icon(kHomeIcon),
+                            color: _kTheme.colorScheme.onPrimary,
+                            onPressed: () => _onTabPressed(0),
+                          ),
+                          IconButton(
+                            icon: Icon(kSearchIcon),
+                            color: _kTheme.colorScheme.onPrimary,
+                            onPressed: () => _onTabPressed(1),
+                          ),
+
+                          /// toggle availability
+                          if (_isLoggedIn &&
+                              state is SuccessState<Stream<BaseArtisan>>) ...{
+                            InkWell(
+                              borderRadius: BorderRadius.circular(kSpacingX16),
+                              onTap: () {
+                                if (available) {
+                                  /// show confirmation dialog
+                                  showCustomDialog(
+                                    context: context,
+                                    builder: (_) => BasicDialog(
+                                      message:
+                                          'Do you wish to go offline?\nYou will not receive new requests from prospective customers until you turn this back on.',
+                                      onComplete: () {
+                                        /// toggle offline mode
+                                        _currentUser = _currentUser.copyWith(
+                                            isAvailable: !available);
+                                        setState(() {});
+
+                                        /// update user's availability
+                                        _updateUserBloc.add(
+                                          UserEvent.updateUserEvent(
+                                              user: _currentUser),
+                                        );
+
+                                        /// observe current user state
+                                        _userBloc
+                                            .add(UserEvent.currentUserEvent());
+                                      },
+                                    ),
+                                  );
+                                } else {
+                                  /// toggle online mode
                                   _currentUser = _currentUser.copyWith(
                                       isAvailable: !available);
                                   setState(() {});
@@ -276,95 +309,98 @@ class _HomePageState extends State<HomePage> {
 
                                   /// observe current user state
                                   _userBloc.add(UserEvent.currentUserEvent());
-                                },
-                              ),
-                            );
-                          } else {
-                            /// toggle online mode
-                            _currentUser =
-                                _currentUser.copyWith(isAvailable: !available);
-                            setState(() {});
-
-                            /// update user's availability
-                            _updateUserBloc.add(
-                              UserEvent.updateUserEvent(user: _currentUser),
-                            );
-
-                            /// observe current user state
-                            _userBloc.add(UserEvent.currentUserEvent());
-                          }
-                        },
-                        child: AnimatedContainer(
-                          duration: kScaleDuration,
-                          width: kSpacingX84,
-                          height: kSpacingX32,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(kSpacingX16),
-                            color: _kTheme.cardColor,
-                            border: Border.all(
-                              color: available
-                                  ? kGreenColor
-                                  : _kTheme.colorScheme.error,
-                            ),
-                          ),
-                          alignment: available
-                              ? Alignment.centerLeft
-                              : Alignment.centerRight,
-                          padding: EdgeInsets.all(kSpacingX4),
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: kSpacingX24,
-                            width: kSpacingX24,
-                            decoration: BoxDecoration(
-                              color: available
-                                  ? kGreenColor
-                                  : _kTheme.colorScheme.error,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              available ? kOnlineIcon : kOfflineIcon,
-                              size: kSpacingX12,
-                            ),
-                          ),
-                        ),
-                      )
-                    },
-                    IconButton(
-                      icon: Icon(kNotificationIcon),
-                      color: _kTheme.colorScheme.onPrimary,
-                      onPressed: () => _onTabPressed(2),
-                    ),
-
-                    /// toggle profile info
-                    if (_isLoggedIn &&
-                        state is SuccessState<Stream<BaseArtisan>>) ...{
-                      StreamBuilder<BaseArtisan>(
-                          stream: state.data,
-                          builder: (_, snapshot) {
-                            /// update current user info
-                            if (_currentUser == null && snapshot.hasData) {
-                              _currentUser = snapshot.data;
-                            }
-                            return InkWell(
-                              splashColor: _kTheme.splashColor,
-                              borderRadius: BorderRadius.circular(kSpacingX36),
-                              onTap: () => _onTabPressed(3),
-                              child: SizedBox(
-                                height: kSpacingX36,
-                                width: kSpacingX36,
-                                child: UserAvatar(
-                                  url: snapshot.data?.avatar,
-                                  isCircular: true,
+                                }
+                              },
+                              child: AnimatedContainer(
+                                duration: kScaleDuration,
+                                width: kSpacingX84,
+                                height: kSpacingX32,
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.circular(kSpacingX16),
+                                  color: _kTheme.cardColor,
+                                  border: Border.all(
+                                    color: available
+                                        ? kGreenColor
+                                        : _kTheme.colorScheme.error,
+                                  ),
+                                ),
+                                alignment: available
+                                    ? Alignment.centerLeft
+                                    : Alignment.centerRight,
+                                padding: EdgeInsets.all(kSpacingX4),
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  height: kSpacingX24,
+                                  width: kSpacingX24,
+                                  decoration: BoxDecoration(
+                                    color: available
+                                        ? kGreenColor
+                                        : _kTheme.colorScheme.error,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    available ? kOnlineIcon : kOfflineIcon,
+                                    size: kSpacingX12,
+                                  ),
                                 ),
                               ),
-                            );
-                          }),
-                    },
-                  ],
+                            )
+                          },
+                          IconButton(
+                            icon: Icon(kNotificationIcon),
+                            color: _kTheme.colorScheme.onPrimary,
+                            onPressed: () => _onTabPressed(2),
+                          ),
+
+                          /// toggle profile info
+                          if (_isLoggedIn &&
+                              state is SuccessState<Stream<BaseArtisan>>) ...{
+                            StreamBuilder<BaseArtisan>(
+                                stream: state.data,
+                                builder: (_, snapshot) {
+                                  /// update current user info
+                                  if (_currentUser == null &&
+                                      snapshot.hasData) {
+                                    _currentUser = snapshot.data;
+                                  }
+                                  return InkWell(
+                                    splashColor: _kTheme.splashColor,
+                                    borderRadius:
+                                        BorderRadius.circular(kSpacingX36),
+                                    onTap: () => _onTabPressed(3),
+                                    child: SizedBox(
+                                      height: kSpacingX36,
+                                      width: kSpacingX36,
+                                      child: UserAvatar(
+                                        url: snapshot.data?.avatar,
+                                        isCircular: true,
+                                      ),
+                                    ),
+                                  );
+                                }),
+                          },
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              : InkWell(
+                  onTap: () => setState(() => _dismissAllNotifications = true),
+                  splashColor: _kTheme.splashColor,
+                  child: Container(
+                    height: kToolbarHeight,
+                    width: SizeConfig.screenWidth,
+                    color: _kTheme.colorScheme.secondary,
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Continue to dashboard',
+                      style: _kTheme.textTheme.button.copyWith(
+                        color: _kTheme.colorScheme.onSecondary,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
         ),
       ),
     );
