@@ -109,9 +109,10 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
               if (mounted) setState(() {});
 
               /// get services for category
-              _serviceBloc.add(
-                ArtisanServiceEvent.getArtisanServices(category: user.category),
-              );
+              if (user.category != null) {
+                _serviceBloc.add(ArtisanServiceEvent.getArtisanServices(
+                    category: user.category));
+              }
             });
           }
         });
@@ -142,121 +143,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
             _business = snapshot.data;
             return CustomScrollView(
               slivers: [
-                /// app bar
-                SliverAppBar(
-                  expandedHeight: _businessLocation == null
-                      ? kSpacingNone
-                      : SizeConfig.screenHeight * 0.35,
-                  actions: [
-                    IconButton(
-                      icon: Icon(kEditIcon),
-                      onPressed: () => context.navigator
-                          .pushBusinessProfilePage(business: _business),
-                    ),
-                  ],
-                  floating: true,
-                  flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.parallax,
-                    stretchModes: [
-                      StretchMode.zoomBackground,
-                      StretchMode.blurBackground,
-                    ],
-                    background: _businessLocation == null
-                        ? SizedBox.shrink()
-                        : SizedBox(
-                            width: SizeConfig.screenWidth,
-                            height: SizeConfig.screenHeight * 0.35,
-                            child: GoogleMap(
-                              initialCameraPosition: CameraPosition(
-                                target: _businessLocation,
-                                zoom: kSpacingX16,
-                              ),
-                              zoomControlsEnabled: false,
-                              compassEnabled: true,
-                              liteModeEnabled: Platform.isAndroid,
-                              zoomGesturesEnabled: true,
-                              mapToolbarEnabled: false,
-                              myLocationButtonEnabled: false,
-                              myLocationEnabled: false,
-                              tiltGesturesEnabled: true,
-                              markers: <Marker>{
-                                Marker(
-                                  markerId: MarkerId(_business.id),
-                                  position: _businessLocation,
-                                  icon: BitmapDescriptor.defaultMarkerWithHue(
-                                      BitmapDescriptor.hueGreen),
-                                ),
-                              },
-                              onMapCreated: (controller) async {
-                                _mapController = controller;
-                                _setupMap();
-                              },
-                              mapType: MapType.normal,
-                            ),
-                          ),
-                  ),
-                  leading: IconButton(
-                    icon: Icon(kBackIcon),
-                    onPressed: () => context.navigator.pop(),
-                  ),
-                ),
 
-                /// content
-                SliverList(
-                  delegate: SliverChildListDelegate.fixed(
-                    [
-                      /// body
-                      AnimatedPadding(
-                        duration: kScaleDuration,
-                        padding: EdgeInsets.only(
-                          top: _businessLocation == null
-                              ? kSpacingX24
-                              : kSpacingX16,
-                          left: kSpacingX16,
-                          right: kSpacingX16,
-                          bottom: kSpacingNone,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.business.name,
-                              style: _kTheme.textTheme.headline5,
-                            ),
-                            SizedBox(height: kSpacingX8),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(kLocationIcon, size: kSpacingX12),
-                                SizedBox(width: kSpacingX6),
-                                Text(
-                                  widget.business.location,
-                                  style: _kTheme.textTheme.bodyText1,
-                                ),
-                              ],
-                            ),
-
-                            /// tabs
-                            TabSelector(
-                              tabs: ['Services', 'Profile'],
-                              activeIndex: _currentPage,
-                              onTabChanged: (index) =>
-                                  setState(() => _currentPage = index),
-                            ),
-
-                            /// pages
-                            AnimatedContainer(
-                              duration: kScaleDuration,
-                              child: _currentPage == 0
-                                  ? _buildServicesTab()
-                                  : _buildBusinessProfileTab(),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ],
             );
           },
@@ -269,26 +156,26 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   Widget _buildServicesTab() => Padding(
         padding: EdgeInsets.only(left: kSpacingX4),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Services rendered',
-              style: _kTheme.textTheme.headline6.copyWith(
-                color: _kTheme.colorScheme.onBackground
-                    .withOpacity(kEmphasisMedium),
-              ),
-            ),
-            SizedBox(height: kSpacingX4),
-            Text(
-              'Tap to view more details',
-              style: _kTheme.textTheme.caption.copyWith(
-                color:
-                    _kTheme.colorScheme.onBackground.withOpacity(kEmphasisLow),
-              ),
-            ),
-            SizedBox(height: kSpacingX24),
             if (_servicesForCategory.isNotEmpty) ...{
+              Text(
+                'Services rendered',
+                style: _kTheme.textTheme.headline6.copyWith(
+                  color: _kTheme.colorScheme.onBackground
+                      .withOpacity(kEmphasisMedium),
+                ),
+              ),
+              SizedBox(height: kSpacingX4),
+              Text(
+                'Tap to view more details',
+                style: _kTheme.textTheme.caption.copyWith(
+                  color: _kTheme.colorScheme.onBackground
+                      .withOpacity(kEmphasisLow),
+                ),
+              ),
+              SizedBox(height: kSpacingX24),
               ..._servicesForCategory
                   .map(
                     (service) => ArtisanListTile(
@@ -300,14 +187,17 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                   )
                   .toList(),
             } else ...{
-              emptyStateUI(
-                context,
-                message: 'No services registered yet',
-                buttonText: 'Add new',
-                onTap: () {
-                  /// todo -> add a new service. show bottom sheet with services for artisan
-                },
-              ),
+              Container(
+                  margin: EdgeInsets.only(top: kSpacingX24),
+                  width: SizeConfig.screenWidth,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ImageView(imageUrl: kRegisterAsset, isAssetImage: true),
+                      Text('No services added'),
+                    ],
+                  )),
             }
           ],
         ),

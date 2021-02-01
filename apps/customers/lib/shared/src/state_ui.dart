@@ -27,13 +27,13 @@ Widget emptyStateUI(
         SizedBox(height: kSpacingX24),
         Text(
           message,
-          style: kTheme.textTheme.headline5,
+          style: kTheme.textTheme.headline6,
           textAlign: TextAlign.center,
         ),
         if (onTap != null) ...{
           SizedBox(height: kSpacingX28),
           ButtonOutlined(
-            width: SizeConfig.screenWidth * 0.4,
+            width: SizeConfig.screenWidth * 0.3,
             onTap: onTap,
             label: buttonText,
           ),
