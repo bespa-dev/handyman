@@ -1,11 +1,9 @@
 import 'dart:io';
 
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/bloc/bloc.dart';
-import 'package:handyman/app/routes/routes.gr.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
@@ -143,7 +141,121 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
             _business = snapshot.data;
             return CustomScrollView(
               slivers: [
+                /// app bar
+                SliverAppBar(
+                  expandedHeight: _businessLocation == null
+                      ? kSpacingNone
+                      : SizeConfig.screenHeight * 0.35,
+                  actions: [
+                    IconButton(
+                      icon: Icon(kEditIcon),
+                      onPressed: () => context.navigator
+                          .pushBusinessProfilePage(business: _business),
+                    ),
+                  ],
+                  floating: true,
+                  flexibleSpace: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.parallax,
+                    stretchModes: [
+                      StretchMode.zoomBackground,
+                      StretchMode.blurBackground,
+                    ],
+                    background: _businessLocation == null
+                        ? SizedBox.shrink()
+                        : SizedBox(
+                      width: SizeConfig.screenWidth,
+                      height: SizeConfig.screenHeight * 0.35,
+                      child: GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                          target: _businessLocation,
+                          zoom: kSpacingX16,
+                        ),
+                        zoomControlsEnabled: false,
+                        compassEnabled: true,
+                        liteModeEnabled: Platform.isAndroid,
+                        zoomGesturesEnabled: true,
+                        mapToolbarEnabled: false,
+                        myLocationButtonEnabled: false,
+                        myLocationEnabled: false,
+                        tiltGesturesEnabled: true,
+                        markers: <Marker>{
+                          Marker(
+                            markerId: MarkerId(_business.id),
+                            position: _businessLocation,
+                            icon: BitmapDescriptor.defaultMarkerWithHue(
+                                BitmapDescriptor.hueGreen),
+                          ),
+                        },
+                        onMapCreated: (controller) async {
+                          _mapController = controller;
+                          _setupMap();
+                        },
+                        mapType: MapType.normal,
+                      ),
+                    ),
+                  ),
+                  leading: IconButton(
+                    icon: Icon(kBackIcon),
+                    onPressed: () => context.navigator.pop(),
+                  ),
+                ),
 
+                /// content
+                SliverList(
+                  delegate: SliverChildListDelegate.fixed(
+                    [
+                      /// body
+                      AnimatedPadding(
+                        duration: kScaleDuration,
+                        padding: EdgeInsets.only(
+                          top: _businessLocation == null
+                              ? kSpacingX24
+                              : kSpacingX16,
+                          left: kSpacingX16,
+                          right: kSpacingX16,
+                          bottom: kSpacingNone,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.business.name,
+                              style: _kTheme.textTheme.headline5,
+                            ),
+                            SizedBox(height: kSpacingX8),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(kLocationIcon, size: kSpacingX12),
+                                SizedBox(width: kSpacingX6),
+                                Text(
+                                  widget.business.location,
+                                  style: _kTheme.textTheme.bodyText1,
+                                ),
+                              ],
+                            ),
+
+                            /// tabs
+                            TabSelector(
+                              tabs: ['Services', 'Profile'],
+                              activeIndex: _currentPage,
+                              onTabChanged: (index) =>
+                                  setState(() => _currentPage = index),
+                            ),
+
+                            /// pages
+                            AnimatedContainer(
+                              duration: kScaleDuration,
+                              child: _currentPage == 0
+                                  ? _buildServicesTab()
+                                  : _buildBusinessProfileTab(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             );
           },

@@ -148,98 +148,110 @@ class _HomePageState extends State<HomePage> {
       child: BlocBuilder<UserBloc, BlocState>(
         cubit: _userBloc,
         builder: (_, state) => Scaffold(
-          body: _dismissAllNotifications
-              ? Column(
-                  children: [
-                    if (_navStates[_currentPage] != _profileNavKey &&
-                        _navStates[_currentPage] != _searchNavKey) ...{
-                      CustomAppBar(title: 'Dashboard')
-                    },
+          body: SizedBox(
+            width: SizeConfig.screenWidth,
+            height: SizeConfig.screenHeight,
+            child: _dismissAllNotifications
+                ? Column(
+                    children: [
+                      if (_navStates[_currentPage] != _profileNavKey &&
+                          _navStates[_currentPage] != _searchNavKey) ...{
+                        CustomAppBar(title: 'Dashboard')
+                      },
 
-                    /// pages
-                    Expanded(
-                      child: IndexedStack(
-                        index: _currentPage,
-                        sizing: StackFit.expand,
+                      /// pages
+                      Expanded(
+                        child: IndexedStack(
+                          index: _currentPage,
+                          sizing: StackFit.expand,
+                          children: [
+                            /// dashboard
+                            Navigator(
+                              key: _dashboardNavKey,
+                              onGenerateRoute: (route) => MaterialPageRoute(
+                                  settings: route,
+                                  builder: (__) => DashboardPage()),
+                            ),
+
+                            /// search
+                            Navigator(
+                              key: _searchNavKey,
+                              onGenerateRoute: (route) => MaterialPageRoute(
+                                  settings: route,
+                                  builder: (__) => SearchPage()),
+                            ),
+
+                            /// notifications
+                            Navigator(
+                              key: _notificationsNavKey,
+                              onGenerateRoute: (route) => MaterialPageRoute(
+                                  settings: route,
+                                  builder: (__) => NotificationsPage()),
+                            ),
+
+                            /// profile
+                            Navigator(
+                              key: _profileNavKey,
+                              onGenerateRoute: (route) => MaterialPageRoute(
+                                  settings: route,
+                                  builder: (__) => ProfilePage()),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                : SafeArea(
+                    top: true,
+                    child: SingleChildScrollView(
+                      child: Column(
                         children: [
-                          /// dashboard
-                          Navigator(
-                            key: _dashboardNavKey,
-                            onGenerateRoute: (route) => MaterialPageRoute(
-                                settings: route,
-                                builder: (__) => DashboardPage()),
-                          ),
-
-                          /// search
-                          Navigator(
-                            key: _searchNavKey,
-                            onGenerateRoute: (route) => MaterialPageRoute(
-                                settings: route, builder: (__) => SearchPage()),
-                          ),
-
-                          /// notifications
-                          Navigator(
-                            key: _notificationsNavKey,
-                            onGenerateRoute: (route) => MaterialPageRoute(
-                                settings: route,
-                                builder: (__) => NotificationsPage()),
-                          ),
-
-                          /// profile
-                          Navigator(
-                            key: _profileNavKey,
-                            onGenerateRoute: (route) => MaterialPageRoute(
-                                settings: route,
-                                builder: (__) => ProfilePage()),
-                          ),
+                          if (_showApprovalState) ...{
+                            /// app bar
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.symmetric(
+                                vertical: kSpacingX12,
+                                horizontal: kSpacingX20,
+                              ),
+                              child: Text(
+                                'Notifications',
+                                style: _kTheme.textTheme.headline6,
+                                textAlign: TextAlign.start,
+                              ),
+                            ),
+                            NotificationContainer(
+                              title: 'Account approval pending',
+                              description: kAccountApprovalHelperText,
+                              border: _kTheme.disabledColor,
+                              onTap: () => setState(() =>
+                                  _showApprovalState = !_showApprovalState),
+                            )
+                          },
+                          if (_showServicesRegisteredState) ...{
+                            NotificationContainer(
+                              title: 'Complete your business profile',
+                              description: kServiceSelectionHelperText,
+                              icon: kMoneyIcon,
+                              border: _kTheme.disabledColor,
+                              buttonText: _isLoggedIn ? 'Configure' : 'Dismiss',
+                              onTap: () {
+                                if (_isLoggedIn) _onTabPressed(3);
+                                setState(
+                                  () {
+                                    _dismissAllNotifications = true;
+                                    _showServicesRegisteredState =
+                                        !_showServicesRegisteredState;
+                                  },
+                                );
+                              },
+                            )
+                          },
                         ],
                       ),
                     ),
-                  ],
-                )
-              : Column(
-                  children: [
-                    /// app bar
-                    if (_showApprovalState) ...{
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.symmetric(
-                          vertical: kSpacingX12,
-                          horizontal: kSpacingX20,
-                        ),
-                        child: Text(
-                          'Notifications',
-                          style: _kTheme.textTheme.headline6,
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                      NotificationContainer(
-                        title: 'Account approval pending',
-                        description: kAccountApprovalHelperText,
-                        onTap: () => setState(
-                            () => _showApprovalState = !_showApprovalState),
-                      )
-                    },
-                    if (_showServicesRegisteredState) ...{
-                      NotificationContainer(
-                        title: 'Complete your business profile',
-                        description: kServiceSelectionHelperText,
-                        icon: kMoneyIcon,
-                        buttonText: _isLoggedIn ? 'Configure' : 'Dismiss',
-                        onTap: () {
-                          if (_isLoggedIn) _onTabPressed(3);
-                          setState(
-                            () {
-                              _dismissAllNotifications = true;
-                              _showServicesRegisteredState =
-                                  !_showServicesRegisteredState;
-                            },
-                          );
-                        },
-                      )
-                    },
-                  ],
-                ),
+                  ),
+          ),
           bottomNavigationBar: _dismissAllNotifications
               ? Container(
                   height: getProportionateScreenHeight(kSpacingX64),
