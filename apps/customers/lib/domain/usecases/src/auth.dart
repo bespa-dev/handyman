@@ -16,9 +16,10 @@ import 'usecase/usecase.dart';
 
 /// google sign in
 class FederatedAuthUseCase extends NoParamsUseCase<BaseUser> {
-  final BaseAuthRepository _repo;
 
   const FederatedAuthUseCase(this._repo);
+
+  final BaseAuthRepository _repo;
 
   @override
   Future<UseCaseResult<BaseUser>> execute(_) async {
