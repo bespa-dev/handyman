@@ -27,7 +27,7 @@ dependencies:
   cached_network_image: ^2.3.2+1
   carousel_slider: ^2.1.0
   circular_reveal_animation: ^1.1.5
-  cloud_firestore: ^0.14.0+2
+  cloud_firestore: ^0.14.4
   contact_picker: null
   cupertino_icons: ^1.0.2
   day_night_time_picker: null
