@@ -32,7 +32,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final notificationServiceProvider = Provider((_) => LocalNotificationService());
 
-final firebaseMessaging = Provider((_) => FirebaseMessaging());
+final firebaseMessaging = Provider((_) => FirebaseMessaging.instance);
 
 /// endregion
 

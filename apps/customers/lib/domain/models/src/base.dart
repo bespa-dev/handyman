@@ -9,7 +9,6 @@
 
 /// base class for all data models
 abstract class BaseModel {
-
   String id;
   String createdAt;
 
@@ -18,5 +17,5 @@ abstract class BaseModel {
   Map<String, dynamic> toJson();
 
   @override
-  String toString() => this.toJson().toString();
+  String toString() => toJson().toString();
 }

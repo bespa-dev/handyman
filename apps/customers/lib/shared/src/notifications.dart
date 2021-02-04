@@ -50,38 +50,6 @@ class ReceivedNotification {
 class LocalNotificationService {
   const LocalNotificationService();
 
-  /// background message handler
-  static Future<void> _onBackgroundMessageHandler(
-      Map<String, dynamic> _) async {
-    logger.i('onBackground -> $_');
-
-    var data = _['data'];
-    var id = data['type'] == 'booking'
-        ? bookingChannelId
-        : data['type'] == 'conversation'
-            ? conversationChannelId
-            : tokenChannelId;
-
-    var name = data['type'] == 'booking'
-        ? bookingChannelName
-        : data['type'] == 'conversation'
-            ? conversationChannelName
-            : tokenChannelName;
-
-    var desc = data['type'] == 'booking'
-        ? bookingChannelDesc
-        : data['type'] == 'conversation'
-            ? conversationChannelDesc
-            : tokenChannelDesc;
-
-    await _pushNotification(
-      data,
-      channelId: id,
-      channelName: name,
-      channelDesc: desc,
-    );
-  }
-
   /// setup local notifications
   Future<void> setupNotifications() async {
     const initializationSettingsAndroid =
@@ -115,97 +83,92 @@ class LocalNotificationService {
     });
 
     /// setup firebase messaging
-    var messaging =
-        ProviderContainer().read<FirebaseMessaging>(firebaseMessaging);
-    messaging.configure(
-      onBackgroundMessage: _onBackgroundMessageHandler,
-      onLaunch: (_) async {
-        logger.i('onLaunch -> $_');
+    FirebaseMessaging.onMessageOpenedApp.listen((event) async {
+      var container = ProviderContainer();
+      final prefs = await container.read(sharedPreferencesProvider.future);
+      var prefsRepo = container.read(prefsRepositoryProvider(prefs));
+      var datasource = container.read(remoteDatasourceProvider(prefsRepo));
+      var navigator = ExtendedNavigator.root;
+      var data = event.data;
 
-        var data = _['data'];
-        var id = data['type'] == 'booking'
-            ? bookingChannelId
-            : data['type'] == 'conversation'
-                ? conversationChannelId
-                : tokenChannelId;
-
-        var name = data['type'] == 'booking'
-            ? bookingChannelName
-            : data['type'] == 'conversation'
-                ? conversationChannelName
-                : tokenChannelName;
-
-        var desc = data['type'] == 'booking'
-            ? bookingChannelDesc
-            : data['type'] == 'conversation'
-                ? conversationChannelDesc
-                : tokenChannelDesc;
-
-        await _pushNotification(
-          data,
-          channelId: id,
-          channelName: name,
-          channelDesc: desc,
+      /// nav to appropriate screen
+      if (data['type'] == 'booking') {
+        var user = await datasource.getCustomerById(id: data['customer']);
+        var booking = await datasource.getBookingById(id: data['id']).first;
+        return navigator.pushBookingDetailsPage(
+          customer: user,
+          booking: booking,
+          bookingId: data['id'],
         );
-      },
-      onMessage: (_) async {
-        var data = _['data'];
-
-        logger.i('onMessage -> $data');
-        var id = data['type'] == 'booking'
-            ? bookingChannelId
-            : data['type'] == 'conversation'
-                ? conversationChannelId
-                : tokenChannelId;
-
-        var name = data['type'] == 'booking'
-            ? bookingChannelName
-            : data['type'] == 'conversation'
-                ? conversationChannelName
-                : tokenChannelName;
-
-        var desc = data['type'] == 'booking'
-            ? bookingChannelDesc
-            : data['type'] == 'conversation'
-                ? conversationChannelDesc
-                : tokenChannelDesc;
-
-        await _pushNotification(
-          data,
-          channelId: id,
-          channelName: name,
-          channelDesc: desc,
+      } else if (data['type'] == 'conversation') {
+        var user = await datasource.getCustomerById(id: data['sender']);
+        return navigator.pushConversationPage(
+          recipientId: data['sender'],
+          recipient: user,
         );
-      },
-      onResume: (_) async {
-        logger.i('onResume -> $_');
+      } else if (data['type'] == 'token') {
+      } else if (data['type'] == 'approval') {}
+    });
 
-        var container = ProviderContainer();
-        final prefs = await container.read(sharedPreferencesProvider.future);
-        var prefsRepo = container.read(prefsRepositoryProvider(prefs));
-        var datasource = container.read(remoteDatasourceProvider(prefsRepo));
-        var navigator = ExtendedNavigator.root;
-        var data = _['data'];
+    /// background message handler
+    FirebaseMessaging.onBackgroundMessage((rm) async {
+      logger.i('onBackground -> $rm');
 
-        /// nav to appropriate screen
-        if (data['type'] == 'booking') {
-          var user = await datasource.getArtisanById(id: data['artisan']);
-          var booking = await datasource.getBookingById(id: data['id']).first;
-          return navigator.pushBookingDetailsPage(
-            customer: user,
-            booking: booking,
-            bookingId: data['id'],
-          );
-        } else if (data['type'] == 'conversation') {
-          var user = await datasource.getArtisanById(id: data['sender']);
-          return navigator.pushConversationPage(
-            recipientId: data['sender'],
-            recipient: user,
-          );
-        } else if (data['type'] == 'token') {
-        } else if (data['type'] == 'approval') {}
-      },
-    );
+      var data = rm.data;
+      var id = data['type'] == 'booking'
+          ? bookingChannelId
+          : data['type'] == 'conversation'
+              ? conversationChannelId
+              : tokenChannelId;
+
+      var name = data['type'] == 'booking'
+          ? bookingChannelName
+          : data['type'] == 'conversation'
+              ? conversationChannelName
+              : tokenChannelName;
+
+      var desc = data['type'] == 'booking'
+          ? bookingChannelDesc
+          : data['type'] == 'conversation'
+              ? conversationChannelDesc
+              : tokenChannelDesc;
+
+      await _pushNotification(
+        data,
+        channelId: id,
+        channelName: name,
+        channelDesc: desc,
+      );
+    });
+    FirebaseMessaging.onMessage.listen((event) async {
+      var data = event.data;
+
+      logger.i('onMessage -> $data');
+      var id = data['type'] == 'booking'
+          ? bookingChannelId
+          : data['type'] == 'conversation'
+              ? conversationChannelId
+              : tokenChannelId;
+
+      var name = data['type'] == 'booking'
+          ? bookingChannelName
+          : data['type'] == 'conversation'
+              ? conversationChannelName
+              : tokenChannelName;
+
+      var desc = data['type'] == 'booking'
+          ? bookingChannelDesc
+          : data['type'] == 'conversation'
+              ? conversationChannelDesc
+              : tokenChannelDesc;
+
+      await _pushNotification(
+        data,
+        channelId: id,
+        channelName: name,
+        channelDesc: desc,
+      );
+    });
 
     _requestPermissions();
     _configureDidReceiveLocalNotificationSubject();

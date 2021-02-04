@@ -20,9 +20,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 class StorageRepositoryImpl implements BaseStorageRepository {
-  final StorageReference bucket;
-
   StorageRepositoryImpl({@required this.bucket});
+  final Reference bucket;
 
   final _onStorageUploadResponseController =
       StreamController<StorageProgress>.broadcast();
@@ -43,32 +42,29 @@ class StorageRepositoryImpl implements BaseStorageRepository {
     var uploadTask = bucket.child(path ??= Uuid().v4()).putFile(compressedFile);
 
     /// listen for live stream of events from upload
-    uploadTask.events.listen((event) async {
-      switch (event.type) {
-        case StorageTaskEventType.success:
-          var url = await event.snapshot.ref.getDownloadURL();
+    uploadTask.snapshotEvents.listen((event) async {
+      switch (event.state) {
+        case TaskState.success:
+          var url = await event.ref.getDownloadURL();
           _onStorageUploadResponseController
               .add(StorageProgress.uploadSuccess(url: url));
           break;
-        case StorageTaskEventType.failure:
-          _onStorageUploadResponseController.add(StorageProgress.uploadFailed(
-              cause: "Failed with error -> ${event.snapshot.error}"));
+        case TaskState.error:
+        case TaskState.canceled:
+          _onStorageUploadResponseController
+              .add(StorageProgress.uploadFailed(cause: 'Failed with error'));
           break;
-        case StorageTaskEventType.pause:
+        case TaskState.paused:
           _onStorageUploadResponseController
               .add(StorageProgress.uploadPaused());
           break;
-        case StorageTaskEventType.resume:
-          _onStorageUploadResponseController
-              .add(StorageProgress.uploadInProgress());
-          break;
-        case StorageTaskEventType.progress:
+        case TaskState.running:
           _onStorageUploadResponseController
               .add(StorageProgress.uploadInProgress());
           break;
       }
     });
-    var snapshot = await uploadTask.onComplete; // get snapshot upon completion
+    var snapshot = await uploadTask.snapshot; // get snapshot upon completion
     return await snapshot.ref.getDownloadURL(); // return download url
   }
 
@@ -79,21 +75,21 @@ class StorageRepositoryImpl implements BaseStorageRepository {
         final docDir = await getTemporaryDirectory();
         final targetPath = join(docDir.absolute.path,
             "target${filePath.substring(filePath.lastIndexOf("."))}");
-        logger.d("Path provided as params -> $filePath");
-        logger.d("Target path created -> $targetPath");
+        logger.d('Path provided as params -> $filePath');
+        logger.d('Target path created -> $targetPath');
         // compress image
         var result = await FlutterImageCompress.compressAndGetFile(
           filePath,
           targetPath,
           quality: 60,
-          format: filePath.endsWith(".png")
+          format: filePath.endsWith('.png')
               ? CompressFormat.png
               : CompressFormat.jpeg,
         );
 
         // log compression difference
         logger.i(
-            "Image compressed from ${File(filePath).lengthSync()} to ${result.lengthSync()}");
+            'Image compressed from ${File(filePath).lengthSync()} to ${result.lengthSync()}');
 
         // return compressed image
         return result;
