@@ -11,7 +11,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/routes/routes.gr.dart';
 import 'package:handyman/app/widgets/widgets.dart';
@@ -532,32 +531,15 @@ class _DashboardPageState extends State<DashboardPage> {
       );
 
   /// reviews
-  Widget _buildReviewsList(List<BaseReview> reviews) => AnimationLimiter(
-        child: ListView.separated(
-          padding: EdgeInsets.only(
-            top: kSpacingX16,
-            left: kSpacingX16,
-            right: kSpacingX16,
-            bottom: kToolbarHeight,
-          ),
-          itemBuilder: (_, index) {
-            final review = reviews[index];
-            return AnimationConfiguration.staggeredList(
-              position: index,
-              duration: kSheetDuration,
-              child: ScaleAnimation(
-                child: FadeInAnimation(
-                  child: ReviewListItem(
-                    review: review,
-                  ),
-                  duration: kSheetDuration,
-                ),
-                duration: kScaleDuration,
-              ),
-            );
-          },
-          separatorBuilder: (_, __) => SizedBox(height: kSpacingX8),
-          itemCount: reviews.length,
+  Widget _buildReviewsList(List<BaseReview> reviews) => ListView.separated(
+        padding: EdgeInsets.only(
+          top: kSpacingX16,
+          left: kSpacingX16,
+          right: kSpacingX16,
+          bottom: kToolbarHeight,
         ),
+        itemBuilder: (_, index) => ReviewListItem(review: reviews[index]),
+        separatorBuilder: (_, __) => SizedBox(height: kSpacingX8),
+        itemCount: reviews.length,
       );
 }

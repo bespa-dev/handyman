@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/widgets/src/artisan_card.dart';
 import 'package:lite/app/widgets/widgets.dart';
@@ -125,28 +124,18 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
   }
 
   Widget _buildArtisanCard(List<BaseArtisan> data) {
-    return AnimationLimiter(
-      child: GridView.builder(
-        addAutomaticKeepAlives: true,
-        clipBehavior: Clip.hardEdge,
-        cacheExtent: 200,
-        itemBuilder: (_, index) {
-          final artisan = data[index];
-          return AnimationConfiguration.staggeredGrid(
-            position: index,
-            columnCount: 2,
-            child: ScaleAnimation(
-              child: FadeInAnimation(
-                child: GridArtisanCardItem(artisan: artisan),
-              ),
-            ),
-          );
-        },
-        itemCount: data.length,
-        scrollDirection: Axis.vertical,
-        gridDelegate:
-            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-      ),
+    return GridView.builder(
+      addAutomaticKeepAlives: true,
+      clipBehavior: Clip.hardEdge,
+      cacheExtent: 200,
+      itemBuilder: (_, index) {
+        final artisan = data[index];
+        return GridArtisanCardItem(artisan: artisan);
+      },
+      itemCount: data.length,
+      scrollDirection: Axis.vertical,
+      gridDelegate:
+          SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
     );
   }
 }

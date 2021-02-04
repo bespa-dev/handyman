@@ -48,8 +48,6 @@ dependencies:
   flutter_rating_bar: null
   flutter_riverpod: ^0.12.1
   flutter_spinkit: ^4.1.2+1
-  flutter_staggered_animations: ^0.1.2
-  flutter_staggered_grid_view: ^0.3.0
   flutter_svg_provider: ^0.1.6
   flutter_video_compress: ^0.3.7+8
   geocoder: ^0.2.1

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
 
 class ArtisanServiceListItem extends StatefulWidget {
-  final String service;
-
   const ArtisanServiceListItem({Key key, @required this.service})
       : super(key: key);
+
+  final String service;
 
   @override
   _ArtisanServiceListItemState createState() => _ArtisanServiceListItemState();
@@ -139,33 +138,22 @@ class _ArtisanServiceListViewState extends State<ArtisanServiceListView> {
   Widget build(BuildContext context) => Container(
         width: SizeConfig.screenWidth,
         height: SizeConfig.screenHeight,
-        child: AnimationLimiter(
-          child: ListView.builder(
-            itemBuilder: (_, index) {
-              final item = widget.services[index];
-              return AnimationConfiguration.staggeredList(
-                position: index,
-                child: ScaleAnimation(
-                  duration: kScaleDuration,
-                  child: FadeInAnimation(
-                    child: ArtisanListTile(
-                      service: item,
-                      showLeadingIcon: widget.checkable,
-                      onTap: () {
-                        if (widget.onItemSelected != null)
-                          widget.onItemSelected(item);
-                      },
-                      selected: widget.selected == item,
-                      selectedColor: widget.selectedColor,
-                      unselectedColor: widget.unselectedColor,
-                    ),
-                  ),
-                ),
-              );
-            },
-            itemCount: widget.services.length,
-            padding: EdgeInsets.zero,
-          ),
+        child: ListView.builder(
+          itemBuilder: (_, index) {
+            final item = widget.services[index];
+            return ArtisanListTile(
+              service: item,
+              showLeadingIcon: widget.checkable,
+              onTap: () {
+                if (widget.onItemSelected != null) widget.onItemSelected(item);
+              },
+              selected: widget.selected == item,
+              selectedColor: widget.selectedColor,
+              unselectedColor: widget.unselectedColor,
+            );
+          },
+          itemCount: widget.services.length,
+          padding: EdgeInsets.zero,
         ),
       );
 }
@@ -219,8 +207,7 @@ class _ArtisanListTileState extends State<ArtisanListTile> {
       cubit: _categoryBloc,
       builder: (_, state) => AnimatedContainer(
         duration: kScaleDuration,
-        margin:
-        EdgeInsets.symmetric(vertical: kSpacingX4),
+        margin: EdgeInsets.symmetric(vertical: kSpacingX4),
         decoration: BoxDecoration(
           border: Border.all(
             color: widget.selected
@@ -240,27 +227,27 @@ class _ArtisanListTileState extends State<ArtisanListTile> {
             ),
           ),
           leading: state is SuccessState<Stream<BaseServiceCategory>> &&
-              widget.showLeadingIcon
+                  widget.showLeadingIcon
               ? StreamBuilder<BaseServiceCategory>(
-              stream: state.data,
-              builder: (_, snapshot) => UserAvatar(
-                  url: snapshot.hasData ? snapshot.data.avatar : ""))
+                  stream: state.data,
+                  builder: (_, snapshot) => UserAvatar(
+                      url: snapshot.hasData ? snapshot.data.avatar : ""))
               : null,
           subtitle: state is SuccessState<Stream<BaseServiceCategory>>
               ? StreamBuilder<BaseServiceCategory>(
-              stream: state.data,
-              builder: (_, snapshot) {
-                return Text(
-                  snapshot.hasData ? snapshot.data.name : "...",
-                  style: TextStyle(
-                    color: widget.selected
-                        ? widget.selectedColor ??
-                        kTheme.colorScheme.secondary
-                        : kTheme.colorScheme.onBackground
-                        .withOpacity(kEmphasisMedium),
-                  ),
-                );
-              })
+                  stream: state.data,
+                  builder: (_, snapshot) {
+                    return Text(
+                      snapshot.hasData ? snapshot.data.name : "...",
+                      style: TextStyle(
+                        color: widget.selected
+                            ? widget.selectedColor ??
+                                kTheme.colorScheme.secondary
+                            : kTheme.colorScheme.onBackground
+                                .withOpacity(kEmphasisMedium),
+                      ),
+                    );
+                  })
               : SizedBox.shrink(),
           trailing: IconButton(
             icon: Icon(kHelpIcon),

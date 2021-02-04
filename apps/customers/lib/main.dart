@@ -20,6 +20,8 @@ import 'package:lite/shared/shared.dart';
 /// flutter pub run flutter_launcher_icons:main --verbose
 /// flutter pub run flutter_launcher_name:main --verbose
 /// flutter analyze .
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

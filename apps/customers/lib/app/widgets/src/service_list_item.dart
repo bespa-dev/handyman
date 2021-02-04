@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/domain/models/models.dart';
@@ -139,33 +138,22 @@ class _ArtisanServiceListViewState extends State<ArtisanServiceListView> {
   Widget build(BuildContext context) => Container(
         width: SizeConfig.screenWidth,
         height: SizeConfig.screenHeight,
-        child: AnimationLimiter(
-          child: ListView.builder(
-            itemBuilder: (_, index) {
-              final item = widget.services[index];
-              return AnimationConfiguration.staggeredList(
-                position: index,
-                child: SlideAnimation(
-                  duration: kScaleDuration,
-                  child: FadeInAnimation(
-                    child: ArtisanListTile(
-                      service: item,
-                      showLeadingIcon: widget.checkable,
-                      onTap: () {
-                        if (widget.onItemSelected != null)
-                          widget.onItemSelected(item);
-                      },
-                      selected: widget.selected == item,
-                      selectedColor: widget.selectedColor,
-                      unselectedColor: widget.unselectedColor,
-                    ),
-                  ),
-                ),
-              );
-            },
-            itemCount: widget.services.length,
-            padding: EdgeInsets.zero,
-          ),
+        child: ListView.builder(
+          itemBuilder: (_, index) {
+            final item = widget.services[index];
+            return ArtisanListTile(
+              service: item,
+              showLeadingIcon: widget.checkable,
+              onTap: () {
+                if (widget.onItemSelected != null) widget.onItemSelected(item);
+              },
+              selected: widget.selected == item,
+              selectedColor: widget.selectedColor,
+              unselectedColor: widget.unselectedColor,
+            );
+          },
+          itemCount: widget.services.length,
+          padding: EdgeInsets.zero,
         ),
       );
 }
@@ -219,8 +207,7 @@ class _ArtisanListTileState extends State<ArtisanListTile> {
       cubit: _categoryBloc,
       builder: (_, state) => AnimatedContainer(
         duration: kScaleDuration,
-        margin:
-            EdgeInsets.symmetric(vertical: kSpacingX4),
+        margin: EdgeInsets.symmetric(vertical: kSpacingX4),
         decoration: BoxDecoration(
           border: Border.all(
             color: widget.selected
