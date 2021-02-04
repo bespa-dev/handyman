@@ -6,23 +6,23 @@ import 'usecase/result.dart';
 import 'usecase/usecase.dart';
 
 class SendReviewParams {
-  final String message;
-  final String reviewer;
-  final String artisan;
-  final double rating;
-
   SendReviewParams({
     @required this.message,
     @required this.reviewer,
     @required this.artisan,
     @required this.rating,
   });
+
+  final String message;
+  final String reviewer;
+  final String artisan;
+  final double rating;
 }
 
 class DeleteReviewUseCase extends CompletableUseCase<String> {
-  final BaseReviewRepository _repo;
-
   DeleteReviewUseCase(this._repo);
+
+  final BaseReviewRepository _repo;
 
   @override
   Future<UseCaseResult<void>> execute(String id) async {
@@ -36,9 +36,9 @@ class DeleteReviewUseCase extends CompletableUseCase<String> {
 }
 
 class SendReviewUseCase extends CompletableUseCase<SendReviewParams> {
-  final BaseReviewRepository _repo;
-
   SendReviewUseCase(this._repo);
+
+  final BaseReviewRepository _repo;
 
   @override
   Future<UseCaseResult<void>> execute(SendReviewParams params) async {
@@ -57,15 +57,16 @@ class SendReviewUseCase extends CompletableUseCase<SendReviewParams> {
 
 class ObserveReviewsForArtisanUseCase
     extends ObservableUseCase<List<BaseReview>, String> {
-  final BaseReviewRepository _repo;
-
   ObserveReviewsForArtisanUseCase(this._repo);
+
+  final BaseReviewRepository _repo;
 
   @override
   Future<UseCaseResult<Stream<List<BaseReview>>>> execute(String id) async {
     try {
       var reviews = _repo.observeReviewsForArtisan(id);
-      return UseCaseResult<Stream<List<BaseReview>>>.success(reviews.asBroadcastStream());
+      return UseCaseResult<Stream<List<BaseReview>>>.success(
+          reviews.asBroadcastStream());
     } on Exception {
       return UseCaseResult.error();
     }
@@ -74,15 +75,16 @@ class ObserveReviewsForArtisanUseCase
 
 class ObserveReviewsByCustomerUseCase
     extends ObservableUseCase<List<BaseReview>, String> {
-  final BaseReviewRepository _repo;
-
   ObserveReviewsByCustomerUseCase(this._repo);
+
+  final BaseReviewRepository _repo;
 
   @override
   Future<UseCaseResult<Stream<List<BaseReview>>>> execute(String id) async {
     try {
       var reviews = _repo.observeReviewsByCustomer(id);
-      return UseCaseResult<Stream<List<BaseReview>>>.success(reviews.asBroadcastStream());
+      return UseCaseResult<Stream<List<BaseReview>>>.success(
+          reviews.asBroadcastStream());
     } on Exception {
       return UseCaseResult.error();
     }

@@ -14,9 +14,9 @@ import 'usecase/result.dart';
 import 'usecase/usecase.dart';
 
 class SearchUseCase extends UseCase<List<BaseUser>, String> {
-  final BaseSearchRepository _repo;
-
   const SearchUseCase(this._repo);
+
+  final BaseSearchRepository _repo;
 
   @override
   Future<UseCaseResult<List<BaseUser>>> execute(String query) async {
@@ -24,7 +24,7 @@ class SearchUseCase extends UseCase<List<BaseUser>, String> {
       var results = await _repo.searchFor(query: query);
       return UseCaseResult.success(results);
     } on Exception {
-      return UseCaseResult.error("Unable to complete search");
+      return UseCaseResult.error('Unable to complete search');
     }
   }
 }

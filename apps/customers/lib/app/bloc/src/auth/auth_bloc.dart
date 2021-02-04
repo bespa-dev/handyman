@@ -18,11 +18,12 @@ import 'package:meta/meta.dart';
 import 'auth_event.dart';
 
 class AuthBloc extends BaseBloc<AuthEvent> {
-  final BaseAuthRepository _repo;
 
   AuthBloc({@required BaseAuthRepository repo})
       : assert(repo != null),
         _repo = repo;
+
+  final BaseAuthRepository _repo;
 
   @override
   Stream<BlocState> mapEventToState(
@@ -52,8 +53,9 @@ class AuthBloc extends BaseBloc<AuthEvent> {
         );
         if (result is UseCaseResultSuccess<BaseUser>) {
           yield BlocState<BaseUser>.successState(data: result.value);
-        } else
-          throw Exception("email sign in failed");
+        } else {
+          throw Exception('email sign in failed');
+        }
       } else if (event is EmailSignUpEvent) {
         var result = await EmailPasswordSignUpUseCase(_repo).execute(
           EmailPasswordSignUpUseCaseParams(
@@ -64,38 +66,44 @@ class AuthBloc extends BaseBloc<AuthEvent> {
         );
         if (result is UseCaseResultSuccess<BaseUser>) {
           yield BlocState<BaseUser>.successState(data: result.value);
-        } else
+        } else {
           throw Exception();
+        }
       } else if (event is ResetPasswordEvent) {
         var result = await ResetPasswordUseCase(_repo).execute(event.email);
         if (result is UseCaseResultSuccess<void>) {
           yield BlocState.successState();
-        } else
+        } else {
           throw Exception();
+        }
       } else if (event is FederatedOAuthEvent) {
         var result = await FederatedAuthUseCase(_repo).execute(null);
         if (result is UseCaseResultSuccess<BaseUser>) {
           yield BlocState<BaseUser>.successState(data: result.value);
-        } else
+        } else {
           throw Exception();
+        }
       } else if (event is AuthSignOutEvent) {
         var result = await SignOutUseCase(_repo).execute(null);
         if (result is UseCaseResultSuccess<void>) {
           yield BlocState.successState();
-        } else
+        } else {
           throw Exception();
+        }
       } else if (event is ObserveMessageEvent) {
         var result = await ObserveAuthMessageUseCase(_repo).execute(null);
         if (result is UseCaseResultSuccess<Stream<String>>) {
           yield BlocState<Stream<String>>.successState(data: result.value);
-        } else
+        } else {
           throw Exception();
+        }
       } else if (event is ObserveAuthStatetEvent) {
         var result = await ObserveAuthStateUseCase(_repo).execute(null);
         if (result is UseCaseResultSuccess<Stream<AuthState>>) {
           yield BlocState<Stream<AuthState>>.successState(data: result.value);
-        } else
+        } else {
           throw Exception();
+        }
       }
     } on Exception catch (ex) {
       yield BlocState.errorState(failure: ex.toString());

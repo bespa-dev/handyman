@@ -14,9 +14,9 @@ import 'usecase/usecase.dart';
 
 /// get home address
 class GetHomeAddressUseCase extends NoParamsUseCase<String> {
-  final BasePreferenceRepository _repo;
-
   const GetHomeAddressUseCase(this._repo);
+
+  final BasePreferenceRepository _repo;
 
   @override
   Future<UseCaseResult<String>> execute(_) async {
@@ -30,9 +30,9 @@ class GetHomeAddressUseCase extends NoParamsUseCase<String> {
 
 /// get work address
 class GetWorkAddressUseCase extends NoParamsUseCase<String> {
-  final BasePreferenceRepository _repo;
-
   const GetWorkAddressUseCase(this._repo);
+
+  final BasePreferenceRepository _repo;
 
   @override
   Future<UseCaseResult<String>> execute(_) async {
@@ -46,9 +46,9 @@ class GetWorkAddressUseCase extends NoParamsUseCase<String> {
 
 /// get user id
 class GetUserIdUseCase extends NoParamsUseCase<String> {
-  final BasePreferenceRepository _repo;
-
   const GetUserIdUseCase(this._repo);
+
+  final BasePreferenceRepository _repo;
 
   @override
   Future<UseCaseResult<String>> execute(_) async {
@@ -62,9 +62,9 @@ class GetUserIdUseCase extends NoParamsUseCase<String> {
 
 /// get contact
 class GetContactUseCase extends NoParamsUseCase<String> {
-  final BasePreferenceRepository _repo;
-
   const GetContactUseCase(this._repo);
+
+  final BasePreferenceRepository _repo;
 
   @override
   Future<UseCaseResult<String>> execute(_) async {
@@ -78,9 +78,9 @@ class GetContactUseCase extends NoParamsUseCase<String> {
 
 /// get theme
 class GetThemeUseCase extends NoParamsUseCase<bool> {
-  final BasePreferenceRepository _repo;
-
   const GetThemeUseCase(this._repo);
+
+  final BasePreferenceRepository _repo;
 
   @override
   Future<UseCaseResult<bool>> execute(_) async {
@@ -94,9 +94,9 @@ class GetThemeUseCase extends NoParamsUseCase<bool> {
 
 /// observe theme
 class ObserveThemeUseCase extends ObservableUseCase<bool, void> {
-  final BasePreferenceRepository _repo;
-
   const ObserveThemeUseCase(this._repo);
+
+  final BasePreferenceRepository _repo;
 
   @override
   Future<UseCaseResult<Stream<bool>>> execute(_) async {
@@ -110,9 +110,9 @@ class ObserveThemeUseCase extends ObservableUseCase<bool, void> {
 
 /// save theme
 class SaveThemeUseCase extends CompletableUseCase<bool> {
-  final BasePreferenceRepository _repo;
-
   const SaveThemeUseCase(this._repo);
+
+  final BasePreferenceRepository _repo;
 
   @override
   Future<UseCaseResult<void>> execute(theme) async {
@@ -127,9 +127,9 @@ class SaveThemeUseCase extends CompletableUseCase<bool> {
 
 /// save user id
 class SaveUserIdUseCase extends CompletableUseCase<String> {
-  final BasePreferenceRepository _repo;
-
   const SaveUserIdUseCase(this._repo);
+
+  final BasePreferenceRepository _repo;
 
   @override
   Future<UseCaseResult<void>> execute(id) async {
@@ -144,9 +144,9 @@ class SaveUserIdUseCase extends CompletableUseCase<String> {
 
 /// set home address
 class SaveHomeAddressUseCase extends CompletableUseCase<String> {
-  final BasePreferenceRepository _repo;
-
   const SaveHomeAddressUseCase(this._repo);
+
+  final BasePreferenceRepository _repo;
 
   @override
   Future<UseCaseResult<void>> execute(address) async {
@@ -161,9 +161,9 @@ class SaveHomeAddressUseCase extends CompletableUseCase<String> {
 
 /// set work address
 class SaveWorkAddressUseCase extends CompletableUseCase<String> {
-  final BasePreferenceRepository _repo;
-
   const SaveWorkAddressUseCase(this._repo);
+
+  final BasePreferenceRepository _repo;
 
   @override
   Future<UseCaseResult<void>> execute(address) async {
@@ -178,9 +178,9 @@ class SaveWorkAddressUseCase extends CompletableUseCase<String> {
 
 /// save contact
 class SaveContactUseCase extends CompletableUseCase<String> {
-  final BasePreferenceRepository _repo;
-
   const SaveContactUseCase(this._repo);
+
+  final BasePreferenceRepository _repo;
 
   @override
   Future<UseCaseResult<void>> execute(contact) async {
@@ -195,9 +195,9 @@ class SaveContactUseCase extends CompletableUseCase<String> {
 
 /// get standard view type
 class GetStandardViewUseCase extends UseCase<bool, void> {
-  final BasePreferenceRepository _repo;
-
   const GetStandardViewUseCase(this._repo);
+
+  final BasePreferenceRepository _repo;
 
   @override
   Future<UseCaseResult<bool>> execute(_) async {
@@ -211,9 +211,9 @@ class GetStandardViewUseCase extends UseCase<bool, void> {
 
 /// save standard view type
 class SaveStandardViewUseCase extends CompletableUseCase<bool> {
-  final BasePreferenceRepository _repo;
-
   const SaveStandardViewUseCase(this._repo);
+
+  final BasePreferenceRepository _repo;
 
   @override
   Future<UseCaseResult<void>> execute(value) async {
@@ -228,9 +228,9 @@ class SaveStandardViewUseCase extends CompletableUseCase<bool> {
 
 /// get standard view type
 class GetShowSplashUseCase extends UseCase<bool, void> {
-  final BasePreferenceRepository _repo;
-
   const GetShowSplashUseCase(this._repo);
+
+  final BasePreferenceRepository _repo;
 
   @override
   Future<UseCaseResult<bool>> execute(_) async {
@@ -244,9 +244,9 @@ class GetShowSplashUseCase extends UseCase<bool, void> {
 
 /// save standard view type
 class SaveShowSplashUseCase extends CompletableUseCase<bool> {
-  final BasePreferenceRepository _repo;
-
   const SaveShowSplashUseCase(this._repo);
+
+  final BasePreferenceRepository _repo;
 
   @override
   Future<UseCaseResult<void>> execute(value) async {
@@ -260,9 +260,9 @@ class SaveShowSplashUseCase extends CompletableUseCase<bool> {
 }
 
 class PrefsSignOutUseCase extends VoidableUseCase {
-  final BasePreferenceRepository _repo;
-
   const PrefsSignOutUseCase(this._repo);
+
+  final BasePreferenceRepository _repo;
 
   @override
   Future<UseCaseResult<void>> execute(_) async {

@@ -12,8 +12,6 @@ import 'package:meta/meta.dart';
 
 import 'usecase.dart';
 
-
-
 /// result wrapper for a [UseCase] execution
 @immutable
 abstract class UseCaseResult<T> extends Equatable {
@@ -34,11 +32,11 @@ abstract class UseCaseResult<T> extends Equatable {
 // result wrapper
 @immutable
 class UseCaseResultSuccess<T> extends UseCaseResult<T> {
-  final T value;
-
   const UseCaseResultSuccess._(this.value) : super();
 
   factory UseCaseResultSuccess.create(T data) => UseCaseResultSuccess._(data);
+
+  final T value;
 
   @override
   List<Object> get props => [value];
@@ -46,12 +44,12 @@ class UseCaseResultSuccess<T> extends UseCaseResult<T> {
 
 @immutable
 class UseCaseResultError<E> extends UseCaseResult<E> {
-  final E cause;
-
   const UseCaseResultError._(this.cause) : super();
 
   factory UseCaseResultError.create(dynamic cause) =>
       UseCaseResultError._(cause);
+
+  final E cause;
 
   @override
   List<Object> get props => [cause];

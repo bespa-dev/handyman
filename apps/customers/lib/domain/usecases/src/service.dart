@@ -6,9 +6,9 @@ import 'usecase/usecase.dart';
 
 class GetAllArtisanServicesUseCase
     extends NoParamsUseCase<List<BaseArtisanService>> {
-  final BaseArtisanServiceRepository _repo;
-
   const GetAllArtisanServicesUseCase(this._repo);
+
+  final BaseArtisanServiceRepository _repo;
 
   @override
   Future<UseCaseResult<List<BaseArtisanService>>> execute(_) async {
@@ -23,9 +23,9 @@ class GetAllArtisanServicesUseCase
 
 class GetArtisanServicesUseCase
     extends UseCase<List<BaseArtisanService>, String> {
-  final BaseArtisanServiceRepository _repo;
-
   const GetArtisanServicesUseCase(this._repo);
+
+  final BaseArtisanServiceRepository _repo;
 
   @override
   Future<UseCaseResult<List<BaseArtisanService>>> execute(
@@ -42,9 +42,9 @@ class GetArtisanServicesUseCase
 }
 
 class GetServiceByIdUseCase extends UseCase<BaseArtisanService, String> {
-  final BaseArtisanServiceRepository _repo;
-
   const GetServiceByIdUseCase(this._repo);
+
+  final BaseArtisanServiceRepository _repo;
 
   @override
   Future<UseCaseResult<BaseArtisanService>> execute(String id) async {
@@ -60,9 +60,9 @@ class GetServiceByIdUseCase extends UseCase<BaseArtisanService, String> {
 
 class UpdateArtisanServiceUseCase
     extends CompletableUseCase<BaseArtisanService> {
-  final BaseArtisanServiceRepository _repo;
-
   UpdateArtisanServiceUseCase(this._repo);
+
+  final BaseArtisanServiceRepository _repo;
 
   @override
   Future<UseCaseResult<void>> execute(BaseArtisanService service) async {

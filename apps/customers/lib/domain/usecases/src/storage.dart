@@ -14,22 +14,22 @@ import 'usecase/result.dart';
 import 'usecase/usecase.dart';
 
 class UploadMediaUseCaseParams {
-  final String path;
-  final String filePath;
-  final bool isImage;
-
   const UploadMediaUseCaseParams({
     @required this.path,
     @required this.filePath,
     this.isImage = true,
   });
+
+  final String path;
+  final String filePath;
+  final bool isImage;
 }
 
 class UploadMediaUseCase
     extends BackgroundUseCase<String, UploadMediaUseCaseParams> {
-  final BaseStorageRepository _repo;
-
   const UploadMediaUseCase(this._repo);
+
+  final BaseStorageRepository _repo;
 
   @override
   Future<UseCaseResult<String>> execute(params) async {
@@ -42,7 +42,7 @@ class UploadMediaUseCase
       return UseCaseResult<String>.success(url);
     } on Exception {
       // cancel when process fails
-      return UseCaseResult.error("failed to retrieve compressed file");
+      return UseCaseResult.error('failed to retrieve compressed file');
     }
   }
 }

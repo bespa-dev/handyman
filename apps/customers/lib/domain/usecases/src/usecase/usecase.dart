@@ -58,22 +58,22 @@ abstract class BackgroundUseCase<T, P> extends UseCase<T, P> {
 
 /// Message returned from [BackgroundUseCaseParams]
 class BackgroundUseCaseMessage<T> {
-  final T data;
-  final Exception error;
-
   const BackgroundUseCaseMessage({
     this.data,
     this.error,
   });
+
+  final T data;
+  final Exception error;
 }
 
 /// Parameters passed to the [BackgroundUseCase]
 class BackgroundUseCaseParams<T> {
-  final BackgroundUseCaseMessage<T> message;
-  final T params;
-
   const BackgroundUseCaseParams({
     @required this.params,
     @required this.message,
   });
+
+  final BackgroundUseCaseMessage<T> message;
+  final T params;
 }

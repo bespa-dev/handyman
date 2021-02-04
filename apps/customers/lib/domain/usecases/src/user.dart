@@ -15,9 +15,9 @@ import 'usecase/usecase.dart';
 
 class ObserveAllArtisansUseCase
     extends ObservableUseCase<List<BaseArtisan>, String> {
-  final BaseUserRepository _repo;
-
   const ObserveAllArtisansUseCase(this._repo);
+
+  final BaseUserRepository _repo;
 
   @override
   Future<UseCaseResult<Stream<List<BaseArtisan>>>> execute(
@@ -33,15 +33,16 @@ class ObserveAllArtisansUseCase
 }
 
 class ObserveArtisanUseCase extends ObservableUseCase<BaseArtisan, String> {
-  final BaseUserRepository _repo;
-
   const ObserveArtisanUseCase(this._repo);
+
+  final BaseUserRepository _repo;
 
   @override
   Future<UseCaseResult<Stream<BaseArtisan>>> execute(String userId) async {
     try {
       final person = _repo.observeArtisanById(id: userId);
-      return UseCaseResult<Stream<BaseArtisan>>.success(person.asBroadcastStream());
+      return UseCaseResult<Stream<BaseArtisan>>.success(
+          person.asBroadcastStream());
     } on Exception {
       return UseCaseResult.error(null);
     }
@@ -49,15 +50,16 @@ class ObserveArtisanUseCase extends ObservableUseCase<BaseArtisan, String> {
 }
 
 class ObserveCustomerUseCase extends ObservableUseCase<BaseUser, String> {
-  final BaseUserRepository _repo;
-
   const ObserveCustomerUseCase(this._repo);
+
+  final BaseUserRepository _repo;
 
   @override
   Future<UseCaseResult<Stream<BaseUser>>> execute(String userId) async {
     try {
       final person = _repo.observeCustomerById(id: userId);
-      return UseCaseResult<Stream<BaseUser>>.success(person.asBroadcastStream());
+      return UseCaseResult<Stream<BaseUser>>.success(
+          person.asBroadcastStream());
     } on Exception {
       return UseCaseResult.error(null);
     }
@@ -65,9 +67,9 @@ class ObserveCustomerUseCase extends ObservableUseCase<BaseUser, String> {
 }
 
 class GetCustomerUseCase extends UseCase<BaseUser, String> {
-  final BaseUserRepository _repo;
-
   const GetCustomerUseCase(this._repo);
+
+  final BaseUserRepository _repo;
 
   @override
   Future<UseCaseResult<BaseUser>> execute(String userId) async {
@@ -81,9 +83,9 @@ class GetCustomerUseCase extends UseCase<BaseUser, String> {
 }
 
 class GetArtisanUseCase extends UseCase<BaseArtisan, String> {
-  final BaseUserRepository _repo;
-
   const GetArtisanUseCase(this._repo);
+
+  final BaseUserRepository _repo;
 
   @override
   Future<UseCaseResult<BaseArtisan>> execute(String userId) async {
@@ -98,9 +100,9 @@ class GetArtisanUseCase extends UseCase<BaseArtisan, String> {
 
 /// streams live updates from the currently logged in [BaseUser] entity
 class ObserveCurrentUserUseCase extends ObservableUseCase<BaseUser, void> {
-  final BaseUserRepository _repo;
-
   const ObserveCurrentUserUseCase(this._repo);
+
+  final BaseUserRepository _repo;
 
   @override
   Future<UseCaseResult<Stream<BaseUser>>> execute(_) async {
@@ -116,9 +118,9 @@ class ObserveCurrentUserUseCase extends ObservableUseCase<BaseUser, void> {
 
 /// updates a [BasePerson]
 class UpdateUserUseCase extends CompletableUseCase<BaseUser> {
-  final BaseUserRepository _repo;
-
   const UpdateUserUseCase(this._repo);
+
+  final BaseUserRepository _repo;
 
   @override
   Future<UseCaseResult<void>> execute(BaseUser person) async {

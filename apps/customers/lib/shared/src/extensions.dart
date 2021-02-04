@@ -29,7 +29,7 @@ extension ListX on List<dynamic> {
     if (contains(item)) {
       remove(item);
     } else {
-      this.add(item);
+      add(item);
     }
   }
 }

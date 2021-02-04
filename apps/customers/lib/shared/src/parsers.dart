@@ -25,6 +25,6 @@ String countDownFrom(String first) =>
 
 String formatCurrency(double amount) {
   var cediFormat = NumberFormat.currency(
-      decimalDigits: 2, locale: "en_GH", symbol: "\u00a2");
+      decimalDigits: 2, locale: 'en_GH', symbol: '\u00a2');
   return cediFormat.format(amount);
 }

@@ -17,8 +17,8 @@ class Validators {
   /// validate user [phoneNumber]
   /// https://stackoverflow.com/questions/55552230/flutter-validate-a-phone-number-using-regex/55552272
   static bool validatePhoneNumber(String phoneNumber) {
-    String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
-    RegExp regExp = new RegExp(pattern);
+    var pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+    var regExp = RegExp(pattern);
     if (phoneNumber.isEmpty) {
       return false;
     } else if (!regExp.hasMatch(phoneNumber)) {

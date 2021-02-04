@@ -28,11 +28,11 @@ class SizeConfig {
 }
 
 double getProportionateScreenHeight(double inputHeight) {
-  double screenHeight = SizeConfig.screenHeight;
+  var screenHeight = SizeConfig.screenHeight;
   return (inputHeight / 896) * screenHeight;
 }
 
 double getProportionateScreenWidth(double inputWidth) {
-  double screenWidth = SizeConfig.screenWidth;
+  var screenWidth = SizeConfig.screenWidth;
   return (inputWidth / 414) * screenWidth;
 }

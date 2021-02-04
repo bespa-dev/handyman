@@ -40,7 +40,7 @@ android {
 
     defaultConfig {
         applicationId "dev.azaware.handyman"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -89,6 +89,6 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.google.firebase:firebase-messaging:20.1.6'
+//    implementation 'com.google.firebase:firebase-messaging:20.1.6'
 }
 apply plugin: 'com.google.gms.google-services'
