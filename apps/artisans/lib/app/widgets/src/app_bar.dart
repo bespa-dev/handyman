@@ -120,7 +120,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
     final kTheme = Theme.of(context);
     return AppBar(
       toolbarHeight: kToolbarHeight,
-      toolbarTextStyle: kTheme.appBarTheme.textTheme.headline6,
       textTheme: kTheme.appBarTheme.textTheme,
       leading: GestureDetector(
         onTap: () {

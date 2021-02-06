@@ -5,10 +5,10 @@ import 'package:uuid/uuid.dart';
 void main() async {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  test("gen ids", () {
-    for (int i = 0; i < 20; i++) {
+  test('gen ids', () {
+    for (var i = 0; i < 20; i++) {
       final timestamp = DateTime.now().toIso8601String();
-      logger.i("${Uuid().v4()} => $timestamp");
+      logger.i('${Uuid().v4()} => $timestamp');
     }
   });
 }

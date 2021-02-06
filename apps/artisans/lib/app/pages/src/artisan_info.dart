@@ -19,9 +19,9 @@ import 'package:share/share.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
 class ArtisanInfoPage extends StatefulWidget {
-  final BaseArtisan artisan;
 
   const ArtisanInfoPage({Key key, @required this.artisan}) : super(key: key);
+  final BaseArtisan artisan;
 
   @override
   _ArtisanInfoPageState createState() => _ArtisanInfoPageState();
@@ -68,7 +68,6 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                 /// header
                 SliverAppBar(
                   toolbarHeight: kToolbarHeight,
-                  toolbarTextStyle: kTheme.textTheme.headline6,
                   textTheme: kTheme.textTheme,
                   leading: IconButton(
                     icon: Icon(kBackIcon),
