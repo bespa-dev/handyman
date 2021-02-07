@@ -282,7 +282,6 @@ class _ArtisanListTileState extends State<ArtisanListTile> {
           ),
           selected: widget.selected,
           tileColor: widget.unselectedColor ?? kTheme.cardColor,
-          enableFeedback: true,
         ),
       ),
     );

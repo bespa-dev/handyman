@@ -559,15 +559,21 @@ Future<T> showCustomDialog<T>({
   bool isImageDialog = false,
   bool shouldDismissOnBarrierTap = false,
 }) {
-  final CapturedThemes themes = InheritedTheme.capture(
-      from: context, to: Navigator.of(context, rootNavigator: true).context);
+  // final CapturedThemes themes = InheritedTheme.capture(
+  //     from: context, to: Navigator.of(context, rootNavigator: true).context);
   return showGeneralDialog(
     context: context,
     pageBuilder: (BuildContext buildContext, Animation<double> animation,
         Animation<double> secondaryAnimation) {
       final kTheme = Theme.of(context);
       final Widget pageChild = Builder(builder: builder);
-      Widget dialog = themes.wrap(pageChild);
+      Widget dialog = Builder(
+          builder: (BuildContext context) {
+            return kTheme != null
+                ? Theme(data: kTheme, child: pageChild)
+                : pageChild;
+          }
+      );
       final contentPadding = EdgeInsets.fromLTRB(
         kSpacingX16,
         kSpacingX24,

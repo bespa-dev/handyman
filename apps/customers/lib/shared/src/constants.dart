@@ -39,7 +39,7 @@ void showSnackBarMessage(
 }) {
   duration ??= SnackBarDuration.shortLength();
   logger.d(duration);
-  ScaffoldMessenger.of(context)
+  Scaffold.of(context)
     ..removeCurrentSnackBar()
     ..showSnackBar(
       SnackBar(

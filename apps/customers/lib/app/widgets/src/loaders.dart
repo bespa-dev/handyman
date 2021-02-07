@@ -11,20 +11,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Loading extends StatelessWidget {
-  final Color color;
-  final bool circular;
-
   const Loading({
     Key key,
     this.color,
     this.circular = false,
   }) : super(key: key);
 
+  final Color color;
+  final bool circular;
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: circular
-          ? CircularProgressIndicator.adaptive(
+          ? CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation(
                   color ?? Theme.of(context).colorScheme.secondary),
             )

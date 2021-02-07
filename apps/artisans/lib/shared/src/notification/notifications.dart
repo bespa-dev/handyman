@@ -181,42 +181,42 @@ class LocalNotificationService {
     _configureSelectNotificationSubject();
 
     /// fixme -> register notification channels
-    // await _pushNotification(
-    //   {
-    //     'title': kAppName,
-    //     'body': kLoremText,
-    //   },
-    //   channelId: conversationChannelId,
-    //   channelName: conversationChannelName,
-    //   channelDesc: conversationChannelDesc,
-    // );
-    // await _pushNotification(
-    //   {
-    //     'title': kAppName,
-    //     'body': kLoremText,
-    //   },
-    //   channelId: bookingChannelId,
-    //   channelName: bookingChannelName,
-    //   channelDesc: bookingChannelDesc,
-    // );
-    // await _pushNotification(
-    //   {
-    //     'title': kAppName,
-    //     'body': kLoremText,
-    //   },
-    //   channelId: tokenChannelId,
-    //   channelName: tokenChannelName,
-    //   channelDesc: tokenChannelDesc,
-    // );
-    // await _pushNotification(
-    //   {
-    //     'title': kAppName,
-    //     'body': kLoremText,
-    //   },
-    //   channelId: approvalChannelId,
-    //   channelName: approvalChannelName,
-    //   channelDesc: approvalChannelDesc,
-    // );
+    await _pushNotification(
+      {
+        'title': kAppName,
+        'body': kLoremText,
+      },
+      channelId: conversationChannelId,
+      channelName: conversationChannelName,
+      channelDesc: conversationChannelDesc,
+    );
+    await _pushNotification(
+      {
+        'title': kAppName,
+        'body': kLoremText,
+      },
+      channelId: bookingChannelId,
+      channelName: bookingChannelName,
+      channelDesc: bookingChannelDesc,
+    );
+    await _pushNotification(
+      {
+        'title': kAppName,
+        'body': kLoremText,
+      },
+      channelId: tokenChannelId,
+      channelName: tokenChannelName,
+      channelDesc: tokenChannelDesc,
+    );
+    await _pushNotification(
+      {
+        'title': kAppName,
+        'body': kLoremText,
+      },
+      channelId: approvalChannelId,
+      channelName: approvalChannelName,
+      channelDesc: approvalChannelDesc,
+    );
   }
 
   Future<void> cancel({bool allNotifications = false, int id}) async {
