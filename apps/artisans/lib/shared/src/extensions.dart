@@ -7,36 +7,41 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
 /// extensions on [List]
 extension ListX on List<dynamic> {
   /// add an [item] to an existing [List] if it does not already contain it
   void addIfDoesNotExist(dynamic item) {
     if (this == null) return;
-    if (!this.contains(item)) this.add(item);
+    if (!contains(item)) add(item);
   }
 
   /// remove an [item] to an existing [List] if it does not already contain it
   void removeIfExists(dynamic item) {
     if (this == null) return;
-    if (this.contains(item)) this.remove(item);
+    if (contains(item)) remove(item);
   }
 
   /// remove an [item] to an existing [List] if it does not already contain it
   void toggleAddOrRemove(dynamic item) {
     if (this == null) return;
-    if (this.contains(item))
-      this.remove(item);
-    else
-      this.add(item);
+    if (contains(item)) {
+      remove(item);
+    } else {
+      add(item);
+    }
   }
 }
 
 /// extensions on [DateTime]
 extension DateTimeExtensionX on DateTime {
   TimeOfDay toTimeOfDay() {
-    return TimeOfDay(hour: this.hour, minute: this.minute);
+    return TimeOfDay(hour: hour, minute: minute);
   }
 }
 
@@ -44,7 +49,7 @@ extension DateTimeExtensionX on DateTime {
 extension TimeOfDayExtensionX on TimeOfDay {
   DateTime toDateTime() {
     final now = DateTime.now();
-    return DateTime(now.year, now.month, now.day, this.hour, this.minute);
+    return DateTime(now.year, now.month, now.day, hour, minute);
   }
 }
 
@@ -63,4 +68,16 @@ extension IterableX<T> on Iterable<T> {
 extension ItemX on Object {
   /// convert any object to a stream
   Stream<T> asStream<T>() => Stream<T>.value(this as T);
+}
+
+extension StringX on String {
+  /// download and save image file locally
+  Future<String> _downloadAndSaveImage(String fileName) async {
+    var directory = await getApplicationDocumentsDirectory();
+    var filePath = '${directory.path}/$fileName';
+    var response = await http.get(this);
+    var file = File(filePath);
+    await file.writeAsBytes(response.bodyBytes);
+    return filePath;
+  }
 }

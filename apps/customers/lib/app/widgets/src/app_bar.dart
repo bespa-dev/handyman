@@ -148,7 +148,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
       ),
       centerTitle: false,
       backgroundColor: kTheme.colorScheme.background,
-      flexibleSpace: FlexibleSpaceBar(
+      //fixme
+      /*flexibleSpace: FlexibleSpaceBar(
         collapseMode: CollapseMode.parallax,
         background: ConstrainedBox(
           constraints: BoxConstraints.tightFor(
@@ -175,7 +176,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
           ),
         ),
         titlePadding: EdgeInsets.zero,
-      ),
+      ),*/
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
@@ -29,16 +30,16 @@ final FlutterLocalNotificationsPlugin _plugin =
     FlutterLocalNotificationsPlugin();
 
 /// Streams are created so that app can respond to notification-related events
-final BehaviorSubject<ReceivedNotification>
+final BehaviorSubject<_ReceivedNotification>
     _didReceiveLocalNotificationSubject =
-    BehaviorSubject<ReceivedNotification>();
+    BehaviorSubject<_ReceivedNotification>();
 
 final BehaviorSubject<String> _selectNotificationSubject =
     BehaviorSubject<String>();
 
 /// data model for received messages
-class ReceivedNotification {
-  ReceivedNotification({
+class _ReceivedNotification {
+  _ReceivedNotification({
     @required this.id,
     @required this.title,
     @required this.body,
@@ -52,7 +53,15 @@ class ReceivedNotification {
 }
 
 class LocalNotificationService {
-  const LocalNotificationService();
+  LocalNotificationService._internal();
+
+  factory LocalNotificationService() => _singleton;
+
+  static final LocalNotificationService _singleton =
+      LocalNotificationService._internal();
+
+  /// Firebase messaging
+  final _fcm = ProviderContainer().read(firebaseMessaging);
 
   /// setup local notifications
   Future<void> setupNotifications() async {
@@ -66,7 +75,7 @@ class LocalNotificationService {
         requestSoundPermission: false,
         onDidReceiveLocalNotification:
             (int id, String title, String body, String payload) async {
-          _didReceiveLocalNotificationSubject.add(ReceivedNotification(
+          _didReceiveLocalNotificationSubject.add(_ReceivedNotification(
               id: id, title: title, body: body, payload: payload));
         });
 
@@ -76,12 +85,19 @@ class LocalNotificationService {
     );
 
     await _plugin.initialize(initializationSettings,
-        onSelectNotification: (String payload) async {
-      if (payload != null) {
-        logger.d('notification payload: $payload');
-      }
-      _selectNotificationSubject.add(payload);
-    });
+        onSelectNotification: (String payload) async =>
+            _selectNotificationSubject.add(payload));
+
+    /// observe token refresh
+    _fcm.onTokenRefresh.listen((data) async => await _saveDeviceToken(data));
+
+    if (Platform.isIOS) {
+      await _fcm.requestPermission();
+    } else {
+      await _saveDeviceToken();
+    }
+
+    await Future.delayed(kNoDuration);
 
     /// setup firebase messaging
     FirebaseMessaging.onMessageOpenedApp.listen((event) async {
@@ -110,6 +126,9 @@ class LocalNotificationService {
       } else if (data['type'] == 'token') {
       } else if (data['type'] == 'approval') {}
     });
+
+    /// request permission
+    await ProviderContainer().read(firebaseMessaging).requestPermission();
 
     /// background message handler
     FirebaseMessaging.onBackgroundMessage((rm) async {
@@ -238,7 +257,7 @@ class LocalNotificationService {
 
   void _configureDidReceiveLocalNotificationSubject() {
     _didReceiveLocalNotificationSubject.stream
-        .listen((ReceivedNotification receivedNotification) async {
+        .listen((_ReceivedNotification receivedNotification) async {
       logger.d('notification title -> ${receivedNotification.title}');
       logger.d('notification body -> ${receivedNotification.body}');
     });
@@ -254,6 +273,22 @@ class LocalNotificationService {
   void dispose() {
     _didReceiveLocalNotificationSubject.close();
     _selectNotificationSubject.close();
+  }
+
+  /// save device token for current user
+  Future<void> _saveDeviceToken([String token]) async {
+    token = token ?? await _fcm.getToken();
+    var container = ProviderContainer();
+    final prefs = await container.read(sharedPreferencesProvider.future);
+    var prefsRepo = container.read(prefsRepositoryProvider(prefs));
+
+    if (prefsRepo.isLoggedIn) {
+      var datasource = container.read(remoteDatasourceProvider(prefsRepo));
+
+      /// get current user
+      var artisan = await datasource.getArtisanById(id: prefsRepo.userId);
+      await datasource.updateUser(artisan.copyWith(token: token));
+    }
   }
 }
 

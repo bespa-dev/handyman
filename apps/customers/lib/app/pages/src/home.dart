@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
 
   /// handles tab changes
   void _onTabPressed(int index) {
-    if (_currentPage == index)
+    if (_currentPage == index) {
       switch (_currentPage) {
         case 0:
           _artisansNavKey.currentState.popUntil((route) => route.isFirst);
@@ -59,10 +59,11 @@ class _HomePageState extends State<HomePage> {
           _bookingsNavKey.currentState.popUntil((route) => route.isFirst);
           break;
       }
-    else if (mounted)
+    } else if (mounted) {
       setState(() {
         _currentPage = index;
       });
+    }
   }
 
   /// handles back press
