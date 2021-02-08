@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -25,16 +26,16 @@ final FlutterLocalNotificationsPlugin _plugin =
     FlutterLocalNotificationsPlugin();
 
 /// Streams are created so that app can respond to notification-related events
-final BehaviorSubject<ReceivedNotification>
+final BehaviorSubject<_ReceivedNotification>
     _didReceiveLocalNotificationSubject =
-    BehaviorSubject<ReceivedNotification>();
+    BehaviorSubject<_ReceivedNotification>();
 
-final BehaviorSubject<dynamic> _selectNotificationSubject =
-    BehaviorSubject<dynamic>();
+final BehaviorSubject<String> _selectNotificationSubject =
+BehaviorSubject<String>();
 
 /// data model for received messages
-class ReceivedNotification {
-  ReceivedNotification({
+class _ReceivedNotification {
+  _ReceivedNotification({
     @required this.id,
     @required this.title,
     @required this.body,
@@ -48,26 +49,31 @@ class ReceivedNotification {
 }
 
 class LocalNotificationService {
-  const LocalNotificationService();
+  LocalNotificationService._internal();
+
+  factory LocalNotificationService() => _singleton;
+
+  static final LocalNotificationService _singleton =
+  LocalNotificationService._internal();
+
+  /// Firebase messaging
+  final _fcm = ProviderContainer().read(firebaseMessaging);
 
   /// setup local notifications
   Future<void> setupNotifications() async {
     const initializationSettingsAndroid =
-        AndroidInitializationSettings('app_logo');
+    AndroidInitializationSettings('app_logo');
 
     /// Request permission on iOS
     final initializationSettingsIOS = IOSInitializationSettings(
-      requestAlertPermission: false,
-      requestBadgePermission: false,
-      requestSoundPermission: false,
-      onDidReceiveLocalNotification:
-          (int id, String title, String body, String payload) async {
-        _didReceiveLocalNotificationSubject.add(
-          ReceivedNotification(
-              id: id, title: title, body: body, payload: payload),
-        );
-      },
-    );
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+        onDidReceiveLocalNotification:
+            (int id, String title, String body, String payload) async {
+          _didReceiveLocalNotificationSubject.add(_ReceivedNotification(
+              id: id, title: title, body: body, payload: payload));
+        });
 
     final initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -75,12 +81,19 @@ class LocalNotificationService {
     );
 
     await _plugin.initialize(initializationSettings,
-        onSelectNotification: (dynamic payload) async {
-      if (payload != null) {
-        logger.d('notification payload: $payload');
-      }
-      _selectNotificationSubject.add(payload);
-    });
+        onSelectNotification: (String payload) async =>
+            _selectNotificationSubject.add(payload));
+
+    /// observe token refresh
+    _fcm.onTokenRefresh.listen((data) async => await _saveDeviceToken(data));
+
+    if (Platform.isIOS) {
+      await _fcm.requestPermission();
+    } else {
+      await _saveDeviceToken();
+    }
+
+    await Future.delayed(kNoDuration);
 
     /// setup firebase messaging
     FirebaseMessaging.onMessageOpenedApp.listen((event) async {
@@ -118,20 +131,20 @@ class LocalNotificationService {
       var id = data['type'] == 'booking'
           ? bookingChannelId
           : data['type'] == 'conversation'
-              ? conversationChannelId
-              : tokenChannelId;
+          ? conversationChannelId
+          : tokenChannelId;
 
       var name = data['type'] == 'booking'
           ? bookingChannelName
           : data['type'] == 'conversation'
-              ? conversationChannelName
-              : tokenChannelName;
+          ? conversationChannelName
+          : tokenChannelName;
 
       var desc = data['type'] == 'booking'
           ? bookingChannelDesc
           : data['type'] == 'conversation'
-              ? conversationChannelDesc
-              : tokenChannelDesc;
+          ? conversationChannelDesc
+          : tokenChannelDesc;
 
       await _pushNotification(
         data,
@@ -147,20 +160,20 @@ class LocalNotificationService {
       var id = data['type'] == 'booking'
           ? bookingChannelId
           : data['type'] == 'conversation'
-              ? conversationChannelId
-              : tokenChannelId;
+          ? conversationChannelId
+          : tokenChannelId;
 
       var name = data['type'] == 'booking'
           ? bookingChannelName
           : data['type'] == 'conversation'
-              ? conversationChannelName
-              : tokenChannelName;
+          ? conversationChannelName
+          : tokenChannelName;
 
       var desc = data['type'] == 'booking'
           ? bookingChannelDesc
           : data['type'] == 'conversation'
-              ? conversationChannelDesc
-              : tokenChannelDesc;
+          ? conversationChannelDesc
+          : tokenChannelDesc;
 
       await _pushNotification(
         data,
@@ -170,7 +183,7 @@ class LocalNotificationService {
       );
     });
 
-    _requestPermissions();
+    await _requestPermissions();
     _configureDidReceiveLocalNotificationSubject();
     _configureSelectNotificationSubject();
 
@@ -210,27 +223,29 @@ class LocalNotificationService {
     } else if (id != null) await _plugin.cancel(id);
   }
 
-  void _requestPermissions() {
-    _plugin
+  Future<void> _requestPermissions() async {
+    /// request permission
+    await ProviderContainer().read(firebaseMessaging).requestPermission();
+    await _plugin
         .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
+        IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
+      alert: true,
+      badge: true,
+      sound: true,
+    );
   }
 
   void _configureDidReceiveLocalNotificationSubject() {
     _didReceiveLocalNotificationSubject.stream
-        .listen((ReceivedNotification receivedNotification) async {
+        .listen((_ReceivedNotification receivedNotification) async {
       logger.d('notification title -> ${receivedNotification.title}');
       logger.d('notification body -> ${receivedNotification.body}');
     });
   }
 
   void _configureSelectNotificationSubject() {
-    _selectNotificationSubject.stream.listen((dynamic payload) async {
+    _selectNotificationSubject.stream.listen((String payload) async {
       logger.d('Stream from selected notification -> $payload');
     });
   }
@@ -239,6 +254,22 @@ class LocalNotificationService {
   void dispose() {
     _didReceiveLocalNotificationSubject.close();
     _selectNotificationSubject.close();
+  }
+
+  /// save device token for current user
+  Future<void> _saveDeviceToken([String token]) async {
+    token = token ?? await _fcm.getToken();
+    var container = ProviderContainer();
+    final prefs = await container.read(sharedPreferencesProvider.future);
+    var prefsRepo = container.read(prefsRepositoryProvider(prefs));
+
+    if (prefsRepo.isLoggedIn) {
+      var datasource = container.read(remoteDatasourceProvider(prefsRepo));
+
+      /// get current user
+      var artisan = await datasource.getArtisanById(id: prefsRepo.userId);
+      await datasource.updateUser(artisan.copyWith(token: token));
+    }
   }
 }
 
