@@ -192,6 +192,7 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
 
   /// UI
   final _controller = TextEditingController();
+  BaseArtisanService _currentService;
 
   @override
   void dispose() {
@@ -206,11 +207,19 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
     super.initState();
 
     if (mounted) {
+      _currentService = widget.service;
+      if (mounted) setState(() {});
       _categoryBloc
           .add(CategoryEvent.observeCategoryById(id: widget.service.category));
 
       _serviceBloc
-          .add(ArtisanServiceEvent.getServiceById(id: widget.service.id));
+        ..add(ArtisanServiceEvent.getServiceById(id: widget.service.id))
+        ..listen((state) {
+          if (state is SuccessState<BaseArtisanService>) {
+            _currentService = state.data;
+            if (mounted) setState(() {});
+          }
+        });
     }
   }
 
@@ -233,111 +242,102 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
             ),
             borderRadius: BorderRadius.circular(kSpacingX4),
           ),
-          child: StreamBuilder<BaseArtisanService>(
-              initialData: widget.service,
-              stream: serviceState is SuccessState<BaseArtisanService>
-                  ? Stream.value(serviceState.data)
-                  : Stream.value(widget.service),
-              builder: (context, snapshot) {
-                var service = snapshot.data;
-                return ListTile(
-                  onTap: widget.onTap ??
-                          () async {
-                        final data = await showCustomDialog(
-                          context: context,
-                          builder: (_) => ReplyMessageDialog(
-                            title: 'Set price for service',
-                            controller: _controller,
-                            hintText: 'e.g. 200',
-                          ),
-                        );
-                        if (data != null) {
-                          service =
-                              service.copyWith(price: double.tryParse(data));
-                          setState(() {});
-                          logger.d(service);
-
-                          _updateServiceBloc.add(
-                            ArtisanServiceEvent.updateArtisanService(
-                                service: service),
-                          );
-                          _controller.clear();
-                        }
-                      },
-                  title: Text(
-                    service.name,
-                    style: TextStyle(
-                      color: widget.selected
-                          ? widget.selectedColor ?? kTheme.colorScheme.secondary
-                          : kTheme.colorScheme.onBackground
-                          .withOpacity(kEmphasisHigh),
+          child: ListTile(
+            onTap: widget.onTap ??
+                    () async {
+                  final data = await showCustomDialog(
+                    context: context,
+                    builder: (_) => ReplyMessageDialog(
+                      title: 'Set price for service',
+                      controller: _controller,
+                      hintText: 'e.g. 99.99',
                     ),
-                  ),
-                  leading: state is SuccessState<Stream<BaseServiceCategory>> &&
-                      widget.showLeadingIcon
-                      ? StreamBuilder<BaseServiceCategory>(
-                      stream: state.data,
-                      builder: (_, snapshot) => UserAvatar(
-                          url:
-                          snapshot.hasData ? snapshot.data.avatar : ''))
-                      : null,
-                  subtitle: state is SuccessState<Stream<BaseServiceCategory>>
-                      ? StreamBuilder<BaseServiceCategory>(
-                      stream: state.data,
-                      builder: (_, snapshot) => Text(
-                        widget.showPrice || snapshot.hasError
-                            ? formatCurrency(service.price)
-                            : snapshot.data.name,
-                        style: TextStyle(
-                          color: widget.selected
-                              ? widget.selectedColor ??
-                              kTheme.colorScheme.secondary
-                              : kTheme.colorScheme.onBackground
-                              .withOpacity(kEmphasisMedium),
-                        ),
-                      ))
-                      : SizedBox.shrink(),
-                  trailing: widget.showTrailingIcon
-                      ? IconButton(
-                    icon: Icon(kHelpIcon),
+                  );
+                  if (data != null) {
+                    _currentService =
+                        _currentService.copyWith(price: double.tryParse(data));
+                    setState(() {});
+                    _controller.clear();
+                    logger.d(_currentService);
+
+                    _updateServiceBloc.add(
+                      ArtisanServiceEvent.updateArtisanService(
+                          service: _currentService),
+                    );
+
+                    _serviceBloc.add(ArtisanServiceEvent.getServiceById(
+                        id: _currentService.id));
+                  }
+                },
+            title: Text(
+              _currentService.name,
+              style: TextStyle(
+                color: widget.selected
+                    ? widget.selectedColor ?? kTheme.colorScheme.secondary
+                    : kTheme.colorScheme.onBackground
+                    .withOpacity(kEmphasisHigh),
+              ),
+            ),
+            leading: state is SuccessState<Stream<BaseServiceCategory>> &&
+                widget.showLeadingIcon
+                ? StreamBuilder<BaseServiceCategory>(
+                stream: state.data,
+                builder: (_, snapshot) => UserAvatar(
+                    url: snapshot.hasData ? snapshot.data.avatar : ''))
+                : null,
+            subtitle: state is SuccessState<Stream<BaseServiceCategory>>
+                ? StreamBuilder<BaseServiceCategory>(
+                stream: state.data,
+                builder: (_, snapshot) => Text(
+                  widget.showPrice || snapshot.hasError
+                      ? formatCurrency(_currentService.price)
+                      : snapshot.data.name,
+                  style: TextStyle(
                     color: widget.selected
                         ? widget.selectedColor ??
                         kTheme.colorScheme.secondary
                         : kTheme.colorScheme.onBackground
-                        .withOpacity(kEmphasisHigh),
-                    onPressed: () => showCustomDialog(
-                      context: context,
-                      builder: (_) => InfoDialog(
-                        title: service.name,
-                        message: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: kServiceHelperText),
-                              TextSpan(
-                                  text: '\n\nPrice range starts from\t',
-                                  style:
-                                  kTheme.textTheme.bodyText1.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  )),
-                              TextSpan(
-                                text: formatCurrency(service.price),
-                                style:
-                                kTheme.textTheme.bodyText1.copyWith(
-                                  color: kTheme.colorScheme.secondary,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
+                        .withOpacity(kEmphasisMedium),
+                  ),
+                ))
+                : SizedBox.shrink(),
+            trailing: widget.showTrailingIcon
+                ? IconButton(
+              icon: Icon(kHelpIcon),
+              color: widget.selected
+                  ? widget.selectedColor ?? kTheme.colorScheme.secondary
+                  : kTheme.colorScheme.onBackground
+                  .withOpacity(kEmphasisHigh),
+              onPressed: () => showCustomDialog(
+                context: context,
+                builder: (_) => InfoDialog(
+                  title: _currentService.name,
+                  message: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(text: kServiceHelperText),
+                        TextSpan(
+                            text: '\n\nPrice range starts from\t',
+                            style: kTheme.textTheme.bodyText1.copyWith(
+                              fontWeight: FontWeight.w600,
+                            )),
+                        TextSpan(
+                          text: formatCurrency(_currentService.price),
+                          style: kTheme.textTheme.bodyText1.copyWith(
+                            color: kTheme.colorScheme.secondary,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                  )
-                      : null,
-                  selected: widget.selected,
-                  tileColor: widget.unselectedColor ?? kTheme.cardColor,
-                );
-              }),
+                  ),
+                ),
+              ),
+            )
+                : null,
+            selected: widget.selected,
+            tileColor: widget.unselectedColor ?? kTheme.cardColor,
+          ),
         ),
       ),
     );
