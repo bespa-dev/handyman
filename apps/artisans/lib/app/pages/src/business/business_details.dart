@@ -1,13 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
+import 'package:uuid/uuid.dart';
 
 class BusinessDetailsPage extends StatefulWidget {
   const BusinessDetailsPage({
@@ -32,6 +36,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   final _locationBloc = LocationBloc(repo: Injection.get());
   final _serviceBloc = ArtisanServiceBloc(repo: Injection.get());
   final _categoryBloc = CategoryBloc(repo: Injection.get());
+  final _storageBloc = StorageBloc(repo: Injection.get());
 
   /// UI
   ThemeData _kTheme;
@@ -44,6 +49,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   var _categories = const <BaseServiceCategory>[];
   var _selectedServices = const <String>[];
   final _sheetController = SheetController();
+  File _galleryImage;
+  bool _isLoading = false;
 
   /// setup map details
   void _setupMap() async {
@@ -68,6 +75,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
     _serviceBloc.close();
     _updateUserBloc.close();
     _categoryBloc.close();
+    _storageBloc.close();
     super.dispose();
   }
 
@@ -160,6 +168,27 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
           }
         }
       });
+
+      /// storage
+      _storageBloc.listen((state) async {
+        if (state is LoadingState) {
+          _isLoading = true;
+          if (mounted) setState(() {});
+        } else if (state is ErrorState) {
+          _isLoading = false;
+          if (mounted) setState(() {});
+          await showCustomDialog(
+            context: context,
+            builder: (_) => InfoDialog(
+              message: Text(state.failure.toString()),
+            ),
+          );
+        } else if (state is SuccessState<String>) {
+          logger.d(state.data);
+          _isLoading = false;
+          if (mounted) setState(() {});
+        }
+      });
     }
   }
 
@@ -168,6 +197,12 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
     _kTheme = Theme.of(context);
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: _currentPage == 0
+            ? _showBottomSheetForServices
+            : _addImageToGallery,
+        child: Icon(kPlusIcon),
+      ),
       body: BlocBuilder<BusinessBloc, BlocState>(
         cubit: _businessBloc,
         builder: (_, state) => StreamBuilder<BaseBusiness>(
@@ -286,7 +321,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                               duration: kScaleDuration,
                               child: _currentPage == 0
                                   ? _buildServicesTab()
-                                  : _buildBusinessProfileTab(),
+                                  : _buildBusinessGalleryTab(),
                             ),
                           ],
                         ),
@@ -309,7 +344,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (_currentUser != null && _currentUser.services != null &&
+            if (_currentUser != null &&
+                _currentUser.services != null &&
                 _currentUser.services.isNotEmpty) ...{
               Text(
                 'Services rendered',
@@ -339,6 +375,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                   );
                 },
               ).toList(),
+              SizedBox(height: SizeConfig.screenHeight * 0.1),
             } else ...{
               Container(
                 margin: EdgeInsets.only(top: kSpacingX24),
@@ -347,18 +384,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      'No services added',
-                      style: _kTheme.textTheme.headline6,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: kSpacingX16),
-                      child: ButtonOutlined(
-                        width: SizeConfig.screenWidth * 0.4,
-                        onTap: _showBottomSheetForServices,
-                        label: 'Add new',
-                      ),
-                    ),
+                    Text('No services added',
+                        style: _kTheme.textTheme.headline6),
                   ],
                 ),
               ),
@@ -367,8 +394,54 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
         ),
       );
 
-  /// business profile tab
-  Widget _buildBusinessProfileTab() => Container(color: kAmberColor);
+  /// business gallery tab
+  Widget _buildBusinessGalleryTab() => _isLoading
+      ? SizedBox(
+      height: SizeConfig.screenHeight * 0.3,
+      width: SizeConfig.screenWidth,
+      child: Loading())
+      : Container(
+          height: SizeConfig.screenHeight * 0.35,
+          width: SizeConfig.screenWidth,
+          color: kAmberColor);
+
+  void _addImageToGallery() async {
+    final picker = ImagePicker();
+    var pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      _galleryImage = await ImageCropper.cropImage(
+          sourcePath: pickedFile.path,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9
+          ],
+          androidUiSettings: AndroidUiSettings(
+            toolbarTitle: kAppName,
+            toolbarColor: _kTheme.colorScheme.primary,
+            toolbarWidgetColor: _kTheme.colorScheme.onPrimary,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false,
+          ),
+          iosUiSettings: IOSUiSettings(
+            minimumAspectRatio: 1.0,
+          ));
+
+      if (_galleryImage != null) {
+        /// Upload image
+        _storageBloc.add(
+          StorageEvent.uploadFile(
+            path: Uuid().v4(),
+            filePath: _galleryImage.absolute.path,
+            isImage: true,
+          ),
+        );
+      }
+    }
+  }
 
   void _showBottomSheetForServices() async {
     await showSlidingBottomSheet(context,
@@ -396,17 +469,17 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
               footerBuilder: (_, __) => _selectedServices.isEmpty
                   ? null
                   : Material(
-                    type: MaterialType.transparency,
-                    child: InkWell(
-                      onTap: () async {
+                      type: MaterialType.transparency,
+                      child: InkWell(
+                        onTap: () async {
                           context.navigator.pop();
                           setState(() {});
-                          _currentUser =
-                              _currentUser.copyWith(services: _selectedServices);
-                          _updateUserBloc
-                              .add(UserEvent.updateUserEvent(user: _currentUser));
+                          _currentUser = _currentUser.copyWith(
+                              services: _selectedServices);
+                          _updateUserBloc.add(
+                              UserEvent.updateUserEvent(user: _currentUser));
                         },
-                      child: Container(
+                        child: Container(
                           height: kToolbarHeight,
                           alignment: Alignment.center,
                           color: _kTheme.colorScheme.secondary,
@@ -416,8 +489,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                                 color: _kTheme.colorScheme.onSecondary),
                           ),
                         ),
+                      ),
                     ),
-                  ),
               builder: (context, state) {
                 return BlocBuilder<ArtisanServiceBloc, BlocState>(
                   cubit: _serviceBloc,

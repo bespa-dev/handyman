@@ -291,7 +291,9 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
                     builder: (_, snapshot) => Text(
                           widget.showPrice || snapshot.hasError
                               ? formatCurrency(_currentService.price)
-                              : snapshot.data.name,
+                              : snapshot.hasData
+                                  ? snapshot.data.name
+                                  : '...',
                           style: TextStyle(
                             color: widget.selected
                                 ? widget.selectedColor ??
