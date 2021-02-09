@@ -28,4 +28,5 @@ export 'src/search_view.dart';
 export 'src/service_list_item.dart';
 export 'src/sign_out_button.dart';
 export 'src/tabs.dart';
+export 'src/profile_list_item.dart';
 export 'src/user_avatar.dart';

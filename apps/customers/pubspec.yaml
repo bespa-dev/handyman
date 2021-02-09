@@ -43,6 +43,7 @@ dependencies:
   flutter_bloc: ^6.1.1
   flutter_dotenv: ^2.1.0
   flutter_icons: ^1.0.0+1
+  line_awesome_flutter: ^1.0.1
   flutter_image_compress: ^0.6.5+1
   flutter_local_notifications: ^3.0.3
   flutter_rating_bar: null

@@ -475,7 +475,8 @@ class _ProfilePageState extends State<ProfilePage> {
   /// profile image options
   void _showOptionsSheet() async {
     final sheetController = SheetController();
-    await showSlidingBottomSheet(context, builder: (ctx) {
+    await showSlidingBottomSheet(context, useRootNavigator: true,
+        builder: (ctx) {
       return SlidingSheetDialog(
         elevation: kSpacingX8,
         cornerRadius: kSpacingX16,
@@ -512,18 +513,19 @@ class _ProfilePageState extends State<ProfilePage> {
               width: SizeConfig.screenWidth,
               color: kTheme.cardColor,
               child: ListView(
+                padding: EdgeInsets.zero,
                 children: [
                   ListTile(
                     onTap: () {
-                      sheetController.hide();
                       ctx.navigator
-                          .pushImagePreviewPage(url: _currentUser?.avatar);
+                        ..pop()
+                        ..pushImagePreviewPage(url: _currentUser?.avatar);
                     },
                     title: Text('View picture'),
                   ),
                   ListTile(
                     onTap: () {
-                      sheetController.hide();
+                      ctx.navigator.pop();
                       _pickAvatar();
                     },
                     title: Text('Update profile picture'),
@@ -563,7 +565,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   .map(
                     (e) => PickerMenuItem(
                       title: e.name,
-                      icon: kPlusIcon,
+                      icon: kCategoryIcon,
                       key: ValueKey(e.id),
                     ),
                   )

@@ -335,6 +335,7 @@ class _HomePageState extends State<HomePage> {
                                     color: available
                                         ? kGreenColor
                                         : _kTheme.colorScheme.error,
+                                    width: kSpacingX2,
                                   ),
                                 ),
                                 alignment: available

@@ -278,8 +278,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                   delegate: SliverChildListDelegate.fixed(
                     [
                       /// body
-                      AnimatedPadding(
-                        duration: kScaleDuration,
+                      Padding(
                         padding: EdgeInsets.only(
                           top: _businessLocation == null
                               ? kSpacingX24
@@ -397,13 +396,35 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   /// business gallery tab
   Widget _buildBusinessGalleryTab() => _isLoading
       ? SizedBox(
-      height: SizeConfig.screenHeight * 0.3,
-      width: SizeConfig.screenWidth,
-      child: Loading())
+          height: SizeConfig.screenHeight * 0.3,
+          width: SizeConfig.screenWidth,
+          child: Loading())
       : Container(
           height: SizeConfig.screenHeight * 0.35,
           width: SizeConfig.screenWidth,
-          color: kAmberColor);
+          padding: EdgeInsets.symmetric(horizontal: kSpacingX24),
+          child: _currentUser.hasHighRatings
+              ? _buildGalleryUI()
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(kBadgeIcon, size: kSpacingX56),
+                    SizedBox(height: kSpacingX16),
+                    Text(
+                      'Earn a badge first',
+                      style: _kTheme.textTheme.headline6,
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: kSpacingX8),
+                    Text(
+                      'Get more jobs & good reviews from customers to unlock this feature',
+                      style: _kTheme.textTheme.subtitle1,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+        );
 
   void _addImageToGallery() async {
     final picker = ImagePicker();
@@ -578,6 +599,14 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                   )
                   .toList()
               : [],
+        ),
+      );
+
+  /// build UI for gallery
+  Widget _buildGalleryUI() => Center(
+        child: Text(
+          'Contact the administrator to be granted access to this feature',
+          style: _kTheme.textTheme.bodyText1,
         ),
       );
 }
