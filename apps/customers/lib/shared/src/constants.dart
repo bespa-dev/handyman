@@ -32,13 +32,13 @@ Future<bool> backPressed(GlobalKey<NavigatorState> _yourKey) async {
 }
 
 /// show [SnackBar] with a message
+/// fixme -> should be enabled in other flutter channels using ScaffoldMessage.of(context)
 void showSnackBarMessage(
   BuildContext context, {
   @required String message,
   SnackBarDuration duration,
 }) {
   duration ??= SnackBarDuration.shortLength();
-  logger.d(duration);
   Scaffold.of(context)
     ..removeCurrentSnackBar()
     ..showSnackBar(
@@ -161,6 +161,7 @@ const kSendIcon = Feather.send;
 const kImageIcon = Feather.image;
 const kCallIcon = Feather.phone;
 const kMoneyIcon = Entypo.wallet;
+const kCategoryIcon = Icons.supervised_user_circle_outlined;
 const kThreeDotsOptionsIcon = Entypo.dots_three_horizontal;
 
 /// Others

@@ -80,6 +80,8 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   final Box<ArtisanService> serviceBox;
 
   void _performInitLoad() async {
+    if (prefsRepo.isLoggedIn) return;
+
     /// decode categories from json
     var categorySource = await rootBundle.loadString('assets/categories.json');
     var decodedCategories = jsonDecode(categorySource) as List;

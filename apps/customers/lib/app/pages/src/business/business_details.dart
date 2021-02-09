@@ -268,8 +268,9 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
             if (_servicesForCategory.isNotEmpty) ...{
               ..._servicesForCategory
                   .map(
-                    (service) => ArtisanListTile(
+                    (service) => ArtisanServiceListTile(
                       service: service,
+                      showLeadingIcon: false,
                       onTap: () async => await showCustomDialog(
                         context: context,
                         builder: (_) => BasicDialog(

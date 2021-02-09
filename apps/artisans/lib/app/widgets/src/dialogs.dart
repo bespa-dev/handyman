@@ -11,20 +11,20 @@ final _kDialogMaxHeight = SizeConfig.screenHeight * 0.3;
 
 /// 1. basic dialog with [title] & [message]
 class BasicDialog extends StatelessWidget {
+  const BasicDialog({
+    Key key,
+    @required this.message,
+    @required this.onComplete,
+    this.title = 'Confirm action',
+    this.positiveButtonText = 'Confirm',
+    this.negativeButtonText = 'Cancel',
+  }) : super(key: key);
+
   final String title;
   final String message;
   final String positiveButtonText;
   final String negativeButtonText;
   final Function onComplete;
-
-  const BasicDialog({
-    Key key,
-    @required this.message,
-    @required this.onComplete,
-    this.title = "Confirm action",
-    this.positiveButtonText = "Confirm",
-    this.negativeButtonText = "Cancel",
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -71,16 +71,16 @@ class BasicDialog extends StatelessWidget {
 
 /// 2. info dialog with [title] & [message]
 class InfoDialog extends StatelessWidget {
+  const InfoDialog({
+    Key key,
+    this.title = 'Heads up...',
+    @required this.message,
+    this.buttonText = 'Got it',
+  }) : super(key: key);
+
   final String title;
   final Widget message;
   final String buttonText;
-
-  const InfoDialog({
-    Key key,
-    @required this.title,
-    @required this.message,
-    this.buttonText = "Got it",
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -118,11 +118,6 @@ class InfoDialog extends StatelessWidget {
 
 /// 2. dialog with [controller] for editing text
 class ReplyMessageDialog extends StatelessWidget {
-  final String title;
-  final String hintText;
-  final int maxLines;
-  final TextEditingController controller;
-
   const ReplyMessageDialog({
     Key key,
     @required this.title,
@@ -130,6 +125,11 @@ class ReplyMessageDialog extends StatelessWidget {
     this.hintText = "What\'s on your mind?",
     this.maxLines = 1,
   }) : super(key: key);
+
+  final String title;
+  final String hintText;
+  final int maxLines;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -174,12 +174,12 @@ class ReplyMessageDialog extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _CustomDialogButton(
-                label: "Cancel",
+                label: 'Cancel',
                 onTap: () => context.navigator.pop(),
                 isPrimary: false,
               ),
               _CustomDialogButton(
-                label: "Confirm",
+                label: 'Confirm',
                 onTap: () => context.navigator.pop(controller.text?.trim()),
                 isPrimary: true,
               ),
@@ -193,35 +193,35 @@ class ReplyMessageDialog extends StatelessWidget {
 
 /// 3a. picker menu item
 class PickerMenuItem {
-  final String title;
-  final IconData icon;
-  final Key key;
-
   const PickerMenuItem({
     this.key,
     @required this.title,
     @required this.icon,
   }) : super();
 
+  final String title;
+  final IconData icon;
+  final ValueKey key;
+
   @override
-  String toString() => "{title : $title}";
+  String toString() => '{title : $title, key: ${key.value.toString()}';
 }
 
 /// 3b. menu item selection enabled dialog using [PickerMenuItem]
 class MenuItemPickerDialog extends StatefulWidget {
-  final String title;
-  final String message;
-  final Function(PickerMenuItem) onComplete;
-  final List<PickerMenuItem> items;
-
   const MenuItemPickerDialog({
     Key key,
     @required this.title,
     @required this.onComplete,
     @required this.items,
-    this.message = "",
+    this.message = '',
   })  : assert(items is List<PickerMenuItem>),
         super(key: key);
+
+  final String title;
+  final String message;
+  final Function(PickerMenuItem) onComplete;
+  final List<PickerMenuItem> items;
 
   @override
   _MenuItemPickerDialogState createState() => _MenuItemPickerDialogState();
@@ -310,12 +310,12 @@ class _MenuItemPickerDialogState extends State<MenuItemPickerDialog> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _CustomDialogButton(
-                label: "Cancel",
+                label: 'Cancel',
                 onTap: () => context.navigator.pop(),
                 isPrimary: false,
               ),
               _CustomDialogButton(
-                label: "Confirm",
+                label: 'Confirm',
                 onTap: () {
                   widget.onComplete(_selectedItem);
                   context.navigator.pop();
@@ -332,16 +332,16 @@ class _MenuItemPickerDialogState extends State<MenuItemPickerDialog> {
 
 /// 4. dialog with checked button
 class CheckableBasicDialog extends StatefulWidget {
-  final String title;
-  final String message;
-  final Function(bool) onComplete;
-
   const CheckableBasicDialog({
     Key key,
     @required this.message,
     @required this.onComplete,
-    this.title = "Confirm action",
+    this.title = 'Confirm action',
   }) : super(key: key);
+
+  final String title;
+  final String message;
+  final Function(bool) onComplete;
 
   @override
   _CheckableBasicDialogState createState() => _CheckableBasicDialogState();
@@ -384,7 +384,7 @@ class _CheckableBasicDialogState extends State<CheckableBasicDialog> {
               ),
               SizedBox(width: kSpacingX4),
               Text(
-                "Do not show it anymore",
+                'Do not show it anymore',
                 style: kTheme.textTheme.headline6.copyWith(
                   fontSize: kTheme.textTheme.bodyText1.fontSize,
                   fontWeight: kTheme.textTheme.button.fontWeight,
@@ -397,12 +397,12 @@ class _CheckableBasicDialogState extends State<CheckableBasicDialog> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             _CustomDialogButton(
-              label: "Cancel",
+              label: 'Cancel',
               onTap: () => context.navigator.pop(),
               isPrimary: false,
             ),
             _CustomDialogButton(
-              label: "Confirm",
+              label: 'Confirm',
               onTap: () {
                 widget.onComplete(_isChecked);
                 context.navigator.pop();
@@ -418,20 +418,20 @@ class _CheckableBasicDialogState extends State<CheckableBasicDialog> {
 
 /// 5. dialog with image (e.g. for tutorials)
 class ImageViewDialog extends StatelessWidget {
-  final String title;
-  final String message;
-  final String imageUrl;
-  final bool isAssetImage;
-  final Function onComplete;
-
   const ImageViewDialog({
     Key key,
     @required this.message,
     @required this.onComplete,
     @required this.imageUrl,
-    this.title = "Confirm action",
+    this.title = 'Confirm action',
     this.isAssetImage = true,
   }) : super(key: key);
+
+  final String title;
+  final String message;
+  final String imageUrl;
+  final bool isAssetImage;
+  final Function onComplete;
 
   @override
   Widget build(BuildContext context) {
@@ -483,12 +483,12 @@ class ImageViewDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _CustomDialogButton(
-                    label: "Cancel",
+                    label: 'Cancel',
                     onTap: () => context.navigator.pop(),
                     isPrimary: false,
                   ),
                   _CustomDialogButton(
-                    label: "Confirm",
+                    label: 'Confirm',
                     onTap: () {
                       onComplete();
                       context.navigator.pop();
@@ -506,16 +506,16 @@ class ImageViewDialog extends StatelessWidget {
 }
 
 class _CustomDialogButton extends StatelessWidget {
-  final String label;
-  final Function onTap;
-  final bool isPrimary;
-
   const _CustomDialogButton({
     Key key,
     @required this.label,
     @required this.onTap,
     @required this.isPrimary,
   }) : super(key: key);
+
+  final String label;
+  final Function onTap;
+  final bool isPrimary;
 
   @override
   Widget build(BuildContext context) {
@@ -568,13 +568,11 @@ Future<T> showCustomDialog<T>({
         Animation<double> secondaryAnimation) {
       final kTheme = Theme.of(context);
       final Widget pageChild = Builder(builder: builder);
-      Widget dialog = Builder(
-          builder: (BuildContext context) {
-            return kTheme != null
-                ? Theme(data: kTheme, child: pageChild)
-                : pageChild;
-          }
-      );
+      Widget dialog = Builder(builder: (BuildContext context) {
+        return kTheme != null
+            ? Theme(data: kTheme, child: pageChild)
+            : pageChild;
+      });
       final contentPadding = EdgeInsets.fromLTRB(
         kSpacingX16,
         kSpacingX24,

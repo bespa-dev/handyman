@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
       ..listen((state) {
         if (state is SuccessState<Stream<AuthState>>) {
           /// stream auth state
-          state.data.listen((event) {
+          state.data.listen((event) async {
             if (event is AuthLoadingState) {
               _isLoading = true;
               if (mounted) setState(() {});
@@ -60,22 +60,33 @@ class _LoginPageState extends State<LoginPage> {
               _isLoading = false;
               if (mounted) {
                 setState(() {});
-                showSnackBarMessage(context,
-                    message: event.message ?? 'Authentication failed');
+                await showCustomDialog(
+                  context: context,
+                  builder: (_) => InfoDialog(
+                    message: Text(event.message ?? 'Authentication failed'),
+                  ),
+                );
               }
             } else if (event is AuthenticatedState) {
               _isLoading = false;
               if (mounted) {
                 setState(() {});
-                context.navigator
+                await context.navigator
                     .pushAndRemoveUntil(Routes.homePage, (route) => false);
               }
             }
           });
         } else if (state is SuccessState<Stream<String>>) {
           /// stream messages
-          state.data.listen((message) {
-            if (mounted) showSnackBarMessage(context, message: message);
+          state.data.listen((message) async {
+            if (mounted) {
+              await showCustomDialog(
+                context: context,
+                builder: (_) => InfoDialog(
+                  message: Text(message),
+                ),
+              );
+            }
           });
         }
       });

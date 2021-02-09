@@ -59,19 +59,33 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
     });
 
     /// user update status
-    _updateUserBloc.listen((state) {
+    _updateUserBloc.listen((state) async {
       if (state is SuccessState<void>) {
         if (mounted) {
-          showSnackBarMessage(context, message: 'Profile updated successfully');
-          _isLoading = !_isLoading;
-          setState(() {});
-          context.navigator.pushBusinessProfilePage();
+          await showCustomDialog(
+            context: context,
+            builder: (_) => BasicDialog(
+              message: 'Profile updated successfully',
+              onComplete: () async {
+                _isLoading = !_isLoading;
+                setState(() {});
+                await context.navigator.pushBusinessProfilePage();
+              },
+            ),
+          );
         }
       } else if (state is ErrorState) {
         if (mounted) {
-          showSnackBarMessage(context, message: 'Failed to update profile');
-          _isLoading = !_isLoading;
-          setState(() {});
+          await showCustomDialog(
+            context: context,
+            builder: (_) => BasicDialog(
+              message: 'Failed to update profile',
+              onComplete: () async {
+                _isLoading = !_isLoading;
+                setState(() {});
+              },
+            ),
+          );
         }
       }
     });
@@ -147,10 +161,14 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
                       alignment: Alignment.bottomCenter,
                       child: InkWell(
                         splashColor: kTheme.splashColor,
-                        onTap: () {
+                        onTap: () async {
                           if (_selectedCategory == null) {
-                            showSnackBarMessage(context,
-                                message: 'Please select a service first');
+                            await showCustomDialog(
+                              context: context,
+                              builder: (_) => InfoDialog(
+                                message: Text('Please select a service first'),
+                              ),
+                            );
                           } else {
                             final updatedUser = _currentUser.copyWith(
                               category: _selectedCategory,
@@ -162,8 +180,6 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
                             UserBloc(repo: Injection.get()).add(
                               UserEvent.updateUserEvent(user: updatedUser),
                             );
-                            showSnackBarMessage(context,
-                                message: 'Updating profile');
                           }
                         },
                         child: Container(

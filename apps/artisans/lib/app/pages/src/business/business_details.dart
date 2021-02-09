@@ -7,6 +7,7 @@ import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
+import 'package:sliding_sheet/sliding_sheet.dart';
 
 class BusinessDetailsPage extends StatefulWidget {
   const BusinessDetailsPage({
@@ -30,6 +31,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   final _updateBusinessBloc = BusinessBloc(repo: Injection.get());
   final _locationBloc = LocationBloc(repo: Injection.get());
   final _serviceBloc = ArtisanServiceBloc(repo: Injection.get());
+  final _categoryBloc = CategoryBloc(repo: Injection.get());
 
   /// UI
   ThemeData _kTheme;
@@ -38,8 +40,10 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   LatLng _businessLocation;
   int _currentPage = 0;
   BaseArtisan _currentUser;
-  List<BaseArtisanService> _servicesForCategory = const [];
-  List<String> _selectedServices = [];
+  var _servicesForCategory = const <BaseArtisanService>[];
+  var _categories = const <BaseServiceCategory>[];
+  var _selectedServices = const <String>[];
+  final _sheetController = SheetController();
 
   /// setup map details
   void _setupMap() async {
@@ -63,6 +67,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
     _locationBloc.close();
     _serviceBloc.close();
     _updateUserBloc.close();
+    _categoryBloc.close();
     super.dispose();
   }
 
@@ -71,6 +76,20 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
     super.initState();
 
     if (mounted) {
+      /// get all categories
+      _categoryBloc
+        ..add(CategoryEvent.observeAllCategories(
+            group: ServiceCategoryGroup.featured()))
+        ..listen((state) {
+          if (state is SuccessState<Stream<List<BaseServiceCategory>>>) {
+            state.data.listen((event) {
+              logger.d(event);
+              _categories = event;
+              if (mounted) setState(() {});
+            });
+          }
+        });
+
       /// get business for artisan
       _businessBloc.add(
         BusinessEvent.observeBusinessById(id: widget.business.id),
@@ -93,7 +112,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
         ..add(UserEvent.currentUserEvent())
         ..listen((state) {
           if (state is SuccessState<Stream<BaseArtisan>>) {
-            state.data.listen((user) {
+            state.data.listen((user) async {
               _currentUser = user;
               if (_currentUser.services == null) {
                 _currentUser =
@@ -105,11 +124,26 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                 _selectedServices = _currentUser.services;
               }
               if (mounted) setState(() {});
+              logger.d('User category -> ${user.category}');
 
               /// get services for category
               if (user.category != null) {
                 _serviceBloc.add(ArtisanServiceEvent.getArtisanServices(
                     category: user.category));
+              } else {
+                await showCustomDialog(
+                  context: context,
+                  builder: (_) => BasicDialog(
+                    message:
+                        'You need to select a category for this business first',
+                    positiveButtonText: 'Add new',
+                    negativeButtonText: 'Later',
+                    title: 'Heads up...',
+                    onComplete: () => context.navigator
+                      ..pop()
+                      ..pushProfilePage(),
+                  ),
+                );
               }
             });
           }
@@ -120,6 +154,10 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
         if (state is SuccessState<List<BaseArtisanService>>) {
           _servicesForCategory = state.data;
           if (mounted) setState(() {});
+          if (_sheetController.state != null &&
+              _sheetController.state.isShown) {
+            _sheetController.rebuild();
+          }
         }
       });
     }
@@ -163,36 +201,36 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                     background: _businessLocation == null
                         ? SizedBox.shrink()
                         : SizedBox(
-                      width: SizeConfig.screenWidth,
-                      height: SizeConfig.screenHeight * 0.35,
-                      child: GoogleMap(
-                        initialCameraPosition: CameraPosition(
-                          target: _businessLocation,
-                          zoom: kSpacingX16,
-                        ),
-                        zoomControlsEnabled: false,
-                        compassEnabled: true,
-                        liteModeEnabled: Platform.isAndroid,
-                        zoomGesturesEnabled: true,
-                        mapToolbarEnabled: false,
-                        myLocationButtonEnabled: false,
-                        myLocationEnabled: false,
-                        tiltGesturesEnabled: true,
-                        markers: <Marker>{
-                          Marker(
-                            markerId: MarkerId(_business.id),
-                            position: _businessLocation,
-                            icon: BitmapDescriptor.defaultMarkerWithHue(
-                                BitmapDescriptor.hueGreen),
+                            width: SizeConfig.screenWidth,
+                            height: SizeConfig.screenHeight * 0.35,
+                            child: GoogleMap(
+                              initialCameraPosition: CameraPosition(
+                                target: _businessLocation,
+                                zoom: kSpacingX16,
+                              ),
+                              zoomControlsEnabled: false,
+                              compassEnabled: true,
+                              liteModeEnabled: Platform.isAndroid,
+                              zoomGesturesEnabled: true,
+                              mapToolbarEnabled: false,
+                              myLocationButtonEnabled: false,
+                              myLocationEnabled: false,
+                              tiltGesturesEnabled: true,
+                              markers: <Marker>{
+                                Marker(
+                                  markerId: MarkerId(_business.id),
+                                  position: _businessLocation,
+                                  icon: BitmapDescriptor.defaultMarkerWithHue(
+                                      BitmapDescriptor.hueGreen),
+                                ),
+                              },
+                              onMapCreated: (controller) async {
+                                _mapController = controller;
+                                _setupMap();
+                              },
+                              mapType: MapType.normal,
+                            ),
                           ),
-                        },
-                        onMapCreated: (controller) async {
-                          _mapController = controller;
-                          _setupMap();
-                        },
-                        mapType: MapType.normal,
-                      ),
-                    ),
                   ),
                   leading: IconButton(
                     icon: Icon(kBackIcon),
@@ -237,7 +275,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
 
                             /// tabs
                             TabSelector(
-                              tabs: ['Services', 'Profile'],
+                              tabs: ['Services', 'Gallery'],
                               activeIndex: _currentPage,
                               onTabChanged: (index) =>
                                   setState(() => _currentPage = index),
@@ -271,7 +309,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (_servicesForCategory.isNotEmpty) ...{
+            if (_currentUser != null && _currentUser.services != null &&
+                _currentUser.services.isNotEmpty) ...{
               Text(
                 'Services rendered',
                 style: _kTheme.textTheme.headline6.copyWith(
@@ -288,28 +327,41 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                 ),
               ),
               SizedBox(height: kSpacingX24),
-              ..._servicesForCategory
-                  .map(
-                    (service) => ArtisanListTile(
-                      service: service,
-                      onTap: () {
-                        /// todo -> set prices for each service
-                      },
-                    ),
-                  )
-                  .toList(),
+              ..._currentUser.services.map(
+                (id) {
+                  var service = _servicesForCategory
+                      .firstWhere((element) => element.id == id);
+                  return ArtisanServiceListTile(
+                    service: service,
+                    showLeadingIcon: false,
+                    selected: false,
+                    showPrice: true,
+                  );
+                },
+              ).toList(),
             } else ...{
               Container(
-                  margin: EdgeInsets.only(top: kSpacingX24),
-                  width: SizeConfig.screenWidth,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ImageView(imageUrl: kRegisterAsset, isAssetImage: true),
-                      Text('No services added'),
-                    ],
-                  )),
+                margin: EdgeInsets.only(top: kSpacingX24),
+                width: SizeConfig.screenWidth,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'No services added',
+                      style: _kTheme.textTheme.headline6,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: kSpacingX16),
+                      child: ButtonOutlined(
+                        width: SizeConfig.screenWidth * 0.4,
+                        onTap: _showBottomSheetForServices,
+                        label: 'Add new',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             }
           ],
         ),
@@ -317,4 +369,142 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
 
   /// business profile tab
   Widget _buildBusinessProfileTab() => Container(color: kAmberColor);
+
+  void _showBottomSheetForServices() async {
+    await showSlidingBottomSheet(context,
+        useRootNavigator: true,
+        builder: (context) => SlidingSheetDialog(
+              elevation: kSpacingX8,
+              cornerRadius: kSpacingX16,
+              dismissOnBackdropTap: _selectedServices.isEmpty,
+              controller: _sheetController,
+              snapSpec: const SnapSpec(
+                snap: true,
+                snappings: [0.4, 0.7, 1.0],
+                positioning: SnapPositioning.relativeToAvailableSpace,
+              ),
+              headerBuilder: (_, state) => Container(
+                height: kToolbarHeight,
+                alignment: Alignment.center,
+                color: _kTheme.colorScheme.primary,
+                child: Text(
+                  'Available services',
+                  style: _kTheme.textTheme.headline6
+                      .copyWith(color: _kTheme.colorScheme.onPrimary),
+                ),
+              ),
+              footerBuilder: (_, __) => _selectedServices.isEmpty
+                  ? null
+                  : Material(
+                    type: MaterialType.transparency,
+                    child: InkWell(
+                      onTap: () async {
+                          context.navigator.pop();
+                          setState(() {});
+                          _currentUser =
+                              _currentUser.copyWith(services: _selectedServices);
+                          _updateUserBloc
+                              .add(UserEvent.updateUserEvent(user: _currentUser));
+                        },
+                      child: Container(
+                          height: kToolbarHeight,
+                          alignment: Alignment.center,
+                          color: _kTheme.colorScheme.secondary,
+                          child: Text(
+                            'Save & continue'.toUpperCase(),
+                            style: _kTheme.textTheme.button.copyWith(
+                                color: _kTheme.colorScheme.onSecondary),
+                          ),
+                        ),
+                    ),
+                  ),
+              builder: (context, state) {
+                return BlocBuilder<ArtisanServiceBloc, BlocState>(
+                  cubit: _serviceBloc,
+                  builder: (_, state) => Container(
+                    height: SizeConfig.screenHeight * 0.6,
+                    color: _kTheme.cardColor,
+                    child: Material(
+                      child: state is SuccessState<List<BaseArtisanService>>
+                          ? SingleChildScrollView(
+                              padding:
+                                  EdgeInsets.symmetric(horizontal: kSpacingX12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ..._servicesForCategory
+                                      .map(
+                                        (service) => ArtisanServiceListTile(
+                                          service: service,
+                                          showLeadingIcon: false,
+                                          showTrailingIcon: false,
+                                          selected: _selectedServices
+                                              .contains(service.id),
+                                          onTap: () {
+                                            _selectedServices
+                                                .toggleAddOrRemove(service.id);
+                                            _sheetController.rebuild();
+                                          },
+                                        ),
+                                      )
+                                      .toList(),
+                                ],
+                              ),
+                            )
+                          : BlocBuilder<CategoryBloc, BlocState>(
+                              cubit: _categoryBloc,
+                              builder: (_, state) => Center(
+                                child: InkWell(
+                                  onTap: _pickCategory,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(kSpacingX16),
+                                    child: Text(
+                                      'Tap here to register a business category first',
+                                      style: _kTheme.textTheme.bodyText1,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                    ),
+                  ),
+                );
+              },
+            ));
+  }
+
+  void _pickCategory() async => await showCustomDialog(
+        context: context,
+        builder: (_) => MenuItemPickerDialog(
+          title: 'Select a category',
+          onComplete: (item) {
+            if (_currentUser.category != item.key.value.toString()) {
+              _currentUser = _currentUser.copyWith(
+                category: item.key.value.toString(),
+                categoryGroup: item.title,
+                services: <String>[],
+              );
+
+              _updateUserBloc
+                  .add(UserEvent.updateUserEvent(user: _currentUser));
+              _serviceBloc.add(
+                ArtisanServiceEvent.getArtisanServices(
+                  category: item.key.toString(),
+                ),
+              );
+            }
+          },
+          items: _categories.isNotEmpty
+              ? _categories
+                  .map(
+                    (e) => PickerMenuItem(
+                      title: e.name,
+                      icon: kPlusIcon,
+                      key: ValueKey(e.id),
+                    ),
+                  )
+                  .toList()
+              : [],
+        ),
+      );
 }

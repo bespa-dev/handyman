@@ -168,7 +168,9 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                                           child: Text.rich(
                                             TextSpan(
                                               children: [
-                                                TextSpan(text: customer?.name ?? 'Customer'),
+                                                TextSpan(
+                                                    text: customer?.name ??
+                                                        'Customer'),
                                                 TextSpan(
                                                   text: '\nrequests that...',
                                                   style: kTheme
@@ -270,7 +272,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "Service charge...",
+                                              'Service charge...',
                                               style: kTheme.textTheme.caption,
                                             ),
                                             Text(
@@ -297,7 +299,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 Text(
-                                                  "Sent on...",
+                                                  'Sent on...',
                                                   style:
                                                       kTheme.textTheme.caption,
                                                 ),
@@ -366,7 +368,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                                             context: context,
                                             builder: (_) => BasicDialog(
                                               message:
-                                                  "Do you wish to cancel this job?",
+                                                  'Do you wish to cancel this job?',
                                               onComplete: () {
                                                 setState(() {
                                                   _bookingHasUpdated = true;
@@ -396,7 +398,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                                       ),
                                       clipBehavior: Clip.hardEdge,
                                       child: Text(
-                                        "Cancel".toUpperCase(),
+                                        'Cancel'.toUpperCase(),
                                         style: kTheme.textTheme.button.copyWith(
                                           color: kTheme.colorScheme.onError,
                                         ),
@@ -416,7 +418,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                                           context: context,
                                           builder: (_) => BasicDialog(
                                             message:
-                                                "Do you wish to mark this service as completed?",
+                                                'Do you wish to mark this service as completed?',
                                             onComplete: () {
                                               setState(() {
                                                 _bookingHasUpdated = true;
@@ -447,11 +449,11 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                                     alignment: Alignment.center,
                                     child: Text(
                                       booking.isCancelled
-                                          ? "Cancelled".toUpperCase()
+                                          ? 'Cancelled'.toUpperCase()
                                           : booking.isComplete
-                                              ? "Completed on ${parseFromTimestamp(booking.dueDate)}"
+                                              ? 'Completed on ${parseFromTimestamp(booking.dueDate)}'
                                                   .toUpperCase()
-                                              : "Mark as complete"
+                                              : 'Mark as complete'
                                                   .toUpperCase(),
                                       style: kTheme.textTheme.button.copyWith(
                                         color: booking.isCancelled ||

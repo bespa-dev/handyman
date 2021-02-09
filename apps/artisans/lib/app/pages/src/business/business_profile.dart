@@ -67,7 +67,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
       _docUrl = widget.business?.docUrl;
 
       /// user update status
-      _userBloc.listen((state) {
+      _userBloc.listen((state) async {
         if (state is SuccessState<BaseArtisan>) {
           _currentUser = state.data;
           _birthCertFileName = _currentUser?.birthCert;
@@ -75,16 +75,27 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
           if (mounted) setState(() {});
         } else if (state is SuccessState<void>) {
           if (mounted) {
-            showSnackBarMessage(context,
-                message: 'Business registered successfully');
-            context.navigator.pushAndRemoveUntil(
-              Routes.homePage,
-              (route) => false,
+            await showCustomDialog(
+              context: context,
+              builder: (_) => BasicDialog(
+                message: 'Business registered successfully',
+                onComplete: () {
+                  context.navigator.pushAndRemoveUntil(
+                    Routes.homePage,
+                    (route) => false,
+                  );
+                },
+              ),
             );
           }
         } else if (state is ErrorState) {
           if (mounted) {
-            showSnackBarMessage(context, message: 'Failed to update profile');
+            await showCustomDialog(
+              context: context,
+              builder: (_) => InfoDialog(
+                message: Text('Failed to update profile'),
+              ),
+            );
           }
         }
       });
@@ -109,15 +120,24 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
           _isLoading = false;
           if (mounted) {
             setState(() {});
-            showSnackBarMessage(context,
-                message: 'Failed to save business information');
+            showCustomDialog(
+              context: context,
+              builder: (_) => InfoDialog(
+                message: Text('Failed to save business information'),
+              ),
+            );
           }
         } else if (state is SuccessState) {
           _isLoading = false;
           if (mounted) {
             setState(() {});
-            showSnackBarMessage(context,
-                message: 'Uploaded business profile completed');
+            showCustomDialog(
+              context: context,
+              builder: (_) => InfoDialog(
+                message: Text('Uploaded business profile completed'),
+              ),
+            );
+
             if (state.data != null) {
               _userBloc.add(
                 UserEvent.updateUserEvent(
@@ -136,7 +156,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
       });
 
       /// storage upload progress
-      _storageBloc.listen((state) {
+      _storageBloc.listen((state) async {
         logger.i(state.runtimeType);
         if (state is LoadingState) {
           _isLoading = true;
@@ -145,8 +165,12 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
           _isLoading = false;
           if (mounted) {
             setState(() {});
-            showSnackBarMessage(context,
-                message: 'Failed to save business information');
+            await showCustomDialog(
+              context: context,
+              builder: (_) => InfoDialog(
+                message: Text('Failed to save business information'),
+              ),
+            );
           }
         } else if (state is SuccessState<String>) {
           _docUrl = state.data;

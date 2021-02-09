@@ -19,7 +19,6 @@ import 'package:share/share.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
 class ArtisanInfoPage extends StatefulWidget {
-
   const ArtisanInfoPage({Key key, @required this.artisan}) : super(key: key);
   final BaseArtisan artisan;
 
@@ -33,6 +32,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
 
   /// UI
   ThemeData kTheme;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void dispose() {
@@ -121,8 +121,10 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                                     ),
                                   builder: (_, userCategoryState) =>
                                       StreamBuilder<BaseServiceCategory>(
-                                          stream: userCategoryState is SuccessState<
-                                              Stream<BaseServiceCategory>>
+                                          stream: userCategoryState
+                                                  is SuccessState<
+                                                      Stream<
+                                                          BaseServiceCategory>>
                                               ? userCategoryState.data
                                               : Stream.empty(),
                                           builder: (_, __) {
@@ -242,7 +244,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
               child: ListView(
                 children: [
                   ListTile(
-                    title: Text("State your reason for this action..."),
+                    title: Text('State your reason for this action...'),
                   ),
                   ..._reportMessages
                       .map((reason) => ListTile(
@@ -260,17 +262,23 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
       );
     });
 
-    logger.d("Report -> $report");
-    if (mounted && report != null)
-      showSnackBarMessage(context, message: "${widget.artisan.name} reported");
+    logger.d('Report -> $report');
+    if (mounted && report != null) {
+      await showCustomDialog(
+        context: context,
+        builder: (_) => InfoDialog(
+          message: Text('${widget.artisan.name} reported'),
+        ),
+      );
+    }
 
     /// todo -> send report to server
   }
 
   /// messages to be used for reporting an artisan
   final _reportMessages = const <String>[
-    "Inappropriate account activities",
-    "Impersonation and Identity theft",
-    "It's a spam"
+    'Inappropriate account activities',
+    'Impersonation and Identity theft',
+    'It\'s a spam'
   ];
 }
