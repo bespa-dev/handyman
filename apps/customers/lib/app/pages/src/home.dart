@@ -94,11 +94,11 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _navStates.addAll([
-      _notificationsNavKey,
+      _artisansNavKey,
       _searchNavKey,
+      _profileNavKey,
       _notificationsNavKey,
       _bookingsNavKey,
-      _profileNavKey,
     ]);
     super.initState();
 
@@ -134,7 +134,7 @@ class _HomePageState extends State<HomePage> {
             bottom: true,
             child: Column(
               children: [
-                if (_navStates[_currentPage] != _profileNavKey &&
+                if (_navStates[_currentPage] != _profileNavKey ||
                     _navStates[_currentPage] != _searchNavKey) ...{
                   CustomAppBar(title: 'Artisans')
                 },

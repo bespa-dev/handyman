@@ -58,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     _kTheme = Theme.of(context);
 
-    var profileInfo = Expanded(
+    /*    var profileInfo = Expanded(
       child: Column(
         children: <Widget>[
           Container(
@@ -154,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage> {
         themeSwitcher,
         SizedBox(width: kSpacingX28),
       ],
-    );
+    );*/
 
     return BlocBuilder<UserBloc, BlocState>(
       cubit: _userBloc,
@@ -165,20 +165,26 @@ class _ProfilePageState extends State<ProfilePage> {
                 _currentUser ??= snapshot.data;
                 return SingleChildScrollView(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Container(
-                        height: kSpacingX12,
-                        width: kSpacingX12,
+                        alignment: Alignment.center,
+                        width: kSpacingX120,
+                        height: kSpacingX120,
                         margin: EdgeInsets.only(top: kSpacingX28),
                         child: Stack(
+                          clipBehavior: Clip.none,
                           children: <Widget>[
                             UserAvatar(
-                                url: _currentUser?.avatar, radius: kSpacingX64),
+                              url: _currentUser?.avatar,
+                              radius: kSpacingX120,
+                              isCircular: true,
+                            ),
                             Align(
                               alignment: Alignment.bottomRight,
                               child: Container(
-                                height: kSpacingX24,
-                                width: kSpacingX24,
+                                height: kSpacingX36,
+                                width: kSpacingX36,
                                 decoration: BoxDecoration(
                                   color: _kTheme.colorScheme.secondary,
                                   shape: BoxShape.circle,
@@ -199,26 +205,49 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       SizedBox(height: kSpacingX20),
                       Text(
-                        'Nicolas Adams',
+                        _currentUser?.name ?? 'No username set',
                         style: _kTheme.textTheme.headline6,
                       ),
-                      SizedBox(height: kSpacingX48),
+                      SizedBox(height: kSpacingX8),
                       Text(
-                        'nicolasadams@gmail.com',
+                        _currentUser?.email ?? 'No email address',
                         style: _kTheme.textTheme.caption,
                       ),
                       SizedBox(height: kSpacingX20),
-                      Container(
-                        height: kSpacingX42,
-                        width: SizeConfig.screenWidth * 0.3,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(kSpacingX28),
-                          color: _kTheme.colorScheme.secondary,
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Upgrade to PRO',
-                            style: _kTheme.textTheme.button,
+                      ProfileListItem(
+                        icon: LineAwesomeIcons.user_shield,
+                        text: 'Privacy',
+                      ),
+                      ProfileListItem(
+                        icon: LineAwesomeIcons.history,
+                        text: 'Purchase History',
+                      ),
+                      ProfileListItem(
+                        icon: LineAwesomeIcons.question_circle,
+                        text: 'Help & Support',
+                      ),
+                      ProfileListItem(
+                        icon: LineAwesomeIcons.cog,
+                        text: 'Settings',
+                      ),
+                      ProfileListItem(
+                        icon: LineAwesomeIcons.user_plus,
+                        text: 'Invite a Friend',
+                      ),
+                      ProfileListItem(
+                        icon: LineAwesomeIcons.alternate_sign_out,
+                        text: 'Logout',
+                        hasNavigation: false,
+                        onTap: () async => showCustomDialog(
+                          context: context,
+                          builder: (_) => BasicDialog(
+                            message: kSignOutText,
+                            onComplete: () {
+                              _authBloc.add(AuthEvent.authSignOutEvent());
+                              context.navigator
+                                ..popUntilRoot()
+                                ..pushSplashPage();
+                            },
                           ),
                         ),
                       ),

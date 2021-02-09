@@ -154,7 +154,7 @@ class _HomePageState extends State<HomePage> {
             child: _dismissAllNotifications
                 ? Column(
                     children: [
-                      if (_navStates[_currentPage] != _profileNavKey &&
+                      if (_navStates[_currentPage] != _profileNavKey ||
                           _navStates[_currentPage] != _searchNavKey) ...{
                         CustomAppBar(title: 'Dashboard')
                       },
