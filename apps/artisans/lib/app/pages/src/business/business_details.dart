@@ -13,6 +13,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:uuid/uuid.dart';
 
+/// fixme -> save prices for each service to remote database
 class BusinessDetailsPage extends StatefulWidget {
   const BusinessDetailsPage({
     Key key,

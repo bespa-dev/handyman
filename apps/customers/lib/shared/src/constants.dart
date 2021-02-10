@@ -162,6 +162,7 @@ const kImageIcon = Feather.image;
 const kCallIcon = Feather.phone;
 const kMoneyIcon = Entypo.wallet;
 const kCategoryIcon = Icons.supervised_user_circle_outlined;
+const kBadgeIcon = Feather.award;
 const kThreeDotsOptionsIcon = Entypo.dots_three_horizontal;
 
 /// Others
