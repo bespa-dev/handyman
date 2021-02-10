@@ -518,11 +518,10 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                   builder: (_, state) => Container(
                     height: SizeConfig.screenHeight * 0.6,
                     color: _kTheme.cardColor,
+                    padding: EdgeInsets.symmetric(horizontal: kSpacingX12),
                     child: Material(
                       child: state is SuccessState<List<BaseArtisanService>>
                           ? SingleChildScrollView(
-                              padding:
-                                  EdgeInsets.symmetric(horizontal: kSpacingX12),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [

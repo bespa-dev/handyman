@@ -20,7 +20,7 @@ class TextFormInput extends TextFormField {
     TextCapitalization textCapitalization = TextCapitalization.none,
     TextInputAction textInputAction,
     TextEditingController controller,
-    bool enabled,
+    bool enabled = true,
     FormFieldValidator<String> validator,
     IconButton suffixIcon,
     bool obscureText = false,

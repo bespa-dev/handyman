@@ -130,12 +130,13 @@ class _HomePageState extends State<HomePage> {
         builder: (_, state) => Scaffold(
           body: SafeArea(
             top: _navStates[_currentPage] == _artisansNavKey ||
+                _navStates[_currentPage] == _searchNavKey ||
                 _navStates[_currentPage] == _profileNavKey,
             bottom: true,
             child: Column(
               children: [
-                if (_navStates[_currentPage] != _profileNavKey ||
-                    _navStates[_currentPage] != _searchNavKey) ...{
+                if (_navStates[_currentPage] == _artisansNavKey ||
+                    _navStates[_currentPage] == _notificationsNavKey) ...{
                   CustomAppBar(title: 'Artisans')
                 },
                 Expanded(
