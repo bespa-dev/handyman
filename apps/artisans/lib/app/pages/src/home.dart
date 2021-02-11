@@ -296,7 +296,7 @@ class _HomePageState extends State<HomePage> {
 
                           IconButton(
                             icon: Icon(kSearchIcon),
-                            color: _currentPage == 0
+                            color: _currentPage == 1
                                 ? isDark
                                     ? _kTheme.colorScheme.secondary
                                     : _kTheme.colorScheme.primary
@@ -392,7 +392,7 @@ class _HomePageState extends State<HomePage> {
 
                           BadgedIconButton(
                             icon: Icon(kNotificationIcon),
-                            color: _currentPage == 0
+                            color: _currentPage == 2
                                 ? isDark
                                     ? _kTheme.colorScheme.secondary
                                     : _kTheme.colorScheme.primary
@@ -405,7 +405,7 @@ class _HomePageState extends State<HomePage> {
                           /// toggle profile info
                           BadgedIconButton(
                             icon: Icon(kCategoryIcon),
-                            color: _currentPage == 0
+                            color: _currentPage == 3
                                 ? isDark
                                     ? _kTheme.colorScheme.secondary
                                     : _kTheme.colorScheme.primary
