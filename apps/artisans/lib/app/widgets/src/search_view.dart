@@ -7,7 +7,7 @@
  * author: codelbas.quabynah@gmail.com
  */
 import 'package:flutter/material.dart';
-import 'package:lite/shared/shared.dart';
+import 'package:handyman/shared/shared.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({

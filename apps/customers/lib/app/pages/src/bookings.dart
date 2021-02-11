@@ -17,9 +17,13 @@ class BookingsPage extends StatefulWidget {
 class _BookingsPageState extends State<BookingsPage> {
   @override
   Widget build(BuildContext context) {
-    final kTheme = Theme.of(context);
+    var kTheme = Theme.of(context);
+
     return Center(
-      child: Text("Bookings", style: kTheme.textTheme.headline4),
+      child: Text(
+        'Bookings',
+        style: kTheme.textTheme.headline4,
+      ),
     );
   }
 }

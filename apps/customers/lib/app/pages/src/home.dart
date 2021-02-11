@@ -26,7 +26,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   /// UI
   ThemeData _kTheme;
-  bool _isLoggedIn = false;
+  bool _isLoggedIn = false,
+      _showBookingsBadge = false,
+      _showProfileBadge = false;
   int _currentPage = 0;
   final _navStates = <GlobalKey<NavigatorState>>[];
   final _artisansNavKey = GlobalKey<NavigatorState>();
@@ -38,6 +40,7 @@ class _HomePageState extends State<HomePage> {
   /// blocs
   final _prefsBloc = PrefsBloc(repo: Injection.get());
   final _userBloc = UserBloc(repo: Injection.get());
+  final _bookingBloc = BookingBloc(repo: Injection.get());
 
   /// handles tab changes
   void _onTabPressed(int index) {
@@ -88,6 +91,7 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     _userBloc.close();
     _prefsBloc.close();
+    _bookingBloc.close();
     super.dispose();
   }
 
@@ -103,18 +107,42 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     if (mounted) {
-      /// observe current user's id
+      /// get current user's id
       _prefsBloc
         ..add(PrefsEvent.getUserIdEvent())
         ..listen((state) {
           if (state is SuccessState<String>) {
             _isLoggedIn = state.data != null && state.data.isNotEmpty;
 
-            /// observe current user
-            if (_isLoggedIn) _userBloc.add(UserEvent.currentUserEvent());
+            /// observe data
+            if (_isLoggedIn) {
+              _bookingBloc
+                  .add(BookingEvent.observeBookingForCustomer(id: state.data));
+              _userBloc.add(UserEvent.getCustomerByIdEvent(id: state.data));
+            }
             if (mounted) setState(() {});
           }
         });
+
+      _bookingBloc.listen((state) {
+        if (state is SuccessState<Stream<List<BaseBooking>>>) {
+          state.data.listen((event) {
+            for (var value in event) {
+              _showBookingsBadge = value.isPending || value.isDue;
+            }
+            if (mounted) setState(() {});
+          });
+        }
+      });
+
+      _userBloc.listen((state) {
+        if (state is SuccessState<BaseUser>) {
+          var user = state.data;
+          _showProfileBadge =
+              user.avatar == null || user.name == null || user.phone == null;
+          if (mounted) setState(() {});
+        }
+      });
     }
   }
 
@@ -194,7 +222,7 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  IconButton(
+                  BadgedIconButton(
                     icon: Icon(kHomeIcon),
                     color: _kTheme.colorScheme.onPrimary,
                     onPressed: () => _onTabPressed(0),
@@ -204,34 +232,25 @@ class _HomePageState extends State<HomePage> {
                     color: _kTheme.colorScheme.onPrimary,
                     onPressed: () => _onTabPressed(1),
                   ),
-                  if (_isLoggedIn &&
-                      state is SuccessState<Stream<BaseUser>>) ...{
-                    StreamBuilder<BaseUser>(
-                        stream: state.data,
-                        builder: (_, snapshot) {
-                          final user = snapshot.data;
-                          return GestureDetector(
-                            onTap: () => _onTabPressed(2),
-                            child: SizedBox(
-                              height: kSpacingX36,
-                              width: kSpacingX36,
-                              child: UserAvatar(
-                                url: user?.avatar,
-                                isCircular: true,
-                              ),
-                            ),
-                          );
-                        }),
-                  },
-                  IconButton(
+                  BadgedIconButton(
+                    icon: Icon(kCategoryIcon),
+                    color: _kTheme.colorScheme.onPrimary,
+                    onPressed: () => _onTabPressed(2),
+                    isAlert: _showProfileBadge,
+                  ),
+                  BadgedIconButton(
                     icon: Icon(kNotificationIcon),
                     color: _kTheme.colorScheme.onPrimary,
                     onPressed: () => _onTabPressed(3),
+
+                    /// fixme -> show notifications badge count
+                    isAlert: _showBookingsBadge,
                   ),
-                  IconButton(
+                  BadgedIconButton(
                     icon: Icon(kBriefcaseIcon),
                     color: _kTheme.colorScheme.onPrimary,
                     onPressed: () => _onTabPressed(4),
+                    isAlert: _showBookingsBadge,
                   ),
                 ],
               ),
