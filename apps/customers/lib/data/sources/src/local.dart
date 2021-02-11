@@ -102,6 +102,18 @@ class HiveLocalDatasource extends BaseLocalDatasource {
       /// put each one into box
       await serviceBox.put(item.id, item);
     }
+
+    if (!kReleaseMode) {
+      /// decode services from json
+      var source = await rootBundle.loadString('assets/bookings.json');
+      var decoded = jsonDecode(source) as List;
+      for (var json in decoded) {
+        final item = Booking.fromJson(json);
+
+        /// put each one into box
+        await bookingBox.put(item.id, item);
+      }
+    }
   }
 
   @override
@@ -168,8 +180,8 @@ class HiveLocalDatasource extends BaseLocalDatasource {
     yield artisanBox.values
         .where((item) => item.categoryGroup.contains(category))
         .where((item) => item.id != prefsRepo.userId)
-        .where((item) => item.isApproved)
-        .where((item) => item.isAvailable)
+        .where((item) => kReleaseMode ? item.isApproved : true)
+        .where((item) => kReleaseMode ? item.isAvailable : true)
         .toList();
   }
 

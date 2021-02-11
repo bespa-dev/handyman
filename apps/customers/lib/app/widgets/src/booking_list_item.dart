@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lite/app/bloc/bloc.dart';
+import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 import 'package:meta/meta.dart';
@@ -69,16 +70,17 @@ class _BookingListItemState extends State<BookingListItem> {
     final kTheme = Theme.of(context);
     final userTextColor =
         kTheme.colorScheme.onBackground.withOpacity(kEmphasisHigh);
-    final stateTextColor = widget.booking.isPending
-        ? kPendingJobTextColor
+    logger.d(widget.booking.currentState);
+    final stateTextColor = widget.booking.isCancelled
+        ? kCancelledJobTextColor
         : widget.booking.isComplete
             ? kCompletedJobTextColor
-            : kCancelledJobTextColor;
-    final stateBgColor = widget.booking.isPending
-        ? kPendingJobColor
+            : kPendingJobTextColor;
+    final stateBgColor = widget.booking.isCancelled
+        ? kCancelledJobColor
         : widget.booking.isComplete
             ? kCompletedJobColor
-            : kCancelledJobColor;
+            : kPendingJobColor;
 
     var booking = widget.booking;
 
@@ -125,37 +127,49 @@ class _BookingListItemState extends State<BookingListItem> {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: kSpacingX8,
-                            vertical: kSpacingX4,
+                            vertical: kSpacingX6,
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Column(
+                              Row(
                                 mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    userState.data.name ?? 'Anonymous',
-                                    style: kTheme.textTheme.headline6.copyWith(
-                                      fontSize:
-                                          kTheme.textTheme.bodyText2.fontSize,
-                                      color: userTextColor,
-                                    ),
+                                  UserAvatar(
+                                      url: userState.data?.avatar,
+                                      isCircular: true),
+                                  SizedBox(width: kSpacingX8),
+                                  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        userState.data?.name ?? 'Anonymous',
+                                        style:
+                                            kTheme.textTheme.headline6.copyWith(
+                                          fontSize: kTheme
+                                              .textTheme.bodyText2.fontSize,
+                                          color: userTextColor,
+                                        ),
+                                      ),
+                                      SizedBox(height: kSpacingX4),
+                                      serviceState is SuccessState<
+                                              BaseArtisanService>
+                                          ? Text(
+                                              serviceState.data.name ?? '...',
+                                              style: kTheme.textTheme.bodyText1
+                                                  .copyWith(
+                                                color: kTheme
+                                                    .textTheme.bodyText1.color
+                                                    .withOpacity(kEmphasisLow),
+                                              ),
+                                            )
+                                          : SizedBox.shrink(),
+                                    ],
                                   ),
-                                  SizedBox(height: kSpacingX4),
-                                  serviceState
-                                          is SuccessState<BaseArtisanService>
-                                      ? Text(
-                                          serviceState.data.name ?? '...',
-                                          style: kTheme.textTheme.bodyText1
-                                              .copyWith(
-                                            color: kTheme
-                                                .textTheme.bodyText1.color
-                                                .withOpacity(kEmphasisLow),
-                                          ),
-                                        )
-                                      : SizedBox.shrink(),
                                 ],
                               ),
                               Column(

@@ -238,12 +238,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                   BadgedIconButton(
                     icon: Icon(kBriefcaseIcon),
-                    color: _currentPage == 4
+                    color: _currentPage == 3
                         ? isDark
                             ? _kTheme.colorScheme.secondary
                             : _kTheme.colorScheme.primary
                         : _kTheme.disabledColor.withOpacity(kEmphasisMedium),
-                    onPressed: () => _onTabPressed(4),
+                    onPressed: () => _onTabPressed(3),
                     isAlert: _showBookingsBadge,
                   ),
                 ],
