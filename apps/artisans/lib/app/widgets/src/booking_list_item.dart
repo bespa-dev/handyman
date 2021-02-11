@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/routes/routes.gr.dart';
+import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
 import 'package:meta/meta.dart';
@@ -45,7 +46,6 @@ class _BookingListItemState extends State<BookingListItem> {
     if (mounted) {
       _userBloc
         ..add(UserEvent.getCustomerByIdEvent(id: widget.booking.customerId))
-        ..add(UserEvent.getArtisanByIdEvent(id: widget.booking.artisanId))
         ..listen((state) {
           if (state is SuccessState<BaseUser> && !(state.data is BaseArtisan)) {
             _customer = state.data;
@@ -70,19 +70,23 @@ class _BookingListItemState extends State<BookingListItem> {
   Widget build(BuildContext context) {
     final kTheme = Theme.of(context);
     final userTextColor =
-    kTheme.colorScheme.onBackground.withOpacity(kEmphasisHigh);
-    final stateTextColor = widget.booking.isCancelled
-        ? kCancelledJobTextColor
-        : widget.booking.isComplete
-        ? kCompletedJobTextColor
-        : kPendingJobTextColor;
-    final stateBgColor = widget.booking.isCancelled
-        ? kCancelledJobColor
-        : widget.booking.isComplete
-        ? kCompletedJobColor
-        : kPendingJobColor;
-
+        kTheme.colorScheme.onBackground.withOpacity(kEmphasisHigh);
     var booking = widget.booking;
+
+    var stateTextColor = booking.isDue
+        ? kTheme.colorScheme.onError.withOpacity(kEmphasisHigh)
+        : booking.isCancelled
+            ? kCancelledJobTextColor
+            : booking.isComplete
+                ? kCompletedJobTextColor
+                : kPendingJobTextColor;
+    var stateBgColor = booking.isDue
+        ? kTheme.colorScheme.error.withOpacity(kEmphasisMedium)
+        : booking.isCancelled
+            ? kCancelledJobColor
+            : booking.isComplete
+                ? kCompletedJobColor
+                : kPendingJobColor;
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -91,104 +95,124 @@ class _BookingListItemState extends State<BookingListItem> {
         bottom: kSpacingX12,
       ),
       child: InkWell(
-        onTap: () => context.navigator.pushBookingDetailsPage(
-          booking: booking,
-          customer: _customer,
-          bookingId: booking.id,
-        ),
+        onTap: () async {
+          var result = await context.navigator.pushBookingDetailsPage(
+            booking: booking,
+            customer: _customer,
+            bookingId: booking.id,
+          );
+
+          if (result != null && widget.shouldUpdateUI != null) {
+            widget.shouldUpdateUI(result);
+          }
+        },
         child: BlocBuilder<ArtisanServiceBloc, BlocState>(
           cubit: _serviceBloc,
           builder: (_, serviceState) => BlocBuilder<UserBloc, BlocState>(
             cubit: _userBloc,
-            builder: (_, userState) => userState is SuccessState<BaseArtisan> &&
-                widget.booking != null
+            builder: (_, userState) => userState is SuccessState<BaseUser> &&
+                    widget.booking != null
                 ? Container(
-              clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(
-                color: kTheme.cardColor,
-                borderRadius: BorderRadius.circular(kSpacingX4),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(bottom: kSpacingX12),
-                    width: SizeConfig.screenWidth,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: kSpacingX12,
-                      vertical: kSpacingX6,
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      color: kTheme.cardColor,
+                      borderRadius: BorderRadius.circular(kSpacingX4),
                     ),
-                    decoration: BoxDecoration(color: stateBgColor),
-                    child: Text(
-                      booking.currentState.toUpperCase(),
-                      style: kTheme.textTheme.button
-                          .copyWith(color: stateTextColor),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: kSpacingX8,
-                      vertical: kSpacingX4,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    child: Column(
                       children: [
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              userState.data.name ?? 'Anonymous',
-                              style: kTheme.textTheme.headline6.copyWith(
-                                fontSize:
-                                kTheme.textTheme.bodyText2.fontSize,
-                                color: userTextColor,
-                              ),
-                            ),
-                            SizedBox(height: kSpacingX4),
-                            serviceState
-                            is SuccessState<BaseArtisanService>
-                                ? Text(
-                              serviceState.data.name ?? '...',
-                              style: kTheme.textTheme.bodyText1
-                                  .copyWith(
-                                color: kTheme
-                                    .textTheme.bodyText1.color
-                                    .withOpacity(kEmphasisLow),
-                              ),
-                            )
-                                : SizedBox.shrink(),
-                          ],
+                        Container(
+                          margin: EdgeInsets.only(bottom: kSpacingX12),
+                          width: SizeConfig.screenWidth,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: kSpacingX12,
+                            vertical: kSpacingX6,
+                          ),
+                          decoration: BoxDecoration(color: stateBgColor),
+                          child: Text(
+                            booking.isDue
+                                ? 'Overdue'.toUpperCase()
+                                : booking.currentState.toUpperCase(),
+                            style: kTheme.textTheme.button
+                                .copyWith(color: stateTextColor),
+                          ),
                         ),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              parseFromTimestamp(booking.dueDate),
-                              style: kTheme.textTheme.bodyText1.copyWith(
-                                color: kTheme.textTheme.bodyText1.color
-                                    .withOpacity(kEmphasisLow),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: kSpacingX8,
+                            vertical: kSpacingX6,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  UserAvatar(
+                                      url: userState.data?.avatar,
+                                      isCircular: true),
+                                  SizedBox(width: kSpacingX8),
+                                  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        userState.data?.name ?? 'Anonymous',
+                                        style:
+                                            kTheme.textTheme.headline6.copyWith(
+                                          fontSize: kTheme
+                                              .textTheme.bodyText2.fontSize,
+                                          color: userTextColor,
+                                        ),
+                                      ),
+                                      SizedBox(height: kSpacingX4),
+                                      serviceState is SuccessState<
+                                              BaseArtisanService>
+                                          ? Text(
+                                              serviceState.data.name ?? '...',
+                                              style: kTheme.textTheme.bodyText1
+                                                  .copyWith(
+                                                color: kTheme
+                                                    .textTheme.bodyText1.color
+                                                    .withOpacity(kEmphasisLow),
+                                              ),
+                                            )
+                                          : SizedBox.shrink(),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ),
-                            SizedBox(height: kSpacingX4),
-                            Text(
-                              parseFromTimestamp(booking.dueDate,
-                                  isChatFormat: true),
-                              style: kTheme.textTheme.button.copyWith(
-                                fontSize:
-                                kTheme.textTheme.bodyText2.fontSize,
-                                color: userTextColor,
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    parseFromTimestamp(booking.dueDate),
+                                    style: kTheme.textTheme.bodyText1.copyWith(
+                                      color: kTheme.textTheme.bodyText1.color
+                                          .withOpacity(kEmphasisLow),
+                                    ),
+                                  ),
+                                  SizedBox(height: kSpacingX4),
+                                  Text(
+                                    parseFromTimestamp(booking.dueDate,
+                                        isChatFormat: true),
+                                    style: kTheme.textTheme.button.copyWith(
+                                      fontSize:
+                                          kTheme.textTheme.bodyText2.fontSize,
+                                      color: userTextColor,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   )
-                ],
-              ),
-            )
                 : SizedBox.shrink(),
           ),
         ),

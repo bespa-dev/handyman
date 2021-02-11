@@ -31,7 +31,7 @@ final BehaviorSubject<_ReceivedNotification>
     BehaviorSubject<_ReceivedNotification>();
 
 final BehaviorSubject<String> _selectNotificationSubject =
-BehaviorSubject<String>();
+    BehaviorSubject<String>();
 
 /// data model for received messages
 class _ReceivedNotification {
@@ -54,15 +54,16 @@ class LocalNotificationService {
   factory LocalNotificationService() => _singleton;
 
   static final LocalNotificationService _singleton =
-  LocalNotificationService._internal();
+      LocalNotificationService._internal();
 
   /// Firebase messaging
   final _fcm = ProviderContainer().read(firebaseMessaging);
 
   /// setup local notifications
   Future<void> setupNotifications() async {
+    await Future.delayed(Duration(seconds: 1));
     const initializationSettingsAndroid =
-    AndroidInitializationSettings('app_logo');
+        AndroidInitializationSettings('app_logo');
 
     /// Request permission on iOS
     final initializationSettingsIOS = IOSInitializationSettings(
@@ -92,8 +93,6 @@ class LocalNotificationService {
     } else {
       await _saveDeviceToken();
     }
-
-    await Future.delayed(kNoDuration);
 
     /// setup firebase messaging
     FirebaseMessaging.onMessageOpenedApp.listen((event) async {
@@ -131,20 +130,20 @@ class LocalNotificationService {
       var id = data['type'] == 'booking'
           ? bookingChannelId
           : data['type'] == 'conversation'
-          ? conversationChannelId
-          : tokenChannelId;
+              ? conversationChannelId
+              : tokenChannelId;
 
       var name = data['type'] == 'booking'
           ? bookingChannelName
           : data['type'] == 'conversation'
-          ? conversationChannelName
-          : tokenChannelName;
+              ? conversationChannelName
+              : tokenChannelName;
 
       var desc = data['type'] == 'booking'
           ? bookingChannelDesc
           : data['type'] == 'conversation'
-          ? conversationChannelDesc
-          : tokenChannelDesc;
+              ? conversationChannelDesc
+              : tokenChannelDesc;
 
       await _pushNotification(
         data,
@@ -160,20 +159,20 @@ class LocalNotificationService {
       var id = data['type'] == 'booking'
           ? bookingChannelId
           : data['type'] == 'conversation'
-          ? conversationChannelId
-          : tokenChannelId;
+              ? conversationChannelId
+              : tokenChannelId;
 
       var name = data['type'] == 'booking'
           ? bookingChannelName
           : data['type'] == 'conversation'
-          ? conversationChannelName
-          : tokenChannelName;
+              ? conversationChannelName
+              : tokenChannelName;
 
       var desc = data['type'] == 'booking'
           ? bookingChannelDesc
           : data['type'] == 'conversation'
-          ? conversationChannelDesc
-          : tokenChannelDesc;
+              ? conversationChannelDesc
+              : tokenChannelDesc;
 
       await _pushNotification(
         data,
@@ -228,12 +227,12 @@ class LocalNotificationService {
     await ProviderContainer().read(firebaseMessaging).requestPermission();
     await _plugin
         .resolvePlatformSpecificImplementation<
-        IOSFlutterLocalNotificationsPlugin>()
+            IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+          alert: true,
+          badge: true,
+          sound: true,
+        );
   }
 
   void _configureDidReceiveLocalNotificationSubject() {
@@ -267,8 +266,10 @@ class LocalNotificationService {
       var datasource = container.read(remoteDatasourceProvider(prefsRepo));
 
       /// get current user
-      var artisan = await datasource.getArtisanById(id: prefsRepo.userId);
-      await datasource.updateUser(artisan.copyWith(token: token));
+      var user = await datasource.getCustomerById(id: prefsRepo.userId);
+      if (user != null) {
+        await datasource.updateUser(user.copyWith(token: token));
+      }
     }
   }
 }

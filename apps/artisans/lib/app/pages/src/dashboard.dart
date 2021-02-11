@@ -391,8 +391,8 @@ class _DashboardPageState extends State<DashboardPage> {
                               .map(
                                 (item) => BookingListItem(
                                   booking: item,
-                                  shouldUpdateUI: (_) {
-                                    if (_) {
+                                  shouldUpdateUI: (reload) {
+                                    if (reload) {
                                       _bookingBloc.add(
                                           BookingEvent.observeBookingForArtisan(
                                               id: _currentUser?.id));

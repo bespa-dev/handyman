@@ -65,6 +65,7 @@ class LocalNotificationService {
 
   /// setup local notifications
   Future<void> setupNotifications() async {
+    await Future.delayed(Duration(seconds: 1));
     const initializationSettingsAndroid =
         AndroidInitializationSettings('app_logo');
 
@@ -96,8 +97,6 @@ class LocalNotificationService {
     } else {
       await _saveDeviceToken();
     }
-
-    await Future.delayed(kNoDuration);
 
     /// setup firebase messaging
     FirebaseMessaging.onMessageOpenedApp.listen((event) async {

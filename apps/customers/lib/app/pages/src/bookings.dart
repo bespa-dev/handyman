@@ -117,8 +117,12 @@ class _BookingsPageState extends State<BookingsPage> {
           ),
           Expanded(
             child: ListView.builder(
-              itemBuilder: (_, index) =>
-                  BookingListItem(booking: _bookings[index]),
+              itemBuilder: (_, index) => BookingListItem(
+                booking: _bookings[index],
+                shouldUpdateUI: (reload) {
+                  if (reload) setState(() {});
+                },
+              ),
               itemCount: _bookings.length,
             ),
           ),
