@@ -296,7 +296,7 @@ class _HomePageState extends State<HomePage> {
 
                           /// toggle availability
                           if (_isLoggedIn &&
-                              state is SuccessState<Stream<BaseArtisan>>) ...{
+                              state is SuccessState<BaseArtisan>) ...{
                             InkWell(
                               borderRadius: BorderRadius.circular(kSpacingX16),
                               onTap: () {

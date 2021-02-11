@@ -62,6 +62,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
     super.initState();
 
     if (mounted) {
+      _hasResetFields = widget.business == null;
       _nameController.text = widget.business?.name;
       _locationName = widget.business?.location;
       _docUrl = widget.business?.docUrl;
