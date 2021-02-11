@@ -148,7 +148,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
       centerTitle: false,
       backgroundColor: kTheme.colorScheme.background,
       flexibleSpace: SizedBox(
-        height: SizeConfig.screenHeight * 0.2,
+        height: SizeConfig.screenHeight * 0.25,
         width: SizeConfig.screenWidth,
         child: Stack(
           fit: StackFit.expand,

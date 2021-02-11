@@ -157,8 +157,7 @@ class _HomePageState extends State<HomePage> {
         cubit: _userBloc,
         builder: (_, state) => Scaffold(
           body: SafeArea(
-            top: _navStates[_currentPage] == _artisansNavKey ||
-                _navStates[_currentPage] == _searchNavKey ||
+            top: _navStates[_currentPage] == _searchNavKey ||
                 _navStates[_currentPage] == _profileNavKey,
             bottom: true,
             child: Column(
