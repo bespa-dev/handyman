@@ -15,7 +15,7 @@ abstract class BaseLocationMetadata {
   Map<String, dynamic> toJson();
 
   @override
-  String toString() => this.toJson().toString();
+  String toString() => toJson().toString();
 
   BaseLocationMetadata copyWith({
     String name,

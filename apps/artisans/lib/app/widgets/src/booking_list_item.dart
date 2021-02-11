@@ -9,26 +9,33 @@ import 'package:handyman/shared/shared.dart';
 import 'package:meta/meta.dart';
 
 class BookingListItem extends StatefulWidget {
-  final BaseBooking booking;
-  final Function onLongPress;
-  final Function(bool) shouldUpdateUI;
-
   const BookingListItem(
       {Key key, @required this.booking, this.shouldUpdateUI, this.onLongPress})
       : super(key: key);
+
+  final BaseBooking booking;
+  final Function onLongPress;
+  final Function(bool) shouldUpdateUI;
 
   @override
   _BookingListItemState createState() => _BookingListItemState();
 }
 
 class _BookingListItemState extends State<BookingListItem> {
+  /// blocs
   final _userBloc = UserBloc(repo: Injection.get());
   final _locationBloc = LocationBloc(repo: Injection.get());
+  final _bookingBloc = BookingBloc(repo: Injection.get());
+  final _serviceBloc = ArtisanServiceBloc(repo: Injection.get());
+
+  BaseUser _customer;
 
   @override
   void dispose() {
     _userBloc.close();
     _locationBloc.close();
+    _bookingBloc.close();
+    _serviceBloc.close();
     super.dispose();
   }
 
@@ -37,188 +44,156 @@ class _BookingListItemState extends State<BookingListItem> {
     super.initState();
 
     if (mounted) {
-      /// get customer details
       _userBloc
-          .add(UserEvent.getCustomerByIdEvent(id: widget.booking.customerId));
+        ..add(UserEvent.getCustomerByIdEvent(id: widget.booking.customerId))
+        ..add(UserEvent.getArtisanByIdEvent(id: widget.booking.artisanId))
+        ..listen((state) {
+          if (state is SuccessState<BaseUser> && !(state.data is BaseArtisan)) {
+            _customer = state.data;
+            if (mounted) setState(() {});
+          }
+        });
 
       /// get request location details
       _locationBloc.add(
           LocationEvent.getLocationName(location: widget.booking.position));
+
+      /// observe booking state
+      _bookingBloc.add(BookingEvent.observeBookingById(id: widget.booking.id));
+
+      /// get service details
+      _serviceBloc.add(
+          ArtisanServiceEvent.getServiceById(id: widget.booking.serviceType));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final kTheme = Theme.of(context);
-    final stateTextColor =
-    kTheme.colorScheme.onBackground.withOpacity(kEmphasisMedium);
-    final stateBgColor = widget.booking.isPending
-        ? kAmberColor.withOpacity(kEmphasisMedium)
+    final userTextColor =
+        kTheme.colorScheme.onBackground.withOpacity(kEmphasisHigh);
+    final stateTextColor = widget.booking.isPending
+        ? kPendingJobTextColor
         : widget.booking.isComplete
-        ? kGreenColor.withOpacity(kEmphasisMedium)
-        : kTheme.colorScheme.error.withOpacity(kEmphasisLow);
+            ? kCompletedJobTextColor
+            : kCancelledJobTextColor;
+    final stateBgColor = widget.booking.isPending
+        ? kPendingJobColor
+        : widget.booking.isComplete
+            ? kCompletedJobColor
+            : kCancelledJobColor;
 
-    return BlocBuilder<UserBloc, BlocState>(
-      cubit: _userBloc,
-      builder: (_, userState) => userState is SuccessState<BaseUser> &&
-          widget.booking != null
-          ? Padding(
-        padding: EdgeInsets.only(
-          left: kSpacingX12,
-          right: kSpacingX12,
-          bottom: kSpacingX8,
+    var booking = widget.booking;
+
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: kSpacingX16,
+        right: kSpacingX16,
+        bottom: kSpacingX12,
+      ),
+      child: InkWell(
+        onTap: () => context.navigator.pushBookingDetailsPage(
+          booking: booking,
+          customer: _customer,
+          bookingId: booking.id,
         ),
-        child: InkWell(
-          splashColor: kTheme.splashColor,
-          borderRadius: BorderRadius.circular(kSpacingX4),
-          onLongPress: () => widget.onLongPress(),
-          onTap: () async {
-            final shouldUpdate = await context.navigator.push(
-              Routes.bookingDetailsPage,
-              arguments: BookingDetailsPageArguments(
-                booking: widget.booking,
-                customer: userState.data,
-              ),
-            );
-            if (widget.shouldUpdateUI != null)
-              widget.shouldUpdateUI(shouldUpdate);
-          },
-          child: Container(
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(kSpacingX4),
-              border: Border.all(
-                color: kTheme.colorScheme.onBackground
-                    .withOpacity(kEmphasisLow),
-                width: 0.5,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(
-              vertical: kSpacingX8,
-              horizontal: kSpacingX8,
-            ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
+        child: BlocBuilder<ArtisanServiceBloc, BlocState>(
+          cubit: _serviceBloc,
+          builder: (_, serviceState) => BlocBuilder<UserBloc, BlocState>(
+            cubit: _userBloc,
+            builder: (_, userState) => userState is SuccessState<BaseArtisan> &&
+                    widget.booking != null
+                ? Container(
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      color: kTheme.cardColor,
+                      borderRadius: BorderRadius.circular(kSpacingX4),
+                    ),
+                    child: Column(
                       children: [
-                        /// avatar
-                        UserAvatar(
-                          url: userState.data?.avatar,
-                          radius: kSpacingX42,
+                        Container(
+                          margin: EdgeInsets.only(bottom: kSpacingX12),
+                          width: SizeConfig.screenWidth,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: kSpacingX12,
+                            vertical: kSpacingX6,
+                          ),
+                          decoration: BoxDecoration(color: stateBgColor),
+                          child: Text(
+                            booking.currentState.toUpperCase(),
+                            style: kTheme.textTheme.button
+                                .copyWith(color: stateTextColor),
+                          ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(
-                            left: kSpacingX8,
-                            bottom: kSpacingX2,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: kSpacingX8,
+                            vertical: kSpacingX4,
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
-                                userState.data?.name ?? "Anonymous",
-                                style:
-                                kTheme.textTheme.bodyText1.copyWith(
-                                  fontFamily: kTheme
-                                      .textTheme.headline6.fontFamily,
-                                ),
-                              ),
-                              SizedBox(height: kSpacingX4),
-                              BlocBuilder<LocationBloc, BlocState>(
-                                cubit: _locationBloc,
-                                builder: (_, locationState) =>
-                                locationState is SuccessState<String>
-                                    ? Text(
-                                  locationState.data,
-                                  style: kTheme
-                                      .textTheme.caption
-                                      .copyWith(
-                                    fontFamily: kTheme.textTheme
-                                        .headline6.fontFamily,
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    userState.data.name ?? 'Anonymous',
+                                    style: kTheme.textTheme.headline6.copyWith(
+                                      fontSize:
+                                          kTheme.textTheme.bodyText2.fontSize,
+                                      color: userTextColor,
+                                    ),
                                   ),
-                                )
-                                    : SizedBox.shrink(),
+                                  SizedBox(height: kSpacingX4),
+                                  serviceState
+                                          is SuccessState<BaseArtisanService>
+                                      ? Text(
+                                          serviceState.data.name ?? '...',
+                                          style: kTheme.textTheme.bodyText1
+                                              .copyWith(
+                                            color: kTheme
+                                                .textTheme.bodyText1.color
+                                                .withOpacity(kEmphasisLow),
+                                          ),
+                                        )
+                                      : SizedBox.shrink(),
+                                ],
+                              ),
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    parseFromTimestamp(booking.dueDate),
+                                    style: kTheme.textTheme.bodyText1.copyWith(
+                                      color: kTheme.textTheme.bodyText1.color
+                                          .withOpacity(kEmphasisLow),
+                                    ),
+                                  ),
+                                  SizedBox(height: kSpacingX4),
+                                  Text(
+                                    parseFromTimestamp(booking.dueDate,
+                                        isChatFormat: true),
+                                    style: kTheme.textTheme.button.copyWith(
+                                      fontSize:
+                                          kTheme.textTheme.bodyText2.fontSize,
+                                      color: userTextColor,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ),
+                        )
                       ],
                     ),
-
-                    /// cost
-                    Text(
-                      formatCurrency(widget.booking.cost),
-                      style: kTheme.textTheme.button.copyWith(
-                        color: kTheme.colorScheme.onBackground
-                            .withOpacity(kEmphasisMedium),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: kSpacingX12),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    /// duration
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          kHistoryIcon,
-                          size: kSpacingX16,
-                          color: kTheme.colorScheme.onBackground
-                              .withOpacity(kEmphasisLow),
-                        ),
-                        SizedBox(width: kSpacingX8),
-                        Text.rich(
-                          TextSpan(children: [
-                            TextSpan(
-                                text: parseFromTimestamp(
-                                    widget.booking.createdAt)),
-                            TextSpan(text: "\t\u2192\t"),
-                            TextSpan(
-                                text: parseFromTimestamp(
-                                    widget.booking.dueDate)),
-                          ]),
-                          style: kTheme.textTheme.caption,
-                        ),
-                      ],
-                    ),
-
-                    /// current state
-                    Container(
-                      height: kSpacingX24,
-                      margin: EdgeInsets.only(left: kSpacingX8),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: stateBgColor,
-                        borderRadius: BorderRadius.circular(kSpacingX4),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                          vertical: kSpacingX4, horizontal: kSpacingX8),
-                      child: Text(
-                        widget.booking.currentState,
-                        style: kTheme.textTheme.button.copyWith(
-                          color: stateTextColor,
-                          fontSize: kTheme.textTheme.caption.fontSize,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  )
+                : SizedBox.shrink(),
           ),
         ),
-      )
-          : SizedBox.shrink(),
+      ),
     );
   }
 }

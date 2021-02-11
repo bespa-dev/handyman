@@ -1,0 +1,78 @@
+[
+  {
+    "id": "c2b3853b-32ff-4e21-9bd5-19ae22dd6132",
+    "customer_id": "WkqnE1NvKkf2fNk9V2NVImrAhyT2",
+    "artisan_id": "mxbSbRIuWqMS1bjJXh8E22k6xAh2",
+    "category": "bb7c0d03-add2-49cb-bdd5-9a55f67adb30",
+    "image_url": "https://images.unsplash.com/photo-1612952736777-edc8e5fdaf06?ixid=MXwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzfHx8ZW58MHx8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=60",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "position": {
+      "lat": 5.654851,
+      "lng": -0.183938,
+      "name": "University of Ghana, Legon"
+    },
+    "cost": 12.99,
+    "progress": 0.5,
+    "due_date": "2021-02-12T21:23:41.682495",
+    "current_state": "complete",
+    "service_type": "01df65bf-3189-41ca-82aa-08b06b2f9e60",
+    "created_at": "2021-01-02T21:23:41.682495"
+  },
+  {
+    "id": "fb51c986-c63d-4d9d-8baa-b8c3bc161622",
+    "customer_id": "WkqnE1NvKkf2fNk9V2NVImrAhyT2",
+    "artisan_id": "mxbSbRIuWqMS1bjJXh8E22k6xAh2",
+    "category": "bb7c0d03-add2-49cb-bdd5-9a55f67adb30",
+    "image_url": "https://images.unsplash.com/photo-1612952736777-edc8e5fdaf06?ixid=MXwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzfHx8ZW58MHx8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=60",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "position": {
+      "lat": 5.654851,
+      "lng": -0.183938,
+      "name": "University of Ghana, Legon"
+    },
+    "cost": 12.99,
+    "progress": 0.5,
+    "due_date": "2021-02-12T21:23:41.682495",
+    "current_state": "pending",
+    "service_type": "d7649ce4-59e5-4266-b63b-25835a27834b",
+    "created_at": "2021-01-02T21:23:41.682495"
+  },
+  {
+    "id": "24d6da53-70be-4b91-a12c-f1bf80695d9e",
+    "customer_id": "WkqnE1NvKkf2fNk9V2NVImrAhyT2",
+    "artisan_id": "mxbSbRIuWqMS1bjJXh8E22k6xAh2",
+    "category": "781ec80c-63c6-4e9f-89a7-54b85f0c1666",
+    "image_url": "https://images.unsplash.com/photo-1612952736777-edc8e5fdaf06?ixid=MXwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzfHx8ZW58MHx8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=60",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "position": {
+      "lat": 5.654851,
+      "lng": -0.183938,
+      "name": "University of Ghana, Legon"
+    },
+    "cost": 12.99,
+    "progress": 0.5,
+    "due_date": "2021-02-12T21:23:41.682495",
+    "current_state": "pending",
+    "service_type": "7929223f-fd1e-4edb-be64-a803f419028e",
+    "created_at": "2021-01-02T21:23:41.682495"
+  },
+  {
+    "id": "77c36795-ab33-41b0-aa10-584e8f0dadbc",
+    "customer_id": "WkqnE1NvKkf2fNk9V2NVImrAhyT2",
+    "artisan_id": "mxbSbRIuWqMS1bjJXh8E22k6xAh2",
+    "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
+    "image_url": "https://images.unsplash.com/photo-1612952736777-edc8e5fdaf06?ixid=MXwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzfHx8ZW58MHx8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=60",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "position": {
+      "lat": 5.654851,
+      "lng": -0.183938,
+      "name": "University of Ghana, Legon"
+    },
+    "cost": 12.99,
+    "progress": 0.5,
+    "due_date": "2021-02-12T21:23:41.682495",
+    "current_state": "cancelled",
+    "service_type": "0ea7eba6-7d90-4ed3-840d-34d759843566",
+    "created_at": "2021-01-02T21:23:41.682495"
+  }
+]

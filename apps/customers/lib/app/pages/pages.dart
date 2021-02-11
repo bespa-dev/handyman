@@ -17,7 +17,6 @@ export 'src/conversation.dart';
 export 'src/home.dart';
 export 'src/image_preview.dart';
 export 'src/login.dart';
-export 'src/notifications.dart';
 export 'src/profile.dart';
 export 'src/register.dart';
 export 'src/request/request.dart';

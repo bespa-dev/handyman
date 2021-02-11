@@ -159,6 +159,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     _kTheme = Theme.of(context);
     final available = _currentUser?.isAvailable ?? false;
+    var isDark = _kTheme.brightness == Brightness.dark;
 
     return WillPopScope(
       onWillPop: _handleBackPressed,
@@ -272,7 +273,7 @@ class _HomePageState extends State<HomePage> {
           bottomNavigationBar: _dismissAllNotifications
               ? Container(
                   height: getProportionateScreenHeight(kSpacingX64),
-                  decoration: BoxDecoration(color: _kTheme.colorScheme.primary),
+                  decoration: BoxDecoration(color: _kTheme.colorScheme.background),
                   child: Material(
                     type: MaterialType.transparency,
                     elevation: kSpacingX2,
@@ -284,13 +285,23 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           BadgedIconButton(
                             icon: Icon(kHomeIcon),
-                            color: _kTheme.colorScheme.onPrimary,
+                            color: _currentPage == 0
+                                ? isDark
+                                    ? _kTheme.colorScheme.secondary
+                                    : _kTheme.colorScheme.primary
+                                : _kTheme.disabledColor
+                                    .withOpacity(kEmphasisMedium),
                             onPressed: () => _onTabPressed(0),
                           ),
 
                           IconButton(
                             icon: Icon(kSearchIcon),
-                            color: _kTheme.colorScheme.onPrimary,
+                            color: _currentPage == 0
+                                ? isDark
+                                    ? _kTheme.colorScheme.secondary
+                                    : _kTheme.colorScheme.primary
+                                : _kTheme.disabledColor
+                                    .withOpacity(kEmphasisMedium),
                             onPressed: () => _onTabPressed(1),
                           ),
 
@@ -381,7 +392,12 @@ class _HomePageState extends State<HomePage> {
 
                           BadgedIconButton(
                             icon: Icon(kNotificationIcon),
-                            color: _kTheme.colorScheme.onPrimary,
+                            color: _currentPage == 0
+                                ? isDark
+                                    ? _kTheme.colorScheme.secondary
+                                    : _kTheme.colorScheme.primary
+                                : _kTheme.disabledColor
+                                    .withOpacity(kEmphasisMedium),
                             onPressed: () => _onTabPressed(2),
                             isAlert: _showBookingsBadge,
                           ),
@@ -389,7 +405,12 @@ class _HomePageState extends State<HomePage> {
                           /// toggle profile info
                           BadgedIconButton(
                             icon: Icon(kCategoryIcon),
-                            color: _kTheme.colorScheme.onPrimary,
+                            color: _currentPage == 0
+                                ? isDark
+                                    ? _kTheme.colorScheme.secondary
+                                    : _kTheme.colorScheme.primary
+                                : _kTheme.disabledColor
+                                    .withOpacity(kEmphasisMedium),
                             onPressed: () => _onTabPressed(3),
                             isAlert: _showProfileBadge,
                           ),

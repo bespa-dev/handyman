@@ -24,7 +24,6 @@ class Routes {
   static const String searchPage = '/search-page';
   static const String bookingsPage = '/bookings-page';
   static const String artisansPage = '/artisans-page';
-  static const String notificationsPage = '/notifications-page';
   static const String profilePage = '/profile-page';
   static const String artisanInfoPage = '/artisan-info-page';
   static const String homePage = '/home-page';
@@ -43,7 +42,6 @@ class Routes {
     searchPage,
     bookingsPage,
     artisansPage,
-    notificationsPage,
     profilePage,
     artisanInfoPage,
     homePage,
@@ -68,7 +66,6 @@ class Router extends RouterBase {
     RouteDef(Routes.searchPage, page: SearchPage),
     RouteDef(Routes.bookingsPage, page: BookingsPage),
     RouteDef(Routes.artisansPage, page: ArtisansPage),
-    RouteDef(Routes.notificationsPage, page: NotificationsPage),
     RouteDef(Routes.profilePage, page: ProfilePage),
     RouteDef(Routes.artisanInfoPage, page: ArtisanInfoPage),
     RouteDef(Routes.homePage, page: HomePage),
@@ -175,13 +172,6 @@ class Router extends RouterBase {
     ArtisansPage: (data) {
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) => ArtisansPage(),
-        settings: data,
-      );
-    },
-    NotificationsPage: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            NotificationsPage(),
         settings: data,
       );
     },
@@ -314,9 +304,6 @@ extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
   Future<dynamic> pushBookingsPage() => push<dynamic>(Routes.bookingsPage);
 
   Future<dynamic> pushArtisansPage() => push<dynamic>(Routes.artisansPage);
-
-  Future<dynamic> pushNotificationsPage() =>
-      push<dynamic>(Routes.notificationsPage);
 
   Future<dynamic> pushProfilePage() => push<dynamic>(Routes.profilePage);
 

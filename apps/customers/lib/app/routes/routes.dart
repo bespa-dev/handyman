@@ -27,7 +27,6 @@ import 'package:lite/app/pages/pages.dart';
     CustomRoute(page: SearchPage),
     CustomRoute(page: BookingsPage),
     CustomRoute(page: ArtisansPage),
-    CustomRoute(page: NotificationsPage),
     CustomRoute(page: ProfilePage),
     CustomRoute(page: ArtisanInfoPage),
     CustomRoute(page: HomePage),

@@ -37,6 +37,7 @@ abstract class BaseBooking extends BaseModel {
   double progress;
   String dueDate;
   String currentState;
+  String serviceType;
 
   bool get hasImage;
 
@@ -59,9 +60,10 @@ abstract class BaseBooking extends BaseModel {
     double progress,
     String dueDate,
     String currentState,
+    String serviceType,
   });
 }
 
 extension BookingStateX on BookingState {
-  String name() => this.toString().replaceAll("()", "");
+  String name() => toString().replaceAll('()', '');
 }

@@ -33,7 +33,6 @@ class _HomePageState extends State<HomePage> {
   final _navStates = <GlobalKey<NavigatorState>>[];
   final _artisansNavKey = GlobalKey<NavigatorState>();
   final _searchNavKey = GlobalKey<NavigatorState>();
-  final _notificationsNavKey = GlobalKey<NavigatorState>();
   final _bookingsNavKey = GlobalKey<NavigatorState>();
   final _profileNavKey = GlobalKey<NavigatorState>();
 
@@ -54,9 +53,6 @@ class _HomePageState extends State<HomePage> {
           break;
         case 2:
           _profileNavKey.currentState.popUntil((route) => route.isFirst);
-          break;
-        case 3:
-          _notificationsNavKey.currentState.popUntil((route) => route.isFirst);
           break;
         default:
           _bookingsNavKey.currentState.popUntil((route) => route.isFirst);
@@ -101,7 +97,6 @@ class _HomePageState extends State<HomePage> {
       _artisansNavKey,
       _searchNavKey,
       _profileNavKey,
-      _notificationsNavKey,
       _bookingsNavKey,
     ]);
     super.initState();
@@ -150,6 +145,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     _kTheme = Theme.of(context);
+    var isDark = _kTheme.brightness == Brightness.dark;
 
     return WillPopScope(
       onWillPop: _handleBackPressed,
@@ -162,8 +158,7 @@ class _HomePageState extends State<HomePage> {
             bottom: true,
             child: Column(
               children: [
-                if (_navStates[_currentPage] == _artisansNavKey ||
-                    _navStates[_currentPage] == _notificationsNavKey) ...{
+                if (_navStates[_currentPage] == _artisansNavKey) ...{
                   CustomAppBar(title: 'Artisans')
                 },
                 Expanded(
@@ -191,14 +186,6 @@ class _HomePageState extends State<HomePage> {
                             settings: route, builder: (__) => ProfilePage()),
                       ),
 
-                      /// notifications
-                      Navigator(
-                        key: _notificationsNavKey,
-                        onGenerateRoute: (route) => MaterialPageRoute(
-                            settings: route,
-                            builder: (__) => NotificationsPage()),
-                      ),
-
                       /// bookings
                       Navigator(
                         key: _bookingsNavKey,
@@ -213,7 +200,7 @@ class _HomePageState extends State<HomePage> {
           ),
           bottomNavigationBar: Container(
             height: getProportionateScreenHeight(kSpacingX64),
-            decoration: BoxDecoration(color: _kTheme.colorScheme.primary),
+            decoration: BoxDecoration(color: _kTheme.colorScheme.background),
             child: Material(
               type: MaterialType.transparency,
               elevation: kSpacingX2,
@@ -223,31 +210,39 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   BadgedIconButton(
                     icon: Icon(kHomeIcon),
-                    color: _kTheme.colorScheme.onPrimary,
+                    color: _currentPage == 0
+                        ? isDark
+                            ? _kTheme.colorScheme.secondary
+                            : _kTheme.colorScheme.primary
+                        : _kTheme.disabledColor.withOpacity(kEmphasisMedium),
                     onPressed: () => _onTabPressed(0),
                   ),
                   IconButton(
                     icon: Icon(kSearchIcon),
-                    color: _kTheme.colorScheme.onPrimary,
+                    color: _currentPage == 1
+                        ? isDark
+                            ? _kTheme.colorScheme.secondary
+                            : _kTheme.colorScheme.primary
+                        : _kTheme.disabledColor.withOpacity(kEmphasisMedium),
                     onPressed: () => _onTabPressed(1),
                   ),
                   BadgedIconButton(
                     icon: Icon(kCategoryIcon),
-                    color: _kTheme.colorScheme.onPrimary,
+                    color: _currentPage == 2
+                        ? isDark
+                            ? _kTheme.colorScheme.secondary
+                            : _kTheme.colorScheme.primary
+                        : _kTheme.disabledColor.withOpacity(kEmphasisMedium),
                     onPressed: () => _onTabPressed(2),
                     isAlert: _showProfileBadge,
                   ),
                   BadgedIconButton(
-                    icon: Icon(kNotificationIcon),
-                    color: _kTheme.colorScheme.onPrimary,
-                    onPressed: () => _onTabPressed(3),
-
-                    /// fixme -> show notifications badge count
-                    isAlert: _showBookingsBadge,
-                  ),
-                  BadgedIconButton(
                     icon: Icon(kBriefcaseIcon),
-                    color: _kTheme.colorScheme.onPrimary,
+                    color: _currentPage == 4
+                        ? isDark
+                            ? _kTheme.colorScheme.secondary
+                            : _kTheme.colorScheme.primary
+                        : _kTheme.disabledColor.withOpacity(kEmphasisMedium),
                     onPressed: () => _onTabPressed(4),
                     isAlert: _showBookingsBadge,
                   ),

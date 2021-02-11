@@ -65,5 +65,5 @@ abstract class BaseBooking extends BaseModel {
 }
 
 extension BookingStateX on BookingState {
-  String name() => this.toString().replaceAll("()", "");
+  String name() => toString().replaceAll('()', '');
 }

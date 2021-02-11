@@ -164,6 +164,7 @@ const kCallIcon = Feather.phone;
 const kMoneyIcon = Entypo.wallet;
 const kCategoryIcon = Icons.supervised_user_circle_outlined;
 const kBadgeIcon = Feather.award;
+const kTrashIcon = Feather.trash;
 const kThreeDotsOptionsIcon = Entypo.dots_three_horizontal;
 
 /// Others
@@ -175,6 +176,12 @@ const kGreenColor = Color(0xFF009688);
 const kWhiteColor = Colors.white;
 const kBlackColor = Colors.black87;
 const kAmberColor = Colors.amber;
+const kPendingJobColor = Color(0xFFFFEFD9);
+const kPendingJobTextColor = Color(0xFFFFAF3F);
+const kCompletedJobColor = Color(0xFFE1F7E6);
+const kCompletedJobTextColor = Color(0xFF74D98D);
+const kCancelledJobColor = Color(0xFFFFE2E0);
+const kCancelledJobTextColor = Color(0xFFFF6057);
 const kChatBackgroundLight = Color(0xFFF5F5F5);
 const kChatBackgroundDark = Color(0xFF222222);
 const kTransparent = Colors.transparent;
@@ -191,7 +198,7 @@ const kCardLightColor = Color(0xffF5F6FA);
 // const kCardLightColor = Color(0xFFFFFFFF);
 
 const kPrimaryColorDark = Color(0xFF222222);
-const kSecondaryDarkColor = Color(0xFF8AC185);
+const kSecondaryDarkColor = Color(0xFF1875FB);
 const kErrorDarkColor = Color(0xffEC407A);
 const kAccentDarkColor = kWhiteColor;
 const kCardDarkColor = Color(0xff212529);
