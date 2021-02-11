@@ -459,113 +459,113 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
 
   Widget _buildBottomActionBar(BaseBooking booking) => booking.currentState ==
           BookingState.none().name()
-      ? InkWell(
-          splashColor: kTheme.splashColor,
-          onTap: () async {
-            await showCustomDialog(
-              context: context,
-              builder: (_) => BasicDialog(
-                message: 'Do you wish to cancel this job request?',
-                onComplete: () {
-                  booking = booking.copyWith(
-                      currentState: BookingState.cancelled().name());
-                  setState(() {});
-                  _updateBookingBloc
-                      .add(BookingEvent.updateBooking(booking: booking));
-                },
+      ? Container(
+          width: SizeConfig.screenWidth,
+          clipBehavior: Clip.hardEdge,
+          margin:
+              EdgeInsets.symmetric(horizontal: SizeConfig.screenWidth * 0.05),
+          decoration: BoxDecoration(
+            color: kTheme.cardColor.withOpacity(kEmphasisHigh),
+            borderRadius: BorderRadius.circular(kSpacingX24),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(
+                flex: 2,
+                child: GestureDetector(
+                  onTap: () async => showCustomDialog(
+                    context: context,
+                    builder: (_) => BasicDialog(
+                      message: 'Do you wish to cancel this job request?',
+                      onComplete: () {
+                        booking = booking.copyWith(
+                            currentState: BookingState.cancelled().name());
+                        setState(() {});
+                        _updateBookingBloc
+                            .add(BookingEvent.updateBooking(booking: booking));
+                      },
+                    ),
+                  ),
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    height: kToolbarHeight,
+                    decoration: BoxDecoration(),
+                    child: Text(
+                      'Cancel',
+                      style: kTheme.textTheme.button.copyWith(
+                        color: kTheme.colorScheme.onBackground,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            );
-          },
-          child: Container(
-            color: kTheme.colorScheme.error,
-            alignment: Alignment.center,
-            child: Text(
-              'Cancel request'.toUpperCase(),
-              style: kTheme.textTheme.button.copyWith(
-                color: kTheme.colorScheme.onError,
+              Flexible(
+                flex: 3,
+                child: GestureDetector(
+                  onTap: () async => showCustomDialog(
+                    context: context,
+                    builder: (_) => BasicDialog(
+                      message: 'Do you wish to accept this job request?',
+                      onComplete: () {
+                        booking = booking.copyWith(
+                            currentState: BookingState.pending().name());
+                        setState(() {});
+                        _updateBookingBloc
+                            .add(BookingEvent.updateBooking(booking: booking));
+                      },
+                    ),
+                  ),
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    height: kToolbarHeight,
+                    decoration: BoxDecoration(
+                      color: kGreenColor,
+                      borderRadius: BorderRadius.circular(kSpacingX24),
+                    ),
+                    child: Text(
+                      'Accept',
+                      style: kTheme.textTheme.button.copyWith(
+                        color: kTheme.colorScheme.onBackground,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         )
       : booking.isComplete || booking.isCancelled
           ? SizedBox.shrink()
-          : Container(
-              width: SizeConfig.screenWidth,
-              clipBehavior: Clip.hardEdge,
-              margin: EdgeInsets.symmetric(
-                  horizontal: SizeConfig.screenWidth * 0.05),
-              decoration: BoxDecoration(
-                color: kTheme.cardColor.withOpacity(kEmphasisHigh),
-                borderRadius: BorderRadius.circular(kSpacingX24),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Flexible(
-                    flex: 2,
-                    child: GestureDetector(
-                      onTap: () async => showCustomDialog(
-                        context: context,
-                        builder: (_) => BasicDialog(
-                          message: 'Do you wish to cancel this job request?',
-                          onComplete: () {
-                            booking = booking.copyWith(
-                                currentState: BookingState.cancelled().name());
-                            setState(() {});
-                            _updateBookingBloc.add(
-                                BookingEvent.updateBooking(booking: booking));
-                          },
-                        ),
-                      ),
-                      child: Container(
-                        alignment: Alignment.center,
-                        width: double.infinity,
-                        height: kToolbarHeight,
-                        decoration: BoxDecoration(),
-                        child: Text(
-                          'Cancel',
-                          style: kTheme.textTheme.button.copyWith(
-                            color: kTheme.colorScheme.onBackground,
-                          ),
-                        ),
-                      ),
-                    ),
+          : InkWell(
+              splashColor: kTheme.splashColor,
+              onTap: () async {
+                await showCustomDialog(
+                  context: context,
+                  builder: (_) => BasicDialog(
+                    message: 'Do you wish to cancel this job request?',
+                    onComplete: () {
+                      booking = booking.copyWith(
+                          currentState: BookingState.cancelled().name());
+                      setState(() {});
+                      _updateBookingBloc
+                          .add(BookingEvent.updateBooking(booking: booking));
+                    },
                   ),
-                  Flexible(
-                    flex: 3,
-                    child: GestureDetector(
-                      onTap: () async => showCustomDialog(
-                        context: context,
-                        builder: (_) => BasicDialog(
-                          message: 'Do you wish to accept this job request?',
-                          onComplete: () {
-                            booking = booking.copyWith(
-                                currentState: BookingState.pending().name());
-                            setState(() {});
-                            _updateBookingBloc.add(
-                                BookingEvent.updateBooking(booking: booking));
-                          },
-                        ),
-                      ),
-                      child: Container(
-                        alignment: Alignment.center,
-                        width: double.infinity,
-                        height: kToolbarHeight,
-                        decoration: BoxDecoration(
-                          color: kGreenColor,
-                          borderRadius: BorderRadius.circular(kSpacingX24),
-                        ),
-                        child: Text(
-                          'Accept',
-                          style: kTheme.textTheme.button.copyWith(
-                            color: kTheme.colorScheme.onBackground,
-                          ),
-                        ),
-                      ),
-                    ),
+                );
+              },
+              child: Container(
+                color: kTheme.colorScheme.error,
+                alignment: Alignment.center,
+                child: Text(
+                  'Cancel Job'.toUpperCase(),
+                  style: kTheme.textTheme.button.copyWith(
+                    color: kTheme.colorScheme.onError,
                   ),
-                ],
+                ),
               ),
             );
 }
