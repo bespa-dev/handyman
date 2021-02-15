@@ -517,11 +517,16 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                 return BlocBuilder<ArtisanServiceBloc, BlocState>(
                   cubit: _serviceBloc,
                   builder: (_, state) => Container(
-                    height: SizeConfig.screenHeight * 0.6,
+                    height: state is SuccessState<List<BaseArtisanService>> &&
+                            _selectedServices.isNotEmpty
+                        ? SizeConfig.screenHeight * 0.6
+                        : SizeConfig.screenHeight * 0.25,
                     color: _kTheme.cardColor,
                     padding: EdgeInsets.symmetric(horizontal: kSpacingX12),
                     child: Material(
-                      child: state is SuccessState<List<BaseArtisanService>>
+                      type: MaterialType.transparency,
+                      child: state is SuccessState<List<BaseArtisanService>> &&
+                              _selectedServices.isNotEmpty
                           ? SingleChildScrollView(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
