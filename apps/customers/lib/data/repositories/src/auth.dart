@@ -40,7 +40,7 @@ class AuthRepositoryImpl extends BaseAuthRepository {
         _messaging = messaging,
         _userRepo = userRepo;
 
-  Future<BaseUser> _getOrCreateUserFromCredential(UserCredential credential,
+  Future<BaseUser> _getOrCreateUserFromCredential(AuthCredential credential,
       {String forcedUsername}) async {
     var firebaseUser = credential.user;
     final username = firebaseUser.displayName ?? forcedUsername;
