@@ -284,16 +284,10 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
               SizedBox(height: SizeConfig.screenHeight * 0.1),
             } else ...{
               Container(
-                margin: EdgeInsets.only(top: kSpacingX24),
+                height: SizeConfig.screenHeight * 0.35,
                 width: SizeConfig.screenWidth,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('No services added',
-                        style: _kTheme.textTheme.headline6),
-                  ],
-                ),
+                padding: EdgeInsets.symmetric(horizontal: kSpacingX24),
+                child: emptyStateUI(context, message: 'No services registered'),
               ),
             }
           ],
@@ -305,27 +299,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
         height: SizeConfig.screenHeight * 0.35,
         width: SizeConfig.screenWidth,
         padding: EdgeInsets.symmetric(horizontal: kSpacingX24),
-        child: _buildGalleryUI(),
-      );
-
-  /// build UI for gallery
-  Widget _buildGalleryUI() => Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(kImageIcon, size: kSpacingX56),
-          SizedBox(height: kSpacingX16),
-          Text(
-            'Earn a badge first',
-            style: _kTheme.textTheme.headline6,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: kSpacingX8),
-          Text(
-            'Get more jobs & good reviews from customers to unlock this feature',
-            style: _kTheme.textTheme.subtitle1,
-            textAlign: TextAlign.center,
-          ),
-        ],
+        child:
+            emptyStateUI(context, icon: kImageIcon, message: 'No images added'),
       );
 }

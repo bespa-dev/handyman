@@ -273,7 +273,8 @@ class _HomePageState extends State<HomePage> {
           bottomNavigationBar: _dismissAllNotifications
               ? Container(
                   height: getProportionateScreenHeight(kSpacingX64),
-                  decoration: BoxDecoration(color: _kTheme.colorScheme.background),
+                  decoration:
+                      BoxDecoration(color: _kTheme.colorScheme.background),
                   child: Material(
                     type: MaterialType.transparency,
                     elevation: kSpacingX2,
@@ -306,89 +307,85 @@ class _HomePageState extends State<HomePage> {
                           ),
 
                           /// toggle availability
-                          if (_isLoggedIn &&
-                              state is SuccessState<BaseArtisan>) ...{
-                            InkWell(
-                              borderRadius: BorderRadius.circular(kSpacingX16),
-                              onTap: () {
-                                if (available) {
-                                  /// show confirmation dialog
-                                  showCustomDialog(
-                                    context: context,
-                                    builder: (_) => BasicDialog(
-                                      message:
-                                          'Do you wish to go offline?\nYou will not receive new requests from prospective customers until you turn this back on.',
-                                      onComplete: () {
-                                        /// toggle offline mode
-                                        _currentUser = _currentUser.copyWith(
-                                            isAvailable: !available);
-                                        setState(() {});
+                          InkWell(
+                            borderRadius: BorderRadius.circular(kSpacingX16),
+                            onTap: () {
+                              if (available) {
+                                /// show confirmation dialog
+                                showCustomDialog(
+                                  context: context,
+                                  builder: (_) => BasicDialog(
+                                    message:
+                                        'Do you wish to go offline?\nYou will not receive new requests from prospective customers until you turn this back on.',
+                                    onComplete: () {
+                                      /// toggle offline mode
+                                      _currentUser = _currentUser.copyWith(
+                                          isAvailable: !available);
+                                      setState(() {});
 
-                                        /// update user's availability
-                                        _updateUserBloc.add(
-                                          UserEvent.updateUserEvent(
-                                              user: _currentUser),
-                                        );
+                                      /// update user's availability
+                                      _updateUserBloc.add(
+                                        UserEvent.updateUserEvent(
+                                            user: _currentUser),
+                                      );
 
-                                        /// observe current user state
-                                        _userBloc
-                                            .add(UserEvent.currentUserEvent());
-                                      },
-                                    ),
-                                  );
-                                } else {
-                                  /// toggle online mode
-                                  _currentUser = _currentUser.copyWith(
-                                      isAvailable: !available);
-                                  setState(() {});
-
-                                  /// update user's availability
-                                  _updateUserBloc.add(
-                                    UserEvent.updateUserEvent(
-                                        user: _currentUser),
-                                  );
-
-                                  /// observe current user state
-                                  _userBloc.add(UserEvent.currentUserEvent());
-                                }
-                              },
-                              child: AnimatedContainer(
-                                duration: kScaleDuration,
-                                width: kSpacingX84,
-                                height: kSpacingX32,
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.circular(kSpacingX16),
-                                  color: _kTheme.cardColor,
-                                  border: Border.all(
-                                    color: available
-                                        ? kGreenColor
-                                        : _kTheme.colorScheme.error,
-                                    width: kSpacingX2,
+                                      /// observe current user state
+                                      _userBloc
+                                          .add(UserEvent.currentUserEvent());
+                                    },
                                   ),
-                                ),
-                                alignment: available
-                                    ? Alignment.centerLeft
-                                    : Alignment.centerRight,
-                                padding: EdgeInsets.all(kSpacingX4),
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  height: kSpacingX24,
-                                  width: kSpacingX24,
-                                  decoration: BoxDecoration(
-                                    color: available
-                                        ? kGreenColor
-                                        : _kTheme.colorScheme.error,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    available ? kOnlineIcon : kOfflineIcon,
-                                    size: kSpacingX12,
-                                  ),
+                                );
+                              } else {
+                                /// toggle online mode
+                                _currentUser = _currentUser.copyWith(
+                                    isAvailable: !available);
+                                setState(() {});
+
+                                /// update user's availability
+                                _updateUserBloc.add(
+                                  UserEvent.updateUserEvent(user: _currentUser),
+                                );
+
+                                /// observe current user state
+                                _userBloc.add(UserEvent.currentUserEvent());
+                              }
+                            },
+                            child: AnimatedContainer(
+                              duration: kScaleDuration,
+                              width: kSpacingX84,
+                              height: kSpacingX32,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(kSpacingX16),
+                                color: _kTheme.cardColor,
+                                border: Border.all(
+                                  color: available
+                                      ? kGreenColor
+                                      : _kTheme.colorScheme.error,
+                                  width: kSpacingX2,
                                 ),
                               ),
-                            )
-                          },
+                              alignment: available
+                                  ? Alignment.centerLeft
+                                  : Alignment.centerRight,
+                              padding: EdgeInsets.all(kSpacingX4),
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: kSpacingX24,
+                                width: kSpacingX24,
+                                decoration: BoxDecoration(
+                                  color: available
+                                      ? kGreenColor
+                                      : _kTheme.colorScheme.error,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  available ? kOnlineIcon : kOfflineIcon,
+                                  size: kSpacingX12,
+                                ),
+                              ),
+                            ),
+                          ),
 
                           BadgedIconButton(
                             icon: Icon(kNotificationIcon),

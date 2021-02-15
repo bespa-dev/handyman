@@ -19,15 +19,6 @@ import 'package:lite/shared/shared.dart';
 import 'package:meta/meta.dart';
 
 class AuthRepositoryImpl extends BaseAuthRepository {
-  final GoogleSignIn _googleSignIn;
-  final FirebaseAuth _auth;
-  final BasePreferenceRepository _prefsRepo;
-  final BaseUserRepository _userRepo;
-  final FirebaseMessaging _messaging;
-
-  final _onAuthStateChangedController = StreamController<AuthState>.broadcast();
-  final _onMessageChangedController = StreamController<String>.broadcast();
-
   AuthRepositoryImpl({
     @required GoogleSignIn googleSignIn,
     @required FirebaseAuth auth,
@@ -40,7 +31,16 @@ class AuthRepositoryImpl extends BaseAuthRepository {
         _messaging = messaging,
         _userRepo = userRepo;
 
-  Future<BaseUser> _getOrCreateUserFromCredential(AuthCredential credential,
+  final GoogleSignIn _googleSignIn;
+  final FirebaseAuth _auth;
+  final BasePreferenceRepository _prefsRepo;
+  final BaseUserRepository _userRepo;
+  final FirebaseMessaging _messaging;
+
+  final _onAuthStateChangedController = StreamController<AuthState>.broadcast();
+  final _onMessageChangedController = StreamController<String>.broadcast();
+
+  Future<BaseUser> _getOrCreateUserFromCredential(UserCredential credential,
       {String forcedUsername}) async {
     var firebaseUser = credential.user;
     final username = firebaseUser.displayName ?? forcedUsername;
@@ -48,7 +48,6 @@ class AuthRepositoryImpl extends BaseAuthRepository {
     var user = await _userRepo.getCustomerById(id: firebaseUser.uid);
     if (user == null) {
       var timestamp = DateTime.now().toIso8601String();
-
       final newUser = Customer(
         id: firebaseUser.uid,
         email: firebaseUser.email,
@@ -62,7 +61,7 @@ class AuthRepositoryImpl extends BaseAuthRepository {
       _prefsRepo.userId = newUser.id;
       _onAuthStateChangedController
           .add(AuthState.authenticatedState(user: newUser));
-      _onMessageChangedController.add('New account created successfully');
+      _onMessageChangedController.add("New account created successfully");
       return newUser;
     } else {
       _prefsRepo.userId = user.id;
@@ -73,7 +72,7 @@ class AuthRepositoryImpl extends BaseAuthRepository {
       );
       _onAuthStateChangedController
           .add(AuthState.authenticatedState(user: user));
-      _onMessageChangedController.add('Signed in successfully');
+      _onMessageChangedController.add("Signed in successfully");
       return user;
     }
   }
@@ -169,20 +168,20 @@ class AuthRepositoryImpl extends BaseAuthRepository {
       var account = await _googleSignIn.signIn();
       if (account == null) {
         _onAuthStateChangedController
-            .add(AuthState.authFailedState(message: 'Sign in was cancelled'));
+            .add(AuthState.authFailedState(message: "Sign in was cancelled"));
         return null;
       }
       var authentication = await account.authentication;
       var credential =
-          await _auth.signInWithCredential(GoogleAuthProvider.credential(
+      await _auth.signInWithCredential(GoogleAuthProvider.credential(
         idToken: authentication.idToken,
         accessToken: authentication.accessToken,
       ));
       return _getOrCreateUserFromCredential(credential);
     } on Exception catch (ex) {
       _onAuthStateChangedController
-          .add(AuthState.authFailedState(message: 'Unable to sign in\n$ex'));
-      _onMessageChangedController.add('Unable to sign in');
+          .add(AuthState.authFailedState(message: "Unable to sign in\n$ex"));
+      _onMessageChangedController.add("Unable to sign in");
       return null;
     }
   }

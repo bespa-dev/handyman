@@ -550,6 +550,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 categoryGroup: item.title,
                 services: <String>[],
               );
+              setState(() {});
 
               _updateUserBloc
                   .add(UserEvent.updateUserEvent(user: _currentUser));

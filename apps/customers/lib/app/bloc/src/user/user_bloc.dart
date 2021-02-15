@@ -46,46 +46,54 @@ class UserBloc extends BaseBloc<UserEvent> {
         var result = await ObserveCurrentUserUseCase(_repo).execute(null);
         if (result is UseCaseResultSuccess<Stream<BaseUser>>) {
           yield BlocState<Stream<BaseUser>>.successState(data: result.value);
-        } else
+        } else {
           throw Exception();
+        }
       } else if (event is UpdateUserEvent) {
         var result = await UpdateUserUseCase(_repo).execute(event.user);
         if (result is UseCaseResultSuccess) {
           yield BlocState.successState();
-        } else
+        } else {
           throw Exception();
+        }
       } else if (event is GetArtisanByIdEvent) {
         var result = await GetArtisanUseCase(_repo).execute(event.id);
         if (result is UseCaseResultSuccess<BaseArtisan>) {
           yield BlocState<BaseArtisan>.successState(data: result.value);
-        } else
+        } else {
           throw Exception();
+        }
       } else if (event is ObserveArtisanByIdEvent) {
         var result = await ObserveArtisanUseCase(_repo).execute(event.id);
         if (result is UseCaseResultSuccess<Stream<BaseArtisan>>) {
           yield BlocState<Stream<BaseArtisan>>.successState(data: result.value);
-        } else
+        } else {
           throw Exception();
+        }
       } else if (event is GetCustomerByIdEvent) {
         var result = await GetCustomerUseCase(_repo).execute(event.id);
         if (result is UseCaseResultSuccess<BaseUser>) {
           yield BlocState<BaseUser>.successState(data: result.value);
-        } else
+        } else {
           throw Exception();
+        }
       } else if (event is ObserveCustomerByIdEvent) {
         var result = await ObserveCustomerUseCase(_repo).execute(event.id);
         if (result is UseCaseResultSuccess<Stream<BaseUser>>) {
           yield BlocState<Stream<BaseUser>>.successState(data: result.value);
-        } else
+        } else {
           throw Exception();
+        }
       } else if (event is ObserveArtisansEvent) {
+        /// observes all artisans
         var result =
             await ObserveAllArtisansUseCase(_repo).execute(event.category);
         if (result is UseCaseResultSuccess<Stream<List<BaseArtisan>>>) {
           yield BlocState<Stream<List<BaseArtisan>>>.successState(
               data: result.value);
-        } else
+        } else {
           throw Exception();
+        }
       }
     } on Exception catch (ex) {
       yield BlocState.errorState(failure: ex.toString());

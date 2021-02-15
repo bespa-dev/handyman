@@ -155,7 +155,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
 
   @override
   Stream<List<BaseBooking>> getBookingsByDueDate(
-      {String dueDate, String artisanId}) async* {
+      {@required String dueDate,@required String artisanId}) async* {
     yield bookingBox.values
         .where((item) => compareTime(item.dueDate, dueDate) <= 0)
         .where((item) => item.artisanId == artisanId)
@@ -163,25 +163,23 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   }
 
   @override
-  Future<BaseUser> getCustomerById({String id}) async => customerBox.get(id);
+  Future<BaseUser> getCustomerById({@required String id}) async => customerBox.get(id);
 
   @override
-  Stream<List<BaseGallery>> getPhotosForArtisan({String userId}) async* {
+  Stream<List<BaseGallery>> getPhotosForArtisan({@required String userId}) async* {
     yield galleryBox.values.where((item) => item.userId == userId).toList();
   }
 
   @override
-  Stream<BaseArtisan> observeArtisanById({String id}) async* {
+  Stream<BaseArtisan> observeArtisanById({@required String id}) async* {
     yield artisanBox.get(id);
   }
 
   @override
-  Stream<List<BaseArtisan>> observeArtisans({String category}) async* {
+  Stream<List<BaseArtisan>> observeArtisans({@required String category}) async* {
     yield artisanBox.values
-        .where((item) => item.categoryGroup.contains(category))
+        // .where((item) => item.categoryGroup.contains(category))
         .where((item) => item.id != prefsRepo.userId)
-        .where((item) => kReleaseMode ? item.isApproved : true)
-        .where((item) => kReleaseMode ? item.isAvailable : true)
         .toList();
   }
 

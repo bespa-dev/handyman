@@ -8,6 +8,7 @@
  */
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:lite/data/entities/entities.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/domain/repositories/repositories.dart';
@@ -116,11 +117,10 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   @override
   Stream<List<BaseArtisan>> observeArtisans(
       {@required String category}) async* {
+    logger.d(category);
     yield* firestore
         .collection(RefUtils.kArtisanRef)
         .where('category_group', isEqualTo: category)
-        .where('approved', isEqualTo: true)
-        .where('available', isEqualTo: true)
         .snapshots()
         .map((event) =>
             event.docs.map((e) => Artisan.fromJson(e.data())).toList());

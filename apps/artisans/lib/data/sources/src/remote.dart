@@ -38,10 +38,14 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
       final item = ServiceCategory.fromJson(json);
 
       /// put each one into firestore document
-      await firestore
-          .collection(RefUtils.kCategoryRef)
-          .doc(item.id)
-          .set(item.toJson(), SetOptions(merge: true));
+      try {
+        await firestore
+            .collection(RefUtils.kCategoryRef)
+            .doc(item.id)
+            .set(item.toJson(), SetOptions(merge: true));
+      } catch (e) {
+        logger.e(e);
+      }
     }
   }
 

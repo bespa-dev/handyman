@@ -31,7 +31,7 @@ abstract class BaseBloc<E> extends Bloc<E, BlocState> {
 
   @override
   void onTransition(Transition<E, BlocState> transition) {
-    // logger.d('onTransition $runtimeType: ${transition.currentState} -> ${transition.nextState}');
+    logger.d('onTransition $runtimeType: ${transition.currentState} -> ${transition.nextState}');
     super.onTransition(transition);
   }
 

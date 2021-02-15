@@ -158,7 +158,6 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
 
       /// storage upload progress
       _storageBloc.listen((state) async {
-        logger.i(state.runtimeType);
         if (state is LoadingState) {
           _isLoading = true;
           if (mounted) setState(() {});
@@ -498,19 +497,19 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                   ),
                 ),
 
-                if (_locationName != null &&
-                    _businessDocument != null &&
-                    _docUrl != null) ...{
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: InkWell(
-                      splashColor: kTheme.splashColor,
-                      onTap: () {
-                        if (!_formKey.currentState.validate()) return;
-                        _formKey.currentState.save();
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: InkWell(
+                    splashColor: kTheme.splashColor,
+                    onTap: () async {
+                      if (!_formKey.currentState.validate()) return;
+                      _formKey.currentState.save();
 
-                        /// save business
-                        if (widget.business == null) {
+                      /// save business
+                      if (widget.business == null) {
+                        if (_locationName != null &&
+                            _businessDocument != null &&
+                            _docUrl != null) {
                           _businessBloc.add(
                             BusinessEvent.uploadBusiness(
                               docUrl: _docUrl,
@@ -520,44 +519,51 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                             ),
                           );
                         } else {
-                          _businessBloc.add(BusinessEvent.updateBusiness(
-                            business: widget.business.copyWith(
-                              docUrl: _docUrl,
-                              name: _nameController.text?.trim(),
-                              artisanId: _userId,
-                              location: _locationName,
-                            ),
-                          ));
+                          await showCustomDialog(
+                            context: context,
+                            builder: (_) => InfoDialog(
+                                message: Text(
+                                    'Please add all required documents first')),
+                          );
                         }
-                      },
-                      child: Container(
-                        width: SizeConfig.screenWidth,
-                        alignment: Alignment.center,
-                        height: kToolbarHeight,
-                        decoration: BoxDecoration(
-                          color: kTheme.colorScheme.secondary,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Save & Continue',
-                              style: kTheme.textTheme.button.copyWith(
-                                color: kTheme.colorScheme.onSecondary,
-                              ),
-                            ),
-                            SizedBox(width: kSpacingX12),
-                            Icon(
-                              kArrowIcon,
+                      } else {
+                        _businessBloc.add(BusinessEvent.updateBusiness(
+                          business: widget.business.copyWith(
+                            docUrl: _docUrl,
+                            name: _nameController.text?.trim(),
+                            artisanId: _userId,
+                            location: _locationName,
+                          ),
+                        ));
+                      }
+                    },
+                    child: Container(
+                      width: SizeConfig.screenWidth,
+                      alignment: Alignment.center,
+                      height: kToolbarHeight,
+                      decoration: BoxDecoration(
+                        color: kTheme.colorScheme.secondary,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Save & Continue',
+                            style: kTheme.textTheme.button.copyWith(
                               color: kTheme.colorScheme.onSecondary,
                             ),
-                          ],
-                        ),
+                          ),
+                          SizedBox(width: kSpacingX12),
+                          Icon(
+                            kArrowIcon,
+                            color: kTheme.colorScheme.onSecondary,
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                },
+                ),
               },
             ],
           ),
