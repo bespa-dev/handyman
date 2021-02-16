@@ -124,8 +124,8 @@ Artisan _$ArtisanFromJson(Map<String, dynamic> json) {
     nationalId: json['national_id'] as String,
     rating: json['rating'] as double,
     bookingsCount: json['bookings_count'] as int,
-    requests: json['requests'] as List<String>,
-    reports: json['reports'] as List<String>,
+    requests: json['requests'] as List<dynamic>,
+    reports: json['reports'] as List<dynamic>,
     services: json['services'] == null
         ? <BaseArtisanService>[]
         : (json['services'] as List<dynamic>)

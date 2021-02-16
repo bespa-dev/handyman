@@ -142,7 +142,8 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
     logger.d(category);
     yield* firestore
         .collection(RefUtils.kArtisanRef)
-        .where('category_group', isEqualTo: category)
+        // todo
+        // .where('category_group', isEqualTo: category)
         .snapshots()
         .map((event) =>
             event.docs.map((e) => Artisan.fromJson(e.data())).toList());

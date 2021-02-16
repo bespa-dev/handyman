@@ -155,7 +155,7 @@ class HiveLocalDatasource extends BaseLocalDatasource {
 
   @override
   Stream<List<BaseBooking>> getBookingsByDueDate(
-      {@required String dueDate,@required String artisanId}) async* {
+      {@required String dueDate, @required String artisanId}) async* {
     yield bookingBox.values
         .where((item) => compareTime(item.dueDate, dueDate) <= 0)
         .where((item) => item.artisanId == artisanId)
@@ -163,10 +163,12 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   }
 
   @override
-  Future<BaseUser> getCustomerById({@required String id}) async => customerBox.get(id);
+  Future<BaseUser> getCustomerById({@required String id}) async =>
+      customerBox.get(id);
 
   @override
-  Stream<List<BaseGallery>> getPhotosForArtisan({@required String userId}) async* {
+  Stream<List<BaseGallery>> getPhotosForArtisan(
+      {@required String userId}) async* {
     yield galleryBox.values.where((item) => item.userId == userId).toList();
   }
 
@@ -176,8 +178,10 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   }
 
   @override
-  Stream<List<BaseArtisan>> observeArtisans({@required String category}) async* {
+  Stream<List<BaseArtisan>> observeArtisans(
+      {@required String category}) async* {
     yield artisanBox.values
+        // todo
         // .where((item) => item.categoryGroup.contains(category))
         .where((item) => item.id != prefsRepo.userId)
         .toList();
