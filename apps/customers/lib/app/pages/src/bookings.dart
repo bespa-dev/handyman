@@ -21,17 +21,20 @@ class BookingsPage extends StatefulWidget {
 class _BookingsPageState extends State<BookingsPage> {
   /// blocs
   final _bookingBloc = BookingBloc(repo: Injection.get());
+  final _updateBookingBloc = BookingBloc(repo: Injection.get());
   final _prefsBloc = PrefsBloc(repo: Injection.get());
 
   var _bookings = <BaseBooking>[];
 
   /// UI
   ThemeData _kTheme;
+  String _userId;
 
   @override
   void dispose() {
     _prefsBloc.close();
     _bookingBloc.close();
+    _updateBookingBloc.close();
     super.dispose();
   }
 
@@ -44,9 +47,11 @@ class _BookingsPageState extends State<BookingsPage> {
         ..add(PrefsEvent.getUserIdEvent())
         ..listen((state) {
           if (state is SuccessState<String>) {
-            var id = state.data;
-            if (id != null) {
-              _bookingBloc.add(BookingEvent.observeBookingForCustomer(id: id));
+            _userId = state.data;
+            if (mounted) setState(() {});
+            if (_userId != null) {
+              _bookingBloc
+                  .add(BookingEvent.observeBookingForCustomer(id: _userId));
             }
           }
         });
@@ -54,7 +59,7 @@ class _BookingsPageState extends State<BookingsPage> {
       _bookingBloc.listen((state) {
         if (state is SuccessState<Stream<List<BaseBooking>>>) {
           state.data.listen((event) async {
-            _bookings = event;
+            _bookings = event.where((element) => !element.isCancelled).toList();
             if (mounted) setState(() {});
           });
         } else if (state is SuccessState<void>) {
@@ -96,18 +101,15 @@ class _BookingsPageState extends State<BookingsPage> {
                     builder: (_) => BasicDialog(
                       message: 'Do you wish to cancel all job requests?',
                       onComplete: () {
-                        var updateBookings = <BaseBooking>[];
-
                         _bookings
                           ..forEach((element) {
                             element = element.copyWith(
-                                currentState: BookingState.pending().name());
-                            _bookingBloc.add(
+                                currentState: BookingState.cancelled().name());
+                            _updateBookingBloc.add(
                                 BookingEvent.updateBooking(booking: element));
-                            updateBookings.add(element);
-                          })
-                          ..replaceRange(0, _bookings.length, updateBookings);
-                        setState(() {});
+                          });
+                        _bookingBloc.add(BookingEvent.observeBookingForCustomer(
+                            id: _userId));
                       },
                     ),
                   ),
