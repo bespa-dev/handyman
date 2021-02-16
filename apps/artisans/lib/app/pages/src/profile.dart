@@ -78,7 +78,6 @@ class _ProfilePageState extends State<ProfilePage> {
       _categoryBloc.listen((state) {
         if (state is SuccessState<Stream<List<BaseServiceCategory>>>) {
           state.data.listen((event) {
-            logger.d(event);
             _categories = event;
             if (mounted) setState(() {});
           });
@@ -548,7 +547,7 @@ class _ProfilePageState extends State<ProfilePage> {
               _currentUser = _currentUser.copyWith(
                 category: item.key.value.toString(),
                 categoryGroup: item.title,
-                services: <String>[],
+                services: _currentUser.services ?? <String>[],
               );
               setState(() {});
 

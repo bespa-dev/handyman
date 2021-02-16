@@ -21,6 +21,25 @@ part 'booking.g.dart';
 @HiveType(typeId: 0)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class Booking extends BaseBooking {
+  Booking({
+    @required this.id,
+    @required this.createdAt,
+    @required this.customerId,
+    @required this.artisanId,
+    @required this.category,
+    @required this.imageUrl,
+    @required this.description,
+    @required this.dueDate,
+    @required this.currentState,
+    @required this.serviceType,
+    this.position,
+    this.cost = 0.0,
+    this.progress = 0.0,
+  });
+
+  factory Booking.fromJson(Map<String, dynamic> json) =>
+      _$BookingFromJson(json);
+
   @HiveField(0)
   @override
   final String customerId;
@@ -73,24 +92,8 @@ class Booking extends BaseBooking {
   @override
   final String serviceType;
 
-  Booking({
-    @required this.id,
-    @required this.createdAt,
-    @required this.customerId,
-    @required this.artisanId,
-    @required this.category,
-    @required this.imageUrl,
-    @required this.description,
-    @required this.dueDate,
-    @required this.currentState,
-    @required this.serviceType,
-    this.position,
-    this.cost = 0.0,
-    this.progress = 0.0,
-  });
-
   @override
-  get model => this;
+  Booking get model => this;
 
   @override
   bool get hasImage => imageUrl != null && imageUrl.isNotEmpty;
@@ -107,9 +110,6 @@ class Booking extends BaseBooking {
 
   @override
   bool get isCancelled => currentState == BookingState.cancelled().name();
-
-  factory Booking.fromJson(Map<String, dynamic> json) =>
-      _$BookingFromJson(json);
 
   @override
   Map<String, dynamic> toJson() => _$BookingToJson(this);
@@ -129,8 +129,8 @@ class Booking extends BaseBooking {
     String serviceType,
   }) =>
       Booking(
-        id: this.id,
-        createdAt: this.createdAt,
+        id: id,
+        createdAt: createdAt,
         customerId: customerId ?? this.customerId,
         artisanId: artisanId ?? this.artisanId,
         category: category ?? this.category,

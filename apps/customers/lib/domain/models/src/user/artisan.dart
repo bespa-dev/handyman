@@ -7,7 +7,7 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:lite/domain/models/models.dart' show BaseUser;
+import 'package:lite/domain/models/models.dart' show BaseArtisanService, BaseUser;
 
 /// base artisan class
 abstract class BaseArtisan extends BaseUser {
@@ -22,7 +22,7 @@ abstract class BaseArtisan extends BaseUser {
   double rating;
   List<String> requests;
   List<String> reports;
-  List<String> services;
+  List<BaseArtisanService> services;
   bool isAvailable;
   bool isApproved;
 
@@ -62,6 +62,6 @@ abstract class BaseArtisan extends BaseUser {
     int bookingsCount,
     List<String> requests,
     List<String> reports,
-    List<String> services,
+    List<BaseArtisanService> services,
   });
 }

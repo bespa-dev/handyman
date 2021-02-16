@@ -7,8 +7,11 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:lite/data/entities/entities.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/domain/repositories/repositories.dart';
@@ -18,10 +21,29 @@ import 'package:meta/meta.dart';
 
 class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   FirebaseRemoteDatasource(
-      {@required this.prefsRepo, @required this.firestore});
+      {@required this.prefsRepo, @required this.firestore}) {
+    _loadSample();
+  }
 
   final BasePreferenceRepository prefsRepo;
   final FirebaseFirestore firestore;
+
+  Future<void> _loadSample() async {
+    var categorySource = await rootBundle.loadString('assets/categories.json');
+    var decodedCategories = jsonDecode(categorySource) as List;
+    for (var json in decodedCategories) {
+      final item = ServiceCategory.fromJson(json);
+
+      try {
+        await firestore
+            .collection(RefUtils.kCategoryRef)
+            .doc(item.id)
+            .set(item.toJson(), SetOptions(merge: true));
+      } catch (e) {
+        logger.e(e);
+      }
+    }
+  }
 
   @override
   Stream<List<BaseBooking>> bookingsForCustomerAndArtisan(

@@ -48,7 +48,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   BaseArtisan _currentUser;
   var _servicesForCategory = const <BaseArtisanService>[];
   var _categories = const <BaseServiceCategory>[];
-  var _selectedServices = const <String>[];
+  var _selectedServices = const <BaseArtisanService>[];
   final _sheetController = SheetController();
   File _galleryImage;
   bool _isLoading = false;
@@ -581,7 +581,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
               _currentUser = _currentUser.copyWith(
                 category: item.key.value.toString(),
                 categoryGroup: item.title,
-                services: <String>[],
+                services: _currentUser.services ?? <BaseArtisanService>[],
               );
 
               _updateUserBloc

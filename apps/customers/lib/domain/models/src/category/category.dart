@@ -30,13 +30,17 @@ enum _ServiceCategoryGroup {
 abstract class BaseServiceCategory extends BaseModel {
   String name;
 
+  String parent;
+
   String avatar;
 
   String groupName; // one of ServiceCategoryGroup
 
   bool hasServices;
+
+  bool get hasParent;
 }
 
 extension CategoryX on ServiceCategoryGroup {
-  String name() => this.toString().replaceAll("()", "");
+  String name() => toString().replaceAll('()', '');
 }

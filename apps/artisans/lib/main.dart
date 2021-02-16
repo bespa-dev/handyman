@@ -20,6 +20,7 @@ import 'package:handyman/shared/shared.dart';
 /// flutter pub run flutter_launcher_icons:main
 /// flutter pub run flutter_launcher_name:main
 /// flutter packages pub run build_runner watch --delete-conflicting-outputs --verbose
+/// flutter packages pub run build_runner build --delete-conflicting-outputs --verbose
 /// Flutter channel used -> dev
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

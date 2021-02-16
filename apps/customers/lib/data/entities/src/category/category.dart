@@ -16,6 +16,19 @@ part 'category.g.dart';
 @HiveType(typeId: 1)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class ServiceCategory extends BaseServiceCategory {
+  ServiceCategory({
+    this.id,
+    this.createdAt,
+    this.name,
+    this.avatar,
+    this.groupName,
+    this.parent,
+    this.hasServices = false,
+  });
+
+  factory ServiceCategory.fromJson(Map<String, dynamic> json) =>
+      _$ServiceCategoryFromJson(json);
+
   @HiveField(0)
   @override
   final String name;
@@ -40,20 +53,15 @@ class ServiceCategory extends BaseServiceCategory {
   @override
   final bool hasServices;
 
-  ServiceCategory({
-    this.id,
-    this.createdAt,
-    this.name,
-    this.avatar,
-    this.groupName,
-    this.hasServices = false,
-  });
+  @HiveField(6)
+  @override
+  final String parent;
 
   @override
-  get model => this;
+  bool get hasParent => parent != null && parent.isNotEmpty;
 
-  factory ServiceCategory.fromJson(Map<String, dynamic> json) =>
-      _$ServiceCategoryFromJson(json);
+  @override
+  ServiceCategory get model => this;
 
   @override
   Map<String, dynamic> toJson() => _$ServiceCategoryToJson(this);

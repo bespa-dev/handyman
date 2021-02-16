@@ -106,7 +106,7 @@ Map<String, dynamic> _$BookingToJson(Booking instance) => <String, dynamic>{
       'category': instance.category,
       'image_url': instance.imageUrl,
       'description': instance.description,
-      'position': instance.position.toJson(),
+      'position': instance.position,
       'cost': instance.cost,
       'progress': instance.progress,
       'due_date': instance.dueDate,

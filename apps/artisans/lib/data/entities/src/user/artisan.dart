@@ -7,6 +7,7 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:handyman/data/entities/entities.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -14,10 +15,36 @@ import 'package:meta/meta.dart';
 
 part 'artisan.g.dart';
 
-/// fixme -> resolve cancelled, completed & ongoing bookings counts
 @HiveType(typeId: 5)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class Artisan extends BaseArtisan {
+  Artisan({
+    @required this.id,
+    @required this.createdAt,
+    @required this.startWorkingHours,
+    @required this.endWorkingHours,
+    @required this.name,
+    @required this.token,
+    @required this.phone,
+    @required this.avatar,
+    @required this.email,
+    this.businessId,
+    this.birthCert,
+    this.nationalId,
+    this.category,
+    this.categoryGroup,
+    this.rating = 2.5,
+    this.bookingsCount = 0,
+    this.requests = const [],
+    this.reports = const [],
+    this.services = const [],
+    this.isAvailable = false,
+    this.isApproved = false,
+  });
+
+  factory Artisan.fromJson(Map<String, dynamic> json) =>
+      _$ArtisanFromJson(json);
+
   @HiveField(0)
   @override
   final String businessId;
@@ -106,31 +133,7 @@ class Artisan extends BaseArtisan {
 
   @HiveField(21)
   @override
-  final List<String> services;
-
-  Artisan({
-    @required this.id,
-    @required this.createdAt,
-    @required this.startWorkingHours,
-    @required this.endWorkingHours,
-    @required this.name,
-    @required this.token,
-    @required this.phone,
-    @required this.avatar,
-    @required this.email,
-    this.businessId,
-    this.birthCert,
-    this.nationalId,
-    this.category,
-    this.categoryGroup,
-    this.rating = 2.5,
-    this.bookingsCount = 0,
-    this.requests = const [],
-    this.reports = const [],
-    this.services = const [],
-    this.isAvailable = false,
-    this.isApproved = false,
-  });
+  final List<BaseArtisanService> services;
 
   @override
   int get cancelledBookingsCount => 0;
@@ -159,9 +162,6 @@ class Artisan extends BaseArtisan {
   @override
   Map<String, dynamic> toJson() => _$ArtisanToJson(this);
 
-  factory Artisan.fromJson(Map<String, dynamic> json) =>
-      _$ArtisanFromJson(json);
-
   @override
   BaseArtisan copyWith({
     String name,
@@ -182,7 +182,7 @@ class Artisan extends BaseArtisan {
     int bookingsCount,
     List<String> requests,
     List<String> reports,
-    List<String> services,
+    List<BaseArtisanService> services,
   }) =>
       Artisan(
         name: name ??= this.name,
@@ -204,7 +204,7 @@ class Artisan extends BaseArtisan {
         requests: requests ??= this.requests,
         reports: reports ??= this.reports,
         services: services ??= this.services,
-        id: this.id,
-        createdAt: this.createdAt,
+        id: id,
+        createdAt: createdAt,
       );
 }
