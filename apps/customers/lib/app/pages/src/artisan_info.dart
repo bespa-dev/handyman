@@ -226,8 +226,9 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                                               'Bookings'),
                                           _buildArtisanMetaInfo(
                                               artisan.reportsCount, 'Reports'),
+                                          /// fixme -> artisan services
                                           _buildArtisanMetaInfo(
-                                              artisan.servicesCount,
+                                              0,
                                               'Services'),
                                         ],
                                       ),

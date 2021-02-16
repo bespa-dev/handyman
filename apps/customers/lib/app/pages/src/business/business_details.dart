@@ -250,7 +250,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (widget.artisan != null &&
+            /// fixme -> artisan services
+            /*if (widget.artisan != null &&
                 widget.artisan.services != null &&
                 widget.artisan.services.isNotEmpty) ...{
               Text(
@@ -289,7 +290,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                 padding: EdgeInsets.symmetric(horizontal: kSpacingX24),
                 child: emptyStateUI(context, message: 'No services registered'),
               ),
-            }
+            }*/
           ],
         ),
       );

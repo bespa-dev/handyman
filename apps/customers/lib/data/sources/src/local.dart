@@ -251,7 +251,6 @@ class HiveLocalDatasource extends BaseLocalDatasource {
                 item.isApproved &&
                 item.email.contains(query) ||
             item.category.contains(query) ||
-            (item.services != null && item.services.contains(query)) ||
             (item.reports != null && item.reports.contains(query)) ||
             item.name.contains(query))
         .sortByDescending<String>((r) => r.rating.toString())
@@ -317,11 +316,13 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   }
 
   @override
-  Future<List<BaseArtisanService>> getArtisanServices() async =>
+  Future<List<BaseArtisanService>> getArtisanServices(
+          {@required String id}) async =>
       serviceBox.values.toList();
 
   @override
   Future<void> updateArtisanService(
-          {@required BaseArtisanService artisanService}) async =>
+          {@required String id,
+          @required BaseArtisanService artisanService}) async =>
       await serviceBox.put(artisanService.id, artisanService);
 }

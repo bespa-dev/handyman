@@ -35,7 +35,6 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
       bookingsCount: fields[4] as int,
       requests: (fields[5] as List)?.cast<String>(),
       reports: (fields[6] as List)?.cast<String>(),
-      services: (fields[21] as List)?.cast<BaseArtisanService>(),
       isAvailable: fields[8] as bool,
       isApproved: fields[9] as bool,
     );
@@ -44,7 +43,7 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
   @override
   void write(BinaryWriter writer, Artisan obj) {
     writer
-      ..writeByte(22)
+      ..writeByte(21)
       ..writeByte(0)
       ..write(obj.businessId)
       ..writeByte(1)
@@ -85,8 +84,6 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
       ..write(obj.birthCert)
       ..writeByte(20)
       ..write(obj.nationalId)
-      ..writeByte(21)
-      ..write(obj.services)
       ..writeByte(7)
       ..write(obj.isCertified);
   }
@@ -112,50 +109,44 @@ Artisan _$ArtisanFromJson(Map<String, dynamic> json) {
     createdAt: json['created_at'] as String,
     startWorkingHours: json['start_working_hours'] as String,
     endWorkingHours: json['end_working_hours'] as String,
-    category: json['category'] as String,
-    categoryGroup: json['category_group'] as String,
     name: json['name'] as String,
     token: json['token'] as String,
     phone: json['phone'] as String,
     avatar: json['avatar'] as String,
     email: json['email'] as String,
-    birthCert: json['birth_cert'] as String,
     businessId: json['business_id'] as String,
+    birthCert: json['birth_cert'] as String,
     nationalId: json['national_id'] as String,
-    rating: json['rating'] as double,
+    category: json['category'] as String,
+    categoryGroup: json['category_group'] as String,
+    rating: (json['rating'] as num)?.toDouble(),
     bookingsCount: json['bookings_count'] as int,
-    requests: json['requests'] as List<dynamic>,
-    reports: json['reports'] as List<dynamic>,
-    services: json['services'] == null
-        ? <BaseArtisanService>[]
-        : (json['services'] as List<dynamic>)
-            .map((e) => ArtisanService.fromJson(e))
-            .toList(),
+    requests: (json['requests'] as List)?.map((e) => e as String)?.toList(),
+    reports: (json['reports'] as List)?.map((e) => e as String)?.toList(),
     isAvailable: json['available'] as bool,
     isApproved: json['approved'] as bool,
   );
 }
 
 Map<String, dynamic> _$ArtisanToJson(Artisan instance) => <String, dynamic>{
+      'business_id': instance.businessId,
+      'category': instance.category,
       'start_working_hours': instance.startWorkingHours,
       'end_working_hours': instance.endWorkingHours,
-      'category': instance.category,
-      'category_group': instance.categoryGroup,
-      'name': instance.name,
+      'bookings_count': instance.bookingsCount,
+      'requests': instance.requests,
+      'reports': instance.reports,
+      'available': instance.isAvailable,
+      'approved': instance.isApproved,
+      'id': instance.id,
+      'created_at': instance.createdAt,
       'token': instance.token,
       'phone': instance.phone,
       'avatar': instance.avatar,
       'email': instance.email,
-      'birth_cert': instance.birthCert,
-      'business_id': instance.businessId,
-      'national_id': instance.nationalId,
-      'id': instance.id,
-      'created_at': instance.createdAt,
+      'name': instance.name,
       'rating': instance.rating,
-      'bookings_count': instance.bookingsCount,
-      'requests': instance.requests,
-      'reports': instance.reports,
-      'services': instance.services,
-      'available': instance.isAvailable,
-      'approved': instance.isApproved,
+      'category_group': instance.categoryGroup,
+      'birth_cert': instance.birthCert,
+      'national_id': instance.nationalId,
     };

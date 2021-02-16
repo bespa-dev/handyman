@@ -98,4 +98,9 @@ abstract class BaseRemoteDatasource {
   Future<BaseBusiness> getBusinessById({@required String id});
 
   Stream<BaseBusiness> observeBusinessById({@required String id});
+
+  Future<List<BaseArtisanService>> getArtisanServices({@required String id});
+
+  Future<void> updateArtisanService(
+      {@required String id, @required BaseArtisanService artisanService});
 }

@@ -37,7 +37,6 @@ class Artisan extends BaseArtisan {
     this.bookingsCount = 0,
     this.requests = const [],
     this.reports = const [],
-    this.services = const [],
     this.isAvailable = false,
     this.isApproved = false,
   });
@@ -75,7 +74,7 @@ class Artisan extends BaseArtisan {
 
   @HiveField(7)
   @override
-  bool get isCertified => rating >= 3;
+  bool get isCertified => rating >= 2.5;
 
   @HiveField(8)
   @JsonKey(name: 'available')
@@ -131,10 +130,6 @@ class Artisan extends BaseArtisan {
   @override
   final String nationalId;
 
-  @HiveField(21)
-  @override
-  final List<BaseArtisanService> services;
-
   @override
   int get cancelledBookingsCount => 0;
 
@@ -143,9 +138,6 @@ class Artisan extends BaseArtisan {
 
   @override
   int get ongoingBookingsCount => 0;
-
-  @override
-  int get servicesCount => services?.length ?? 0;
 
   @override
   int get reportsCount => reports?.length ?? 0;
@@ -182,7 +174,6 @@ class Artisan extends BaseArtisan {
     int bookingsCount,
     List<String> requests,
     List<String> reports,
-    List<BaseArtisanService> services,
   }) =>
       Artisan(
         name: name ??= this.name,
@@ -203,7 +194,6 @@ class Artisan extends BaseArtisan {
         bookingsCount: bookingsCount ??= this.bookingsCount,
         requests: requests ??= this.requests,
         reports: reports ??= this.reports,
-        services: services ??= this.services,
         id: id,
         createdAt: createdAt,
       );

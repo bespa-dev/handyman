@@ -144,6 +144,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
         .collection(RefUtils.kArtisanRef)
         // todo
         // .where('category_group', isEqualTo: category)
+        .where('id', isNotEqualTo: prefsRepo.userId)
         .snapshots()
         .map((event) =>
             event.docs.map((e) => Artisan.fromJson(e.data())).toList());
@@ -310,5 +311,26 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
     yield* firestore.collection(RefUtils.kBusinessRef).doc(id).snapshots().map(
         (snapshot) =>
             snapshot.exists ? Business.fromJson(snapshot.data()) : null);
+  }
+
+  @override
+  Future<List<BaseArtisanService>> getArtisanServices(
+      {@required String id}) async {
+    var snapshot = await firestore
+        .collection('${RefUtils.kArtisanRef}/$id/${RefUtils.kServiceRef}')
+        .get();
+    return snapshot.size > 0
+        ? snapshot.docs.map((e) => ArtisanService.fromJson(e.data())).toList()
+        : [];
+  }
+
+  @override
+  Future<void> updateArtisanService(
+      {@required String id,
+      @required BaseArtisanService artisanService}) async {
+    await await firestore
+        .collection('${RefUtils.kArtisanRef}/$id/${RefUtils.kServiceRef}')
+        .doc(artisanService.id)
+        .set(artisanService.toJson(), SetOptions(merge: true));
   }
 }

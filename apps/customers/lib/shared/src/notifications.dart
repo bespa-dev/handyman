@@ -113,7 +113,7 @@ class LocalNotificationService {
           bookingId: data['id'],
         );
       } else if (data['type'] == 'conversation') {
-        var user = await datasource.getCustomerById(id: data['sender']);
+        var user = await datasource.getArtisanById(id: data['sender']);
         return navigator.pushConversationPage(
           recipientId: data['sender'],
           recipient: user,
@@ -185,35 +185,6 @@ class LocalNotificationService {
     await _requestPermissions();
     _configureDidReceiveLocalNotificationSubject();
     _configureSelectNotificationSubject();
-
-    /// fixme -> register notification channels
-    // await _pushNotification(
-    //   {
-    //     'title': kAppName,
-    //     'body': kLoremText,
-    //   },
-    //   channelId: conversationChannelId,
-    //   channelName: conversationChannelName,
-    //   channelDesc: conversationChannelDesc,
-    // );
-    // await _pushNotification(
-    //   {
-    //     'title': kAppName,
-    //     'body': kLoremText,
-    //   },
-    //   channelId: bookingChannelId,
-    //   channelName: bookingChannelName,
-    //   channelDesc: bookingChannelDesc,
-    // );
-    // await _pushNotification(
-    //   {
-    //     'title': kAppName,
-    //     'body': kLoremText,
-    //   },
-    //   channelId: tokenChannelId,
-    //   channelName: tokenChannelName,
-    //   channelDesc: tokenChannelDesc,
-    // );
   }
 
   Future<void> cancel({bool allNotifications = false, int id}) async {
