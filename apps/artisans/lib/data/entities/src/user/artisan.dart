@@ -7,7 +7,6 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:handyman/data/entities/entities.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -133,7 +132,7 @@ class Artisan extends BaseArtisan {
 
   @HiveField(21)
   @override
-  final List<BaseArtisanService> services;
+  final List<String> services;
 
   @override
   int get cancelledBookingsCount => 0;
@@ -182,7 +181,7 @@ class Artisan extends BaseArtisan {
     int bookingsCount,
     List<String> requests,
     List<String> reports,
-    List<BaseArtisanService> services,
+    List<String> services,
   }) =>
       Artisan(
         name: name ??= this.name,

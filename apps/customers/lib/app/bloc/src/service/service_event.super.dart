@@ -11,7 +11,7 @@ part of 'service_event.dart';
 abstract class ArtisanServiceEvent<T> extends Equatable {
   const ArtisanServiceEvent(this._type);
 
-  factory ArtisanServiceEvent.getArtisanServices({@required String category}) =
+  factory ArtisanServiceEvent.getArtisanServices({@required String id}) =
       GetArtisanServices<T>.create;
 
   factory ArtisanServiceEvent.getServiceById({@required String id}) =
@@ -125,36 +125,35 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
 
 @immutable
 abstract class GetArtisanServices<T> extends ArtisanServiceEvent<T> {
-  const GetArtisanServices({@required this.category})
+  const GetArtisanServices({@required this.id})
       : super(_ArtisanServiceEvent.GetArtisanServices);
 
-  factory GetArtisanServices.create({@required String category}) =
+  factory GetArtisanServices.create({@required String id}) =
       _GetArtisanServicesImpl<T>;
 
-  final String category;
+  final String id;
 
   /// Creates a copy of this GetArtisanServices but with the given fields
   /// replaced with the new values.
-  GetArtisanServices<T> copyWith({String category});
+  GetArtisanServices<T> copyWith({String id});
 }
 
 @immutable
 class _GetArtisanServicesImpl<T> extends GetArtisanServices<T> {
-  const _GetArtisanServicesImpl({@required this.category})
-      : super(category: category);
+  const _GetArtisanServicesImpl({@required this.id}) : super(id: id);
 
   @override
-  final String category;
+  final String id;
 
   @override
-  _GetArtisanServicesImpl<T> copyWith({Object category = superEnum}) =>
+  _GetArtisanServicesImpl<T> copyWith({Object id = superEnum}) =>
       _GetArtisanServicesImpl(
-        category: category == superEnum ? this.category : category as String,
+        id: id == superEnum ? this.id : id as String,
       );
   @override
-  String toString() => 'GetArtisanServices(category: ${this.category})';
+  String toString() => 'GetArtisanServices(id: ${this.id})';
   @override
-  List<Object> get props => [category];
+  List<Object> get props => [id];
 }
 
 @immutable

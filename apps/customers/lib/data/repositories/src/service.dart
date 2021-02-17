@@ -11,11 +11,22 @@ class ArtisanServiceRepositoryImpl extends BaseArtisanServiceRepository {
   }) : super(local, remote);
 
   @override
-  Future<List<BaseArtisanService>> getArtisanServices() async =>
-      await local.getArtisanServices();
+  Future<List<BaseArtisanService>> getArtisanServices(
+      {@required String id}) async {
+    var services = await remote.getArtisanServices(id: id);
+    if (services.isNotEmpty) {
+      for (var service in services) {
+        await local.updateArtisanService(id: id, artisanService: service);
+      }
+    }
+    return await local.getArtisanServices(id: id);
+  }
 
   @override
   Future<void> updateArtisanService(
-          {@required BaseArtisanService artisanService}) async =>
-      await local.updateArtisanService(artisanService: artisanService);
+          {@required BaseArtisanService artisanService,
+          @required String id}) async {
+    await remote.updateArtisanService(id: id, artisanService: artisanService);
+    await local.updateArtisanService(artisanService: artisanService, id: id);
+  }
 }

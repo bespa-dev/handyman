@@ -7,11 +7,11 @@ import 'package:meta/meta.dart';
 import 'service_event.dart';
 
 class ArtisanServiceBloc extends BaseBloc<ArtisanServiceEvent> {
-  final BaseArtisanServiceRepository _repo;
-
   ArtisanServiceBloc({@required BaseArtisanServiceRepository repo})
       : assert(repo != null),
         _repo = repo;
+
+  final BaseArtisanServiceRepository _repo;
 
   @override
   Stream<BlocState> mapEventToState(ArtisanServiceEvent event) async* {
@@ -27,34 +27,37 @@ class ArtisanServiceBloc extends BaseBloc<ArtisanServiceEvent> {
     yield BlocState.loadingState();
 
     if (event is GetArtisanServices) {
-      var result =
-          await GetArtisanServicesUseCase(_repo).execute(event.category);
-      if (result is UseCaseResultSuccess<List<BaseArtisanService>>)
+      var result = await GetArtisanServicesUseCase(_repo)
+          .execute(GetAllArtisanServicesUseCaseParams(id: event.id));
+      if (result is UseCaseResultSuccess<List<BaseArtisanService>>) {
         yield BlocState<List<BaseArtisanService>>.successState(
             data: result.value);
-      else
-        yield BlocState.errorState(failure: "Failed to load services");
+      } else {
+        yield BlocState.errorState(failure: 'Failed to load services');
+      }
     } else if (event is GetAllArtisanServices) {
-      var result =
-      await GetAllArtisanServicesUseCase(_repo).execute(null);
-      if (result is UseCaseResultSuccess<List<BaseArtisanService>>)
+      var result = await GetAllArtisanServicesUseCase(_repo).execute(null);
+      if (result is UseCaseResultSuccess<List<BaseArtisanService>>) {
         yield BlocState<List<BaseArtisanService>>.successState(
             data: result.value);
-      else
-        yield BlocState.errorState(failure: "Failed to load services");
+      } else {
+        yield BlocState.errorState(failure: 'Failed to load services');
+      }
     } else if (event is GetServiceById) {
       var result = await GetServiceByIdUseCase(_repo).execute(event.id);
-      if (result is UseCaseResultSuccess<BaseArtisanService>)
+      if (result is UseCaseResultSuccess<BaseArtisanService>) {
         yield BlocState<BaseArtisanService>.successState(data: result.value);
-      else
-        yield BlocState.errorState(failure: "Failed to load services");
+      } else {
+        yield BlocState.errorState(failure: 'Failed to load services');
+      }
     } else if (event is UpdateArtisanService) {
       var result =
-          await UpdateArtisanServiceUseCase(_repo).execute(event.service);
-      if (result is UseCaseResultSuccess)
+      await UpdateArtisanServiceUseCase(_repo).execute(event.service);
+      if (result is UseCaseResultSuccess) {
         yield BlocState.successState();
-      else
-        yield BlocState.errorState(failure: "Failed to update service");
+      } else {
+        yield BlocState.errorState(failure: 'Failed to update service');
+      }
     }
   }
 }

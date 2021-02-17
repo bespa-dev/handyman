@@ -154,10 +154,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         CategoryEvent.observeAllCategories(
                             group: ServiceCategoryGroup.featured()),
                       );
-                      _serviceBloc.add(
-                        ArtisanServiceEvent.getArtisanServices(
-                            category: _currentUser.category),
-                      );
+                      _serviceBloc.add(ArtisanServiceEvent.getArtisanServices(
+                          id: _currentUser.id));
                     }
                   }
                   return SafeArea(
@@ -554,9 +552,7 @@ class _ProfilePageState extends State<ProfilePage> {
               _updateUserBloc
                   .add(UserEvent.updateUserEvent(user: _currentUser));
               _serviceBloc.add(
-                ArtisanServiceEvent.getArtisanServices(
-                  category: item.key.toString(),
-                ),
+                ArtisanServiceEvent.getArtisanServices(id: _currentUser.id),
               );
             }
           },

@@ -1,5 +1,6 @@
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/domain/repositories/repositories.dart';
+import 'package:meta/meta.dart';
 
 import 'usecase/result.dart';
 import 'usecase/usecase.dart';
@@ -21,19 +22,17 @@ class GetAllArtisanServicesUseCase
   }
 }
 
-class GetArtisanServicesUseCase
-    extends UseCase<List<BaseArtisanService>, String> {
+class GetArtisanServicesUseCase extends UseCase<List<BaseArtisanService>,
+    GetAllArtisanServicesUseCaseParams> {
   const GetArtisanServicesUseCase(this._repo);
 
   final BaseArtisanServiceRepository _repo;
 
   @override
   Future<UseCaseResult<List<BaseArtisanService>>> execute(
-      String category) async {
+      GetAllArtisanServicesUseCaseParams params) async {
     try {
-      var results = (await _repo.getArtisanServices())
-          .where((item) => item.category == category)
-          .toList();
+      var results = await _repo.getArtisanServices(id: params.id);
       return UseCaseResult<List<BaseArtisanService>>.success(results);
     } on Exception {
       return UseCaseResult.error();
@@ -73,4 +72,10 @@ class UpdateArtisanServiceUseCase
       return UseCaseResult.error();
     }
   }
+}
+
+class GetAllArtisanServicesUseCaseParams {
+  const GetAllArtisanServicesUseCaseParams({@required this.id});
+
+  final String id;
 }

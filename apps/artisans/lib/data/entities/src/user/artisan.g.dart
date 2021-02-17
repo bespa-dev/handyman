@@ -35,6 +35,7 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
       bookingsCount: fields[4] as int,
       requests: (fields[5] as List)?.cast<String>(),
       reports: (fields[6] as List)?.cast<String>(),
+      services: (fields[21] as List)?.cast<String>(),
       isAvailable: fields[8] as bool,
       isApproved: fields[9] as bool,
     );
@@ -43,7 +44,7 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
   @override
   void write(BinaryWriter writer, Artisan obj) {
     writer
-      ..writeByte(21)
+      ..writeByte(22)
       ..writeByte(0)
       ..write(obj.businessId)
       ..writeByte(1)
@@ -84,6 +85,8 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
       ..write(obj.birthCert)
       ..writeByte(20)
       ..write(obj.nationalId)
+      ..writeByte(21)
+      ..write(obj.services)
       ..writeByte(7)
       ..write(obj.isCertified);
   }
@@ -94,9 +97,9 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is ArtisanAdapter &&
-              runtimeType == other.runtimeType &&
-              typeId == other.typeId;
+      other is ArtisanAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }
 
 // **************************************************************************
@@ -123,30 +126,32 @@ Artisan _$ArtisanFromJson(Map<String, dynamic> json) {
     bookingsCount: json['bookings_count'] as int,
     requests: (json['requests'] as List)?.map((e) => e as String)?.toList(),
     reports: (json['reports'] as List)?.map((e) => e as String)?.toList(),
+    services: (json['services'] as List)?.map((e) => e as String)?.toList(),
     isAvailable: json['available'] as bool,
     isApproved: json['approved'] as bool,
   );
 }
 
 Map<String, dynamic> _$ArtisanToJson(Artisan instance) => <String, dynamic>{
-  'business_id': instance.businessId,
-  'category': instance.category,
-  'start_working_hours': instance.startWorkingHours,
-  'end_working_hours': instance.endWorkingHours,
-  'bookings_count': instance.bookingsCount,
-  'requests': instance.requests,
-  'reports': instance.reports,
-  'available': instance.isAvailable,
-  'approved': instance.isApproved,
-  'id': instance.id,
-  'created_at': instance.createdAt,
-  'token': instance.token,
-  'phone': instance.phone,
-  'avatar': instance.avatar,
-  'email': instance.email,
-  'name': instance.name,
-  'rating': instance.rating,
-  'category_group': instance.categoryGroup,
-  'birth_cert': instance.birthCert,
-  'national_id': instance.nationalId,
-};
+      'business_id': instance.businessId,
+      'category': instance.category,
+      'start_working_hours': instance.startWorkingHours,
+      'end_working_hours': instance.endWorkingHours,
+      'bookings_count': instance.bookingsCount,
+      'requests': instance.requests,
+      'reports': instance.reports,
+      'available': instance.isAvailable,
+      'approved': instance.isApproved,
+      'id': instance.id,
+      'created_at': instance.createdAt,
+      'token': instance.token,
+      'phone': instance.phone,
+      'avatar': instance.avatar,
+      'email': instance.email,
+      'name': instance.name,
+      'rating': instance.rating,
+      'category_group': instance.categoryGroup,
+      'birth_cert': instance.birthCert,
+      'national_id': instance.nationalId,
+      'services': instance.services,
+    };

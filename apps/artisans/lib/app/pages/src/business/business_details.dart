@@ -48,7 +48,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   BaseArtisan _currentUser;
   var _servicesForCategory = const <BaseArtisanService>[];
   var _categories = const <BaseServiceCategory>[];
-  var _selectedServices = const <BaseArtisanService>[];
+  var _selectedServices = const <String>[];
   final _sheetController = SheetController();
   File _galleryImage;
   bool _isLoading = false;
@@ -136,8 +136,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
 
               /// get services for category
               if (user.category != null) {
-                _serviceBloc.add(ArtisanServiceEvent.getArtisanServices(
-                    category: user.category));
+                _serviceBloc
+                    .add(ArtisanServiceEvent.getArtisanServices(id: user.id));
               } else {
                 await showCustomDialog(
                   context: context,
@@ -365,7 +365,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
               ..._currentUser.services
                   .map(
                     (service) => ArtisanServiceListTile(
-                      service: service,
+                      service: /*service*/ null, // fixme -> show service
                       showLeadingIcon: false,
                       selected: false,
                       showPrice: true,
@@ -584,10 +584,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
               _updateUserBloc
                   .add(UserEvent.updateUserEvent(user: _currentUser));
               _serviceBloc.add(
-                ArtisanServiceEvent.getArtisanServices(
-                  category: item.key.toString(),
-                ),
-              );
+                  ArtisanServiceEvent.getArtisanServices(id: _currentUser.id));
             }
           },
           items: _categories.isNotEmpty

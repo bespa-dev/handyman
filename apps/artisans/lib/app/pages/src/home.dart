@@ -118,8 +118,7 @@ class _HomePageState extends State<HomePage> {
               _currentUser.name == null ||
               _currentUser.phone == null;
           _showApprovalState = !_currentUser.isApproved;
-          _showServicesRegisteredState = _currentUser.services.isEmpty ||
-              _currentUser.category == null ||
+          _showServicesRegisteredState = _currentUser.category == null ||
               _currentUser.categoryGroup == null;
           _dismissAllNotifications =
               !_showApprovalState || !_showServicesRegisteredState;

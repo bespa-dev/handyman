@@ -27,8 +27,8 @@ class ArtisanServiceBloc extends BaseBloc<ArtisanServiceEvent> {
     yield BlocState.loadingState();
 
     if (event is GetArtisanServices) {
-      var result =
-          await GetArtisanServicesUseCase(_repo).execute(event.category);
+      var result = await GetArtisanServicesUseCase(_repo)
+          .execute(GetAllArtisanServicesUseCaseParams(id: event.id));
       if (result is UseCaseResultSuccess<List<BaseArtisanService>>) {
         yield BlocState<List<BaseArtisanService>>.successState(
             data: result.value);

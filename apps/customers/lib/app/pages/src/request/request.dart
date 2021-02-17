@@ -214,8 +214,7 @@ class _RequestPageState extends State<RequestPage> {
 
       /// get services for category
       _serviceBloc
-        ..add(ArtisanServiceEvent.getArtisanServices(
-            category: widget.artisan.category))
+        ..add(ArtisanServiceEvent.getArtisanServices(id: widget.artisan.id))
         ..listen((state) {
           if (state is SuccessState<List<BaseArtisanService>>) {
             _servicesForCategory = state.data;
@@ -407,10 +406,8 @@ class _RequestPageState extends State<RequestPage> {
                 focusNode: _focusNode,
                 onQueryChange: (query) {
                   if (query.isEmpty) {
-                    _serviceBloc.add(
-                      ArtisanServiceEvent.getArtisanServices(
-                          category: widget.artisan.category),
-                    );
+                    _serviceBloc.add(ArtisanServiceEvent.getArtisanServices(
+                        id: widget.artisan.id));
                   } else {
                     _servicesForCategory = _servicesForCategory
                         .where((element) => element.name.contains(query))
@@ -423,7 +420,7 @@ class _RequestPageState extends State<RequestPage> {
                   _focusNode.unfocus();
                   _serviceBloc.add(
                     ArtisanServiceEvent.getArtisanServices(
-                        category: widget.artisan.category),
+                        id: widget.artisan.id)
                   );
                   _servicesForCategory = _servicesForCategory
                       .where((element) => element.name.contains(query))

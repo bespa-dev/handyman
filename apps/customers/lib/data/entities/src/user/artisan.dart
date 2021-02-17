@@ -7,10 +7,9 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'package:lite/domain/models/models.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:lite/data/entities/entities.dart';
-import 'package:lite/domain/models/models.dart';
 import 'package:meta/meta.dart';
 
 part 'artisan.g.dart';
@@ -37,6 +36,7 @@ class Artisan extends BaseArtisan {
     this.bookingsCount = 0,
     this.requests = const [],
     this.reports = const [],
+    this.services = const [],
     this.isAvailable = false,
     this.isApproved = false,
   });
@@ -74,7 +74,7 @@ class Artisan extends BaseArtisan {
 
   @HiveField(7)
   @override
-  bool get isCertified => rating >= 2.5;
+  bool get isCertified => rating >= 3;
 
   @HiveField(8)
   @JsonKey(name: 'available')
@@ -130,6 +130,10 @@ class Artisan extends BaseArtisan {
   @override
   final String nationalId;
 
+  @HiveField(21)
+  @override
+  final List<String> services;
+
   @override
   int get cancelledBookingsCount => 0;
 
@@ -138,6 +142,9 @@ class Artisan extends BaseArtisan {
 
   @override
   int get ongoingBookingsCount => 0;
+
+  @override
+  int get servicesCount => services?.length ?? 0;
 
   @override
   int get reportsCount => reports?.length ?? 0;
@@ -174,6 +181,7 @@ class Artisan extends BaseArtisan {
     int bookingsCount,
     List<String> requests,
     List<String> reports,
+    List<String> services,
   }) =>
       Artisan(
         name: name ??= this.name,
@@ -194,6 +202,7 @@ class Artisan extends BaseArtisan {
         bookingsCount: bookingsCount ??= this.bookingsCount,
         requests: requests ??= this.requests,
         reports: reports ??= this.reports,
+        services: services ??= this.services,
         id: id,
         createdAt: createdAt,
       );

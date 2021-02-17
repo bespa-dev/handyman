@@ -9,8 +9,8 @@ abstract class BaseArtisanServiceRepository extends BaseRepository {
       BaseLocalDatasource local, BaseRemoteDatasource remote)
       : super(local, remote);
 
-  Future<List<BaseArtisanService>> getArtisanServices();
+  Future<List<BaseArtisanService>> getArtisanServices({@required String id});
 
   Future<void> updateArtisanService(
-      {@required BaseArtisanService artisanService});
+      {@required String id, @required BaseArtisanService artisanService});
 }

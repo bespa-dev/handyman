@@ -95,7 +95,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
       /// get services for category
       if (widget.artisan.category != null) {
         _serviceBloc.add(ArtisanServiceEvent.getArtisanServices(
-            category: widget.artisan.category));
+            id: widget.artisan.id));
       }
 
       /// observe list of services for category

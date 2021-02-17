@@ -1,14 +1,15 @@
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/domain/repositories/repositories.dart';
+import 'package:meta/meta.dart';
 
 import 'usecase/result.dart';
 import 'usecase/usecase.dart';
 
 class GetAllArtisanServicesUseCase
     extends NoParamsUseCase<List<BaseArtisanService>> {
-  final BaseArtisanServiceRepository _repo;
-
   const GetAllArtisanServicesUseCase(this._repo);
+
+  final BaseArtisanServiceRepository _repo;
 
   @override
   Future<UseCaseResult<List<BaseArtisanService>>> execute(_) async {
@@ -21,19 +22,17 @@ class GetAllArtisanServicesUseCase
   }
 }
 
-class GetArtisanServicesUseCase
-    extends UseCase<List<BaseArtisanService>, String> {
-  final BaseArtisanServiceRepository _repo;
-
+class GetArtisanServicesUseCase extends UseCase<List<BaseArtisanService>,
+    GetAllArtisanServicesUseCaseParams> {
   const GetArtisanServicesUseCase(this._repo);
+
+  final BaseArtisanServiceRepository _repo;
 
   @override
   Future<UseCaseResult<List<BaseArtisanService>>> execute(
-      String category) async {
+      GetAllArtisanServicesUseCaseParams params) async {
     try {
-      var results = (await _repo.getArtisanServices())
-          .where((item) => item.category == category)
-          .toList();
+      var results = await _repo.getArtisanServices(id: params.id);
       return UseCaseResult<List<BaseArtisanService>>.success(results);
     } on Exception {
       return UseCaseResult.error();
@@ -42,9 +41,9 @@ class GetArtisanServicesUseCase
 }
 
 class GetServiceByIdUseCase extends UseCase<BaseArtisanService, String> {
-  final BaseArtisanServiceRepository _repo;
-
   const GetServiceByIdUseCase(this._repo);
+
+  final BaseArtisanServiceRepository _repo;
 
   @override
   Future<UseCaseResult<BaseArtisanService>> execute(String id) async {
@@ -60,9 +59,9 @@ class GetServiceByIdUseCase extends UseCase<BaseArtisanService, String> {
 
 class UpdateArtisanServiceUseCase
     extends CompletableUseCase<BaseArtisanService> {
-  final BaseArtisanServiceRepository _repo;
-
   UpdateArtisanServiceUseCase(this._repo);
+
+  final BaseArtisanServiceRepository _repo;
 
   @override
   Future<UseCaseResult<void>> execute(BaseArtisanService service) async {
@@ -73,4 +72,10 @@ class UpdateArtisanServiceUseCase
       return UseCaseResult.error();
     }
   }
+}
+
+class GetAllArtisanServicesUseCaseParams {
+  const GetAllArtisanServicesUseCaseParams({@required this.id});
+
+  final String id;
 }

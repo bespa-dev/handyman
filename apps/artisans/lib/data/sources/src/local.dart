@@ -305,11 +305,22 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   }
 
   @override
-  Future<List<BaseArtisanService>> getArtisanServices() async =>
-      serviceBox.values.toList();
+  Future<List<BaseArtisanService>> getArtisanServices(
+      {@required String id}) async {
+    var artisan = await getArtisanById(id: id);
+    var services = <BaseArtisanService>[];
+    if (artisan?.services != null && artisan.services.isNotEmpty) {
+      artisan.services.forEach((serviceId) async {
+        var service = await serviceBox.get(serviceId);
+        if (service != null) services.add(service);
+      });
+    }
+    return services;
+  }
 
   @override
   Future<void> updateArtisanService(
-          {@required BaseArtisanService artisanService}) async =>
+          {@required String id,
+          @required BaseArtisanService artisanService}) async =>
       await serviceBox.put(artisanService.id, artisanService);
 }
