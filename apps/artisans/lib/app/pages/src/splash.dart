@@ -217,8 +217,8 @@ class _SplashPageState extends State<SplashPage>
                                     .pushAndRemoveUntil(
                                         Routes.homePage, (route) => false),
                                 label: 'Explore',
-                                color: kTheme.colorScheme.secondary,
-                                textColor: kTheme.colorScheme.onSecondary,
+                                color: kTheme.colorScheme.onBackground,
+                                textColor: kTheme.colorScheme.background,
                               ),
                             )
                           } else ...{

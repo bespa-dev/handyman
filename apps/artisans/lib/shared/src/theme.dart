@@ -29,7 +29,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(kSpacingX8),
+          borderRadius: BorderRadius.circular(kSpacingX20),
         ),
         backgroundColor: kSecondaryLightColor,
         foregroundColor: kWhiteColor,
@@ -68,6 +68,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
         secondary: kSecondaryLightColor,
         surface: kWhiteColor,
         primary: kPrimaryColor,
+        onSecondary: kWhiteColor,
       ),
       backgroundColor: kBackgroundLightColor,
       iconTheme: IconThemeData(color: kPrimaryIconLightColor),
