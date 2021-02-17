@@ -113,26 +113,15 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
         });
 
       /// observe business upload state
-      _businessBloc.listen((state) {
+      _businessBloc.listen((state) async {
         if (state is LoadingState) {
           _isLoading = true;
           if (mounted) setState(() {});
-        } else if (state is ErrorState) {
-          _isLoading = false;
-          if (mounted) {
-            setState(() {});
-            showCustomDialog(
-              context: context,
-              builder: (_) => InfoDialog(
-                message: Text('Failed to save business information'),
-              ),
-            );
-          }
         } else if (state is SuccessState) {
           _isLoading = false;
           if (mounted) {
             setState(() {});
-            showCustomDialog(
+            await showCustomDialog(
               context: context,
               builder: (_) => InfoDialog(
                 message: Text('Uploaded business profile completed'),
@@ -149,9 +138,8 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                   ),
                 ),
               );
-            } else {
-              context.navigator.pop();
             }
+            context.navigator.pop();
           }
         }
       });
@@ -384,7 +372,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                             onTap: _pickDocument,
                             title: Text('Upload Business Document'),
                             subtitle: Text(
-                              _busFileName == null
+                              _busFileName == null || _hasResetFields
                                   ? 'This is required for approval (Only PDFs supported)'
                                   : 'File uploaded',
                             ),
@@ -396,47 +384,41 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                           ),
                         ),
 
-                        if (_hasResetFields ||
-                            _currentUser.birthCert == null) ...{
-                          Card(
-                            child: ListTile(
-                              onTap: () => _pickDocument(birthCert: true),
-                              title: Text('Upload Birth Certificate'),
-                              subtitle: Text(
-                                _birthCertFileName == null
-                                    ? 'This is required for approval (Only PDFs supported)'
-                                    : 'File uploaded',
-                              ),
-                              dense: true,
-                              trailing: Icon(
-                                _birthCertFileName == null
-                                    ? kArrowIcon
-                                    : kDoneIcon,
-                                color: kTheme.colorScheme.onBackground,
-                              ),
+                        Card(
+                          child: ListTile(
+                            onTap: () => _pickDocument(birthCert: true),
+                            title: Text('Upload Birth Certificate'),
+                            subtitle: Text(
+                              _birthCertFileName == null || _hasResetFields
+                                  ? 'This is required for approval (Only PDFs supported)'
+                                  : 'File uploaded',
+                            ),
+                            dense: true,
+                            trailing: Icon(
+                              _birthCertFileName == null
+                                  ? kArrowIcon
+                                  : kDoneIcon,
+                              color: kTheme.colorScheme.onBackground,
                             ),
                           ),
-                        },
+                        ),
 
-                        if (_hasResetFields ||
-                            _currentUser.nationalId == null) ...{
-                          Card(
-                            child: ListTile(
-                              onTap: () => _pickDocument(nationalId: true),
-                              title: Text('Upload National ID'),
-                              subtitle: Text(
-                                _idFileName == null
-                                    ? 'This is required for approval (Only PDFs supported)'
-                                    : 'File uploaded',
-                              ),
-                              dense: true,
-                              trailing: Icon(
-                                _idFileName == null ? kArrowIcon : kDoneIcon,
-                                color: kTheme.colorScheme.onBackground,
-                              ),
+                        Card(
+                          child: ListTile(
+                            onTap: () => _pickDocument(nationalId: true),
+                            title: Text('Upload National ID'),
+                            subtitle: Text(
+                              _idFileName == null || _hasResetFields
+                                  ? 'This is required for approval (Only PDFs supported)'
+                                  : 'File uploaded',
+                            ),
+                            dense: true,
+                            trailing: Icon(
+                              _idFileName == null ? kArrowIcon : kDoneIcon,
+                              color: kTheme.colorScheme.onBackground,
                             ),
                           ),
-                        },
+                        ),
 
                         /// business location
                         Card(
@@ -508,14 +490,17 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                       /// save business
                       if (widget.business == null) {
                         if (_locationName != null &&
-                            _businessDocument != null &&
-                            _docUrl != null) {
+                            _busFileName != null &&
+                            _birthCertFileName != null &&
+                            _idFileName != null) {
                           _businessBloc.add(
                             BusinessEvent.uploadBusiness(
                               docUrl: _docUrl,
                               name: _nameController.text?.trim(),
                               artisan: _userId,
                               location: _locationName,
+                              nationalId: _idFileName,
+                              birthCert: _birthCertFileName,
                             ),
                           );
                         } else {

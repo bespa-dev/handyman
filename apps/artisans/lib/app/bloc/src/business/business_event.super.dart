@@ -27,7 +27,9 @@ abstract class BusinessEvent<T> extends Equatable {
       {@required String docUrl,
       @required String name,
       @required String artisan,
-      @required String location}) = UploadBusiness<T>.create;
+      @required String location,
+      String nationalId,
+      String birthCert}) = UploadBusiness<T>.create;
 
   final _BusinessEvent _type;
 
@@ -283,14 +285,18 @@ abstract class UploadBusiness<T> extends BusinessEvent<T> {
       {@required this.docUrl,
       @required this.name,
       @required this.artisan,
-      @required this.location})
+      @required this.location,
+      this.nationalId,
+      this.birthCert})
       : super(_BusinessEvent.UploadBusiness);
 
   factory UploadBusiness.create(
       {@required String docUrl,
       @required String name,
       @required String artisan,
-      @required String location}) = _UploadBusinessImpl<T>;
+      @required String location,
+      String nationalId,
+      String birthCert}) = _UploadBusinessImpl<T>;
 
   final String docUrl;
 
@@ -300,10 +306,19 @@ abstract class UploadBusiness<T> extends BusinessEvent<T> {
 
   final String location;
 
+  final String nationalId;
+
+  final String birthCert;
+
   /// Creates a copy of this UploadBusiness but with the given fields
   /// replaced with the new values.
   UploadBusiness<T> copyWith(
-      {String docUrl, String name, String artisan, String location});
+      {String docUrl,
+      String name,
+      String artisan,
+      String location,
+      String nationalId,
+      String birthCert});
 }
 
 @immutable
@@ -312,8 +327,16 @@ class _UploadBusinessImpl<T> extends UploadBusiness<T> {
       {@required this.docUrl,
       @required this.name,
       @required this.artisan,
-      @required this.location})
-      : super(docUrl: docUrl, name: name, artisan: artisan, location: location);
+      @required this.location,
+      this.nationalId,
+      this.birthCert})
+      : super(
+            docUrl: docUrl,
+            name: name,
+            artisan: artisan,
+            location: location,
+            nationalId: nationalId,
+            birthCert: birthCert);
 
   @override
   final String docUrl;
@@ -328,20 +351,33 @@ class _UploadBusinessImpl<T> extends UploadBusiness<T> {
   final String location;
 
   @override
+  final String nationalId;
+
+  @override
+  final String birthCert;
+
+  @override
   _UploadBusinessImpl<T> copyWith(
           {Object docUrl = superEnum,
           Object name = superEnum,
           Object artisan = superEnum,
-          Object location = superEnum}) =>
+          Object location = superEnum,
+          Object nationalId = superEnum,
+          Object birthCert = superEnum}) =>
       _UploadBusinessImpl(
         docUrl: docUrl == superEnum ? this.docUrl : docUrl as String,
         name: name == superEnum ? this.name : name as String,
         artisan: artisan == superEnum ? this.artisan : artisan as String,
         location: location == superEnum ? this.location : location as String,
+        nationalId:
+            nationalId == superEnum ? this.nationalId : nationalId as String,
+        birthCert:
+            birthCert == superEnum ? this.birthCert : birthCert as String,
       );
   @override
   String toString() =>
-      'UploadBusiness(docUrl: ${this.docUrl}, name: ${this.name}, artisan: ${this.artisan}, location: ${this.location})';
+      'UploadBusiness(docUrl: ${this.docUrl}, name: ${this.name}, artisan: ${this.artisan}, location: ${this.location}, nationalId: ${this.nationalId}, birthCert: ${this.birthCert})';
   @override
-  List<Object> get props => [docUrl, name, artisan, location];
+  List<Object> get props =>
+      [docUrl, name, artisan, location, nationalId, birthCert];
 }

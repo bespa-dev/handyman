@@ -29,7 +29,7 @@ abstract class AuthEvent extends Equatable {
 
   factory AuthEvent.observeMessageEvent() = ObserveMessageEvent.create;
 
-  factory AuthEvent.observeAuthStatetEvent() = ObserveAuthStatetEvent.create;
+  factory AuthEvent.observeAuthStateEvent() = ObserveAuthStatetEvent.create;
 
   final _AuthEvent _type;
 

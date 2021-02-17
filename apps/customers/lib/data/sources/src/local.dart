@@ -181,8 +181,9 @@ class HiveLocalDatasource extends BaseLocalDatasource {
   Stream<List<BaseArtisan>> observeArtisans(
       {@required String category}) async* {
     yield artisanBox.values
-        // todo
-        // .where((item) => item.categoryGroup.contains(category))
+        .where((item) => item.category == category)
+        .where((item) => item.isAvailable)
+        .where((item) => item.isApproved)
         .where((item) => item.id != prefsRepo.userId)
         .toList();
   }

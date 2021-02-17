@@ -92,7 +92,6 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
         ..listen((state) {
           if (state is SuccessState<Stream<List<BaseServiceCategory>>>) {
             state.data.listen((event) {
-              logger.d(event);
               _categories = event;
               if (mounted) setState(() {});
             });
@@ -363,18 +362,16 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                 ),
               ),
               SizedBox(height: kSpacingX24),
-              ..._currentUser.services.map(
-                (id) {
-                  var service = _servicesForCategory
-                      .firstWhere((element) => element.id == id);
-                  return ArtisanServiceListTile(
-                    service: service,
-                    showLeadingIcon: false,
-                    selected: false,
-                    showPrice: true,
-                  );
-                },
-              ).toList(),
+              ..._currentUser.services
+                  .map(
+                    (service) => ArtisanServiceListTile(
+                      service: service,
+                      showLeadingIcon: false,
+                      selected: false,
+                      showPrice: true,
+                    ),
+                  )
+                  .toList(),
               SizedBox(height: SizeConfig.screenHeight * 0.1),
             } else ...{
               Container(

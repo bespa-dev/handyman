@@ -21,6 +21,7 @@ import 'package:uuid/uuid.dart';
 
 class StorageRepositoryImpl implements BaseStorageRepository {
   StorageRepositoryImpl({@required this.bucket});
+
   final Reference bucket;
 
   final _onStorageUploadResponseController =
@@ -97,7 +98,8 @@ class StorageRepositoryImpl implements BaseStorageRepository {
         // return a file for upload from path
         return File(filePath);
       }
-    } on Exception {
+    } on Exception catch (e) {
+      logger.e(e);
       return null;
     }
   }

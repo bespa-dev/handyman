@@ -139,15 +139,15 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   @override
   Stream<List<BaseArtisan>> observeArtisans(
       {@required String category}) async* {
-    logger.d(category);
     yield* firestore
         .collection(RefUtils.kArtisanRef)
-        // todo
-        // .where('category_group', isEqualTo: category)
+        .where('category', isEqualTo: category)
         .where('id', isNotEqualTo: prefsRepo.userId)
         .snapshots()
-        .map((event) =>
-            event.docs.map((e) => Artisan.fromJson(e.data())).toList());
+        .map((event) => event.docs.map((e) {
+              logger.d(e.data());
+              return Artisan.fromJson(e.data());
+            }).toList());
   }
 
   @override

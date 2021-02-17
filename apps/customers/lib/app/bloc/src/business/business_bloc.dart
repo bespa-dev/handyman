@@ -3,18 +3,17 @@ import 'dart:async';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/domain/repositories/repositories.dart';
-import 'package:lite/domain/usecases/src/usecase/result.dart';
 import 'package:lite/domain/usecases/usecases.dart';
 import 'package:meta/meta.dart';
 
 import 'business_event.dart';
 
 class BusinessBloc extends BaseBloc<BusinessEvent> {
-  final BaseBusinessRepository _repo;
-
   BusinessBloc({@required BaseBusinessRepository repo})
       : assert(repo != null),
         _repo = repo;
+
+  final BaseBusinessRepository _repo;
 
   @override
   Stream<BlocState> mapEventToState(
@@ -37,9 +36,10 @@ class BusinessBloc extends BaseBloc<BusinessEvent> {
           await GetBusinessesForArtisanUseCase(_repo).execute(event.artisanId);
       if (result is UseCaseResultSuccess<List<BaseBusiness>>) {
         yield BlocState<List<BaseBusiness>>.successState(data: result.value);
-      } else
+      } else {
         yield BlocState.errorState(
-            failure: "No businesses registered under this artisan");
+            failure: 'No businesses registered under this artisan');
+      }
     } else if (event is UploadBusiness) {
       final result = await UploadBusinessUseCase(_repo).execute(
         UploadBusinessUseCaseParams(
@@ -47,33 +47,39 @@ class BusinessBloc extends BaseBloc<BusinessEvent> {
           artisan: event.artisan,
           name: event.name,
           location: event.location,
+          birthCertUrl: event.birthCert,
+          idUrl: event.nationalId,
         ),
       );
       if (result is UseCaseResultSuccess<String>) {
         yield BlocState<String>.successState(data: result.value);
-      } else
+      } else {
         yield BlocState.errorState(
-            failure: "Failed to upload business details");
+            failure: 'Failed to upload business details');
+      }
     } else if (event is UpdateBusiness) {
       final result = await UpdateBusinessUseCase(_repo).execute(event.business);
-      if (result is UseCaseResultSuccess)
+      if (result is UseCaseResultSuccess) {
         yield BlocState.successState();
-      else
-        BlocState.errorState(failure: "Failed to update business model");
+      } else {
+        BlocState.errorState(failure: 'Failed to update business model');
+      }
     } else if (event is GetBusinessById) {
       var result = await GetBusinessUseCase(_repo).execute(event.id);
-      if (result is UseCaseResultSuccess<BaseBusiness>)
+      if (result is UseCaseResultSuccess<BaseBusiness>) {
         yield BlocState<BaseBusiness>.successState(data: result.value);
-      else
+      } else {
         yield BlocState.errorState(
-            failure: "Cannot get business info at this time");
+            failure: 'Cannot get business info at this time');
+      }
     } else if (event is ObserveBusinessById) {
       var result = await ObserveBusinessUseCase(_repo).execute(event.id);
-      if (result is UseCaseResultSuccess<Stream<BaseBusiness>>)
+      if (result is UseCaseResultSuccess<Stream<BaseBusiness>>) {
         yield BlocState<Stream<BaseBusiness>>.successState(data: result.value);
-      else
+      } else {
         yield BlocState.errorState(
-            failure: "Cannot observe business info at this time");
+            failure: 'Cannot observe business info at this time');
+      }
     }
   }
 }

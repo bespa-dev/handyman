@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
 
     /// observe auth state
     _authBloc
-      ..add(AuthEvent.observeAuthStatetEvent())
+      ..add(AuthEvent.observeAuthStateEvent())
       ..add(AuthEvent.observeMessageEvent())
       ..listen((state) {
         if (state is SuccessState<Stream<AuthState>>) {

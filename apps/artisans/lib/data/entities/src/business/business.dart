@@ -8,6 +8,18 @@ part 'business.g.dart';
 @HiveType(typeId: 7)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class Business extends BaseBusiness {
+  Business({
+    @required this.id,
+    @required this.createdAt,
+    @required this.docUrl,
+    @required this.artisanId,
+    @required this.name,
+    @required this.location,
+  });
+
+  factory Business.fromJson(Map<String, dynamic> json) =>
+      _$BusinessFromJson(json);
+
   @HiveField(0)
   @override
   final String id;
@@ -32,20 +44,8 @@ class Business extends BaseBusiness {
   @override
   final String location;
 
-  Business({
-    @required this.id,
-    @required this.createdAt,
-    @required this.docUrl,
-    @required this.artisanId,
-    @required this.name,
-    @required this.location,
-  });
-
   @override
   Map<String, dynamic> toJson() => _$BusinessToJson(this);
-
-  factory Business.fromJson(Map<String, dynamic> json) =>
-      _$BusinessFromJson(json);
 
   @override
   dynamic get model => this;
@@ -58,8 +58,8 @@ class Business extends BaseBusiness {
     String location,
   }) =>
       Business(
-        id: this.id,
-        createdAt: this.createdAt,
+        id: id,
+        createdAt: createdAt,
         docUrl: docUrl ?? this.docUrl,
         artisanId: artisanId ?? this.artisanId,
         name: name ?? this.name,

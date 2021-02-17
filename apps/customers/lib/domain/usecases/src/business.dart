@@ -16,9 +16,9 @@ import 'usecase/usecase.dart';
 
 class UploadBusinessPhotosUseCase
     extends CompletableUseCase<UploadBusinessPhotosUseCaseParams> {
-  final BaseBusinessRepository _repo;
-
   const UploadBusinessPhotosUseCase(this._repo);
+
+  final BaseBusinessRepository _repo;
 
   @override
   Future<UseCaseResult<void>> execute(
@@ -28,16 +28,16 @@ class UploadBusinessPhotosUseCase
           userId: params.userId, images: params.images);
       return UseCaseResult.success();
     } on Exception {
-      return UseCaseResult.error("Failed to upload business images");
+      return UseCaseResult.error('Failed to upload business images');
     }
   }
 }
 
 class GetBusinessesForArtisanUseCase
     extends UseCase<List<BaseBusiness>, String> {
-  final BaseBusinessRepository _repo;
-
   GetBusinessesForArtisanUseCase(this._repo);
+
+  final BaseBusinessRepository _repo;
 
   @override
   Future<UseCaseResult<List<BaseBusiness>>> execute(String artisan) async {
@@ -45,15 +45,15 @@ class GetBusinessesForArtisanUseCase
       var results = await _repo.getBusinessesForArtisan(artisan: artisan);
       return UseCaseResult<List<BaseBusiness>>.success(results);
     } on Exception {
-      return UseCaseResult<List<BaseBusiness>>.error();
+      return UseCaseResult.error();
     }
   }
 }
 
 class GetBusinessUseCase extends UseCase<BaseBusiness, String> {
-  final BaseBusinessRepository _repo;
-
   GetBusinessUseCase(this._repo);
+
+  final BaseBusinessRepository _repo;
 
   @override
   Future<UseCaseResult<BaseBusiness>> execute(String id) async {
@@ -67,15 +67,16 @@ class GetBusinessUseCase extends UseCase<BaseBusiness, String> {
 }
 
 class ObserveBusinessUseCase extends ObservableUseCase<BaseBusiness, String> {
-  final BaseBusinessRepository _repo;
-
   ObserveBusinessUseCase(this._repo);
+
+  final BaseBusinessRepository _repo;
 
   @override
   Future<UseCaseResult<Stream<BaseBusiness>>> execute(String id) async {
     try {
       var results = _repo.observeBusinessById(id: id);
-      return UseCaseResult<Stream<BaseBusiness>>.success(results.asBroadcastStream());
+      return UseCaseResult<Stream<BaseBusiness>>.success(
+          results.asBroadcastStream());
     } on Exception {
       return UseCaseResult.error();
     }
@@ -84,9 +85,9 @@ class ObserveBusinessUseCase extends ObservableUseCase<BaseBusiness, String> {
 
 class UploadBusinessUseCase
     extends UseCase<String, UploadBusinessUseCaseParams> {
-  final BaseBusinessRepository _repo;
-
   UploadBusinessUseCase(this._repo);
+
+  final BaseBusinessRepository _repo;
 
   @override
   Future<UseCaseResult<String>> execute(
@@ -97,6 +98,8 @@ class UploadBusinessUseCase
         name: params.name,
         artisan: params.artisan,
         location: params.location,
+        nationalId: params.idUrl,
+        birthCert: params.birthCertUrl,
       );
       return UseCaseResult<String>.success(id);
     } on Exception {
@@ -106,9 +109,9 @@ class UploadBusinessUseCase
 }
 
 class UpdateBusinessUseCase extends CompletableUseCase<BaseBusiness> {
-  final BaseBusinessRepository _repo;
-
   UpdateBusinessUseCase(this._repo);
+
+  final BaseBusinessRepository _repo;
 
   @override
   Future<UseCaseResult<void>> execute(BaseBusiness business) async {
@@ -123,22 +126,26 @@ class UpdateBusinessUseCase extends CompletableUseCase<BaseBusiness> {
 
 /// params
 class UploadBusinessPhotosUseCaseParams {
+  const UploadBusinessPhotosUseCaseParams({this.images, this.userId});
+
   final List<String> images;
   final String userId;
-
-  const UploadBusinessPhotosUseCaseParams({this.images, this.userId});
 }
 
 class UploadBusinessUseCaseParams {
-  final String docUrl;
-  final String artisan;
-  final String name;
-  final String location;
-
   const UploadBusinessUseCaseParams({
     @required this.docUrl,
     @required this.artisan,
     @required this.name,
     @required this.location,
+    this.birthCertUrl,
+    this.idUrl,
   });
+
+  final String docUrl;
+  final String idUrl;
+  final String birthCertUrl;
+  final String artisan;
+  final String name;
+  final String location;
 }

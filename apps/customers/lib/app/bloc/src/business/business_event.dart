@@ -18,6 +18,8 @@ enum _BusinessEvent {
     DataField<String>("name"),
     DataField<String>("artisan"),
     DataField<String>("location"),
+    DataField<String>("nationalId", required: false),
+    DataField<String>("birthCert", required: false),
   ])
   UploadBusiness,
 }

@@ -270,18 +270,16 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                 ),
               ),
               SizedBox(height: kSpacingX24),
-              ...widget.artisan.services.map(
-                (id) {
-                  var service = _servicesForCategory
-                      .firstWhere((element) => element.id == id);
-                  return ArtisanServiceListTile(
-                    service: service,
-                    showLeadingIcon: false,
-                    selected: false,
-                    showPrice: true,
-                  );
-                },
-              ).toList(),
+              ...widget.artisan.services
+                  .map(
+                    (service) => ArtisanServiceListTile(
+                      service: service,
+                      showLeadingIcon: false,
+                      selected: false,
+                      showPrice: true,
+                    ),
+                  )
+                  .toList(),
               SizedBox(height: SizeConfig.screenHeight * 0.1),
             } else ...{
               Container(

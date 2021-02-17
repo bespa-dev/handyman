@@ -14,7 +14,9 @@ import 'package:handyman/domain/sources/src/remote.dart';
 import 'package:meta/meta.dart';
 
 abstract class BaseBusinessRepository extends BaseRepository {
-  const BaseBusinessRepository(BaseLocalDatasource local, BaseRemoteDatasource remote) : super(local, remote);
+  const BaseBusinessRepository(
+      BaseLocalDatasource local, BaseRemoteDatasource remote)
+      : super(local, remote);
 
   /// Upload business [images]
   Future<void> uploadBusinessPhotos({
@@ -30,6 +32,8 @@ abstract class BaseBusinessRepository extends BaseRepository {
     @required String name,
     @required String artisan,
     @required String location,
+    String nationalId,
+    String birthCert,
   });
 
   Future<void> updateBusiness({@required BaseBusiness business});

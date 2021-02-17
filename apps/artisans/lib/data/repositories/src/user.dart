@@ -11,6 +11,7 @@ import 'package:handyman/domain/models/src/user/artisan.dart';
 import 'package:handyman/domain/models/src/user/user.dart';
 import 'package:handyman/domain/repositories/repositories.dart';
 import 'package:handyman/domain/sources/sources.dart';
+import 'package:handyman/shared/shared.dart';
 import 'package:meta/meta.dart';
 
 class UserRepositoryImpl extends BaseUserRepository {
@@ -24,6 +25,7 @@ class UserRepositoryImpl extends BaseUserRepository {
   Stream<BaseArtisan> currentUser() async* {
     yield* local.currentUser();
     remote.currentUser().listen((event) async {
+      logger.d('Updating user -> $event');
       if (event != null) await local.updateUser(event);
     });
   }

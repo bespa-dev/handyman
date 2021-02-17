@@ -154,7 +154,6 @@ class ReplyMessageDialog extends StatelessWidget {
                 horizontal: kSpacingX16,
               ),
               decoration: BoxDecoration(
-                color: kTheme.disabledColor,
                 borderRadius: BorderRadius.circular(kSpacingX12),
               ),
               clipBehavior: Clip.hardEdge,
@@ -163,7 +162,6 @@ class ReplyMessageDialog extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: hintText,
                   border: InputBorder.none,
-                  fillColor: kTheme.disabledColor,
                   filled: true,
                 ),
               ),

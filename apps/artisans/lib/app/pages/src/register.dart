@@ -10,7 +10,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:handyman/app/bloc/bloc.dart';
-import 'package:handyman/app/routes/routes.gr.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/repositories/repositories.dart';
 import 'package:handyman/shared/shared.dart';
@@ -50,7 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     /// observe auth state
     _authBloc
-      ..add(AuthEvent.observeAuthStatetEvent())
+      ..add(AuthEvent.observeAuthStateEvent())
       ..add(AuthEvent.observeMessageEvent())
       ..listen((state) {
         if (state is SuccessState<Stream<AuthState>>) {

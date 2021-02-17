@@ -33,7 +33,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
 
     if (mounted) {
       _userBloc.add(
-        UserEvent.observeArtisansEvent(category: widget.category.groupName),
+        UserEvent.observeArtisansEvent(category: widget.category.id),
       );
     }
   }
@@ -49,10 +49,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                 children: [
                   Positioned.fill(
                     child: StreamBuilder<List<BaseArtisan>>(
-                        stream: state.data.map((items) => items
-                            .where((person) =>
-                                person.category == widget.category.id)
-                            .toList()),
+                        stream: state.data,
                         initialData: [],
                         builder: (_, snapshot) {
                           final artisans = snapshot.data ?? [];
@@ -66,7 +63,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                                 message: 'No artisans found',
                                 onTap: () => _userBloc.add(
                                   UserEvent.observeArtisansEvent(
-                                      category: widget.category.groupName),
+                                      category: widget.category.id),
                                 ),
                               ),
                             );

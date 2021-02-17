@@ -23,7 +23,7 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
 
   /// UI
   ThemeData kTheme;
-  String _selectedCategory;
+  BaseServiceCategory _selectedCategory;
   BaseArtisan _currentUser;
   bool _isLoading = false;
 
@@ -140,9 +140,9 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
                                   builder: (_, snapshot) =>
                                       SelectableGridCategory(
                                     categories: snapshot.data,
-                                    selected: _selectedCategory,
+                                    selected: _selectedCategory.id,
                                     onSelected: (item) {
-                                      _selectedCategory = item.id;
+                                      _selectedCategory = item;
                                       setState(() {});
                                     },
                                   ),
@@ -171,13 +171,12 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
                             );
                           } else {
                             final updatedUser = _currentUser.copyWith(
-                              category: _selectedCategory,
-                              categoryGroup:
-                                  ServiceCategoryGroup.featured().name(),
+                              category: _selectedCategory.id,
+                              categoryGroup: _selectedCategory.name,
                             );
 
                             /// update user profile information
-                            UserBloc(repo: Injection.get()).add(
+                            _updateUserBloc.add(
                               UserEvent.updateUserEvent(user: updatedUser),
                             );
                           }

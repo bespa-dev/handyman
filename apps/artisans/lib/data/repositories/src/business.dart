@@ -54,6 +54,8 @@ class BusinessRepositoryImpl extends BaseBusinessRepository {
     @required String name,
     @required String artisan,
     @required String location,
+    String nationalId,
+    String birthCert,
   }) async {
     final business = Business(
       id: Uuid().v4(),
@@ -65,6 +67,12 @@ class BusinessRepositoryImpl extends BaseBusinessRepository {
     );
     await local.updateBusiness(business: business);
     await remote.updateBusiness(business: business);
+    if (nationalId != null && birthCert != null && docUrl != null) {
+      var user = await local.getArtisanById(id: artisan);
+      user = user.copyWith(nationalId: nationalId, birthCert: birthCert);
+      await local.updateUser(user);
+      await remote.updateUser(user);
+    }
     return business.id;
   }
 

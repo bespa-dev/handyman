@@ -166,14 +166,6 @@ class _HomePageState extends State<HomePage> {
       child: BlocBuilder<UserBloc, BlocState>(
         cubit: _userBloc,
         builder: (_, state) => Scaffold(
-          floatingActionButton: !_dismissAllNotifications || _navStates[_currentPage] == _dashboardNavKey
-              || _navStates[_currentPage] == _searchNavKey
-              || _navStates[_currentPage] == _profileNavKey
-              ? null
-              : FloatingActionButton(
-                  onPressed: () {},
-                  child: Icon(kChatIcon),
-                ),
           body: SizedBox(
             width: SizeConfig.screenWidth,
             height: SizeConfig.screenHeight,

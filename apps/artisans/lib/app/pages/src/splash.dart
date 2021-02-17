@@ -68,7 +68,7 @@ class _SplashPageState extends State<SplashPage>
 
       /// observe auth state
       _authBloc
-        ..add(AuthEvent.observeAuthStatetEvent())
+        ..add(AuthEvent.observeAuthStateEvent())
         ..add(AuthEvent.observeMessageEvent())
         ..listen((state) {
           if (state is SuccessState<Stream<AuthState>>) {
@@ -91,9 +91,8 @@ class _SplashPageState extends State<SplashPage>
               } else if (event is AuthenticatedState) {
                 _isLoading = false;
                 if (mounted) setState(() {});
-                await context.navigator
-                  ..popUntilRoot()
-                  ..pushHomePage();
+                await context.navigator.pushAndRemoveUntil(
+                    Routes.categoryPickerPage, (route) => false);
               }
             });
           } else if (state is SuccessState<Stream<String>>) {
