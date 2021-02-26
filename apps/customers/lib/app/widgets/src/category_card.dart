@@ -15,10 +15,6 @@ import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 
 class GridCategoryCardItem extends StatefulWidget {
-  final BaseServiceCategory category;
-  final bool isSelectable;
-  final bool isSelected;
-  final Function(BaseServiceCategory) onSelected;
 
   const GridCategoryCardItem({
     Key key,
@@ -27,6 +23,11 @@ class GridCategoryCardItem extends StatefulWidget {
     this.isSelected = false,
     this.onSelected,
   }) : super(key: key);
+
+  final BaseServiceCategory category;
+  final bool isSelectable;
+  final bool isSelected;
+  final Function(BaseServiceCategory) onSelected;
 
   @override
   _GridCategoryCardItemState createState() => _GridCategoryCardItemState();
@@ -65,40 +66,10 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
                 .pushCategoryDetailsPage(category: widget.category);
           }
         },
-        child: Stack(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Hero(
-              tag: widget.category.avatar,
-              child: CachedNetworkImage(
-                imageUrl: widget.category.avatar,
-                height: getProportionateScreenHeight(kSpacingX250),
-                width: double.infinity,
-                placeholder: (_, __) => Container(color: kPlaceholderColor),
-                fit: BoxFit.cover,
-              ),
-            ),
-            Positioned(
-              top: getProportionateScreenHeight(kSpacingX250) / 2,
-              right: kSpacingNone,
-              left: kSpacingNone,
-              bottom: kSpacingNone,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: widget.isSelected ? selectedColor : unselectedColor,
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  widget.category.name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: kTheme.textTheme.button.copyWith(
-                    color: widget.isSelected
-                        ? selectedTextColor
-                        : unselectedTextColor,
-                  ),
-                ),
-              ),
-            ),
+            
           ],
         ),
       ),
