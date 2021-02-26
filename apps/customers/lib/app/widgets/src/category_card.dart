@@ -69,7 +69,7 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            
+
           ],
         ),
       ),
