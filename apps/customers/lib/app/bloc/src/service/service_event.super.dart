@@ -14,6 +14,9 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
   factory ArtisanServiceEvent.getArtisanServices({@required String id}) =
       GetArtisanServices<T>.create;
 
+  factory ArtisanServiceEvent.getCategoryServices(
+      {@required String categoryId}) = GetCategoryServices<T>.create;
+
   factory ArtisanServiceEvent.getServiceById({@required String id}) =
       GetServiceById<T>.create;
 
@@ -29,11 +32,13 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
   /// Its prototype depends on the _ArtisanServiceEvent [_type]s defined.
   R when<R extends Object>(
       {@required R Function(GetArtisanServices<T>) getArtisanServices,
+      @required R Function(GetCategoryServices<T>) getCategoryServices,
       @required R Function(GetServiceById<T>) getServiceById,
       @required R Function(UpdateArtisanService<T>) updateArtisanService,
       @required R Function() getAllArtisanServices}) {
     assert(() {
       if (getArtisanServices == null ||
+          getCategoryServices == null ||
           getServiceById == null ||
           updateArtisanService == null ||
           getAllArtisanServices == null) {
@@ -44,6 +49,8 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
     switch (this._type) {
       case _ArtisanServiceEvent.GetArtisanServices:
         return getArtisanServices(this as GetArtisanServices);
+      case _ArtisanServiceEvent.GetCategoryServices:
+        return getCategoryServices(this as GetCategoryServices);
       case _ArtisanServiceEvent.GetServiceById:
         return getServiceById(this as GetServiceById);
       case _ArtisanServiceEvent.UpdateArtisanService:
@@ -60,6 +67,7 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
   /// for fallback behavior.
   R whenOrElse<R extends Object>(
       {R Function(GetArtisanServices<T>) getArtisanServices,
+      R Function(GetCategoryServices<T>) getCategoryServices,
       R Function(GetServiceById<T>) getServiceById,
       R Function(UpdateArtisanService<T>) updateArtisanService,
       R Function() getAllArtisanServices,
@@ -74,6 +82,9 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
       case _ArtisanServiceEvent.GetArtisanServices:
         if (getArtisanServices == null) break;
         return getArtisanServices(this as GetArtisanServices);
+      case _ArtisanServiceEvent.GetCategoryServices:
+        if (getCategoryServices == null) break;
+        return getCategoryServices(this as GetCategoryServices);
       case _ArtisanServiceEvent.GetServiceById:
         if (getServiceById == null) break;
         return getServiceById(this as GetServiceById);
@@ -91,11 +102,13 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
   /// but non-exhaustive.
   void whenPartial(
       {void Function(GetArtisanServices<T>) getArtisanServices,
+      void Function(GetCategoryServices<T>) getCategoryServices,
       void Function(GetServiceById<T>) getServiceById,
       void Function(UpdateArtisanService<T>) updateArtisanService,
       void Function() getAllArtisanServices}) {
     assert(() {
       if (getArtisanServices == null &&
+          getCategoryServices == null &&
           getServiceById == null &&
           updateArtisanService == null &&
           getAllArtisanServices == null) {
@@ -107,6 +120,9 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
       case _ArtisanServiceEvent.GetArtisanServices:
         if (getArtisanServices == null) break;
         return getArtisanServices(this as GetArtisanServices);
+      case _ArtisanServiceEvent.GetCategoryServices:
+        if (getCategoryServices == null) break;
+        return getCategoryServices(this as GetCategoryServices);
       case _ArtisanServiceEvent.GetServiceById:
         if (getServiceById == null) break;
         return getServiceById(this as GetServiceById);
@@ -154,6 +170,41 @@ class _GetArtisanServicesImpl<T> extends GetArtisanServices<T> {
   String toString() => 'GetArtisanServices(id: ${this.id})';
   @override
   List<Object> get props => [id];
+}
+
+@immutable
+abstract class GetCategoryServices<T> extends ArtisanServiceEvent<T> {
+  const GetCategoryServices({@required this.categoryId})
+      : super(_ArtisanServiceEvent.GetCategoryServices);
+
+  factory GetCategoryServices.create({@required String categoryId}) =
+      _GetCategoryServicesImpl<T>;
+
+  final String categoryId;
+
+  /// Creates a copy of this GetCategoryServices but with the given fields
+  /// replaced with the new values.
+  GetCategoryServices<T> copyWith({String categoryId});
+}
+
+@immutable
+class _GetCategoryServicesImpl<T> extends GetCategoryServices<T> {
+  const _GetCategoryServicesImpl({@required this.categoryId})
+      : super(categoryId: categoryId);
+
+  @override
+  final String categoryId;
+
+  @override
+  _GetCategoryServicesImpl<T> copyWith({Object categoryId = superEnum}) =>
+      _GetCategoryServicesImpl(
+        categoryId:
+            categoryId == superEnum ? this.categoryId : categoryId as String,
+      );
+  @override
+  String toString() => 'GetCategoryServices(categoryId: ${this.categoryId})';
+  @override
+  List<Object> get props => [categoryId];
 }
 
 @immutable

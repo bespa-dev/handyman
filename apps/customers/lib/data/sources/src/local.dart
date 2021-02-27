@@ -335,4 +335,12 @@ class HiveLocalDatasource extends BaseLocalDatasource {
           {@required String id,
           @required BaseArtisanService artisanService}) async =>
       await serviceBox.put(artisanService.id, artisanService);
+
+  @override
+  Future<List<BaseArtisanService>> getCategoryServices(
+      {@required String categoryId}) async {
+    return await serviceBox.values
+        .where((element) => element.category == categoryId)
+        .toList();
+  }
 }

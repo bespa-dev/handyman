@@ -7,15 +7,133 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:auto_route/auto_route.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:lite/app/routes/routes.gr.dart';
+import 'package:lite/app/bloc/bloc.dart';
+import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 
-class GridCategoryCardItem extends StatefulWidget {
+class ListCategoryCardItem extends StatefulWidget {
+  const ListCategoryCardItem({@required this.category});
 
+  final BaseServiceCategory category;
+
+  @override
+  _ListCategoryCardItemState createState() => _ListCategoryCardItemState();
+}
+
+class _ListCategoryCardItemState extends State<ListCategoryCardItem> {
+  final _servicesBloc = ArtisanServiceBloc(repo: Injection.get());
+  List<BaseArtisanService> _services = const <BaseArtisanService>[];
+
+  @override
+  void dispose() {
+    _servicesBloc.close();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (mounted) {
+      var category = widget.category;
+      if (category.hasParent) {
+        _servicesBloc.add(ArtisanServiceEvent.getCategoryServices(
+            categoryId: category.parent));
+      } else if (category.hasServices) {
+        _servicesBloc.add(
+            ArtisanServiceEvent.getCategoryServices(categoryId: category.id));
+      }
+
+      _servicesBloc.listen((state) {
+        if (state is SuccessState<List<BaseArtisanService>>) {
+          _services = state.data;
+          if (mounted) setState(() {});
+        }
+      });
+    }
+  }
+
+  void _navToDetails() =>
+      context.navigator.pushCategoryDetailsPage(category: widget.category);
+
+  @override
+  Widget build(BuildContext context) {
+    final kTheme = Theme.of(context);
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: kSpacingX6),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(
+            getProportionateScreenWidth(kSpacingX12),
+          ),
+        ),
+        color: kTheme.cardColor,
+        clipBehavior: Clip.hardEdge,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(kSpacingX12),
+          onTap: _navToDetails,
+          child: Padding(
+            padding: const EdgeInsets.all(kSpacingX8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ImageView(
+                  imageUrl: widget.category.avatar,
+                  height: kSpacingX96,
+                  width: kSpacingX96,
+                  radius: kSpacingX12,
+                ),
+                SizedBox(width: kSpacingX16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.category.name,
+                        style: kTheme.textTheme.headline6.copyWith(
+                          fontSize: kTheme.textTheme.bodyText2.fontSize,
+                        ),
+                      ),
+                      SizedBox(height: kSpacingX2),
+                      Text(
+                        widget.category.groupName,
+                        style: kTheme.textTheme.bodyText1.copyWith(
+                          color: kTheme.textTheme.bodyText1.color
+                              .withOpacity(kEmphasisLow),
+                        ),
+                      ),
+                      if (_services.isNotEmpty) ...{
+                        SizedBox(height: kSpacingX8),
+                        Text(
+                          '${_services.length} services',
+                          style: kTheme.textTheme.bodyText1.copyWith(
+                            color: kTheme.textTheme.bodyText1.color
+                                .withOpacity(kEmphasisMedium),
+                          ),
+                        ),
+                      }
+                    ],
+                  ),
+                ),
+                Center(
+                  child: IconButton(
+                    icon: Icon(kArrowIcon),
+                    onPressed: _navToDetails,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class GridCategoryCardItem extends StatefulWidget {
   const GridCategoryCardItem({
     Key key,
     @required this.category,
@@ -57,19 +175,41 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
         borderRadius:
             BorderRadius.circular(getProportionateScreenWidth(kSpacingX12)),
         onTap: () {
-          if (widget.isSelectable) {
-            if (widget.onSelected != null) {
-              widget.onSelected(widget.category);
-            }
-          } else {
-            context.navigator
-                .pushCategoryDetailsPage(category: widget.category);
-          }
+          context.navigator.pushCategoryDetailsPage(category: widget.category);
         },
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
           children: [
-
+            Hero(
+              tag: widget.category.avatar,
+              child: ImageView(
+                imageUrl: widget.category.avatar,
+                height: getProportionateScreenHeight(kSpacingX250),
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Positioned(
+              top: getProportionateScreenHeight(kSpacingX250) / 2,
+              right: kSpacingNone,
+              left: kSpacingNone,
+              bottom: kSpacingNone,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: widget.isSelected ? selectedColor : unselectedColor,
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  widget.category.name,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: kTheme.textTheme.button.copyWith(
+                    color: widget.isSelected
+                        ? selectedTextColor
+                        : unselectedTextColor,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -78,16 +218,16 @@ class _GridCategoryCardItemState extends State<GridCategoryCardItem> {
 }
 
 class SelectableGridCategory extends StatefulWidget {
-  final List<BaseServiceCategory> categories;
-  final Function(BaseServiceCategory) onSelected;
-  final String selected;
-
   const SelectableGridCategory({
     Key key,
     @required this.categories,
     @required this.onSelected,
     @required this.selected,
   }) : super(key: key);
+
+  final List<BaseServiceCategory> categories;
+  final Function(BaseServiceCategory) onSelected;
+  final String selected;
 
   @override
   _SelectableGridCategoryState createState() => _SelectableGridCategoryState();

@@ -92,17 +92,16 @@ class _ArtisansPageState extends State<ArtisansPage> {
               ),
 
               /// categories' list content
-              SliverGrid.count(
-                crossAxisCount: 2,
-                children: [
+              SliverList(
+                delegate: SliverChildListDelegate.fixed([
                   for (int position = 0;
                       position < categoriesSnapshot.data.length;
                       position++) ...{
-                    GridCategoryCardItem(
+                    ListCategoryCardItem(
                       category: categoriesSnapshot.data[position],
                     ),
                   },
-                ],
+                ]),
               ),
             ],
           ),
