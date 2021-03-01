@@ -28,21 +28,13 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    if (mounted) {
-      _userBloc.add(
-        UserEvent.observeArtisansEvent(category: widget.category.id),
-      );
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     kTheme = Theme.of(context);
     return BlocBuilder<UserBloc, BlocState>(
-      cubit: _userBloc,
+      cubit: _userBloc
+        ..add(
+          UserEvent.observeArtisansEvent(category: widget.category.id),
+        ),
       builder: (_, state) => Scaffold(
         body: state is SuccessState<Stream<List<BaseArtisan>>>
             ? Stack(
@@ -53,54 +45,12 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                         initialData: [],
                         builder: (_, snapshot) {
                           final artisans = snapshot.data ?? [];
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Loading();
-                          } else if (snapshot.hasError || artisans.isEmpty) {
-                            return Center(
-                              child: emptyStateUI(
-                                context,
-                                message: 'No artisans found',
-                                onTap: () => _userBloc.add(
-                                  UserEvent.observeArtisansEvent(
-                                      category: widget.category.id),
-                                ),
-                              ),
-                            );
-                          }
-                          return SafeArea(
-                            child: Container(
-                              width: SizeConfig.screenWidth,
-                              height: SizeConfig.screenHeight,
-                              margin: EdgeInsets.only(top: kSpacingX72),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                      getProportionateScreenWidth(kSpacingX16)),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                      height: getProportionateScreenHeight(
-                                          kSpacingX8)),
-                                  Text(
-                                    'Showing results for...',
-                                    style: kTheme.textTheme.caption,
-                                  ),
-                                  Text(
-                                    widget.category.name,
-                                    style: kTheme.textTheme.headline3,
-                                  ),
-                                  SizedBox(
-                                      height: getProportionateScreenHeight(
-                                          kSpacingX16)),
-                                  Expanded(
-                                    child: _buildArtisanCard(artisans),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
+                          return snapshot.connectionState ==
+                                  ConnectionState.waiting
+                              ? Loading()
+                              : (snapshot.hasError || artisans.isEmpty)
+                                  ? _buildEmptyState()
+                                  : _buildArtisansUI(snapshot.data);
                         }),
                   ),
 
@@ -120,19 +70,54 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
     );
   }
 
-  Widget _buildArtisanCard(List<BaseArtisan> data) {
-    return GridView.builder(
-      addAutomaticKeepAlives: true,
-      clipBehavior: Clip.hardEdge,
-      cacheExtent: 200,
-      itemBuilder: (_, index) {
-        final artisan = data[index];
-        return GridArtisanCardItem(artisan: artisan);
-      },
-      itemCount: data.length,
-      scrollDirection: Axis.vertical,
-      gridDelegate:
-          SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-    );
-  }
+  Widget _buildEmptyState() => Center(
+        child: emptyStateUI(
+          context,
+          message: 'No artisans found',
+          onTap: () => _userBloc.add(
+            UserEvent.observeArtisansEvent(category: widget.category.id),
+          ),
+        ),
+      );
+
+  Widget _buildArtisansUI(List<BaseArtisan> data) => SafeArea(
+        child: Container(
+          width: SizeConfig.screenWidth,
+          height: SizeConfig.screenHeight,
+          margin: EdgeInsets.only(top: kSpacingX72),
+          padding: EdgeInsets.symmetric(
+              horizontal: getProportionateScreenWidth(kSpacingX16)),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: getProportionateScreenHeight(kSpacingX8)),
+              Text(
+                'Showing artisans for...',
+                style: kTheme.textTheme.caption,
+              ),
+              Text(
+                widget.category.name,
+                style: kTheme.textTheme.headline4,
+              ),
+              SizedBox(height: getProportionateScreenHeight(kSpacingX16)),
+              Expanded(
+                child: GridView.builder(
+                  addAutomaticKeepAlives: true,
+                  clipBehavior: Clip.hardEdge,
+                  cacheExtent: 200,
+                  itemBuilder: (_, index) {
+                    final artisan = data[index];
+                    return GridArtisanCardItem(artisan: artisan);
+                  },
+                  itemCount: data.length,
+                  scrollDirection: Axis.vertical,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
 }

@@ -8,9 +8,7 @@ import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
-import 'package:sliding_sheet/sliding_sheet.dart';
 
-/// fixme -> show relevant prices for each service
 class BusinessDetailsPage extends StatefulWidget {
   const BusinessDetailsPage({
     Key key,
@@ -30,10 +28,9 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   final _userBloc = UserBloc(repo: Injection.get());
   final _updateUserBloc = UserBloc(repo: Injection.get());
   final _businessBloc = BusinessBloc(repo: Injection.get());
-  final _updateBusinessBloc = BusinessBloc(repo: Injection.get());
   final _locationBloc = LocationBloc(repo: Injection.get());
   final _serviceBloc = ArtisanServiceBloc(repo: Injection.get());
-  final _storageBloc = StorageBloc(repo: Injection.get());
+  final _categoryBloc = CategoryBloc(repo: Injection.get());
 
   /// UI
   ThemeData _kTheme;
@@ -41,8 +38,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   BaseBusiness _business;
   LatLng _businessLocation;
   int _currentPage = 0;
-  var _servicesForCategory = const <BaseArtisanService>[];
-  final _sheetController = SheetController();
+  var _services = const <BaseArtisanService>[];
 
   /// setup map details
   void _setupMap() async {
@@ -58,15 +54,34 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
     if (mounted) setState(() {});
   }
 
+  /// get services for category
+  void _loadServices() {
+    logger.i('Services -> ${widget.artisan.services}');
+    if (widget.artisan.services == null || widget.artisan.services.isEmpty) {
+      _categoryBloc
+        ..add(CategoryEvent.observeCategoryById(id: widget.artisan.category))
+        ..listen((state) {
+          if (state is SuccessState<Stream<BaseServiceCategory>>) {
+            state.data.listen((event) {
+              _serviceBloc.add(ArtisanServiceEvent.getCategoryServices(
+                  categoryId: event.hasParent ? event.parent : event.id));
+            });
+          }
+        });
+    } else {
+      _serviceBloc
+          .add(ArtisanServiceEvent.getArtisanServices(id: widget.artisan.id));
+    }
+  }
+
   @override
   void dispose() {
     _userBloc.close();
     _businessBloc.close();
-    _updateBusinessBloc.close();
     _locationBloc.close();
     _serviceBloc.close();
     _updateUserBloc.close();
-    _storageBloc.close();
+    _categoryBloc.close();
     super.dispose();
   }
 
@@ -75,6 +90,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
     super.initState();
 
     if (mounted) {
+      _loadServices();
+
       /// get business for artisan
       _businessBloc.add(
         BusinessEvent.observeBusinessById(id: widget.business.id),
@@ -92,21 +109,12 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
           }
         });
 
-      /// get services for category
-      if (widget.artisan.category != null) {
-        _serviceBloc.add(ArtisanServiceEvent.getArtisanServices(
-            id: widget.artisan.id));
-      }
-
       /// observe list of services for category
       _serviceBloc.listen((state) {
         if (state is SuccessState<List<BaseArtisanService>>) {
-          _servicesForCategory = state.data;
+          _services = state.data;
+          logger.d('Fetched services -> $_services');
           if (mounted) setState(() {});
-          if (_sheetController.state != null &&
-              _sheetController.state.isShown) {
-            _sheetController.rebuild();
-          }
         }
       });
     }
@@ -250,10 +258,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// fixme -> artisan services
-            /*if (widget.artisan != null &&
-                widget.artisan.services != null &&
-                widget.artisan.services.isNotEmpty) ...{
+            if (_services.isNotEmpty) ...{
               Text(
                 'Services rendered',
                 style: _kTheme.textTheme.headline6.copyWith(
@@ -270,13 +275,17 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                 ),
               ),
               SizedBox(height: kSpacingX24),
-              ...widget.artisan.services
+              ..._services
                   .map(
                     (service) => ArtisanServiceListTile(
                       service: service,
                       showLeadingIcon: false,
                       selected: false,
-                      showPrice: true,
+                      showPrice: false,
+                      onTap: () => context.navigator.pushRequestPage(
+                        artisan: widget.artisan,
+                        service: service,
+                      ),
                     ),
                   )
                   .toList(),
@@ -286,9 +295,10 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                 height: SizeConfig.screenHeight * 0.35,
                 width: SizeConfig.screenWidth,
                 padding: EdgeInsets.symmetric(horizontal: kSpacingX24),
-                child: emptyStateUI(context, message: 'No services registered'),
+                child: emptyStateUI(context,
+                    message: 'No services registered', onTap: _loadServices),
               ),
-            }*/
+            }
           ],
         ),
       );

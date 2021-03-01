@@ -150,6 +150,7 @@ class _ArtisanServiceListViewState extends State<ArtisanServiceListView> {
           selected: widget.selected == item,
           selectedColor: widget.selectedColor,
           unselectedColor: widget.unselectedColor,
+          showPrice: true,
         );
       },
       itemCount: widget.services.length,

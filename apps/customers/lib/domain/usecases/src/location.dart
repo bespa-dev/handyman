@@ -14,9 +14,9 @@ import 'usecase/result.dart';
 import 'usecase/usecase.dart';
 
 class GetCurrentLocationUseCase extends NoParamsUseCase<BaseLocationMetadata> {
-  final BaseLocationRepository _repo;
-
   const GetCurrentLocationUseCase(this._repo);
+
+  final BaseLocationRepository _repo;
 
   @override
   Future<UseCaseResult<BaseLocationMetadata>> execute(_) async {
@@ -24,17 +24,16 @@ class GetCurrentLocationUseCase extends NoParamsUseCase<BaseLocationMetadata> {
       var metadata = await _repo.getCurrentLocation();
       return UseCaseResult<BaseLocationMetadata>.success(metadata);
     } on Exception {
-      return UseCaseResult<BaseLocationMetadata>.error(
-          "Failed to get current user location");
+      return UseCaseResult<BaseLocationMetadata>.error(null);
     }
   }
 }
 
 class ObserveCurrentLocationUseCase
     extends ObservableUseCase<BaseLocationMetadata, void> {
-  final BaseLocationRepository _repo;
-
   const ObserveCurrentLocationUseCase(this._repo);
+
+  final BaseLocationRepository _repo;
 
   @override
   Future<UseCaseResult<Stream<BaseLocationMetadata>>> execute(_) async {
@@ -43,16 +42,15 @@ class ObserveCurrentLocationUseCase
       return UseCaseResult<Stream<BaseLocationMetadata>>.success(
           stream.asBroadcastStream());
     } on Exception {
-      return UseCaseResult<Stream<BaseLocationMetadata>>.error(
-          "Failed to get current user location");
+      return UseCaseResult<Stream<BaseLocationMetadata>>.error(null);
     }
   }
 }
 
 class GetLocationNameUseCase extends UseCase<String, BaseLocationMetadata> {
-  final BaseLocationRepository _repo;
-
   const GetLocationNameUseCase(this._repo);
+
+  final BaseLocationRepository _repo;
 
   @override
   Future<UseCaseResult<String>> execute(metadata) async {
@@ -60,16 +58,16 @@ class GetLocationNameUseCase extends UseCase<String, BaseLocationMetadata> {
       var locationName = await _repo.getLocationName(metadata: metadata);
       return UseCaseResult<String>.success(locationName);
     } on Exception {
-      return UseCaseResult<String>.error("Unable to get location name");
+      return UseCaseResult<String>.error(null);
     }
   }
 }
 
 class GetLocationCoordinatesUseCase
     extends UseCase<BaseLocationMetadata, String> {
-  final BaseLocationRepository _repo;
-
   const GetLocationCoordinatesUseCase(this._repo);
+
+  final BaseLocationRepository _repo;
 
   @override
   Future<UseCaseResult<BaseLocationMetadata>> execute(address) async {
@@ -77,8 +75,7 @@ class GetLocationCoordinatesUseCase
       var location = await _repo.getLocationPosition(name: address);
       return UseCaseResult<BaseLocationMetadata>.success(location);
     } on Exception {
-      return UseCaseResult<BaseLocationMetadata>.error(
-          "Unable to get location name");
+      return UseCaseResult<BaseLocationMetadata>.error(null);
     }
   }
 }

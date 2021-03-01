@@ -10,6 +10,7 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -21,7 +22,7 @@ import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
-/// fixme -> not showing services
+/// fixme -> last page of service request
 class RequestPage extends StatefulWidget {
   const RequestPage({
     Key key,
@@ -43,6 +44,7 @@ class _RequestPageState extends State<RequestPage> {
   final _homeAddressBloc = PrefsBloc(repo: Injection.get());
   final _workAddressBloc = PrefsBloc(repo: Injection.get());
   final _storageBloc = StorageBloc(repo: Injection.get());
+  final _categoryBloc = CategoryBloc(repo: Injection.get());
   final _locationBloc = LocationBloc(repo: Injection.get());
   final _serviceBloc = ArtisanServiceBloc(repo: Injection.get());
 
@@ -72,12 +74,12 @@ class _RequestPageState extends State<RequestPage> {
       _useCurrentLocation = false,
       _isHomeAddress = false,
       _isWorkAddress = false;
-  List<BaseArtisanService> _servicesForCategory = const [];
+  List<BaseArtisanService> _services = const [];
   BaseArtisanService _selectedService;
   ThemeData kTheme;
 
   /// request service
-  void _requestService() {
+  void _requestService() async {
     if (_formKey.currentState == null) return;
     if (_formKey.currentState.validate() &&
         _location != null &&
@@ -94,7 +96,6 @@ class _RequestPageState extends State<RequestPage> {
             filePath: _imageFile.absolute.path,
             isImage: true));
       } else {
-        /// todo -> add service cost
         _bookingBloc.add(
           BookingEvent.requestBooking(
             artisan: widget.artisan.id,
@@ -102,16 +103,18 @@ class _RequestPageState extends State<RequestPage> {
             category: widget.artisan.category,
             description: _bodyController.text?.trim(),
             image: _fileUrl,
-            cost: 12.99,
+            cost: _selectedService.price,
             location: _location,
             serviceType: _selectedService.id,
           ),
         );
       }
     } else {
-      showSnackBarMessage(context,
-          message:
-              'Please select a service and fill in any required details first');
+      await showCustomDialog(
+          context: context,
+          builder: (_) => InfoDialog(
+              message: Text(
+                  'Please select a service and fill in any required details first')));
     }
   }
 
@@ -175,6 +178,8 @@ class _RequestPageState extends State<RequestPage> {
     _storageBloc.close();
     _locationBloc.close();
     _serviceBloc.close();
+    _categoryBloc.close();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -186,10 +191,30 @@ class _RequestPageState extends State<RequestPage> {
       _focusNode = FocusNode();
 
       if (widget.service != null) {
-        setState(() {
-          _selectedService = widget.service;
-          _currentPage++;
-        });
+        _selectedService = widget.service;
+        setState(() {});
+        Future.delayed(kSheetDuration)
+            .then((value) => _pageController.animateToPage(
+                  ++_currentPage,
+                  duration: kSheetDuration,
+                  curve: Curves.fastLinearToSlowEaseIn,
+                ));
+      }
+
+      if (widget.artisan.services == null || widget.artisan.services.isEmpty) {
+        _categoryBloc
+          ..add(CategoryEvent.observeCategoryById(id: widget.artisan.category))
+          ..listen((state) {
+            if (state is SuccessState<Stream<BaseServiceCategory>>) {
+              state.data.listen((event) {
+                _serviceBloc.add(ArtisanServiceEvent.getCategoryServices(
+                    categoryId: event.hasParent ? event.parent : event.id));
+              });
+            }
+          });
+      } else {
+        _serviceBloc
+            .add(ArtisanServiceEvent.getArtisanServices(id: widget.artisan.id));
       }
 
       /// get user id for upload
@@ -217,7 +242,7 @@ class _RequestPageState extends State<RequestPage> {
         ..add(ArtisanServiceEvent.getArtisanServices(id: widget.artisan.id))
         ..listen((state) {
           if (state is SuccessState<List<BaseArtisanService>>) {
-            _servicesForCategory = state.data;
+            _services = state.data;
             if (mounted) setState(() {});
           }
         });
@@ -225,6 +250,7 @@ class _RequestPageState extends State<RequestPage> {
       /// get location
       _locationBloc.listen((state) {
         if (state is SuccessState<BaseLocationMetadata>) {
+          logger.d('Location -> ${state.data}');
           if (_isHomeAddress) {
             _homeAddressBloc
               ..add(PrefsEvent.saveHomeAddressEvent(address: state.data.name))
@@ -240,14 +266,14 @@ class _RequestPageState extends State<RequestPage> {
           }
           if (mounted) setState(() {});
         } else if (state is SuccessState<String>) {
-          logger.d('Location -> ${state.data}');
+          logger.d('Location address -> ${state.data}');
 
           /// todo -> show location name
         }
       });
 
       /// observe booking state
-      _bookingBloc.listen((state) {
+      _bookingBloc.listen((state) async {
         if (state is LoadingState) {
           _isRequesting = true;
           setState(() {});
@@ -255,7 +281,7 @@ class _RequestPageState extends State<RequestPage> {
           _isRequesting = false;
           setState(() {});
           if (state is ErrorState) {
-            showCustomDialog(
+            await showCustomDialog(
               context: context,
               builder: (_) => InfoDialog(
                 title: 'An error occurred',
@@ -264,7 +290,12 @@ class _RequestPageState extends State<RequestPage> {
               ),
             );
           } else {
-            showSnackBarMessage(context, message: 'Request sent successfully');
+            await showCustomDialog(
+              context: context,
+              builder: (_) => InfoDialog(
+                message: Text('Request sent successfully'),
+              ),
+            );
             context.navigator.pop();
           }
         }
@@ -284,7 +315,7 @@ class _RequestPageState extends State<RequestPage> {
                 category: widget.artisan.category,
                 description: _bodyController.text?.trim(),
                 image: _fileUrl,
-                cost: 12.99,
+                cost: _selectedService.price,
                 location: _location,
                 serviceType: _selectedService.id,
               ),
@@ -292,7 +323,12 @@ class _RequestPageState extends State<RequestPage> {
           }
         } else if (state is ErrorState) {
           logger.e('Failed to upload image');
-          showSnackBarMessage(context, message: 'Failed to upload image');
+          showCustomDialog(
+            context: context,
+            builder: (_) => InfoDialog(
+              message: Text('Failed to upload image'),
+            ),
+          );
           _isRequesting = false;
           _showActionIcon = true;
           if (mounted) setState(() {});
@@ -314,21 +350,21 @@ class _RequestPageState extends State<RequestPage> {
             /// pages
             Positioned.fill(
               child: PageView.builder(
-                  controller: _pageController,
-                  onPageChanged: (index) =>
-                      setState(() => _currentPage = index),
-                  itemBuilder: (_, index) {
-                    switch (index) {
-                      case 0:
-                        return _buildServicePicker();
-                      case 1:
-                        return _buildLocationPicker();
-                      default:
-                        return _buildRequestDescription();
-                    }
-                  },
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: _numPages),
+                controller: _pageController,
+                onPageChanged: (index) => setState(() => _currentPage = index),
+                itemBuilder: (_, index) {
+                  switch (index) {
+                    case 0:
+                      return _buildServicePicker();
+                    case 1:
+                      return _buildLocationPicker();
+                    default:
+                      return _buildRequestDescription();
+                  }
+                },
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: _numPages,
+              ),
             ),
 
             /// back button
@@ -409,7 +445,7 @@ class _RequestPageState extends State<RequestPage> {
                     _serviceBloc.add(ArtisanServiceEvent.getArtisanServices(
                         id: widget.artisan.id));
                   } else {
-                    _servicesForCategory = _servicesForCategory
+                    _services = _services
                         .where((element) => element.name.contains(query))
                         .toList();
                     setState(() {});
@@ -418,11 +454,9 @@ class _RequestPageState extends State<RequestPage> {
                 onQueryComplete: (query) {
                   logger.d('Query -> $query');
                   _focusNode.unfocus();
-                  _serviceBloc.add(
-                    ArtisanServiceEvent.getArtisanServices(
-                        id: widget.artisan.id)
-                  );
-                  _servicesForCategory = _servicesForCategory
+                  _serviceBloc.add(ArtisanServiceEvent.getArtisanServices(
+                      id: widget.artisan.id));
+                  _services = _services
                       .where((element) => element.name.contains(query))
                       .toList();
                   setState(() {});
@@ -430,19 +464,21 @@ class _RequestPageState extends State<RequestPage> {
               ),
               Expanded(
                 flex: 6,
-                child: ArtisanServiceListView(
-                  services: _servicesForCategory,
-                  onItemSelected: (item) {
-                    _selectedService = item;
-                    setState(() {});
-                  },
-                  selected: _selectedService,
-                  unselectedColor: kTransparent,
-                  selectedColor: kTheme.colorScheme.secondary,
-                  checkable: false,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: kSpacingX16),
+                  child: ArtisanServiceListView(
+                    services: _services,
+                    onItemSelected: (item) {
+                      _selectedService = item;
+                      setState(() {});
+                    },
+                    selected: _selectedService,
+                    unselectedColor: kTransparent,
+                    selectedColor: kTheme.colorScheme.secondary,
+                    checkable: false,
+                  ),
                 ),
               ),
-              Spacer(flex: 1),
             ],
           ),
         ),
@@ -579,9 +615,9 @@ class _RequestPageState extends State<RequestPage> {
               closeOnBackdropTap: true,
               body: BlocBuilder<LocationBloc, BlocState>(
                 cubit: _locationBloc,
-                buildWhen: (p, c) =>
-                    p is SuccessState<BaseLocationMetadata> &&
-                    c is SuccessState<BaseLocationMetadata>,
+                // buildWhen: (p, c) =>
+                //     p is SuccessState<BaseLocationMetadata> &&
+                //     c is SuccessState<BaseLocationMetadata>,
                 builder: (_, __) => Container(
                   width: SizeConfig.screenWidth,
                   height: SizeConfig.screenHeight * 0.6,
@@ -590,7 +626,7 @@ class _RequestPageState extends State<RequestPage> {
                   child: GoogleMap(
                     initialCameraPosition: CameraPosition(
                       target: LatLng(_location?.lat, _location?.lng),
-                      zoom: kSpacingX16,
+                      zoom: kSpacingX20,
                     ),
                     zoomControlsEnabled: false,
                     compassEnabled: true,
@@ -600,6 +636,7 @@ class _RequestPageState extends State<RequestPage> {
                     myLocationEnabled: false,
                     tiltGesturesEnabled: true,
                     onTap: (_) {
+                      logger.i('Tapped -> ${_.latitude} : ${_.longitude}');
                       _location =
                           LocationMetadata(lat: _.latitude, lng: _.longitude);
                       setState(() {});
@@ -611,8 +648,8 @@ class _RequestPageState extends State<RequestPage> {
                         markerId: MarkerId(widget.artisan.id),
                         position: LatLng(_location?.lat, _location?.lng),
                         icon: BitmapDescriptor.defaultMarkerWithHue(
-                            BitmapDescriptor.hueGreen),
-                        flat: true,
+                            kTheme.colorScheme.secondary.computeLuminance()),
+                        zIndex: 9,
                         infoWindow:
                             InfoWindow(title: _location?.name ?? 'Use here'),
                       ),
@@ -690,7 +727,16 @@ class _RequestPageState extends State<RequestPage> {
 
   /// handles back pressed action
   Future<bool> _handleBackPressed() async {
-    if (_currentPage != 0) {
+    if (_isRequesting) {
+      await showCustomDialog(
+        context: context,
+        builder: (_) => BasicDialog(
+          message: 'Do you wish to cancel this request?',
+          onComplete: () => context.navigator.pop(),
+        ),
+      );
+      return Future<bool>.value(false);
+    } else if (_currentPage != 0) {
       await _pageController.animateToPage(
         --_currentPage,
         duration: kSheetDuration,
