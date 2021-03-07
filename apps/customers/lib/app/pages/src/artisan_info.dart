@@ -7,7 +7,6 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -19,9 +18,9 @@ import 'package:share/share.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
 class ArtisanInfoPage extends StatefulWidget {
-  final BaseArtisan artisan;
-
   const ArtisanInfoPage({Key key, @required this.artisan}) : super(key: key);
+
+  final BaseArtisan artisan;
 
   @override
   _ArtisanInfoPageState createState() => _ArtisanInfoPageState();
@@ -30,6 +29,8 @@ class ArtisanInfoPage extends StatefulWidget {
 class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
   /// blocs
   final _userBloc = UserBloc(repo: Injection.get());
+  final _businessBloc = BusinessBloc(repo: Injection.get());
+  final _reviewBloc = ReviewBloc(repo: Injection.get());
 
   /// UI
   ThemeData kTheme;
@@ -37,6 +38,8 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
   @override
   void dispose() {
     _userBloc.close();
+    _businessBloc.close();
+    _reviewBloc.close();
     super.dispose();
   }
 
@@ -44,8 +47,15 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
   void initState() {
     super.initState();
     if (mounted) {
+      /// get businesses for artisan
+      _businessBloc.add(
+          BusinessEvent.getBusinessesForArtisan(artisanId: widget.artisan.id));
+
       /// observe artisan's profile
       _userBloc.add(UserEvent.observeArtisanByIdEvent(id: widget.artisan.id));
+
+      _reviewBloc
+          .add(ReviewEvent.observeReviewsForArtisan(id: widget.artisan.id));
     }
   }
 
@@ -63,41 +73,6 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
           builder: (_, userSnap) {
             final artisan = userSnap.data;
 
-<<<<<<< Updated upstream
-            return CustomScrollView(
-              slivers: [
-                /// header
-                SliverAppBar(
-                  toolbarHeight: kToolbarHeight,
-                  toolbarTextStyle: kTheme.textTheme.headline6,
-                  textTheme: kTheme.textTheme,
-                  leading: IconButton(
-                    icon: Icon(kBackIcon),
-                    onPressed: () => context.navigator.pop(),
-                  ),
-                  pinned: true,
-                  backgroundColor: kTheme.colorScheme.background,
-                  expandedHeight: SizeConfig.screenHeight * 0.35,
-                  actions: [
-                    IconButton(
-                      icon: Icon(kOptionsIcon),
-                      onPressed: _showOptionsBottomSheet,
-                    ),
-                  ],
-                  flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.parallax,
-                    background: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Positioned.fill(
-                          child: ImageView(imageUrl: artisan.avatar),
-                        ),
-                      ],
-                    ),
-                    titlePadding: EdgeInsets.zero,
-                  ),
-                ),
-=======
             return Scaffold(
               body: BlocBuilder<ReviewBloc, BlocState>(
                 bloc: _reviewBloc,
@@ -109,66 +84,47 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                             : Stream.empty(),
                     builder: (_, reviewSnap) {
                       final reviews = reviewSnap.data;
->>>>>>> Stashed changes
 
-                /// profile details
-                SliverList(
-                  delegate: SliverChildListDelegate.fixed(
-                    [
-                      Padding(
-                        padding: const EdgeInsets.all(kSpacingX8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                      return Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          /// main content
+                          Positioned.fill(
+                            child: Stack(
                               children: [
-                                Text(
-                                  artisan.name,
-                                  style: kTheme.textTheme.headline5,
-                                ),
-                                BlocBuilder<CategoryBloc, BlocState>(
-                                  cubit: CategoryBloc(repo: Injection.get())
-                                    ..add(
-                                      CategoryEvent.observeCategoryById(
-                                          id: artisan.category),
-                                    ),
-                                  builder: (_, userCategoryState) =>
-                                      StreamBuilder<BaseServiceCategory>(
-                                          stream: userCategoryState is SuccessState<
-                                              Stream<BaseServiceCategory>>
-                                              ? userCategoryState.data
-                                              : Stream.empty(),
-                                          builder: (_, __) {
-                                            return Text(
-                                              __.hasData ? __.data.name : "...",
-                                              style: kTheme.textTheme.bodyText2,
-                                            );
-                                          }),
-                                ),
-                                SizedBox(width: kSpacingX8),
-                                RatingBarIndicator(
-                                  itemBuilder: (_, index) => Icon(
-                                    kRatingStar,
-                                    color: kAmberColor,
+                                Container(
+                                  height: SizeConfig.screenHeight * 0.45,
+                                  width: SizeConfig.screenWidth,
+                                  child: ImageView(
+                                    imageUrl: artisan.avatar,
+                                    tag: artisan.avatar,
+                                    onTap: () => context.navigator
+                                        .pushImagePreviewPage(
+                                            url: artisan.avatar),
                                   ),
-                                  itemCount: 5,
-                                  itemSize: kSpacingX24,
-                                  rating: artisan.rating,
+                                ),
+
+                                /// back
+                                Positioned(
+                                  top: kSpacingX36,
+                                  left: kSpacingX16,
+                                  child: IconButton(
+                                    icon: Icon(kBackIcon),
+                                    onPressed: () => context.navigator.pop(),
+                                  ),
+                                ),
+
+                                /// options
+                                Positioned(
+                                  top: kSpacingX36,
+                                  right: kSpacingX16,
+                                  child: IconButton(
+                                    icon: Icon(kOptionsIcon),
+                                    onPressed: _showOptionsBottomSheet,
+                                  ),
                                 ),
                               ],
                             ),
-<<<<<<< Updated upstream
-                          ],
-                        ),
-                      ),
-                    ],
-                    addAutomaticKeepAlives: true,
-                  ),
-                ),
-              ],
-=======
                           ),
 
                           /// body
@@ -365,7 +321,6 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                       );
                     }),
               ),
->>>>>>> Stashed changes
             );
           }),
     );
@@ -393,14 +348,14 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                 child: ListView(
                   children: [
                     ListTile(
-                      title: Text("Report"),
+                      title: Text('Report'),
                       onTap: () {
                         context.navigator.pop();
                         _showReportBottomSheet();
                       },
                     ),
                     ListTile(
-                      title: Text("Share this Profile"),
+                      title: Text('Share this Profile'),
                       onTap: () {
                         context.navigator.pop();
                         Share.share(
@@ -456,7 +411,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
               child: ListView(
                 children: [
                   ListTile(
-                    title: Text("State your reason for this action..."),
+                    title: Text('State your reason for this action...'),
                   ),
                   ..._reportMessages
                       .map((reason) => ListTile(
@@ -474,17 +429,94 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
       );
     });
 
-    logger.d("Report -> $report");
-    if (mounted && report != null)
-      showSnackBarMessage(context, message: "${widget.artisan.name} reported");
+    logger.d('Report -> $report');
+    if (mounted && report != null) {
+      showSnackBarMessage(context,
+          message: "${widget.artisan.name ?? "Artisan"} reported");
+    }
 
     /// todo -> send report to server
   }
 
   /// messages to be used for reporting an artisan
   final _reportMessages = const <String>[
-    "Inappropriate account activities",
-    "Impersonation and Identity theft",
-    "It's a spam"
+    'Inappropriate account activities',
+    'Impersonation and Identity theft',
+    'It\'s a spam'
   ];
+
+  /// metadata info
+  Widget _buildArtisanMetaInfo(int value, String title) => Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '$value',
+            style: kTheme.textTheme.headline5.copyWith(
+              fontFamily: kTheme.textTheme.bodyText1.fontFamily,
+            ),
+          ),
+          SizedBox(height: kSpacingX8),
+          Text(
+            title,
+            style: kTheme.textTheme.caption,
+          ),
+        ],
+      );
+
+  /// review list item
+  Widget _buildReviewItem(BaseReview review) => ReviewListItem(review: review);
+
+  /// business list
+  Widget _buildBusinessList(List<BaseBusiness> data, BaseArtisan artisan) =>
+      Container(
+        constraints: BoxConstraints(
+          minWidth: SizeConfig.screenWidth,
+          minHeight: SizeConfig.screenHeight * 0.1,
+          maxHeight: SizeConfig.screenHeight * 0.2,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                top: kSpacingX12,
+                left: kSpacingX16,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Business profile',
+                    style: kTheme.textTheme.headline6.copyWith(
+                      color: kTheme.colorScheme.onBackground
+                          .withOpacity(kEmphasisMedium),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView.separated(
+                padding: EdgeInsets.only(
+                  top: kSpacingX12,
+                  left: kSpacingNone,
+                  right: kSpacingX8,
+                ),
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (_, index) {
+                  final model = data[index];
+                  return BusinessListItem(
+                    business: model,
+                    artisan: artisan,
+                  );
+                },
+                separatorBuilder: (_, __) => SizedBox(width: kSpacingX8),
+                itemCount: data.length,
+              ),
+            ),
+          ],
+        ),
+      );
 }

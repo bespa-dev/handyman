@@ -22,15 +22,13 @@ class ServiceCategoryAdapter extends TypeAdapter<ServiceCategory> {
       name: fields[0] as String,
       avatar: fields[1] as String,
       groupName: fields[2] as String,
-      parent: fields[6] as String,
-      hasServices: fields[5] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, ServiceCategory obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -40,11 +38,7 @@ class ServiceCategoryAdapter extends TypeAdapter<ServiceCategory> {
       ..writeByte(3)
       ..write(obj.id)
       ..writeByte(4)
-      ..write(obj.createdAt)
-      ..writeByte(5)
-      ..write(obj.hasServices)
-      ..writeByte(6)
-      ..write(obj.parent);
+      ..write(obj.createdAt);
   }
 
   @override

@@ -12,10 +12,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-<<<<<<< Updated upstream
-=======
 import 'package:flutter_svg/svg.dart';
->>>>>>> Stashed changes
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/routes/routes.gr.dart';
 import 'package:lite/app/widgets/widgets.dart';
@@ -71,7 +68,7 @@ class _SplashPageState extends State<SplashPage>
 
       /// observe auth state
       _authBloc
-        ..add(AuthEvent.observeAuthStatetEvent())
+        ..add(AuthEvent.observeAuthStateEvent())
         ..add(AuthEvent.observeMessageEvent())
         ..listen((state) {
           if (state is SuccessState<Stream<AuthState>>) {
@@ -85,7 +82,7 @@ class _SplashPageState extends State<SplashPage>
                 if (mounted) {
                   setState(() {});
                   showSnackBarMessage(context,
-                      message: event.message ?? "Authentication failed");
+                      message: event.message ?? 'Authentication failed');
                 }
               } else if (event is AuthenticatedState) {
                 _isLoading = false;
@@ -118,43 +115,6 @@ class _SplashPageState extends State<SplashPage>
       body: Stack(
         fit: StackFit.expand,
         children: [
-          /// base
-          Positioned.fill(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                kSpacingX24,
-                kSpacingX36,
-                kSpacingX24,
-                kSpacingX24,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Image(
-                  //   image: Svg(
-                  //     lightTheme ? kLogoAsset : kLogoDarkAsset,
-                  //   ),
-                  // ),
-                  // SizedBox(height: kSpacingX36),
-                  Text(
-                    kAppName,
-                    textAlign: TextAlign.center,
-                    style: kTheme.textTheme.headline4,
-                  ),
-                  SizedBox(height: kSpacingX8),
-                  Text(
-                    kAppSloganDesc,
-                    textAlign: TextAlign.center,
-                    style: kTheme.textTheme.subtitle1,
-                  ),
-                  SizedBox(height: kSpacingX64),
-                  Loading(color: kTheme.colorScheme.primary),
-                ],
-              ),
-            ),
-          ),
-
           /// overlay
           if (_showPageContent) ...{
             Positioned.fill(
@@ -174,7 +134,7 @@ class _SplashPageState extends State<SplashPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Welcome back...",
+                            'Welcome back',
                             style: kTheme.textTheme.headline6.copyWith(
                               color: kTheme.colorScheme.onPrimary,
                             ),
@@ -197,9 +157,9 @@ class _SplashPageState extends State<SplashPage>
                                 onTap: () => context.navigator
                                     .pushAndRemoveUntil(
                                         Routes.homePage, (route) => false),
-                                label: "Explore",
-                                color: kTheme.colorScheme.onBackground,
-                                textColor: kTheme.colorScheme.background,
+                                label: 'Explore',
+                                color: kTheme.colorScheme.secondary,
+                                textColor: kTheme.colorScheme.onSecondary,
                               ),
                             )
                           } else ...{
@@ -213,7 +173,7 @@ class _SplashPageState extends State<SplashPage>
                                 },
                                 icon: kGoogleIcon,
                                 gravity: ButtonIconGravity.START,
-                                label: "Continue with Google",
+                                label: 'Continue with Google',
                                 color: kTheme.colorScheme.onBackground,
                                 textColor: kTheme.colorScheme.background,
                               ),
@@ -227,7 +187,7 @@ class _SplashPageState extends State<SplashPage>
                                     context.navigator.pushRegisterPage(),
                                 icon: kMailIcon,
                                 gravity: ButtonIconGravity.START,
-                                label: "Sign up with email",
+                                label: 'Sign up with email',
                                 color: lightTheme
                                     ? kTheme.colorScheme.background
                                     : kTheme.colorScheme.secondary,
@@ -252,9 +212,10 @@ class _SplashPageState extends State<SplashPage>
                                     TextSpan(
                                       children: [
                                         TextSpan(
-                                            text: "Already have an account?\t"),
+                                            text:
+                                                'Already have an account?\t\t'),
                                         TextSpan(
-                                          text: "Log in",
+                                          text: 'Log in',
                                           style:
                                               kTheme.textTheme.button.copyWith(
                                             color: kTheme.colorScheme.secondary,
@@ -279,8 +240,6 @@ class _SplashPageState extends State<SplashPage>
                 ),
               ),
             ),
-<<<<<<< Updated upstream
-=======
           } else ...{
             /// base
             Positioned.fill(
@@ -312,7 +271,6 @@ class _SplashPageState extends State<SplashPage>
                 ),
               ),
             ),
->>>>>>> Stashed changes
           }
         ],
       ),
@@ -320,34 +278,53 @@ class _SplashPageState extends State<SplashPage>
   }
 
   void _animateEntry() async {
-    /// get all featured artisans
-    _userBloc.add(UserEvent.observeArtisansEvent(
-        category: ServiceCategoryGroup.featured().name()));
-
-    /// cache all category images for faster load times
-    _categoryBloc
-      ..add(CategoryEvent.observeAllCategories(
-          group: ServiceCategoryGroup.featured()))
+    /// get user id
+    _prefsBloc
+      ..add(PrefsEvent.getUserIdEvent())
       ..listen((state) async {
-        if (state is SuccessState<Stream<List<BaseServiceCategory>>>) {
-          var list = await state.data.single;
-          list.forEach((element) async {
-            await precacheImage(
-                CachedNetworkImageProvider(element.avatar), context);
-          });
+        if (state is SuccessState<String>) {
+          if (state.data == null) {
+            _isLoading = true;
+            if (mounted) setState(() {});
 
-          await Future.delayed(kSplashDuration);
-          if (_animationController.status == AnimationStatus.forward ||
-              _animationController.status == AnimationStatus.completed) {
-            _animationController.reverse();
-          } else
-            _animationController.forward();
+            /// cache all category images for faster load times
+            _categoryBloc
+              ..add(CategoryEvent.observeAllCategories(
+                  group: ServiceCategoryGroup.featured()))
+              ..listen((state) async {
+                if (state is SuccessState<Stream<List<BaseServiceCategory>>>) {
+                  var list = await state.data.single;
+                  list.forEach((element) async {
+                    await precacheImage(
+                        CachedNetworkImageProvider(element.avatar), context);
+                  });
 
-          if (mounted)
-            setState(() {
-              _showPageContent = !_showPageContent;
-            });
+                  _userBloc.add(UserEvent.observeArtisansEvent(
+                      category: ServiceCategoryGroup.featured().name()));
+                }
+              });
+          } else {
+            await Future.delayed(kSplashDuration);
+            if (mounted) {
+              _isLoading = false;
+              _showPageContent = true;
+              setState(() {});
+              await _animationController.forward();
+            }
+          }
         }
       });
+
+    /// observe users state
+    _userBloc.listen((state) async {
+      if (state is SuccessState) {
+        if (mounted) {
+          _isLoading = !_isLoading;
+          _showPageContent = true;
+          setState(() {});
+          await _animationController.forward();
+        }
+      }
+    });
   }
 }

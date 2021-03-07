@@ -18,33 +18,30 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
     };
     return Artisan(
       id: fields[10] as String,
+      rating: fields[17] as double,
       createdAt: fields[11] as String,
+      businessId: fields[0] as String,
+      category: fields[1] as String,
+      categoryGroup: fields[18] as String,
       startWorkingHours: fields[2] as String,
       endWorkingHours: fields[3] as String,
-      name: fields[16] as String,
+      bookingsCount: fields[4] as int,
+      requests: (fields[5] as List)?.cast<String>(),
+      reports: (fields[6] as List)?.cast<String>(),
+      isAvailable: fields[8] as bool,
+      isApproved: fields[9] as bool,
       token: fields[12] as String,
       phone: fields[13] as String,
       avatar: fields[14] as String,
       email: fields[15] as String,
-      businessId: fields[0] as String,
-      birthCert: fields[19] as String,
-      nationalId: fields[20] as String,
-      category: fields[1] as String,
-      categoryGroup: fields[18] as String,
-      rating: fields[17] as double,
-      bookingsCount: fields[4] as int,
-      requests: (fields[5] as List)?.cast<String>(),
-      reports: (fields[6] as List)?.cast<String>(),
-      services: (fields[21] as List)?.cast<String>(),
-      isAvailable: fields[8] as bool,
-      isApproved: fields[9] as bool,
+      name: fields[16] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Artisan obj) {
     writer
-      ..writeByte(22)
+      ..writeByte(19)
       ..writeByte(0)
       ..write(obj.businessId)
       ..writeByte(1)
@@ -81,12 +78,6 @@ class ArtisanAdapter extends TypeAdapter<Artisan> {
       ..write(obj.rating)
       ..writeByte(18)
       ..write(obj.categoryGroup)
-      ..writeByte(19)
-      ..write(obj.birthCert)
-      ..writeByte(20)
-      ..write(obj.nationalId)
-      ..writeByte(21)
-      ..write(obj.services)
       ..writeByte(7)
       ..write(obj.isCertified);
   }

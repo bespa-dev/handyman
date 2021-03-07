@@ -13,10 +13,6 @@ abstract class PrefsEvent extends Equatable {
 
   factory PrefsEvent.getUserIdEvent() = GetUserIdEvent.create;
 
-  factory PrefsEvent.getHomeAddressEvent() = GetHomeAddressEvent.create;
-
-  factory PrefsEvent.getWorkAddressEvent() = GetWorkAddressEvent.create;
-
   factory PrefsEvent.getThemeEvent() = GetThemeEvent.create;
 
   factory PrefsEvent.getContactEvent() = GetContactEvent.create;
@@ -36,23 +32,12 @@ abstract class PrefsEvent extends Equatable {
   factory PrefsEvent.saveContactEvent({@required String contact}) =
       SaveContactEvent.create;
 
-  factory PrefsEvent.saveUserIdEvent({@required String id}) =
-      SaveUserIdEvent.create;
-
-  factory PrefsEvent.saveHomeAddressEvent({@required String address}) =
-      SaveHomeAddressEvent.create;
-
-  factory PrefsEvent.saveWorkAddressEvent({@required String address}) =
-      SaveWorkAddressEvent.create;
-
   final _PrefsEvent _type;
 
   /// The [when] method is the equivalent to pattern matching.
   /// Its prototype depends on the _PrefsEvent [_type]s defined.
   R when<R extends Object>(
       {@required R Function() getUserIdEvent,
-      @required R Function() getHomeAddressEvent,
-      @required R Function() getWorkAddressEvent,
       @required R Function() getThemeEvent,
       @required R Function() getContactEvent,
       @required R Function() observeThemeEvent,
@@ -60,14 +45,9 @@ abstract class PrefsEvent extends Equatable {
       @required R Function() prefsSignOutEvent,
       @required R Function(SaveLightThemeEvent) saveLightThemeEvent,
       @required R Function(SaveStandardViewEvent) saveStandardViewEvent,
-      @required R Function(SaveContactEvent) saveContactEvent,
-      @required R Function(SaveUserIdEvent) saveUserIdEvent,
-      @required R Function(SaveHomeAddressEvent) saveHomeAddressEvent,
-      @required R Function(SaveWorkAddressEvent) saveWorkAddressEvent}) {
+      @required R Function(SaveContactEvent) saveContactEvent}) {
     assert(() {
       if (getUserIdEvent == null ||
-          getHomeAddressEvent == null ||
-          getWorkAddressEvent == null ||
           getThemeEvent == null ||
           getContactEvent == null ||
           observeThemeEvent == null ||
@@ -75,10 +55,7 @@ abstract class PrefsEvent extends Equatable {
           prefsSignOutEvent == null ||
           saveLightThemeEvent == null ||
           saveStandardViewEvent == null ||
-          saveContactEvent == null ||
-          saveUserIdEvent == null ||
-          saveHomeAddressEvent == null ||
-          saveWorkAddressEvent == null) {
+          saveContactEvent == null) {
         throw 'check for all possible cases';
       }
       return true;
@@ -86,10 +63,6 @@ abstract class PrefsEvent extends Equatable {
     switch (this._type) {
       case _PrefsEvent.GetUserIdEvent:
         return getUserIdEvent();
-      case _PrefsEvent.GetHomeAddressEvent:
-        return getHomeAddressEvent();
-      case _PrefsEvent.GetWorkAddressEvent:
-        return getWorkAddressEvent();
       case _PrefsEvent.GetThemeEvent:
         return getThemeEvent();
       case _PrefsEvent.GetContactEvent:
@@ -106,12 +79,6 @@ abstract class PrefsEvent extends Equatable {
         return saveStandardViewEvent(this as SaveStandardViewEvent);
       case _PrefsEvent.SaveContactEvent:
         return saveContactEvent(this as SaveContactEvent);
-      case _PrefsEvent.SaveUserIdEvent:
-        return saveUserIdEvent(this as SaveUserIdEvent);
-      case _PrefsEvent.SaveHomeAddressEvent:
-        return saveHomeAddressEvent(this as SaveHomeAddressEvent);
-      case _PrefsEvent.SaveWorkAddressEvent:
-        return saveWorkAddressEvent(this as SaveWorkAddressEvent);
     }
   }
 
@@ -122,8 +89,6 @@ abstract class PrefsEvent extends Equatable {
   /// for fallback behavior.
   R whenOrElse<R extends Object>(
       {R Function() getUserIdEvent,
-      R Function() getHomeAddressEvent,
-      R Function() getWorkAddressEvent,
       R Function() getThemeEvent,
       R Function() getContactEvent,
       R Function() observeThemeEvent,
@@ -132,9 +97,6 @@ abstract class PrefsEvent extends Equatable {
       R Function(SaveLightThemeEvent) saveLightThemeEvent,
       R Function(SaveStandardViewEvent) saveStandardViewEvent,
       R Function(SaveContactEvent) saveContactEvent,
-      R Function(SaveUserIdEvent) saveUserIdEvent,
-      R Function(SaveHomeAddressEvent) saveHomeAddressEvent,
-      R Function(SaveWorkAddressEvent) saveWorkAddressEvent,
       @required R Function(PrefsEvent) orElse}) {
     assert(() {
       if (orElse == null) {
@@ -146,12 +108,6 @@ abstract class PrefsEvent extends Equatable {
       case _PrefsEvent.GetUserIdEvent:
         if (getUserIdEvent == null) break;
         return getUserIdEvent();
-      case _PrefsEvent.GetHomeAddressEvent:
-        if (getHomeAddressEvent == null) break;
-        return getHomeAddressEvent();
-      case _PrefsEvent.GetWorkAddressEvent:
-        if (getWorkAddressEvent == null) break;
-        return getWorkAddressEvent();
       case _PrefsEvent.GetThemeEvent:
         if (getThemeEvent == null) break;
         return getThemeEvent();
@@ -176,15 +132,6 @@ abstract class PrefsEvent extends Equatable {
       case _PrefsEvent.SaveContactEvent:
         if (saveContactEvent == null) break;
         return saveContactEvent(this as SaveContactEvent);
-      case _PrefsEvent.SaveUserIdEvent:
-        if (saveUserIdEvent == null) break;
-        return saveUserIdEvent(this as SaveUserIdEvent);
-      case _PrefsEvent.SaveHomeAddressEvent:
-        if (saveHomeAddressEvent == null) break;
-        return saveHomeAddressEvent(this as SaveHomeAddressEvent);
-      case _PrefsEvent.SaveWorkAddressEvent:
-        if (saveWorkAddressEvent == null) break;
-        return saveWorkAddressEvent(this as SaveWorkAddressEvent);
     }
     return orElse(this);
   }
@@ -193,8 +140,6 @@ abstract class PrefsEvent extends Equatable {
   /// but non-exhaustive.
   void whenPartial(
       {void Function() getUserIdEvent,
-      void Function() getHomeAddressEvent,
-      void Function() getWorkAddressEvent,
       void Function() getThemeEvent,
       void Function() getContactEvent,
       void Function() observeThemeEvent,
@@ -202,14 +147,9 @@ abstract class PrefsEvent extends Equatable {
       void Function() prefsSignOutEvent,
       void Function(SaveLightThemeEvent) saveLightThemeEvent,
       void Function(SaveStandardViewEvent) saveStandardViewEvent,
-      void Function(SaveContactEvent) saveContactEvent,
-      void Function(SaveUserIdEvent) saveUserIdEvent,
-      void Function(SaveHomeAddressEvent) saveHomeAddressEvent,
-      void Function(SaveWorkAddressEvent) saveWorkAddressEvent}) {
+      void Function(SaveContactEvent) saveContactEvent}) {
     assert(() {
       if (getUserIdEvent == null &&
-          getHomeAddressEvent == null &&
-          getWorkAddressEvent == null &&
           getThemeEvent == null &&
           getContactEvent == null &&
           observeThemeEvent == null &&
@@ -217,10 +157,7 @@ abstract class PrefsEvent extends Equatable {
           prefsSignOutEvent == null &&
           saveLightThemeEvent == null &&
           saveStandardViewEvent == null &&
-          saveContactEvent == null &&
-          saveUserIdEvent == null &&
-          saveHomeAddressEvent == null &&
-          saveWorkAddressEvent == null) {
+          saveContactEvent == null) {
         throw 'provide at least one branch';
       }
       return true;
@@ -229,12 +166,6 @@ abstract class PrefsEvent extends Equatable {
       case _PrefsEvent.GetUserIdEvent:
         if (getUserIdEvent == null) break;
         return getUserIdEvent();
-      case _PrefsEvent.GetHomeAddressEvent:
-        if (getHomeAddressEvent == null) break;
-        return getHomeAddressEvent();
-      case _PrefsEvent.GetWorkAddressEvent:
-        if (getWorkAddressEvent == null) break;
-        return getWorkAddressEvent();
       case _PrefsEvent.GetThemeEvent:
         if (getThemeEvent == null) break;
         return getThemeEvent();
@@ -259,15 +190,6 @@ abstract class PrefsEvent extends Equatable {
       case _PrefsEvent.SaveContactEvent:
         if (saveContactEvent == null) break;
         return saveContactEvent(this as SaveContactEvent);
-      case _PrefsEvent.SaveUserIdEvent:
-        if (saveUserIdEvent == null) break;
-        return saveUserIdEvent(this as SaveUserIdEvent);
-      case _PrefsEvent.SaveHomeAddressEvent:
-        if (saveHomeAddressEvent == null) break;
-        return saveHomeAddressEvent(this as SaveHomeAddressEvent);
-      case _PrefsEvent.SaveWorkAddressEvent:
-        if (saveWorkAddressEvent == null) break;
-        return saveWorkAddressEvent(this as SaveWorkAddressEvent);
     }
   }
 
@@ -288,36 +210,6 @@ class _GetUserIdEventImpl extends GetUserIdEvent {
 
   @override
   String toString() => 'GetUserIdEvent()';
-}
-
-@immutable
-abstract class GetHomeAddressEvent extends PrefsEvent {
-  const GetHomeAddressEvent() : super(_PrefsEvent.GetHomeAddressEvent);
-
-  factory GetHomeAddressEvent.create() = _GetHomeAddressEventImpl;
-}
-
-@immutable
-class _GetHomeAddressEventImpl extends GetHomeAddressEvent {
-  const _GetHomeAddressEventImpl() : super();
-
-  @override
-  String toString() => 'GetHomeAddressEvent()';
-}
-
-@immutable
-abstract class GetWorkAddressEvent extends PrefsEvent {
-  const GetWorkAddressEvent() : super(_PrefsEvent.GetWorkAddressEvent);
-
-  factory GetWorkAddressEvent.create() = _GetWorkAddressEventImpl;
-}
-
-@immutable
-class _GetWorkAddressEventImpl extends GetWorkAddressEvent {
-  const _GetWorkAddressEventImpl() : super();
-
-  @override
-  String toString() => 'GetWorkAddressEvent()';
 }
 
 @immutable
@@ -499,104 +391,4 @@ class _SaveContactEventImpl extends SaveContactEvent {
   String toString() => 'SaveContactEvent(contact: ${this.contact})';
   @override
   List<Object> get props => [contact];
-}
-
-@immutable
-abstract class SaveUserIdEvent extends PrefsEvent {
-  const SaveUserIdEvent({@required this.id})
-      : super(_PrefsEvent.SaveUserIdEvent);
-
-  factory SaveUserIdEvent.create({@required String id}) = _SaveUserIdEventImpl;
-
-  final String id;
-
-  /// Creates a copy of this SaveUserIdEvent but with the given fields
-  /// replaced with the new values.
-  SaveUserIdEvent copyWith({String id});
-}
-
-@immutable
-class _SaveUserIdEventImpl extends SaveUserIdEvent {
-  const _SaveUserIdEventImpl({@required this.id}) : super(id: id);
-
-  @override
-  final String id;
-
-  @override
-  _SaveUserIdEventImpl copyWith({Object id = superEnum}) =>
-      _SaveUserIdEventImpl(
-        id: id == superEnum ? this.id : id as String,
-      );
-  @override
-  String toString() => 'SaveUserIdEvent(id: ${this.id})';
-  @override
-  List<Object> get props => [id];
-}
-
-@immutable
-abstract class SaveHomeAddressEvent extends PrefsEvent {
-  const SaveHomeAddressEvent({@required this.address})
-      : super(_PrefsEvent.SaveHomeAddressEvent);
-
-  factory SaveHomeAddressEvent.create({@required String address}) =
-      _SaveHomeAddressEventImpl;
-
-  final String address;
-
-  /// Creates a copy of this SaveHomeAddressEvent but with the given fields
-  /// replaced with the new values.
-  SaveHomeAddressEvent copyWith({String address});
-}
-
-@immutable
-class _SaveHomeAddressEventImpl extends SaveHomeAddressEvent {
-  const _SaveHomeAddressEventImpl({@required this.address})
-      : super(address: address);
-
-  @override
-  final String address;
-
-  @override
-  _SaveHomeAddressEventImpl copyWith({Object address = superEnum}) =>
-      _SaveHomeAddressEventImpl(
-        address: address == superEnum ? this.address : address as String,
-      );
-  @override
-  String toString() => 'SaveHomeAddressEvent(address: ${this.address})';
-  @override
-  List<Object> get props => [address];
-}
-
-@immutable
-abstract class SaveWorkAddressEvent extends PrefsEvent {
-  const SaveWorkAddressEvent({@required this.address})
-      : super(_PrefsEvent.SaveWorkAddressEvent);
-
-  factory SaveWorkAddressEvent.create({@required String address}) =
-      _SaveWorkAddressEventImpl;
-
-  final String address;
-
-  /// Creates a copy of this SaveWorkAddressEvent but with the given fields
-  /// replaced with the new values.
-  SaveWorkAddressEvent copyWith({String address});
-}
-
-@immutable
-class _SaveWorkAddressEventImpl extends SaveWorkAddressEvent {
-  const _SaveWorkAddressEventImpl({@required this.address})
-      : super(address: address);
-
-  @override
-  final String address;
-
-  @override
-  _SaveWorkAddressEventImpl copyWith({Object address = superEnum}) =>
-      _SaveWorkAddressEventImpl(
-        address: address == superEnum ? this.address : address as String,
-      );
-  @override
-  String toString() => 'SaveWorkAddressEvent(address: ${this.address})';
-  @override
-  List<Object> get props => [address];
 }

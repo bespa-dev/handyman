@@ -24,19 +24,17 @@ class BookingAdapter extends TypeAdapter<Booking> {
       category: fields[2] as String,
       imageUrl: fields[3] as String,
       description: fields[4] as String,
-      dueDate: fields[8] as String,
-      currentState: fields[11] as String,
-      serviceType: fields[12] as String,
       position: fields[5] as LocationMetadata,
       cost: fields[6] as double,
       progress: fields[7] as double,
+      dueDate: fields[8] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Booking obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.customerId)
       ..writeByte(1)
@@ -58,11 +56,7 @@ class BookingAdapter extends TypeAdapter<Booking> {
       ..writeByte(9)
       ..write(obj.id)
       ..writeByte(10)
-      ..write(obj.createdAt)
-      ..writeByte(11)
-      ..write(obj.currentState)
-      ..writeByte(12)
-      ..write(obj.serviceType);
+      ..write(obj.createdAt);
   }
 
   @override
