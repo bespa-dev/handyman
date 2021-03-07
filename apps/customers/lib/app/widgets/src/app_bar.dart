@@ -9,20 +9,13 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-<<<<<<< Updated upstream
-=======
 import 'package:flutter_svg/svg.dart';
 import 'package:get_version/get_version.dart';
 import 'package:lite/app/widgets/widgets.dart';
->>>>>>> Stashed changes
 import 'package:lite/shared/shared.dart';
+import 'package:uuid/uuid.dart';
 
 class ExpandedAppBarContainer extends StatelessWidget {
-  final String title;
-  final Widget child;
-  final Widget actionButton;
-  final bool showNavIcon;
-
   const ExpandedAppBarContainer({
     Key key,
     @required this.title,
@@ -30,6 +23,11 @@ class ExpandedAppBarContainer extends StatelessWidget {
     this.showNavIcon = false,
     this.actionButton,
   }) : super(key: key);
+
+  final String title;
+  final Widget child;
+  final Widget actionButton;
+  final bool showNavIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -87,8 +85,6 @@ class ExpandedAppBarContainer extends StatelessWidget {
     );
   }
 }
-<<<<<<< Updated upstream
-=======
 
 /// sliver app bar
 class CustomAppBar extends StatefulWidget {
@@ -176,4 +172,3 @@ class _CustomAppBarState extends State<CustomAppBar> {
     );
   }
 }
->>>>>>> Stashed changes

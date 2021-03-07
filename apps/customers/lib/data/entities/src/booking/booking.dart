@@ -14,7 +14,7 @@ import 'package:lite/domain/models/models.dart';
 part 'booking.g.dart';
 
 @HiveType(typeId: 0)
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, genericArgumentFactories: true)
 class Booking extends BaseBooking {
   @HiveField(0)
   @override

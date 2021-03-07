@@ -13,15 +13,15 @@ import 'package:lite/domain/models/models.dart' show BaseModel;
 abstract class BaseUser extends BaseModel {
   String name = '';
   String email = '';
-  String? avatar;
-  String? token;
-  String? phone;
+  String avatar;
+  String token;
+  String phone;
 
   BaseUser copyWith({
     String name,
     String email,
-    String? avatar,
-    String? token,
-    String? phone,
+    String avatar,
+    String token,
+    String phone,
   });
 }

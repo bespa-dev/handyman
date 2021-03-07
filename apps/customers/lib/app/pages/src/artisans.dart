@@ -11,9 +11,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lite/app/bloc/bloc.dart';
-import 'package:lite/app/routes/routes.gr.dart';
 import 'package:lite/app/widgets/widgets.dart';
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
@@ -81,15 +80,15 @@ class _ArtisansPageState extends State<ArtisansPage> {
                   toolbarHeight: kToolbarHeight,
                   toolbarTextStyle: kTheme.appBarTheme.textTheme.headline6,
                   textTheme: kTheme.appBarTheme.textTheme,
-                  leading: Image(
-                    image: Svg(kLogoAsset),
+                  leading: SvgPicture.asset(
+                    kLogoAsset,
                     height: kSpacingX36,
                     width: kSpacingX36,
                   ),
                   title: Text.rich(
                     TextSpan(
                       children: [
-                        TextSpan(text: "$kAppName\n"),
+                        TextSpan(text: '$kAppName\n'),
                         TextSpan(
                           text: kAppVersion,
                           style: kTheme.textTheme.caption,
@@ -331,7 +330,7 @@ class _ArtisansPageState extends State<ArtisansPage> {
                           ),
                           SizedBox(height: kSpacingX6),
                           BlocBuilder<CategoryBloc, BlocState>(
-                            cubit: CategoryBloc(repo: Injection.get())
+                            bloc: CategoryBloc(repo: Injection.get())
                               ..add(
                                 CategoryEvent.observeCategoryById(
                                     id: artisan.category),

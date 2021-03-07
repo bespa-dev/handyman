@@ -18,12 +18,11 @@ import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 
 class GridArtisanCardItem extends StatefulWidget {
-  final BaseArtisan artisan;
-
   const GridArtisanCardItem({
     Key key,
     @required this.artisan,
   }) : super(key: key);
+  final BaseArtisan artisan;
 
   @override
   _GridArtisanCardItemState createState() => _GridArtisanCardItemState();
@@ -60,8 +59,8 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                   padding: EdgeInsets.symmetric(
                       horizontal: getProportionateScreenWidth(kSpacingX8)),
                   decoration: BoxDecoration(
-                    color: kTheme.scaffoldBackgroundColor
-                        .withOpacity(kOpacityX90),
+                    color:
+                        kTheme.scaffoldBackgroundColor.withOpacity(kOpacityX90),
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(kSpacingX8),
                       topLeft: Radius.circular(kSpacingX8),
@@ -86,19 +85,19 @@ class _GridArtisanCardItemState extends State<GridArtisanCardItem> {
                             CategoryEvent.observeCategoryById(
                                 id: widget.artisan.category),
                           ),
-                        builder: (_, userCategoryState) =>
-                            StreamBuilder<BaseServiceCategory>(
-                                stream: userCategoryState is SuccessState<
-                                    Stream<BaseServiceCategory>>
-                                    ? userCategoryState.data
-                                    : Stream.empty(),
-                                builder: (_, __) {
-                                  return Text(
-                                    __.hasData ? __.data.name : "...",
-                                    overflow: TextOverflow.fade,
-                                    style: kTheme.textTheme.caption,
-                                  );
-                                }),
+                        builder: (_, userCategoryState) => StreamBuilder<
+                                BaseServiceCategory>(
+                            stream: userCategoryState
+                                    is SuccessState<Stream<BaseServiceCategory>>
+                                ? userCategoryState.data
+                                : Stream.empty(),
+                            builder: (_, __) {
+                              return Text(
+                                __.hasData ? __.data.name : "...",
+                                overflow: TextOverflow.fade,
+                                style: kTheme.textTheme.caption,
+                              );
+                            }),
                       ),
                       SizedBox(
                           height: getProportionateScreenHeight(kSpacingX8)),
