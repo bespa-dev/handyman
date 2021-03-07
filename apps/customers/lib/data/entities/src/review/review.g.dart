@@ -1,50 +1,47 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'category.dart';
+part of 'review.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class ServiceCategoryAdapter extends TypeAdapter<ServiceCategory> {
+class ReviewAdapter extends TypeAdapter<Review> {
   @override
-  final int typeId = 1;
+  final int typeId = 4;
 
   @override
-  ServiceCategory read(BinaryReader reader) {
+  Review read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return ServiceCategory(
-      id: fields[3] as String,
-      createdAt: fields[4] as String,
-      name: fields[0] as String,
-      avatar: fields[1] as String,
-      groupName: fields[2] as String,
-      parent: fields[6] as String,
-      hasServices: fields[5] as bool,
+    return Review(
+      id: fields[4] as String,
+      createdAt: fields[5] as String,
+      body: fields[0] as String,
+      customerId: fields[1] as String,
+      artisanId: fields[2] as String,
+      rating: fields[3] as double,
     );
   }
 
   @override
-  void write(BinaryWriter writer, ServiceCategory obj) {
+  void write(BinaryWriter writer, Review obj) {
     writer
-      ..writeByte(7)
-      ..writeByte(0)
-      ..write(obj.name)
-      ..writeByte(1)
-      ..write(obj.avatar)
-      ..writeByte(2)
-      ..write(obj.groupName)
-      ..writeByte(3)
-      ..write(obj.id)
-      ..writeByte(4)
-      ..write(obj.createdAt)
-      ..writeByte(5)
-      ..write(obj.hasServices)
       ..writeByte(6)
-      ..write(obj.parent);
+      ..writeByte(0)
+      ..write(obj.body)
+      ..writeByte(1)
+      ..write(obj.customerId)
+      ..writeByte(2)
+      ..write(obj.artisanId)
+      ..writeByte(3)
+      ..write(obj.rating)
+      ..writeByte(4)
+      ..write(obj.id)
+      ..writeByte(5)
+      ..write(obj.createdAt);
   }
 
   @override
@@ -53,7 +50,7 @@ class ServiceCategoryAdapter extends TypeAdapter<ServiceCategory> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ServiceCategoryAdapter &&
+      other is ReviewAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

@@ -1,50 +1,47 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'category.dart';
+part of 'conversation.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class ServiceCategoryAdapter extends TypeAdapter<ServiceCategory> {
+class ConversationAdapter extends TypeAdapter<Conversation> {
   @override
-  final int typeId = 1;
+  final int typeId = 2;
 
   @override
-  ServiceCategory read(BinaryReader reader) {
+  Conversation read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return ServiceCategory(
-      id: fields[3] as String,
-      createdAt: fields[4] as String,
-      name: fields[0] as String,
-      avatar: fields[1] as String,
-      groupName: fields[2] as String,
-      parent: fields[6] as String,
-      hasServices: fields[5] as bool,
+    return Conversation(
+      createdAt: fields[5] as String,
+      id: fields[4] as String,
+      author: fields[0] as String,
+      recipient: fields[1] as String,
+      body: fields[2] as String,
+      format: fields[3] as String,
     );
   }
 
   @override
-  void write(BinaryWriter writer, ServiceCategory obj) {
+  void write(BinaryWriter writer, Conversation obj) {
     writer
-      ..writeByte(7)
-      ..writeByte(0)
-      ..write(obj.name)
-      ..writeByte(1)
-      ..write(obj.avatar)
-      ..writeByte(2)
-      ..write(obj.groupName)
-      ..writeByte(3)
-      ..write(obj.id)
-      ..writeByte(4)
-      ..write(obj.createdAt)
-      ..writeByte(5)
-      ..write(obj.hasServices)
       ..writeByte(6)
-      ..write(obj.parent);
+      ..writeByte(0)
+      ..write(obj.author)
+      ..writeByte(1)
+      ..write(obj.recipient)
+      ..writeByte(2)
+      ..write(obj.body)
+      ..writeByte(3)
+      ..write(obj.format)
+      ..writeByte(4)
+      ..write(obj.id)
+      ..writeByte(5)
+      ..write(obj.createdAt);
   }
 
   @override
@@ -53,7 +50,7 @@ class ServiceCategoryAdapter extends TypeAdapter<ServiceCategory> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ServiceCategoryAdapter &&
+      other is ConversationAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
