@@ -12,6 +12,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+<<<<<<< Updated upstream
+=======
+import 'package:flutter_svg/svg.dart';
+>>>>>>> Stashed changes
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/routes/routes.gr.dart';
 import 'package:lite/app/widgets/widgets.dart';
@@ -155,7 +159,7 @@ class _SplashPageState extends State<SplashPage>
           if (_showPageContent) ...{
             Positioned.fill(
               child: BlocBuilder<PrefsBloc, BlocState>(
-                cubit: _prefsBloc,
+                bloc: _prefsBloc,
                 builder: (_, state) => CircularRevealAnimation(
                   child: Container(
                     alignment: Alignment.center,
@@ -275,6 +279,40 @@ class _SplashPageState extends State<SplashPage>
                 ),
               ),
             ),
+<<<<<<< Updated upstream
+=======
+          } else ...{
+            /// base
+            Positioned.fill(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  kSpacingX24,
+                  kSpacingX36,
+                  kSpacingX24,
+                  kSpacingX24,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      kLogoAsset,
+                      height: kSpacingX120,
+                      width: kSpacingX120,
+                    ),
+                    if (_isLoading) ...{
+                      SizedBox(height: kSpacingX64),
+                      AnimatedOpacity(
+                        opacity: _isLoading ? 1 : 0,
+                        duration: kSheetDuration,
+                        child: Loading(),
+                      ),
+                    }
+                  ],
+                ),
+              ),
+            ),
+>>>>>>> Stashed changes
           }
         ],
       ),

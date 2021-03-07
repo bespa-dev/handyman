@@ -7,7 +7,7 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:auto_route/auto_route_annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:lite/app/pages/pages.dart';
 
 /// Run this to generate new routes upon edit:

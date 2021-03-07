@@ -9,10 +9,19 @@
 
 import 'dart:io';
 
+<<<<<<< Updated upstream
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+=======
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+>>>>>>> Stashed changes
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/routes/routes.gr.dart' as gr;
 import 'package:lite/shared/shared.dart';
@@ -49,15 +58,24 @@ class _HandyManAppState extends State<HandyManApp> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PrefsBloc, BlocState>(
-      cubit: _prefsBloc,
+      bloc: _prefsBloc,
       builder: (_, state) => MaterialApp(
         title: kAppName,
         debugShowCheckedModeBanner: false,
         theme: themeData(context),
         darkTheme: darkThemeData(context),
+<<<<<<< Updated upstream
         builder: ExtendedNavigator<gr.Router>(
+=======
+        themeMode: kReleaseMode ? ThemeMode.system : ThemeMode.dark,
+        builder: ExtendedNavigator.builder<gr.Router>(
+>>>>>>> Stashed changes
           router: gr.Router(),
           guards: [],
+          builder: (context, extendedNav) => Theme(
+            data: themeData(context),
+            child: extendedNav,
+          ),
         ),
       ),
     );

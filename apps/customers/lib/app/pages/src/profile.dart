@@ -52,7 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     final kTheme = Theme.of(context);
     return BlocBuilder<UserBloc, BlocState>(
-      cubit: _userBloc,
+      bloc: _userBloc,
       builder: (_, state) => state is SuccessState<Stream<BaseUser>>
           ? StreamBuilder<BaseUser>(
               stream: state.data,

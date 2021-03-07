@@ -19,16 +19,16 @@ import 'package:provider/provider.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
 class EmergencyPingButton extends StatefulWidget {
-  final Widget child;
-
   const EmergencyPingButton({Key key, @required this.child}) : super(key: key);
+
+  final Widget child;
 
   @override
   _EmergencyPingButtonState createState() => _EmergencyPingButtonState();
 }
 
 class _EmergencyPingButtonState extends State<EmergencyPingButton> {
-  bool _isCalling = false;
+  final bool _isCalling = false;
   final ContactPicker _contactPicker = ContactPicker();
   ThemeData _themeData;
   final _sheetController = SheetController();
@@ -135,7 +135,7 @@ class _EmergencyPingButtonState extends State<EmergencyPingButton> {
                 // _isCalling = !_isCalling;
                 // _sheetController.rebuild();
                 // await Future.delayed(kScaleDuration);
-                launchUrl(url: "tel:${provider.emergencyContactNumber}");
+                await launchUrl(url: 'tel:${provider.emergencyContactNumber}');
                 // _isCalling = !_isCalling;
               }
             },

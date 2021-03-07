@@ -9,6 +9,12 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+<<<<<<< Updated upstream
+=======
+import 'package:flutter_svg/svg.dart';
+import 'package:get_version/get_version.dart';
+import 'package:lite/app/widgets/widgets.dart';
+>>>>>>> Stashed changes
 import 'package:lite/shared/shared.dart';
 
 class ExpandedAppBarContainer extends StatelessWidget {
@@ -81,3 +87,93 @@ class ExpandedAppBarContainer extends StatelessWidget {
     );
   }
 }
+<<<<<<< Updated upstream
+=======
+
+/// sliver app bar
+class CustomAppBar extends StatefulWidget {
+  const CustomAppBar({
+    Key key,
+    this.title = kAppName,
+    this.backgroundImage = kBackgroundAsset,
+  }) : super(key: key);
+
+  final String title;
+  final String backgroundImage;
+
+  @override
+  _CustomAppBarState createState() => _CustomAppBarState();
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
+  String _appVersion = '...';
+
+  /// gets the application's version
+  void _getAppVersion() async {
+    _appVersion = await GetVersion.projectVersion;
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getAppVersion();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final kTheme = Theme.of(context);
+    return AppBar(
+      toolbarHeight: kToolbarHeight,
+      textTheme: kTheme.appBarTheme.textTheme,
+      leading: GestureDetector(
+        onTap: () {
+          /// todo -> add action to logo
+        },
+        child: SvgPicture.asset(
+          kLogoAsset,
+          height: kSpacingX36,
+          width: kSpacingX36,
+        ),
+      ),
+      title: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(text: '${widget.title}\n'),
+            TextSpan(
+              text: _appVersion,
+              style: kTheme.textTheme.caption,
+            ),
+          ],
+        ),
+        style: kTheme.textTheme.headline6.copyWith(
+          color: kTheme.colorScheme.onBackground,
+        ),
+      ),
+      centerTitle: false,
+      backgroundColor: kTheme.colorScheme.background,
+      flexibleSpace: SizedBox(
+        height: SizeConfig.screenHeight * 0.2,
+        width: SizeConfig.screenWidth,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Positioned.fill(
+              child: ImageView(
+                tag: Uuid().v4(),
+                imageUrl: widget.backgroundImage,
+                isAssetImage: widget.backgroundImage.startsWith('assets/'),
+              ),
+            ),
+            Positioned.fill(
+              child: Container(
+                color: kTheme.colorScheme.background.withOpacity(kEmphasisLow),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+>>>>>>> Stashed changes

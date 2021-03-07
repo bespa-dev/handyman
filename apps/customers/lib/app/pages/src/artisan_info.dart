@@ -54,7 +54,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
     kTheme = Theme.of(context);
 
     return BlocBuilder<UserBloc, BlocState>(
-      cubit: _userBloc,
+      bloc: _userBloc,
       builder: (_, userState) => StreamBuilder<BaseArtisan>(
           initialData: widget.artisan,
           stream: userState is SuccessState<Stream<BaseArtisan>>
@@ -63,6 +63,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
           builder: (_, userSnap) {
             final artisan = userSnap.data;
 
+<<<<<<< Updated upstream
             return CustomScrollView(
               slivers: [
                 /// header
@@ -96,6 +97,19 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                     titlePadding: EdgeInsets.zero,
                   ),
                 ),
+=======
+            return Scaffold(
+              body: BlocBuilder<ReviewBloc, BlocState>(
+                bloc: _reviewBloc,
+                builder: (_, reviewState) => StreamBuilder<List<BaseReview>>(
+                    initialData: [],
+                    stream:
+                        reviewState is SuccessState<Stream<List<BaseReview>>>
+                            ? reviewState.data
+                            : Stream.empty(),
+                    builder: (_, reviewSnap) {
+                      final reviews = reviewSnap.data;
+>>>>>>> Stashed changes
 
                 /// profile details
                 SliverList(
@@ -145,6 +159,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                                 ),
                               ],
                             ),
+<<<<<<< Updated upstream
                           ],
                         ),
                       ),
@@ -153,6 +168,204 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                   ),
                 ),
               ],
+=======
+                          ),
+
+                          /// body
+                          Positioned.fill(
+                            top: SizeConfig.screenHeight * 0.4,
+                            child: Container(
+                              height: SizeConfig.screenHeight,
+                              width: SizeConfig.screenWidth,
+                              decoration: BoxDecoration(
+                                color: kTheme.colorScheme.background,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(kSpacingX16),
+                                  topRight: Radius.circular(kSpacingX16),
+                                ),
+                              ),
+                              clipBehavior: Clip.hardEdge,
+                              child: SingleChildScrollView(
+                                padding: EdgeInsets.fromLTRB(
+                                  kSpacingX16,
+                                  kSpacingX36,
+                                  kSpacingX16,
+                                  kSpacingNone,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (artisan.name != null) ...{
+                                      Text(
+                                        artisan.name,
+                                        style: kTheme.textTheme.headline5,
+                                      ),
+                                    },
+
+                                    /// category & ratings
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        BlocBuilder<CategoryBloc, BlocState>(
+                                          bloc: CategoryBloc(
+                                              repo: Injection.get())
+                                            ..add(
+                                              CategoryEvent.observeCategoryById(
+                                                  id: artisan.category),
+                                            ),
+                                          builder: (_, userCategoryState) =>
+                                              StreamBuilder<
+                                                      BaseServiceCategory>(
+                                                  stream: userCategoryState
+                                                          is SuccessState<
+                                                              Stream<
+                                                                  BaseServiceCategory>>
+                                                      ? userCategoryState.data
+                                                      : Stream.empty(),
+                                                  builder: (_, __) {
+                                                    return Text(
+                                                      __.hasData
+                                                          ? __.data.name
+                                                          : '...',
+                                                      style: kTheme
+                                                          .textTheme.bodyText2,
+                                                    );
+                                                  }),
+                                        ),
+                                        RatingBarIndicator(
+                                          itemBuilder: (_, index) => Icon(
+                                            kRatingStar,
+                                            color: kAmberColor,
+                                          ),
+                                          itemCount: 5,
+                                          itemSize: kSpacingX16,
+                                          rating: artisan.rating,
+                                        ),
+                                      ],
+                                    ),
+
+                                    SizedBox(height: kSpacingX24),
+
+                                    /// metadata & chat option
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: kSpacingX16,
+                                        horizontal: kSpacingX4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: kTheme.cardColor,
+                                        borderRadius:
+                                            BorderRadius.circular(kSpacingX4),
+                                      ),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          /// records
+                                          _buildArtisanMetaInfo(
+                                              artisan.bookingsCount,
+                                              'Bookings'),
+                                          _buildArtisanMetaInfo(
+                                              artisan.reportsCount, 'Reports'),
+                                          /// fixme -> artisan services
+                                          _buildArtisanMetaInfo(
+                                              0,
+                                              'Services'),
+                                        ],
+                                      ),
+                                    ),
+
+                                    /// business profile
+                                    BlocBuilder<BusinessBloc, BlocState>(
+                                      bloc: _businessBloc,
+                                      builder: (_, businessState) =>
+                                          businessState is SuccessState<
+                                                      List<BaseBusiness>> &&
+                                                  businessState.data.isNotEmpty
+                                              ? _buildBusinessList(
+                                                  businessState.data, artisan)
+                                              : SizedBox.shrink(),
+                                    ),
+
+                                    /// reviews
+                                    if (reviews.isNotEmpty) ...{
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          top: kSpacingX12,
+                                          left: kSpacingX16,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Recent Reviews',
+                                              style: kTheme.textTheme.headline6
+                                                  .copyWith(
+                                                color: kTheme
+                                                    .colorScheme.onBackground
+                                                    .withOpacity(
+                                                        kEmphasisMedium),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: kSpacingX12),
+                                      ...reviews
+                                          .map((e) => _buildReviewItem(e))
+                                          .toList(),
+                                    }
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: kSpacingX16,
+                                vertical: kSpacingX4,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: ButtonPrimary(
+                                      color: kTheme.colorScheme.secondary,
+                                      textColor: kTheme.colorScheme.onSecondary,
+                                      width: SizeConfig.screenWidth,
+                                      onTap: () => context.navigator
+                                          .pushRequestPage(artisan: artisan),
+                                      label: 'Request service',
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: kSpacingX12),
+                                    child: ButtonIconOnly(
+                                      color: kTheme.colorScheme.secondary,
+                                      iconColor: kTheme.colorScheme.secondary,
+                                      icon: kChatIcon,
+                                      onPressed: () => context.navigator
+                                          .pushConversationPage(
+                                        recipientId: artisan.id,
+                                        recipient: artisan,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
+              ),
+>>>>>>> Stashed changes
             );
           }),
     );

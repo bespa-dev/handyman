@@ -13,8 +13,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' show load, env;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -115,11 +115,16 @@ final _reviewRepositoryProvider =
 @Exposed()
 final _searchRepositoryProvider =
     Provider.family<BaseSearchRepository, BasePreferenceRepository>((_, prefs) {
+<<<<<<< Updated upstream
   var local = _.read(_localDatasourceProvider(prefs));
   final dotenv = DotEnv();
+=======
+  var local = _.read(localDatasourceProvider(prefs));
+  var remote = _.read(remoteDatasourceProvider(prefs));
+>>>>>>> Stashed changes
   final algolia = Algolia.init(
-    applicationId: dotenv.env['applicationId'],
-    apiKey: dotenv.env['apiKey'],
+    applicationId: env['applicationId'],
+    apiKey: env['apiKey'],
   );
   return SearchRepositoryImpl(local: local, algolia: algolia);
 });
@@ -145,7 +150,7 @@ final _firebaseAuthRepositoryProvider =
   var userRepo = _.read(_userRepositoryProvider(prefs));
   return AuthRepositoryImpl(
     auth: FirebaseAuth.instance,
-    messaging: FirebaseMessaging(),
+    messaging: FirebaseMessaging.instance,
     googleSignIn: GoogleSignIn(),
     prefsRepo: prefs,
     userRepo: userRepo,
@@ -265,7 +270,7 @@ Future<void> initAppDependencies() async {
   await registerHiveDatabase();
 
   /// load environment variables
-  await DotEnv().load('.env');
+  await load();
 
   /// inject dependencies
   await Injection.inject();

@@ -16,6 +16,18 @@ part 'conversation.g.dart';
 @HiveType(typeId: 2)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class Conversation extends BaseConversation {
+  factory Conversation.fromJson(Map<String, dynamic> json) =>
+      _$ConversationFromJson(json);
+
+  Conversation({
+    this.createdAt,
+    this.id,
+    this.author,
+    this.recipient,
+    this.body,
+    this.format,
+  });
+
   @HiveField(0)
   @override
   final String author;
@@ -40,21 +52,9 @@ class Conversation extends BaseConversation {
   @override
   final String createdAt;
 
-  Conversation({
-    this.createdAt,
-    this.id,
-    this.author,
-    this.recipient,
-    this.body,
-    this.format,
-  });
-
   @override
-  get model => this;
+  Conversation get model => this;
 
   @override
   Map<String, dynamic> toJson() => _$ConversationToJson(this);
-
-  factory Conversation.fromJson(Map<String, dynamic> json) =>
-      _$ConversationFromJson(json);
 }

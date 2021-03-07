@@ -67,7 +67,7 @@ class _ArtisansPageState extends State<ArtisansPage> {
   Widget build(BuildContext context) {
     kTheme = Theme.of(context);
     return BlocBuilder<CategoryBloc, BlocState>(
-      cubit: _categoryBloc,
+      bloc: _categoryBloc,
       builder: (_, categoryState) => StreamBuilder<List<BaseServiceCategory>>(
           initialData: [],
           stream:

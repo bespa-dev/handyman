@@ -38,7 +38,7 @@ class UserAvatar extends StatelessWidget {
     final themeData = Theme.of(context);
 
     return GestureDetector(
-      onTap: onTap ?? null,
+      onTap: onTap,
       child: Hero(
         tag: Uuid().v4(),
         child: Container(

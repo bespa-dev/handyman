@@ -93,12 +93,6 @@ class ButtonOutlined extends StatelessWidget {
 }
 
 class ButtonIconOnly extends StatelessWidget {
-  final IconData icon;
-  final Function onPressed;
-  final Color color;
-  final Color iconColor;
-  final double radius;
-
   const ButtonIconOnly({
     Key key,
     @required this.icon,
@@ -107,6 +101,12 @@ class ButtonIconOnly extends StatelessWidget {
     this.iconColor,
     this.radius = kSpacingX48,
   }) : super(key: key);
+
+  final IconData icon;
+  final Function onPressed;
+  final Color color;
+  final Color iconColor;
+  final double radius;
 
   @override
   Widget build(BuildContext context) {
@@ -133,15 +133,6 @@ class ButtonIconOnly extends StatelessWidget {
 }
 
 class ButtonPrimary extends StatelessWidget {
-  final String label;
-  final Color color;
-  final Color textColor;
-  final double width;
-  final IconData icon;
-  final Function onTap;
-  final bool enabled;
-  final ButtonIconGravity gravity;
-
   const ButtonPrimary({
     Key key,
     @required this.width,
@@ -153,6 +144,15 @@ class ButtonPrimary extends StatelessWidget {
     this.textColor,
     this.enabled = true,
   }) : super(key: key);
+
+  final String label;
+  final Color color;
+  final Color textColor;
+  final double width;
+  final IconData icon;
+  final Function onTap;
+  final bool enabled;
+  final ButtonIconGravity gravity;
 
   @override
   Widget build(BuildContext context) {
@@ -207,7 +207,7 @@ class ButtonPrimary extends StatelessWidget {
       );
 }
 
-class ButtonClear extends FlatButton {
+class ButtonClear extends TextButton {
   ButtonClear({
     @required String text,
     @required Function onPressed,
@@ -217,9 +217,6 @@ class ButtonClear extends FlatButton {
     double preferredHeight,
     Color backgroundColor,
   }) : super(
-          splashColor: themeData.splashColor,
-          highlightColor: kTransparent,
-          textColor: textColor,
           clipBehavior: Clip.hardEdge,
           child: Container(
             clipBehavior: Clip.hardEdge,
@@ -245,11 +242,5 @@ class ButtonClear extends FlatButton {
             ),
           ),
           onPressed: enabled ? onPressed : null,
-          color: enabled
-              ? themeData.colorScheme.primary.withOpacity(kSpacingNone)
-              : themeData.disabledColor,
-          disabledColor:
-              themeData.colorScheme.primary.withOpacity(kSpacingNone),
-          disabledTextColor: themeData.disabledColor,
         );
 }

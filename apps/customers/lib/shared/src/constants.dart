@@ -19,7 +19,32 @@ import 'size_config.dart';
 /// Logger
 final logger = Logger(printer: PrettyPrinter(printTime: true));
 
+<<<<<<< Updated upstream
 void showSnackBarMessage(BuildContext context, {@required String message}) {
+=======
+/// https://stackoverflow.com/questions/56707392/how-can-i-use-willpopscope-inside-a-navigator-in-flutter
+Future<bool> backPressed(GlobalKey<NavigatorState> _yourKey) async {
+  // Checks if current Navigator still has screens on the stack.
+  if (_yourKey.currentState.canPop()) {
+    // 'maybePop' method handles the decision of 'pop' to another WillPopScope if they exist.
+    // If no other WillPopScope exists, it returns true
+    await _yourKey.currentState.maybePop();
+    return Future<bool>.value(false);
+  }
+
+  // if nothing remains in the stack, it simply pops
+  return Future<bool>.value(true);
+}
+
+/// show [SnackBar] with a message
+/// fixme -> should be enabled in other flutter channels using ScaffoldMessage.of(context)
+void showSnackBarMessage(
+  BuildContext context, {
+  @required String message,
+  SnackBarDuration duration,
+}) {
+  duration ??= SnackBarDuration.shortLength();
+>>>>>>> Stashed changes
   ScaffoldMessenger.of(context)
     ..removeCurrentSnackBar()
     ..showSnackBar(

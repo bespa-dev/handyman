@@ -4,273 +4,382 @@
 // AutoRouteGenerator
 // **************************************************************************
 
-// ignore_for_file: public_member_api_docs
+import 'package:auto_route/auto_route.dart' as _i1;
+import 'package:flutter/material.dart' as _i3;
+import 'package:flutter/widgets.dart' as _i4;
 
-import 'package:auto_route/auto_route.dart';
-import 'package:flutter/material.dart';
+import '../../domain/models/models.dart' as _i5;
+import '../pages/pages.dart' as _i2;
 
-import '../../domain/models/models.dart';
-import '../pages/pages.dart';
+class Router extends _i1.RootStackRouter {
+  Router();
 
-class Routes {
-  static const String splashPage = '/';
-  static const String loginPage = '/login-page';
-  static const String conversationPage = '/conversation-page';
-  static const String requestPage = '/request-page';
-  static const String homePage = '/home-page';
-  static const String registerPage = '/register-page';
-  static const String unknownRoutePage = '*';
-  static const all = <String>{
-    splashPage,
-    loginPage,
-    conversationPage,
-    requestPage,
-    homePage,
-    registerPage,
-    unknownRoutePage,
-  };
-}
-
-class Router extends RouterBase {
   @override
-  List<RouteDef> get routes => _routes;
-  final _routes = <RouteDef>[
-    RouteDef(Routes.splashPage, page: SplashPage),
-    RouteDef(Routes.loginPage, page: LoginPage),
-    RouteDef(Routes.conversationPage, page: ConversationPage),
-    RouteDef(Routes.requestPage, page: RequestPage),
-    RouteDef(
-      Routes.homePage,
-      page: HomePage,
-      generator: HomePageRouter(),
-    ),
-    RouteDef(Routes.registerPage, page: RegisterPage),
-    RouteDef(Routes.unknownRoutePage, page: UnknownRoutePage),
-  ];
-  @override
-  Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
-  final _pagesMap = <Type, AutoRouteFactory>{
-    SplashPage: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => SplashPage(),
-        settings: data,
-      );
+  final Map<String, _i1.PageFactory> pagesMap = {
+    SplashPageRoute.name: (entry) {
+      return _i1.CustomPage(entry: entry, child: _i2.SplashPage());
     },
-    LoginPage: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => LoginPage(),
-        settings: data,
-      );
+    LoginPageRoute.name: (entry) {
+      return _i1.CustomPage(entry: entry, child: _i2.LoginPage());
     },
-    ConversationPage: (data) {
-      final args = data.getArgs<ConversationPageArguments>(nullOk: false);
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            ConversationPage(
-          key: args.key,
-          recipientId: args.recipientId,
-          recipient: args.recipient,
-        ),
-        settings: data,
-      );
+    ConversationPageRoute.name: (entry) {
+      var route = entry.routeData.as<ConversationPageRoute>();
+      return _i1.CustomPage(
+          entry: entry,
+          child: _i2.ConversationPage(
+              key: route.key,
+              recipientId: route.recipientId,
+              recipient: route.recipient));
     },
-    RequestPage: (data) {
-      final args = data.getArgs<RequestPageArguments>(nullOk: false);
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => RequestPage(
-          key: args.key,
-          artisan: args.artisan,
-        ),
-        settings: data,
-      );
+    CategoryDetailsPageRoute.name: (entry) {
+      var route = entry.routeData.as<CategoryDetailsPageRoute>();
+      return _i1.CustomPage(
+          entry: entry,
+          child: _i2.CategoryDetailsPage(
+              key: route.key, category: route.category));
     },
-    HomePage: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => HomePage(),
-        settings: data,
-      );
+    RequestPageRoute.name: (entry) {
+      var route = entry.routeData.as<RequestPageRoute>();
+      return _i1.CustomPage(
+          entry: entry,
+          child: _i2.RequestPage(
+              key: route.key, artisan: route.artisan, service: route.service));
     },
-    RegisterPage: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => RegisterPage(),
-        settings: data,
-      );
+    ServiceRatingsPageRoute.name: (entry) {
+      var route = entry.routeData.as<ServiceRatingsPageRoute>();
+      return _i1.CustomPage(
+          entry: entry,
+          child:
+              _i2.ServiceRatingsPage(key: route.key, payload: route.payload));
     },
-    UnknownRoutePage: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            UnknownRoutePage(),
-        settings: data,
-      );
+    ImagePreviewPageRoute.name: (entry) {
+      var route = entry.routeData.as<ImagePreviewPageRoute>();
+      return _i1.CustomPage(
+          entry: entry,
+          child: _i2.ImagePreviewPage(key: route.key, url: route.url));
     },
+    BookingDetailsPageRoute.name: (entry) {
+      var route = entry.routeData.as<BookingDetailsPageRoute>();
+      return _i1.CustomPage(
+          entry: entry,
+          child: _i2.BookingDetailsPage(
+              key: route.key,
+              booking: route.booking,
+              customer: route.customer,
+              bookingId: route.bookingId));
+    },
+    SearchPageRoute.name: (entry) {
+      return _i1.CustomPage(entry: entry, child: _i2.SearchPage());
+    },
+    BookingsPageRoute.name: (entry) {
+      return _i1.CustomPage(entry: entry, child: _i2.BookingsPage());
+    },
+    ArtisansPageRoute.name: (entry) {
+      return _i1.CustomPage(entry: entry, child: _i2.ArtisansPage());
+    },
+    ProfilePageRoute.name: (entry) {
+      return _i1.CustomPage(entry: entry, child: _i2.ProfilePage());
+    },
+    ArtisanInfoPageRoute.name: (entry) {
+      var route = entry.routeData.as<ArtisanInfoPageRoute>();
+      return _i1.CustomPage(
+          entry: entry,
+          child: _i2.ArtisanInfoPage(key: route.key, artisan: route.artisan));
+    },
+    HomePageRoute.name: (entry) {
+      return _i1.CustomPage(entry: entry, child: _i2.HomePage());
+    },
+    RegisterPageRoute.name: (entry) {
+      return _i1.CustomPage(entry: entry, child: _i2.RegisterPage());
+    },
+    BusinessDetailsPageRoute.name: (entry) {
+      var route = entry.routeData.as<BusinessDetailsPageRoute>();
+      return _i1.CustomPage(
+          entry: entry,
+          child: _i2.BusinessDetailsPage(
+              key: route.key,
+              business: route.business,
+              artisan: route.artisan));
+    },
+    UnknownRoutePageRoute.name: (entry) {
+      return _i1.CustomPage(entry: entry, child: _i2.UnknownRoutePage());
+    }
   };
-}
 
-/// ************************************************************************
-/// Navigation helper methods extension
-/// *************************************************************************
-
-extension RouterExtendedNavigatorStateX on ExtendedNavigatorState {
-  Future<dynamic> pushSplashPage() => push<dynamic>(Routes.splashPage);
-
-  Future<dynamic> pushLoginPage() => push<dynamic>(Routes.loginPage);
-
-  Future<dynamic> pushConversationPage({
-    Key key,
-    @required String recipientId,
-    BaseUser recipient,
-  }) =>
-      push<dynamic>(
-        Routes.conversationPage,
-        arguments: ConversationPageArguments(
-            key: key, recipientId: recipientId, recipient: recipient),
-      );
-
-  Future<dynamic> pushRequestPage({
-    Key key,
-    @required BaseArtisan artisan,
-  }) =>
-      push<dynamic>(
-        Routes.requestPage,
-        arguments: RequestPageArguments(key: key, artisan: artisan),
-      );
-
-  Future<dynamic> pushHomePage() => push<dynamic>(Routes.homePage);
-
-  Future<dynamic> pushRegisterPage() => push<dynamic>(Routes.registerPage);
-
-  Future<dynamic> pushUnknownRoutePage() =>
-      push<dynamic>(Routes.unknownRoutePage);
-}
-
-class HomePageRoutes {
-  static const String bookingsPage = '/bookings-page';
-  static const String searchPage = '/search-page';
-  static const String artisansPage = '/';
-  static const String notificationsPage = '/notifications-page';
-  static const String profilePage = '/profile-page';
-  static const String artisanInfoPage = '/artisan-info-page';
-  static const all = <String>{
-    bookingsPage,
-    searchPage,
-    artisansPage,
-    notificationsPage,
-    profilePage,
-    artisanInfoPage,
-  };
-}
-
-class HomePageRouter extends RouterBase {
   @override
-  List<RouteDef> get routes => _routes;
-  final _routes = <RouteDef>[
-    RouteDef(HomePageRoutes.bookingsPage, page: BookingsPage),
-    RouteDef(HomePageRoutes.searchPage, page: SearchPage),
-    RouteDef(HomePageRoutes.artisansPage, page: ArtisansPage),
-    RouteDef(HomePageRoutes.notificationsPage, page: NotificationsPage),
-    RouteDef(HomePageRoutes.profilePage, page: ProfilePage),
-    RouteDef(HomePageRoutes.artisanInfoPage, page: ArtisanInfoPage),
-  ];
-  @override
-  Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
-  final _pagesMap = <Type, AutoRouteFactory>{
-    BookingsPage: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => BookingsPage(),
-        settings: data,
-      );
-    },
-    SearchPage: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => SearchPage(),
-        settings: data,
-      );
-    },
-    ArtisansPage: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => ArtisansPage(),
-        settings: data,
-      );
-    },
-    NotificationsPage: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            NotificationsPage(),
-        settings: data,
-      );
-    },
-    ProfilePage: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => ProfilePage(),
-        settings: data,
-      );
-    },
-    ArtisanInfoPage: (data) {
-      final args = data.getArgs<ArtisanInfoPageArguments>(nullOk: false);
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            ArtisanInfoPage(
-          key: args.key,
-          artisan: args.artisan,
-        ),
-        settings: data,
-      );
-    },
-  };
+  List<_i1.RouteConfig> get routes => [
+        _i1.RouteConfig<SplashPageRoute>(SplashPageRoute.name,
+            path: '/',
+            routeBuilder: (match) => SplashPageRoute.fromMatch(match)),
+        _i1.RouteConfig<LoginPageRoute>(LoginPageRoute.name,
+            path: '/login-page',
+            routeBuilder: (match) => LoginPageRoute.fromMatch(match)),
+        _i1.RouteConfig<ConversationPageRoute>(ConversationPageRoute.name,
+            path: '/conversation-page',
+            routeBuilder: (match) => ConversationPageRoute.fromMatch(match)),
+        _i1.RouteConfig<CategoryDetailsPageRoute>(CategoryDetailsPageRoute.name,
+            path: '/category-details-page',
+            routeBuilder: (match) => CategoryDetailsPageRoute.fromMatch(match)),
+        _i1.RouteConfig<RequestPageRoute>(RequestPageRoute.name,
+            path: '/request-page',
+            routeBuilder: (match) => RequestPageRoute.fromMatch(match)),
+        _i1.RouteConfig<ServiceRatingsPageRoute>(ServiceRatingsPageRoute.name,
+            path: '/service-ratings-page',
+            routeBuilder: (match) => ServiceRatingsPageRoute.fromMatch(match)),
+        _i1.RouteConfig<ImagePreviewPageRoute>(ImagePreviewPageRoute.name,
+            path: '/image-preview-page',
+            routeBuilder: (match) => ImagePreviewPageRoute.fromMatch(match)),
+        _i1.RouteConfig<BookingDetailsPageRoute>(BookingDetailsPageRoute.name,
+            path: '/booking-details-page',
+            routeBuilder: (match) => BookingDetailsPageRoute.fromMatch(match)),
+        _i1.RouteConfig<SearchPageRoute>(SearchPageRoute.name,
+            path: '/search-page',
+            routeBuilder: (match) => SearchPageRoute.fromMatch(match)),
+        _i1.RouteConfig<BookingsPageRoute>(BookingsPageRoute.name,
+            path: '/bookings-page',
+            routeBuilder: (match) => BookingsPageRoute.fromMatch(match)),
+        _i1.RouteConfig<ArtisansPageRoute>(ArtisansPageRoute.name,
+            path: '/artisans-page',
+            routeBuilder: (match) => ArtisansPageRoute.fromMatch(match)),
+        _i1.RouteConfig<ProfilePageRoute>(ProfilePageRoute.name,
+            path: '/profile-page',
+            routeBuilder: (match) => ProfilePageRoute.fromMatch(match)),
+        _i1.RouteConfig<ArtisanInfoPageRoute>(ArtisanInfoPageRoute.name,
+            path: '/artisan-info-page',
+            routeBuilder: (match) => ArtisanInfoPageRoute.fromMatch(match)),
+        _i1.RouteConfig<HomePageRoute>(HomePageRoute.name,
+            path: '/home-page',
+            routeBuilder: (match) => HomePageRoute.fromMatch(match)),
+        _i1.RouteConfig<RegisterPageRoute>(RegisterPageRoute.name,
+            path: '/register-page',
+            routeBuilder: (match) => RegisterPageRoute.fromMatch(match)),
+        _i1.RouteConfig<BusinessDetailsPageRoute>(BusinessDetailsPageRoute.name,
+            path: '/business-details-page',
+            routeBuilder: (match) => BusinessDetailsPageRoute.fromMatch(match)),
+        _i1.RouteConfig<UnknownRoutePageRoute>(UnknownRoutePageRoute.name,
+            path: '*',
+            routeBuilder: (match) => UnknownRoutePageRoute.fromMatch(match))
+      ];
 }
 
-/// ************************************************************************
-/// Navigation helper methods extension
-/// *************************************************************************
+class SplashPageRoute extends _i1.PageRouteInfo {
+  const SplashPageRoute() : super(name, path: '/');
 
-extension HomePageRouterExtendedNavigatorStateX on ExtendedNavigatorState {
-  Future<dynamic> pushBookingsPage() =>
-      push<dynamic>(HomePageRoutes.bookingsPage);
+  SplashPageRoute.fromMatch(_i1.RouteMatch match) : super.fromMatch(match);
 
-  Future<dynamic> pushSearchPage() => push<dynamic>(HomePageRoutes.searchPage);
-
-  Future<dynamic> pushArtisansPage() =>
-      push<dynamic>(HomePageRoutes.artisansPage);
-
-  Future<dynamic> pushNotificationsPage() =>
-      push<dynamic>(HomePageRoutes.notificationsPage);
-
-  Future<dynamic> pushProfilePage() =>
-      push<dynamic>(HomePageRoutes.profilePage);
-
-  Future<dynamic> pushArtisanInfoPage({
-    Key key,
-    @required BaseArtisan artisan,
-  }) =>
-      push<dynamic>(
-        HomePageRoutes.artisanInfoPage,
-        arguments: ArtisanInfoPageArguments(key: key, artisan: artisan),
-      );
+  static const String name = 'SplashPageRoute';
 }
 
-/// ************************************************************************
-/// Arguments holder classes
-/// *************************************************************************
+class LoginPageRoute extends _i1.PageRouteInfo {
+  const LoginPageRoute() : super(name, path: '/login-page');
 
-/// ConversationPage arguments holder class
-class ConversationPageArguments {
-  final Key key;
+  LoginPageRoute.fromMatch(_i1.RouteMatch match) : super.fromMatch(match);
+
+  static const String name = 'LoginPageRoute';
+}
+
+class ConversationPageRoute extends _i1.PageRouteInfo {
+  ConversationPageRoute(
+      {this.key, @_i3.required this.recipientId, this.recipient})
+      : super(name, path: '/conversation-page');
+
+  ConversationPageRoute.fromMatch(_i1.RouteMatch match)
+      : key = null,
+        recipientId = null,
+        recipient = null,
+        super.fromMatch(match);
+
+  final _i4.Key key;
+
   final String recipientId;
-  final BaseUser recipient;
-  ConversationPageArguments(
-      {this.key, @required this.recipientId, this.recipient});
+
+  final _i5.BaseUser recipient;
+
+  static const String name = 'ConversationPageRoute';
 }
 
-/// RequestPage arguments holder class
-class RequestPageArguments {
-  final Key key;
-  final BaseArtisan artisan;
-  RequestPageArguments({this.key, @required this.artisan});
+class CategoryDetailsPageRoute extends _i1.PageRouteInfo {
+  CategoryDetailsPageRoute({this.key, @_i3.required this.category})
+      : super(name, path: '/category-details-page');
+
+  CategoryDetailsPageRoute.fromMatch(_i1.RouteMatch match)
+      : key = null,
+        category = null,
+        super.fromMatch(match);
+
+  final _i4.Key key;
+
+  final _i5.BaseServiceCategory category;
+
+  static const String name = 'CategoryDetailsPageRoute';
 }
 
-/// ArtisanInfoPage arguments holder class
-class ArtisanInfoPageArguments {
-  final Key key;
-  final BaseArtisan artisan;
-  ArtisanInfoPageArguments({this.key, @required this.artisan});
+class RequestPageRoute extends _i1.PageRouteInfo {
+  RequestPageRoute({this.key, @_i3.required this.artisan, this.service})
+      : super(name, path: '/request-page');
+
+  RequestPageRoute.fromMatch(_i1.RouteMatch match)
+      : key = null,
+        artisan = null,
+        service = null,
+        super.fromMatch(match);
+
+  final _i4.Key key;
+
+  final _i5.BaseArtisan artisan;
+
+  final _i5.BaseArtisanService service;
+
+  static const String name = 'RequestPageRoute';
+}
+
+class ServiceRatingsPageRoute extends _i1.PageRouteInfo {
+  ServiceRatingsPageRoute({this.key, @_i3.required this.payload})
+      : super(name, path: '/service-ratings-page');
+
+  ServiceRatingsPageRoute.fromMatch(_i1.RouteMatch match)
+      : key = null,
+        payload = null,
+        super.fromMatch(match);
+
+  final _i4.Key key;
+
+  final dynamic payload;
+
+  static const String name = 'ServiceRatingsPageRoute';
+}
+
+class ImagePreviewPageRoute extends _i1.PageRouteInfo {
+  ImagePreviewPageRoute({this.key, @_i3.required this.url})
+      : super(name, path: '/image-preview-page');
+
+  ImagePreviewPageRoute.fromMatch(_i1.RouteMatch match)
+      : key = null,
+        url = null,
+        super.fromMatch(match);
+
+  final _i4.Key key;
+
+  final String url;
+
+  static const String name = 'ImagePreviewPageRoute';
+}
+
+class BookingDetailsPageRoute extends _i1.PageRouteInfo {
+  BookingDetailsPageRoute(
+      {this.key,
+      @_i3.required this.booking,
+      @_i3.required this.customer,
+      this.bookingId})
+      : super(name, path: '/booking-details-page');
+
+  BookingDetailsPageRoute.fromMatch(_i1.RouteMatch match)
+      : key = null,
+        booking = null,
+        customer = null,
+        bookingId = null,
+        super.fromMatch(match);
+
+  final _i4.Key key;
+
+  final _i5.BaseBooking booking;
+
+  final _i5.BaseUser customer;
+
+  final String bookingId;
+
+  static const String name = 'BookingDetailsPageRoute';
+}
+
+class SearchPageRoute extends _i1.PageRouteInfo {
+  const SearchPageRoute() : super(name, path: '/search-page');
+
+  SearchPageRoute.fromMatch(_i1.RouteMatch match) : super.fromMatch(match);
+
+  static const String name = 'SearchPageRoute';
+}
+
+class BookingsPageRoute extends _i1.PageRouteInfo {
+  const BookingsPageRoute() : super(name, path: '/bookings-page');
+
+  BookingsPageRoute.fromMatch(_i1.RouteMatch match) : super.fromMatch(match);
+
+  static const String name = 'BookingsPageRoute';
+}
+
+class ArtisansPageRoute extends _i1.PageRouteInfo {
+  const ArtisansPageRoute() : super(name, path: '/artisans-page');
+
+  ArtisansPageRoute.fromMatch(_i1.RouteMatch match) : super.fromMatch(match);
+
+  static const String name = 'ArtisansPageRoute';
+}
+
+class ProfilePageRoute extends _i1.PageRouteInfo {
+  const ProfilePageRoute() : super(name, path: '/profile-page');
+
+  ProfilePageRoute.fromMatch(_i1.RouteMatch match) : super.fromMatch(match);
+
+  static const String name = 'ProfilePageRoute';
+}
+
+class ArtisanInfoPageRoute extends _i1.PageRouteInfo {
+  ArtisanInfoPageRoute({this.key, @_i3.required this.artisan})
+      : super(name, path: '/artisan-info-page');
+
+  ArtisanInfoPageRoute.fromMatch(_i1.RouteMatch match)
+      : key = null,
+        artisan = null,
+        super.fromMatch(match);
+
+  final _i4.Key key;
+
+  final _i5.BaseArtisan artisan;
+
+  static const String name = 'ArtisanInfoPageRoute';
+}
+
+class HomePageRoute extends _i1.PageRouteInfo {
+  const HomePageRoute() : super(name, path: '/home-page');
+
+  HomePageRoute.fromMatch(_i1.RouteMatch match) : super.fromMatch(match);
+
+  static const String name = 'HomePageRoute';
+}
+
+class RegisterPageRoute extends _i1.PageRouteInfo {
+  const RegisterPageRoute() : super(name, path: '/register-page');
+
+  RegisterPageRoute.fromMatch(_i1.RouteMatch match) : super.fromMatch(match);
+
+  static const String name = 'RegisterPageRoute';
+}
+
+class BusinessDetailsPageRoute extends _i1.PageRouteInfo {
+  BusinessDetailsPageRoute(
+      {this.key, @_i3.required this.business, this.artisan})
+      : super(name, path: '/business-details-page');
+
+  BusinessDetailsPageRoute.fromMatch(_i1.RouteMatch match)
+      : key = null,
+        business = null,
+        artisan = null,
+        super.fromMatch(match);
+
+  final _i4.Key key;
+
+  final _i5.BaseBusiness business;
+
+  final _i5.BaseArtisan artisan;
+
+  static const String name = 'BusinessDetailsPageRoute';
+}
+
+class UnknownRoutePageRoute extends _i1.PageRouteInfo {
+  const UnknownRoutePageRoute() : super(name, path: '*');
+
+  UnknownRoutePageRoute.fromMatch(_i1.RouteMatch match)
+      : super.fromMatch(match);
+
+  static const String name = 'UnknownRoutePageRoute';
 }

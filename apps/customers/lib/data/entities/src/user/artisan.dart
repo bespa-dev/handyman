@@ -15,7 +15,7 @@ part 'artisan.g.dart';
 
 /// fixme -> resolve cancelled, completed & ongoing bookings counts
 @HiveType(typeId: 5)
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, genericArgumentFactories: true)
 class Artisan extends BaseArtisan {
   @HiveField(0)
   @override

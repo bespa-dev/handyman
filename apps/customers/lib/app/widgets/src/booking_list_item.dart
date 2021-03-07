@@ -1,0 +1,221 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lite/app/bloc/bloc.dart';
+import 'package:lite/app/widgets/widgets.dart';
+import 'package:lite/domain/models/models.dart';
+import 'package:lite/shared/shared.dart';
+import 'package:meta/meta.dart';
+
+class BookingListItem extends StatefulWidget {
+  const BookingListItem(
+      {Key key, @required this.booking, this.shouldUpdateUI, this.onLongPress})
+      : super(key: key);
+
+  final BaseBooking booking;
+  final Function onLongPress;
+  final Function(bool) shouldUpdateUI;
+
+  @override
+  _BookingListItemState createState() => _BookingListItemState();
+}
+
+class _BookingListItemState extends State<BookingListItem> {
+  /// blocs
+  final _userBloc = UserBloc(repo: Injection.get());
+  final _locationBloc = LocationBloc(repo: Injection.get());
+  final _bookingBloc = BookingBloc(repo: Injection.get());
+  final _serviceBloc = ArtisanServiceBloc(repo: Injection.get());
+
+  BaseUser _customer;
+
+  @override
+  void dispose() {
+    _userBloc.close();
+    _locationBloc.close();
+    _bookingBloc.close();
+    _serviceBloc.close();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (mounted) {
+      _userBloc
+        ..add(UserEvent.getCustomerByIdEvent(id: widget.booking.customerId))
+        ..add(UserEvent.getArtisanByIdEvent(id: widget.booking.artisanId))
+        ..listen((state) {
+          if (state is SuccessState<BaseUser> && !(state.data is BaseArtisan)) {
+            _customer = state.data;
+            if (mounted) setState(() {});
+          }
+        });
+
+      /// get request location details
+      _locationBloc.add(
+          LocationEvent.getLocationName(location: widget.booking.position));
+
+      /// observe booking state
+      _bookingBloc.add(BookingEvent.observeBookingById(id: widget.booking.id));
+
+      /// get service details
+      _serviceBloc.add(
+          ArtisanServiceEvent.getServiceById(id: widget.booking.serviceType));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final kTheme = Theme.of(context);
+    final userTextColor =
+        kTheme.colorScheme.onBackground.withOpacity(kEmphasisHigh);
+    var booking = widget.booking;
+
+    var stateTextColor = booking.isDue
+        ? kTheme.colorScheme.onError.withOpacity(kEmphasisHigh)
+        : booking.isCancelled
+            ? kCancelledJobTextColor
+            : booking.isComplete
+                ? kCompletedJobTextColor
+                : kPendingJobTextColor;
+    var stateBgColor = booking.isDue
+        ? kTheme.colorScheme.error.withOpacity(kEmphasisMedium)
+        : booking.isCancelled
+            ? kCancelledJobColor
+            : booking.isComplete
+                ? kCompletedJobColor
+                : kPendingJobColor;
+
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: kSpacingX16,
+        right: kSpacingX16,
+        bottom: kSpacingX12,
+      ),
+      child: InkWell(
+        onTap: () async {
+          var result = await context.navigator.pushBookingDetailsPage(
+            booking: booking,
+            customer: _customer,
+            bookingId: booking.id,
+          );
+
+          if (result != null && widget.shouldUpdateUI != null) {
+            widget.shouldUpdateUI(result);
+          }
+        },
+        child: BlocBuilder<ArtisanServiceBloc, BlocState>(
+          bloc: _serviceBloc,
+          builder: (_, serviceState) => BlocBuilder<UserBloc, BlocState>(
+            bloc: _userBloc,
+            builder: (_, userState) => userState is SuccessState<BaseArtisan> &&
+                    widget.booking != null
+                ? Container(
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      color: kTheme.cardColor,
+                      borderRadius: BorderRadius.circular(kSpacingX4),
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(bottom: kSpacingX12),
+                          width: SizeConfig.screenWidth,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: kSpacingX12,
+                            vertical: kSpacingX6,
+                          ),
+                          decoration: BoxDecoration(color: stateBgColor),
+                          child: Text(
+                            booking.isDue
+                                ? 'Overdue'.toUpperCase()
+                                : booking.currentState.toUpperCase(),
+                            style: kTheme.textTheme.button
+                                .copyWith(color: stateTextColor),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: kSpacingX8,
+                            vertical: kSpacingX6,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  UserAvatar(
+                                      url: userState.data?.avatar,
+                                      isCircular: true),
+                                  SizedBox(width: kSpacingX8),
+                                  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        userState.data?.name ?? 'Anonymous',
+                                        style:
+                                            kTheme.textTheme.headline6.copyWith(
+                                          fontSize: kTheme
+                                              .textTheme.bodyText2.fontSize,
+                                          color: userTextColor,
+                                        ),
+                                      ),
+                                      SizedBox(height: kSpacingX4),
+                                      serviceState is SuccessState<
+                                              BaseArtisanService>
+                                          ? Text(
+                                              serviceState.data.name ?? '...',
+                                              style: kTheme.textTheme.bodyText1
+                                                  .copyWith(
+                                                color: kTheme
+                                                    .textTheme.bodyText1.color
+                                                    .withOpacity(kEmphasisLow),
+                                              ),
+                                            )
+                                          : SizedBox.shrink(),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    parseFromTimestamp(booking.dueDate),
+                                    style: kTheme.textTheme.bodyText1.copyWith(
+                                      color: kTheme.textTheme.bodyText1.color
+                                          .withOpacity(kEmphasisLow),
+                                    ),
+                                  ),
+                                  SizedBox(height: kSpacingX4),
+                                  Text(
+                                    parseFromTimestamp(booking.dueDate,
+                                        isChatFormat: true),
+                                    style: kTheme.textTheme.button.copyWith(
+                                      fontSize:
+                                          kTheme.textTheme.bodyText2.fontSize,
+                                      color: userTextColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                : SizedBox.shrink(),
+          ),
+        ),
+      ),
+    );
+  }
+}

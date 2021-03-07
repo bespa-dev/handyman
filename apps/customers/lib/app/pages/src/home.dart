@@ -68,6 +68,42 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     _kTheme = Theme.of(context);
+<<<<<<< Updated upstream
+=======
+    var isDark = _kTheme.brightness == Brightness.dark;
+
+    return WillPopScope(
+      onWillPop: _handleBackPressed,
+      child: BlocBuilder<UserBloc, BlocState>(
+        bloc: _userBloc,
+        builder: (_, state) => Scaffold(
+          body: SafeArea(
+            top: _navStates[_currentPage] == _searchNavKey ||
+                _navStates[_currentPage] == _profileNavKey,
+            bottom: true,
+            child: Column(
+              children: [
+                if (_navStates[_currentPage] == _artisansNavKey) ...{
+                  CustomAppBar(title: 'Artisans')
+                },
+                Expanded(
+                  child: IndexedStack(
+                    index: _currentPage,
+                    children: [
+                      /// artisans
+                      Navigator(
+                        key: _artisansNavKey,
+                        onGenerateRoute: (route) => MaterialPageRoute(
+                            settings: route, builder: (__) => ArtisansPage()),
+                      ),
+
+                      /// search
+                      Navigator(
+                        key: _searchNavKey,
+                        onGenerateRoute: (route) => MaterialPageRoute(
+                            settings: route, builder: (__) => SearchPage()),
+                      ),
+>>>>>>> Stashed changes
 
     return BlocBuilder<UserBloc, BlocState>(
       cubit: _userBloc,
