@@ -35,7 +35,7 @@ class AuthBloc extends BaseBloc<AuthEvent> {
       resetPasswordEvent: (e) => _mapStateToEvent(e),
       federatedOAuthEvent: () => _mapStateToEvent(event),
       authSignOutEvent: () => _mapStateToEvent(event),
-      observeAuthStatetEvent: () => _mapStateToEvent(event),
+      observeAuthStateEvent: () => _mapStateToEvent(event),
       observeMessageEvent: () => _mapStateToEvent(event),
     );
   }
@@ -97,7 +97,7 @@ class AuthBloc extends BaseBloc<AuthEvent> {
         } else {
           throw Exception();
         }
-      } else if (event is ObserveAuthStatetEvent) {
+      } else if (event is ObserveAuthStateEvent) {
         var result = await ObserveAuthStateUseCase(_repo).execute(null);
         if (result is UseCaseResultSuccess<Stream<AuthState>>) {
           yield BlocState<Stream<AuthState>>.successState(data: result.value);

@@ -28,29 +28,34 @@ class LocationBloc extends BaseBloc<LocationEvent> {
 
     if (event is GetCurrentLocation) {
       var result = await GetCurrentLocationUseCase(_repo).execute(null);
-      if (result is UseCaseResultSuccess<BaseLocationMetadata>)
+      if (result is UseCaseResultSuccess<BaseLocationMetadata>) {
         yield BlocState<BaseLocationMetadata>.successState(data: result.value);
-      else
-        yield BlocState.errorState(failure: "Cannot get current location");
+      } else {
+        yield BlocState.errorState(failure: 'Cannot get current location');
+      }
     } else if (event is ObserveCurrentLocation) {
       var result = await ObserveCurrentLocationUseCase(_repo).execute(null);
-      if (result is UseCaseResultSuccess<Stream<BaseLocationMetadata>>)
-        yield BlocState<Stream<BaseLocationMetadata>>.successState(data: result.value);
-      else
-        yield BlocState.errorState(failure: "Cannot observe current location");
+      if (result is UseCaseResultSuccess<Stream<BaseLocationMetadata>>) {
+        yield BlocState<Stream<BaseLocationMetadata>>.successState(
+            data: result.value);
+      } else {
+        yield BlocState.errorState(failure: 'Cannot observe current location');
+      }
     } else if (event is GetLocationName) {
       var result = await GetLocationNameUseCase(_repo).execute(event.location);
-      if (result is UseCaseResultSuccess<String>)
+      if (result is UseCaseResultSuccess<String>) {
         yield BlocState<String>.successState(data: result.value);
-      else
-        yield BlocState.errorState(failure: "Cannot get location name");
+      } else {
+        yield BlocState.errorState(failure: 'Cannot get location name');
+      }
     } else if (event is GetLocationCoordinates) {
       var result =
           await GetLocationCoordinatesUseCase(_repo).execute(event.address);
-      if (result is UseCaseResultSuccess<BaseLocationMetadata>)
+      if (result is UseCaseResultSuccess<BaseLocationMetadata>) {
         yield BlocState<BaseLocationMetadata>.successState(data: result.value);
-      else
-        yield BlocState.errorState(failure: "Cannot get location name");
+      } else {
+        yield BlocState.errorState(failure: 'Cannot get location name');
+      }
     }
   }
 }

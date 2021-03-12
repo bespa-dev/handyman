@@ -29,7 +29,7 @@ abstract class AuthEvent extends Equatable {
 
   factory AuthEvent.observeMessageEvent() = ObserveMessageEvent.create;
 
-  factory AuthEvent.observeAuthStateEvent() = ObserveAuthStatetEvent.create;
+  factory AuthEvent.observeAuthStateEvent() = ObserveAuthStateEvent.create;
 
   final _AuthEvent _type;
 
@@ -42,7 +42,7 @@ abstract class AuthEvent extends Equatable {
       @required R Function() federatedOAuthEvent,
       @required R Function() authSignOutEvent,
       @required R Function() observeMessageEvent,
-      @required R Function() observeAuthStatetEvent}) {
+      @required R Function() observeAuthStateEvent}) {
     assert(() {
       if (emailSignInEvent == null ||
           emailSignUpEvent == null ||
@@ -50,7 +50,7 @@ abstract class AuthEvent extends Equatable {
           federatedOAuthEvent == null ||
           authSignOutEvent == null ||
           observeMessageEvent == null ||
-          observeAuthStatetEvent == null) {
+          observeAuthStateEvent == null) {
         throw 'check for all possible cases';
       }
       return true;
@@ -68,8 +68,8 @@ abstract class AuthEvent extends Equatable {
         return authSignOutEvent();
       case _AuthEvent.ObserveMessageEvent:
         return observeMessageEvent();
-      case _AuthEvent.ObserveAuthStatetEvent:
-        return observeAuthStatetEvent();
+      case _AuthEvent.ObserveAuthStateEvent:
+        return observeAuthStateEvent();
     }
   }
 
@@ -85,7 +85,7 @@ abstract class AuthEvent extends Equatable {
       R Function() federatedOAuthEvent,
       R Function() authSignOutEvent,
       R Function() observeMessageEvent,
-      R Function() observeAuthStatetEvent,
+      R Function() observeAuthStateEvent,
       @required R Function(AuthEvent) orElse}) {
     assert(() {
       if (orElse == null) {
@@ -112,9 +112,9 @@ abstract class AuthEvent extends Equatable {
       case _AuthEvent.ObserveMessageEvent:
         if (observeMessageEvent == null) break;
         return observeMessageEvent();
-      case _AuthEvent.ObserveAuthStatetEvent:
-        if (observeAuthStatetEvent == null) break;
-        return observeAuthStatetEvent();
+      case _AuthEvent.ObserveAuthStateEvent:
+        if (observeAuthStateEvent == null) break;
+        return observeAuthStateEvent();
     }
     return orElse(this);
   }
@@ -128,7 +128,7 @@ abstract class AuthEvent extends Equatable {
       void Function() federatedOAuthEvent,
       void Function() authSignOutEvent,
       void Function() observeMessageEvent,
-      void Function() observeAuthStatetEvent}) {
+      void Function() observeAuthStateEvent}) {
     assert(() {
       if (emailSignInEvent == null &&
           emailSignUpEvent == null &&
@@ -136,7 +136,7 @@ abstract class AuthEvent extends Equatable {
           federatedOAuthEvent == null &&
           authSignOutEvent == null &&
           observeMessageEvent == null &&
-          observeAuthStatetEvent == null) {
+          observeAuthStateEvent == null) {
         throw 'provide at least one branch';
       }
       return true;
@@ -160,9 +160,9 @@ abstract class AuthEvent extends Equatable {
       case _AuthEvent.ObserveMessageEvent:
         if (observeMessageEvent == null) break;
         return observeMessageEvent();
-      case _AuthEvent.ObserveAuthStatetEvent:
-        if (observeAuthStatetEvent == null) break;
-        return observeAuthStatetEvent();
+      case _AuthEvent.ObserveAuthStateEvent:
+        if (observeAuthStateEvent == null) break;
+        return observeAuthStateEvent();
     }
   }
 
@@ -346,16 +346,16 @@ class _ObserveMessageEventImpl extends ObserveMessageEvent {
 }
 
 @immutable
-abstract class ObserveAuthStatetEvent extends AuthEvent {
-  const ObserveAuthStatetEvent() : super(_AuthEvent.ObserveAuthStatetEvent);
+abstract class ObserveAuthStateEvent extends AuthEvent {
+  const ObserveAuthStateEvent() : super(_AuthEvent.ObserveAuthStateEvent);
 
-  factory ObserveAuthStatetEvent.create() = _ObserveAuthStatetEventImpl;
+  factory ObserveAuthStateEvent.create() = _ObserveAuthStateEventImpl;
 }
 
 @immutable
-class _ObserveAuthStatetEventImpl extends ObserveAuthStatetEvent {
-  const _ObserveAuthStatetEventImpl() : super();
+class _ObserveAuthStateEventImpl extends ObserveAuthStateEvent {
+  const _ObserveAuthStateEventImpl() : super();
 
   @override
-  String toString() => 'ObserveAuthStatetEvent()';
+  String toString() => 'ObserveAuthStateEvent()';
 }

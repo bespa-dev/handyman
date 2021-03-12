@@ -39,6 +39,8 @@ abstract class BaseServiceCategory extends BaseModel {
   bool hasServices;
 
   bool get hasParent;
+
+  List<String> issues;
 }
 
 extension CategoryX on ServiceCategoryGroup {

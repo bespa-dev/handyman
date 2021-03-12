@@ -7,9 +7,9 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:lite/domain/models/models.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:lite/domain/models/models.dart';
 
 part 'category.g.dart';
 
@@ -24,6 +24,7 @@ class ServiceCategory extends BaseServiceCategory {
     this.groupName,
     this.parent,
     this.hasServices = false,
+    this.issues = const <String>[],
   });
 
   factory ServiceCategory.fromJson(Map<String, dynamic> json) =>
@@ -56,6 +57,10 @@ class ServiceCategory extends BaseServiceCategory {
   @HiveField(6)
   @override
   final String parent;
+
+  @HiveField(7)
+  @override
+  final List<String> issues;
 
   @override
   bool get hasParent => parent != null && parent.isNotEmpty;

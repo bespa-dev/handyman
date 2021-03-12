@@ -74,7 +74,8 @@ class _RequestPageState extends State<RequestPage> {
       _useCurrentLocation = false,
       _isHomeAddress = false,
       _isWorkAddress = false;
-  List<BaseArtisanService> _services = const [];
+  var _services = const <BaseArtisanService>[];
+  var _issues = const <String>[];
   BaseArtisanService _selectedService;
   ThemeData kTheme;
 
@@ -207,6 +208,9 @@ class _RequestPageState extends State<RequestPage> {
           ..listen((state) {
             if (state is SuccessState<Stream<BaseServiceCategory>>) {
               state.data.listen((event) {
+                _issues = event.issues ?? [];
+                if (mounted) setState(() {});
+                logger.d('${event.name} issues -> $_issues}');
                 _serviceBloc.add(ArtisanServiceEvent.getCategoryServices(
                     categoryId: event.hasParent ? event.parent : event.id));
               });
@@ -708,9 +712,6 @@ class _RequestPageState extends State<RequestPage> {
                     TextFormInput(
                       labelText: 'Short Description*',
                       controller: _bodyController,
-                      validator: (_) => _.isEmpty
-                          ? 'Add a short description of your problem'
-                          : null,
                       textCapitalization: TextCapitalization.words,
                       enabled: !_isRequesting,
                       cursorColor: kTheme.colorScheme.onBackground,

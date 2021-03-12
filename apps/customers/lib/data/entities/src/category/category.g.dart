@@ -24,13 +24,14 @@ class ServiceCategoryAdapter extends TypeAdapter<ServiceCategory> {
       groupName: fields[2] as String,
       parent: fields[6] as String,
       hasServices: fields[5] as bool,
+      issues: (fields[7] as List)?.cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, ServiceCategory obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class ServiceCategoryAdapter extends TypeAdapter<ServiceCategory> {
       ..writeByte(5)
       ..write(obj.hasServices)
       ..writeByte(6)
-      ..write(obj.parent);
+      ..write(obj.parent)
+      ..writeByte(7)
+      ..write(obj.issues);
   }
 
   @override
@@ -71,6 +74,7 @@ ServiceCategory _$ServiceCategoryFromJson(Map<String, dynamic> json) {
     groupName: json['group_name'] as String,
     parent: json['parent'] as String,
     hasServices: json['has_services'] as bool,
+    issues: (json['issues'] as List)?.map((e) => e as String)?.toList(),
   );
 }
 
@@ -83,4 +87,5 @@ Map<String, dynamic> _$ServiceCategoryToJson(ServiceCategory instance) =>
       'created_at': instance.createdAt,
       'has_services': instance.hasServices,
       'parent': instance.parent,
+      'issues': instance.issues,
     };

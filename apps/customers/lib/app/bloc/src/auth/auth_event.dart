@@ -41,5 +41,5 @@ enum _AuthEvent {
   @object
   ObserveMessageEvent,
   @object
-  ObserveAuthStatetEvent,
+  ObserveAuthStateEvent,
 }

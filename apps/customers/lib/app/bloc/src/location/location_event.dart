@@ -9,8 +9,8 @@ enum _LocationEvent {
   @object
   ObserveCurrentLocation,
   @generic
-  @Data(fields: [DataField<Generic>("location")])
+  @Data(fields: [DataField<Generic>('location')])
   GetLocationName,
-  @Data(fields: [DataField<String>("address")])
+  @Data(fields: [DataField<String>('address')])
   GetLocationCoordinates
 }

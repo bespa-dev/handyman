@@ -2,8 +2,9 @@ include: package:pedantic/analysis_options.1.9.0.yaml
 
 analyzer:
   exclude:
-    # - *.g.dart
+  # - *.g.dart
 
+#    - constant_identifier_names
 linter:
   rules:
     - always_declare_return_types
@@ -11,7 +12,6 @@ linter:
     - empty_constructor_bodies
     - annotate_overrides
     - avoid_init_to_null
-    - constant_identifier_names
     - one_member_abstracts
     - slash_for_doc_comments
     - unnecessary_brace_in_string_interps

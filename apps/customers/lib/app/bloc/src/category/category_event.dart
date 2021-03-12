@@ -16,13 +16,13 @@ enum _CategoryEvent {
   @generic
   @Data(
     fields: [
-      DataField<Generic>("group"),
+      DataField<Generic>('group'),
     ],
   )
   ObserveAllCategories,
   @Data(
     fields: [
-      DataField<String>("id"),
+      DataField<String>('id'),
     ],
   )
   ObserveCategoryById,

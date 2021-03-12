@@ -5,7 +5,8 @@
     "avatar": "https://images.pexels.com/photos/1046492/pexels-photo-1046492.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": true
+    "has_services": true,
+    "issues": []
   },
   {
     "id": "8ecf642d-429f-4b51-805b-0678a9af8e28",
@@ -13,7 +14,16 @@
     "avatar": "https://images.pexels.com/photos/4116224/pexels-photo-4116224.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": true
+    "has_services": true,
+    "issues": [
+      "Brakes",
+      "Engine",
+      "Tyre brake shoes",
+      "Drive belt",
+      "Transmissions",
+      "Steering",
+      "Gears"
+    ]
   },
   {
     "id": "781ec80c-63c6-4e9f-89a7-54b85f0c1666",
@@ -21,7 +31,14 @@
     "avatar": "https://images.unsplash.com/photo-1530191601183-4de2969575ad?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": true
+    "has_services": true,
+    "issues": [
+      "Gate",
+      "Car door",
+      "Home door",
+      "Chair",
+      "Table"
+    ]
   },
   {
     "id": "5f0301dd-b8e8-4f76-9d41-f8392656ac61",
@@ -29,7 +46,8 @@
     "avatar": "https://images.unsplash.com/photo-1556801587-bbbb66081240?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": false
+    "has_services": false,
+    "issues": []
   },
   {
     "id": "e177c9ba-bedb-498c-93b5-3598cbd2e37e",
@@ -37,7 +55,12 @@
     "avatar": "https://images.pexels.com/photos/3171033/pexels-photo-3171033.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": true
+    "has_services": true,
+    "issues": [
+      "Bouquet",
+      "Centerpieces",
+      "Corsages"
+    ]
   },
   {
     "id": "bbe8a179-7797-4d87-b388-cf93125f490e",
@@ -45,7 +68,8 @@
     "avatar": "https://images.pexels.com/photos/5684293/pexels-photo-5684293.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": true
+    "has_services": true,
+    "issues": []
   },
   {
     "id": "4dcd2140-7ab5-43d3-8e17-68abce8c6dc6",
@@ -53,7 +77,8 @@
     "avatar": "https://images.unsplash.com/photo-1555963966-b7ae5404b6ed?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": true
+    "has_services": true,
+    "issues": []
   },
   {
     "id": "c1feed13-302f-4dd3-ba1b-67d1c7dfd71f",
@@ -61,7 +86,8 @@
     "avatar": "https://images.unsplash.com/photo-1595846723416-99a641e1231a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": false
+    "has_services": false,
+    "issues": []
   },
   {
     "id": "8552bfd4-1a1e-420f-9f1e-feba454bb62d",
@@ -69,7 +95,8 @@
     "avatar": "https://images.pexels.com/photos/2076932/pexels-photo-2076932.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": true
+    "has_services": true,
+    "issues": []
   },
   {
     "id": "7dc91e3e-e0bf-48ad-8e78-c4bc7f88695d",
@@ -77,7 +104,8 @@
     "avatar": "https://images.unsplash.com/photo-1556037843-347ddff9f4b0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": false
+    "has_services": false,
+    "issues": []
   },
   {
     "id": "e982775e-9b85-4ea4-a11d-d1e02c9d40cd",
@@ -85,7 +113,8 @@
     "avatar": "https://images.unsplash.com/photo-1584196661066-e4698a1c6ab1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": true
+    "has_services": true,
+    "issues": []
   },
   {
     "id": "701ab0cb-9cfe-48d4-ab65-9060c85b2804",
@@ -93,7 +122,8 @@
     "avatar": "https://images.pexels.com/photos/1647662/pexels-photo-1647662.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": true
+    "has_services": true,
+    "issues": []
   },
   {
     "id": "9dfa0b95-d288-4efa-afea-37f838c7fe49",
@@ -102,7 +132,16 @@
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
     "has_services": true,
-    "parent": "8ecf642d-429f-4b51-805b-0678a9af8e28"
+    "parent": "8ecf642d-429f-4b51-805b-0678a9af8e28",
+    "issues": [
+      "Brakes",
+      "Engine",
+      "Tyre brake shoes",
+      "Drive belt",
+      "Transmissions",
+      "Steering",
+      "Gears"
+    ]
   },
   {
     "id": "eaa057ad-6160-48aa-bad3-8b614443063b",
@@ -111,7 +150,8 @@
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
     "has_services": true,
-    "parent": "8ecf642d-429f-4b51-805b-0678a9af8e28"
+    "parent": "8ecf642d-429f-4b51-805b-0678a9af8e28",
+    "issues": []
   },
   {
     "id": "d412530a-e8df-4249-8302-d3f86fc933d3",
@@ -119,7 +159,8 @@
     "avatar": "https://images.unsplash.com/photo-1562322140-8baeececf3df?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8aGFpcmRyZXNzZXJ8ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": false
+    "has_services": false,
+    "issues": []
   },
   {
     "id": "aa93f4ed-e3a6-4b5d-97b0-891a727d6003",
@@ -127,7 +168,8 @@
     "avatar": "https://images.unsplash.com/photo-1511803574983-43bf1f387ece?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8bmFpbCUyMHBvbGlzaHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": false
+    "has_services": false,
+    "issues": []
   },
   {
     "id": "724bc23e-7ff8-48c1-8656-f64b4a37e3a5",
@@ -135,7 +177,8 @@
     "avatar": "https://firebasestorage.googleapis.com/v0/b/handyman-mobile-app.appspot.com/o/handyman%2Fserious-african-american-glazier-working-with-glass-on-stationary-drilling-machine-in-workroom-RHBBEH.jpg?alt=media&token=699c3908-8006-478e-8b7e-a39d227e0039",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": true
+    "has_services": true,
+    "issues": []
   },
   {
     "id": "7ce1241a-931a-4892-b381-a6787ebbf6c6",
@@ -143,7 +186,8 @@
     "avatar": "https://images.unsplash.com/photo-1545649311-24d0ac00ae82?ixid=MXwxMjA3fDB8MHxzZWFyY2h8NHx8YWlyJTIwY29uZGl0aW9uZXJ8ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": false
+    "has_services": false,
+    "issues": []
   },
   {
     "id": "1a75906f-b929-4321-8163-7a45b399b9df",
@@ -151,6 +195,7 @@
     "avatar": "https://images.unsplash.com/photo-1602910344008-22f323cc1817?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8bWFrZXVwJTIwYXJ0aXN0fGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60",
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
-    "has_services": true
+    "has_services": true,
+    "issues": []
   }
 ]

@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
               if (mounted) {
                 setState(() {});
                 showSnackBarMessage(context,
-                    message: event.message ?? "Authentication failed");
+                    message: event.message ?? 'Authentication failed');
               }
             } else if (event is AuthenticatedState) {
               _isLoading = false;
@@ -117,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           SizedBox(height: kSpacingX8),
                           Text(
-                            "You have been missed!",
+                            'You have been missed!',
                             style: kTheme.textTheme.headline5.copyWith(
                               color: kTheme.colorScheme.onPrimary
                                   .withOpacity(kEmphasisMedium),
@@ -134,23 +134,23 @@ class _LoginPageState extends State<LoginPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           TextFormInput(
-                            labelText: "Email address",
+                            labelText: 'Email address',
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.next,
                             enabled: !_isLoading,
                             color: kTheme.colorScheme.onPrimary,
                             cursorColor: kTheme.colorScheme.onBackground,
-                            validator: (_) => _.isEmpty ? "Required" : null,
+                            validator: (_) => _.isEmpty ? 'Required' : null,
                           ),
                           PasswordInput(
-                            labelText: "Password",
+                            labelText: 'Password',
                             controller: _passwordController,
                             textInputAction: TextInputAction.done,
                             enabled: !_isLoading,
                             cursorColor: kTheme.colorScheme.onBackground,
                             color: kTheme.colorScheme.onPrimary,
-                            validator: (_) => _.isEmpty ? "Required" : null,
+                            validator: (_) => _.isEmpty ? 'Required' : null,
                             onFieldSubmitted: (_) => _validateAndLogin(),
                           ),
                         ],
@@ -164,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: ButtonPrimary(
                           width: SizeConfig.screenWidth * 0.85,
                           onTap: () => _validateAndLogin(),
-                          label: "Sign in",
+                          label: 'Sign in',
                           gravity: ButtonIconGravity.END,
                           icon: kArrowIcon,
                           color: kTheme.colorScheme.onBackground,
