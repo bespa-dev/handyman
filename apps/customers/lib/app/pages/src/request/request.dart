@@ -77,16 +77,12 @@ class _RequestPageState extends State<RequestPage> {
   var _services = const <BaseArtisanService>[];
   var _issues = const <String>[];
   BaseArtisanService _selectedService;
+  String _selectedIssue;
   ThemeData kTheme;
 
   /// request service
   void _requestService() async {
-    if (_formKey.currentState == null) return;
-    if (_formKey.currentState.validate() &&
-        _location != null &&
-        _selectedService != null &&
-        _userId != null) {
-      _formKey.currentState.save();
+    if (_location != null && _selectedService != null && _userId != null) {
       _isRequesting = true;
       setState(() {});
 
@@ -97,12 +93,13 @@ class _RequestPageState extends State<RequestPage> {
             filePath: _imageFile.absolute.path,
             isImage: true));
       } else {
+        _selectedIssue = _selectedIssue ?? _bodyController.text?.trim();
         _bookingBloc.add(
           BookingEvent.requestBooking(
             artisan: widget.artisan.id,
             customer: _userId,
             category: widget.artisan.category,
-            description: _bodyController.text?.trim(),
+            description: _selectedIssue,
             image: _fileUrl,
             cost: _selectedService.price,
             location: _location,
@@ -312,12 +309,13 @@ class _RequestPageState extends State<RequestPage> {
           _showActionIcon = true;
           if (mounted) setState(() {});
           if (_isRequesting) {
+            _selectedIssue = _selectedIssue ?? _bodyController.text?.trim();
             _bookingBloc.add(
               BookingEvent.requestBooking(
                 artisan: widget.artisan.id,
                 customer: _userId,
                 category: widget.artisan.category,
-                description: _bodyController.text?.trim(),
+                description: _selectedIssue,
                 image: _fileUrl,
                 cost: _selectedService.price,
                 location: _location,
@@ -671,54 +669,92 @@ class _RequestPageState extends State<RequestPage> {
         );
 
   /// request description -> send description with image to artisan
-  Widget _buildRequestDescription() => Container(
-        height: SizeConfig.screenHeight,
-        width: SizeConfig.screenWidth,
-        color: kPlaceholderColor,
-        child: SingleChildScrollView(
-          padding: EdgeInsets.only(
-            left: kSpacingX24,
-            right: kSpacingX24,
-            top: SizeConfig.screenHeight * 0.15,
-          ),
+  Widget _buildRequestDescription() => SafeArea(
+        bottom: false,
+        child: Container(
+          height: SizeConfig.screenHeight,
+          width: SizeConfig.screenWidth,
+          color: kPlaceholderColor,
+          padding: EdgeInsets.only(top: kSpacingX24, bottom: kSpacingX64),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                margin: EdgeInsets.only(
-                  top: kSpacingX12,
-                  bottom: kSpacingX24,
-                ),
-                height: SizeConfig.screenHeight * 0.3,
-                width: SizeConfig.screenWidth,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(kSpacingX8),
-                  color: kTheme.cardColor,
-                ),
-                clipBehavior: Clip.hardEdge,
-                child: ImageView(
-                  imageUrl: _imageFile?.absolute?.path,
-                  isFileImage: _imageFile != null,
-                  onTap: _pickImage,
-                  fit: BoxFit.cover,
-                  height: SizeConfig.screenHeight * 0.3,
+              ButtonClear(
+                text: 'Reset selection',
+                enabled: !_isRequesting,
+                textColor: kTheme.colorScheme.onError,
+                backgroundColor: kTheme.colorScheme.error,
+                onPressed: () {
+                  setState(() {
+                    _selectedIssue = null;
+                    _isRequesting = false;
+                  });
+                },
+                themeData: kTheme,
+              ),
+              Flexible(
+                flex: 2,
+                child: Container(
+                  margin: EdgeInsets.only(
+                    top: kSpacingX12,
+                    bottom: kSpacingX24,
+                  ),
+                  height: SizeConfig.screenHeight * 0.2,
                   width: SizeConfig.screenWidth,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(kSpacingX8),
+                    color: kTheme.cardColor,
+                  ),
+                  clipBehavior: Clip.hardEdge,
+                  child: ImageView(
+                    imageUrl: _imageFile?.absolute?.path,
+                    isFileImage: _imageFile != null,
+                    onTap: _pickImage,
+                    fit: BoxFit.cover,
+                    height: SizeConfig.screenHeight * 0.2,
+                    width: SizeConfig.screenWidth,
+                  ),
                 ),
               ),
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormInput(
-                      labelText: 'Short Description*',
-                      controller: _bodyController,
-                      textCapitalization: TextCapitalization.words,
-                      enabled: !_isRequesting,
-                      cursorColor: kTheme.colorScheme.onBackground,
-                      maxLines: 5,
-                      keyboardType: TextInputType.multiline,
+              if (_issues.isNotEmpty) ...{
+                Expanded(
+                  flex: 3,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: kSpacingX16),
+                    child: ServiceIssueListView(
+                      issues: _issues,
+                      onItemSelected: (item) {
+                        _selectedIssue = item;
+                        setState(() {});
+                      },
+                      selected: _selectedIssue,
+                      unselectedColor: kTransparent,
+                      selectedColor: kTheme.colorScheme.secondary,
                     ),
-                  ],
+                  ),
+                ),
+              },
+              Flexible(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: kSpacingX24),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormInput(
+                          labelText: 'Specify other...',
+                          controller: _bodyController,
+                          textCapitalization: TextCapitalization.words,
+                          enabled: !_isRequesting && _selectedIssue == null,
+                          cursorColor: kTheme.colorScheme.onBackground,
+                          maxLines: 3,
+                          keyboardType: TextInputType.multiline,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],
