@@ -14,7 +14,7 @@ class GetAllArtisanServicesUseCase
   @override
   Future<UseCaseResult<List<BaseArtisanService>>> execute(_) async {
     try {
-      var results = (await _repo.getArtisanServices()).toList();
+      var results = (await _repo.getArtisanServices(id: null)).toList();
       return UseCaseResult<List<BaseArtisanService>>.success(results);
     } on Exception {
       return UseCaseResult.error();

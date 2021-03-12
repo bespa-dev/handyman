@@ -187,9 +187,10 @@ class _SearchPageState extends State<SearchPage> {
                   Expanded(
                     child: ListView.separated(
                       padding: EdgeInsets.zero,
-                      itemCount: _shouldShowMoreSuggestions
-                          ? state.data.length
-                          : state.data.getRange(0, 3).length,
+                      itemCount:
+                          _shouldShowMoreSuggestions || state.data.isEmpty
+                              ? state.data.length
+                              : state.data.getRange(0, 3).length,
                       itemBuilder: (_, index) {
                         final item = state.data[index];
                         return ListTile(

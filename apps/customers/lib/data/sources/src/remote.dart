@@ -316,12 +316,16 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   @override
   Future<List<BaseArtisanService>> getArtisanServices(
       {@required String id}) async {
-    var snapshot = await firestore
-        .collection('${RefUtils.kArtisanRef}/$id/${RefUtils.kServiceRef}')
-        .get();
-    return snapshot.size > 0
-        ? snapshot.docs.map((e) => ArtisanService.fromJson(e.data())).toList()
-        : [];
+    if (id != null) {
+      var snapshot = await firestore
+          .collection('${RefUtils.kArtisanRef}/$id/${RefUtils.kServiceRef}')
+          .get();
+      return snapshot.size > 0
+          ? snapshot.docs.map((e) => ArtisanService.fromJson(e.data())).toList()
+          : [];
+    } else {
+      return [];
+    }
   }
 
   @override

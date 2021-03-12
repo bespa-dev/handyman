@@ -51,7 +51,7 @@ class ArtisanServiceBloc extends BaseBloc<ArtisanServiceEvent> {
         yield BlocState<List<BaseArtisanService>>.successState(
             data: result.value);
       } else {
-        yield BlocState.errorState(failure: 'Failed to load services');
+        yield BlocState<List<BaseArtisanService>>.errorState(failure: []);
       }
     } else if (event is GetServiceById) {
       var result = await GetServiceByIdUseCase(_repo).execute(event.id);
