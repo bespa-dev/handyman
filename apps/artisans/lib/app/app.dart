@@ -98,7 +98,7 @@ class _HandyManAppState extends State<HandyManApp> {
         debugShowCheckedModeBanner: false,
         theme: themeData(context),
         darkTheme: darkThemeData(context),
-        themeMode: kReleaseMode ? ThemeMode.system : ThemeMode.dark,
+        themeMode: kReleaseMode ? ThemeMode.system : ThemeMode.light,
         builder: ExtendedNavigator<gr.Router>(
           router: gr.Router(),
           guards: [],

@@ -9,7 +9,7 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get_version/get_version.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/shared/shared.dart';
@@ -125,8 +125,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
         onTap: () {
           /// todo -> add action to logo
         },
-        child: Image(
-          image: Svg(kLogoAsset),
+        child: SvgPicture.asset(
+          kLogoAsset,
           height: kSpacingX36,
           width: kSpacingX36,
         ),
@@ -162,8 +162,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             ),
             Positioned.fill(
               child: Container(
-                color:
-                kTheme.colorScheme.background.withOpacity(kEmphasisLow),
+                color: kTheme.colorScheme.background.withOpacity(kEmphasisLow),
               ),
             ),
           ],

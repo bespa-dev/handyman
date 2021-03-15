@@ -51,7 +51,8 @@ dependencies:
   flutter_rating_bar: null
   flutter_riverpod: ^0.12.1
   flutter_spinkit: ^4.1.2+1
-  flutter_svg_provider: ^0.1.6
+  flutter_svg: ^0.19.3
+#  flutter_svg: ^0.21.0-nullsafety.0
   flutter_video_compress: ^0.3.7+8
   geocoder: ^0.2.1
   geolocator: ^6.0.0+4

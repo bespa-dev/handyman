@@ -193,7 +193,7 @@ const kPlaceholderColor = Color(0x70000000);
 const kDisabledColor = Color(0xFF666666);
 
 const kPrimaryColor = Color(0xFF0E37EA);
-const kSecondaryLightColor = Color(0xFFCC6851);
+const kSecondaryLightColor = Color(0xFFE6BD19);
 const kErrorLightColor = Color(0xffE91E63);
 const kAccentLightColor = kSecondaryLightColor;
 const kBackgroundLightColor = Color(0xFFfafafa);

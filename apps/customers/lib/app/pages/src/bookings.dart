@@ -76,62 +76,69 @@ class _BookingsPageState extends State<BookingsPage> {
     return SafeArea(
       top: true,
       bottom: false,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Material(
-            type: MaterialType.transparency,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: kSpacingX8),
-              height: kToolbarHeight,
-              width: SizeConfig.screenWidth,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: Icon(kCloseIcon),
-                    onPressed: () => context.navigator.canPop()
-                        ? context.navigator.pop()
-                        : null,
-                  ),
-                  Text('My Bookings', style: _kTheme.textTheme.headline6),
-                  IconButton(
-                    icon: Icon(kTrashIcon),
-                    onPressed: () async => await showCustomDialog(
-                      context: context,
-                      builder: (_) => BasicDialog(
-                        message: 'Do you wish to cancel all job requests?',
-                        onComplete: () {
-                          _bookings
-                            ..forEach((element) {
-                              element = element.copyWith(
-                                  currentState: BookingState.cancelled().name());
-                              _updateBookingBloc.add(
-                                  BookingEvent.updateBooking(booking: element));
-                            });
-                          _bookingBloc.add(BookingEvent.observeBookingForCustomer(
-                              id: _userId));
-                        },
+      child: Material(
+        type: MaterialType.card,
+        color: _kTheme.colorScheme.background,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Material(
+              type: MaterialType.transparency,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: kSpacingX8),
+                height: kToolbarHeight,
+                width: SizeConfig.screenWidth,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(kCloseIcon),
+                      onPressed: () => context.navigator.canPop()
+                          ? context.navigator.pop()
+                          : null,
+                    ),
+                    Text('My Bookings', style: _kTheme.textTheme.headline6),
+                    IconButton(
+                      icon: Icon(kTrashIcon),
+                      onPressed: () async => await showCustomDialog(
+                        context: context,
+                        builder: (_) => BasicDialog(
+                          message: 'Do you wish to cancel all job requests?',
+                          onComplete: () {
+                            _bookings
+                              ..forEach((element) {
+                                element = element.copyWith(
+                                    currentState:
+                                        BookingState.cancelled().name());
+                                _updateBookingBloc.add(
+                                    BookingEvent.updateBooking(
+                                        booking: element));
+                              });
+                            _bookingBloc.add(
+                                BookingEvent.observeBookingForCustomer(
+                                    id: _userId));
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemBuilder: (_, index) => BookingListItem(
-                booking: _bookings[index],
-                shouldUpdateUI: (reload) {
-                  if (reload) setState(() {});
-                },
+            Expanded(
+              child: ListView.builder(
+                itemBuilder: (_, index) => BookingListItem(
+                  booking: _bookings[index],
+                  shouldUpdateUI: (reload) {
+                    if (reload) setState(() {});
+                  },
+                ),
+                itemCount: _bookings.length,
               ),
-              itemCount: _bookings.length,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

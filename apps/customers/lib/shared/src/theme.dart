@@ -67,7 +67,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
         secondary: kSecondaryLightColor,
         surface: kWhiteColor,
         primary: kPrimaryColor,
-        onSecondary: kWhiteColor,
+        onSecondary: kBlackColor,
         onPrimary: kWhiteColor,
       ),
       backgroundColor: kBackgroundLightColor,
