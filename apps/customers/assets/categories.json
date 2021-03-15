@@ -32,13 +32,7 @@
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
     "has_services": true,
-    "issues": [
-      "Gate",
-      "Car door",
-      "Home door",
-      "Chair",
-      "Table"
-    ]
+    "issues": ["Gate", "Car door", "Home door", "Chair", "Table"]
   },
   {
     "id": "5f0301dd-b8e8-4f76-9d41-f8392656ac61",
@@ -56,11 +50,7 @@
     "group_name": "Featured",
     "created_at": "2021-01-02T21:23:41.682495",
     "has_services": true,
-    "issues": [
-      "Bouquet",
-      "Centerpieces",
-      "Corsages"
-    ]
+    "issues": ["Bouquet", "Centerpieces", "Corsages"]
   },
   {
     "id": "bbe8a179-7797-4d87-b388-cf93125f490e",
@@ -133,15 +123,7 @@
     "created_at": "2021-01-02T21:23:41.682495",
     "has_services": true,
     "parent": "8ecf642d-429f-4b51-805b-0678a9af8e28",
-    "issues": [
-      "Brakes",
-      "Engine",
-      "Tyre brake shoes",
-      "Drive belt",
-      "Transmissions",
-      "Steering",
-      "Gears"
-    ]
+    "issues": []
   },
   {
     "id": "eaa057ad-6160-48aa-bad3-8b614443063b",
