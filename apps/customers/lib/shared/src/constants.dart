@@ -33,14 +33,13 @@ Future<bool> backPressed(GlobalKey<NavigatorState> _yourKey) async {
 }
 
 /// show [SnackBar] with a message
-/// fixme -> should be enabled in other flutter channels using ScaffoldMessage.of(context)
 void showSnackBarMessage(
   BuildContext context, {
   @required String message,
   SnackBarDuration duration,
 }) {
   duration ??= SnackBarDuration.shortLength();
-  Scaffold.of(context)
+  ScaffoldMessenger.of(context)
     ..removeCurrentSnackBar()
     ..showSnackBar(
       SnackBar(
@@ -189,7 +188,7 @@ const kPlaceholderColor = Color(0x70000000);
 const kDisabledColor = Color(0xFF666666);
 
 const kPrimaryColor = Color(0xFF0E37EA);
-const kSecondaryLightColor = Color(0xFF0E37EA);
+const kSecondaryLightColor = Color(0xFFB98981);
 const kErrorLightColor = Color(0xffE91E63);
 const kAccentLightColor = kSecondaryLightColor;
 const kBackgroundLightColor = Color(0xFFfafafa);
