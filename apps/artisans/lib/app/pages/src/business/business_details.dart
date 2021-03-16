@@ -126,9 +126,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
               if (_currentUser.services == null) {
                 _currentUser =
                     _currentUser.copyWith(services: _selectedServices);
-                _updateUserBloc.add(
-                  UserEvent.updateUserEvent(user: _currentUser),
-                );
+                _updateUserBloc
+                    .add(UserEvent.updateUserEvent(user: _currentUser));
               } else {
                 _selectedServices = _currentUser.services;
               }
@@ -137,8 +136,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
 
               /// get services for category
               if (user.category != null) {
-                _serviceBloc
-                    .add(ArtisanServiceEvent.getArtisanServices(id: user.id));
+                _serviceBloc.add(ArtisanServiceEvent.getAllArtisanServices());
               } else {
                 await showCustomDialog(
                   context: context,
@@ -160,17 +158,13 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
 
       /// observe list of services for category
       _serviceBloc.listen((state) {
-        logger.e('current state -> $state');
+        logger.i('current state -> $state');
         if (state is SuccessState<List<BaseArtisanService>>) {
           _servicesForCategory = state.data;
-          if (state.data.isEmpty) {
-            _serviceBloc.add(ArtisanServiceEvent.getAllArtisanServices());
-          } else {
-            if (mounted) setState(() {});
-            if (_sheetController.state != null &&
-                _sheetController.state.isShown) {
-              _sheetController.rebuild();
-            }
+          if (mounted) setState(() {});
+          if (_sheetController.state != null &&
+              _sheetController.state.isShown) {
+            _sheetController.rebuild();
           }
         }
       });
@@ -597,8 +591,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
 
               _updateUserBloc
                   .add(UserEvent.updateUserEvent(user: _currentUser));
-              _serviceBloc.add(
-                  ArtisanServiceEvent.getArtisanServices(id: _currentUser.id));
+              _serviceBloc.add(ArtisanServiceEvent.getAllArtisanServices());
             }
           },
           items: _categories.isNotEmpty
