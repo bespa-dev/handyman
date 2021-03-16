@@ -32,7 +32,6 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
 
   /// UI
   ThemeData kTheme;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void dispose() {
@@ -129,7 +128,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                                               : Stream.empty(),
                                           builder: (_, __) {
                                             return Text(
-                                              __.hasData ? __.data.name : "...",
+                                              __.hasData ? __.data.name : '...',
                                               style: kTheme.textTheme.bodyText2,
                                             );
                                           }),
@@ -181,7 +180,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
                 child: ListView(
                   children: [
                     ListTile(
-                      title: Text("Report"),
+                      title: Text('Report'),
                       onTap: () {
                         context.navigator.pop();
                         _showReportBottomSheet();

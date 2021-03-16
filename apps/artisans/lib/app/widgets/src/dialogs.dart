@@ -266,7 +266,7 @@ class _MenuItemPickerDialogState extends State<MenuItemPickerDialog> {
             ),
             constraints: BoxConstraints.tightFor(width: _kDialogWidth),
             decoration: BoxDecoration(
-              color: kTheme.disabledColor,
+              color: kTheme.colorScheme.background,
               borderRadius: BorderRadius.circular(kSpacingX12),
             ),
             clipBehavior: Clip.hardEdge,

@@ -139,7 +139,10 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                 ),
               );
             }
-            context.navigator.pop();
+
+            // navigate to home page
+            await context.navigator
+                .pushAndRemoveUntil(Routes.homePage, (_) => false);
           }
         }
       });

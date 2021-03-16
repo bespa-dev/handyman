@@ -140,7 +140,7 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
                                   builder: (_, snapshot) =>
                                       SelectableGridCategory(
                                     categories: snapshot.data,
-                                    selected: _selectedCategory.id,
+                                    selected: _selectedCategory?.id ?? '',
                                     onSelected: (item) {
                                       _selectedCategory = item;
                                       setState(() {});

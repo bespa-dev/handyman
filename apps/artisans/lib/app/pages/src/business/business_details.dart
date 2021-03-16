@@ -159,6 +159,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
 
       /// observe list of services for category
       _serviceBloc.listen((state) {
+        logger.e('current state -> $state');
         if (state is SuccessState<List<BaseArtisanService>>) {
           _servicesForCategory = state.data;
           if (mounted) setState(() {});
@@ -166,6 +167,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
               _sheetController.state.isShown) {
             _sheetController.rebuild();
           }
+        } else if (state is ErrorState<List<BaseArtisanService>>) {
+          _serviceBloc.add(ArtisanServiceEvent.getAllArtisanServices());
         }
       });
 
@@ -364,11 +367,17 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
               SizedBox(height: kSpacingX24),
               ..._currentUser.services
                   .map(
-                    (service) => ArtisanServiceListTile(
-                      service: /*service*/ null, // fixme -> show service
-                      showLeadingIcon: false,
-                      selected: false,
-                      showPrice: true,
+                    (id) => BlocBuilder<ArtisanServiceBloc, BlocState>(
+                      cubit: _serviceBloc
+                        ..add(ArtisanServiceEvent.getServiceById(id: id)),
+                      builder: (_, state) => ArtisanServiceListTile(
+                        service: state is SuccessState<BaseArtisanService>
+                            ? state.data
+                            : null,
+                        showLeadingIcon: false,
+                        selected: false,
+                        showPrice: true,
+                      ),
                     ),
                   )
                   .toList(),
@@ -514,8 +523,9 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                 return BlocBuilder<ArtisanServiceBloc, BlocState>(
                   cubit: _serviceBloc,
                   builder: (_, state) => Container(
-                    height: state is SuccessState<List<BaseArtisanService>> &&
-                            _selectedServices.isNotEmpty
+                    height: state is SuccessState<
+                            List<
+                                BaseArtisanService>> /** && _selectedServices.isNotEmpty **/
                         ? SizeConfig.screenHeight * 0.6
                         : SizeConfig.screenHeight * 0.25,
                     color: _kTheme.cardColor,
