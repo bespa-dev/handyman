@@ -13,7 +13,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:uuid/uuid.dart';
 
-/// fixme -> save prices for each service to remote database
+// todo -> show services picker for user
+// todo -> save prices for each service to remote database
 class BusinessDetailsPage extends StatefulWidget {
   const BusinessDetailsPage({
     Key key,
@@ -162,13 +163,15 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
         logger.e('current state -> $state');
         if (state is SuccessState<List<BaseArtisanService>>) {
           _servicesForCategory = state.data;
-          if (mounted) setState(() {});
-          if (_sheetController.state != null &&
-              _sheetController.state.isShown) {
-            _sheetController.rebuild();
+          if (state.data.isEmpty) {
+            _serviceBloc.add(ArtisanServiceEvent.getAllArtisanServices());
+          } else {
+            if (mounted) setState(() {});
+            if (_sheetController.state != null &&
+                _sheetController.state.isShown) {
+              _sheetController.rebuild();
+            }
           }
-        } else if (state is ErrorState<List<BaseArtisanService>>) {
-          _serviceBloc.add(ArtisanServiceEvent.getAllArtisanServices());
         }
       });
 
@@ -523,9 +526,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                 return BlocBuilder<ArtisanServiceBloc, BlocState>(
                   cubit: _serviceBloc,
                   builder: (_, state) => Container(
-                    height: state is SuccessState<
-                            List<
-                                BaseArtisanService>> /** && _selectedServices.isNotEmpty **/
+                    height: state is SuccessState<List<BaseArtisanService>> &&
+                            _selectedServices.isNotEmpty
                         ? SizeConfig.screenHeight * 0.6
                         : SizeConfig.screenHeight * 0.25,
                     color: _kTheme.cardColor,
@@ -588,7 +590,9 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
               _currentUser = _currentUser.copyWith(
                 category: item.key.value.toString(),
                 categoryGroup: item.title,
-                services: _currentUser.services ?? <BaseArtisanService>[],
+                services: _currentUser.services ??
+                    _selectedServices ??
+                    <BaseArtisanService>[],
               );
 
               _updateUserBloc
