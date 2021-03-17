@@ -216,6 +216,7 @@ class Injection {
     var container = ProviderContainer();
     final prefs = await container.read(sharedPreferencesProvider.future);
     var prefsRepo = container.read(prefsRepositoryProvider(prefs));
+    _repos.add(prefsRepo);
     _repos.add(await container.read(_authRepositoryProvider.future));
     _repos.add(await container.read(_bookingRepositoryProvider(prefsRepo)));
     _repos.add(await container.read(_businessRepositoryProvider(prefsRepo)));
@@ -225,7 +226,6 @@ class Injection {
         .add(await container.read(_conversationRepositoryProvider(prefsRepo)));
     _repos.add(await container.read(_galleryRepositoryProvider(prefsRepo)));
     _repos.add(await container.read(_locationRepositoryProvider));
-    _repos.add(prefsRepo);
     _repos.add(await container.read(_reviewRepositoryProvider(prefsRepo)));
     _repos.add(await container.read(_searchRepositoryProvider(prefsRepo)));
     _repos.add(container.read(_storageRepositoryProvider));
