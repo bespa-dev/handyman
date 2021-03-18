@@ -38,7 +38,7 @@ class ArtisanService extends BaseArtisanService {
     double price,
   }) =>
       ArtisanService(
-        id: this.id,
+        id: id,
         name: name ??= this.name,
         category: category ??= this.category,
         price: price ??= this.price,

@@ -263,12 +263,7 @@ class _ArtisanInfoPageState extends State<ArtisanInfoPage> {
 
     logger.d('Report -> $report');
     if (mounted && report != null) {
-      await showCustomDialog(
-        context: context,
-        builder: (_) => InfoDialog(
-          message: Text('${widget.artisan.name} reported'),
-        ),
-      );
+      showSnackBarMessage(context, message: '${widget.artisan.name} reported');
     }
 
     /// todo -> send report to server

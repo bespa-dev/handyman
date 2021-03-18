@@ -150,7 +150,7 @@ class AuthRepositoryImpl extends BaseAuthRepository {
         !Validators.validatePassword(password)) {
       _onAuthStateChangedController
           .add(AuthState.authInvalidCredentialsState());
-      _onMessageChangedController.add("Invalid credentials");
+      _onMessageChangedController.add('Invalid credentials');
       return null;
     }
     try {
@@ -160,8 +160,8 @@ class AuthRepositoryImpl extends BaseAuthRepository {
       return _getOrCreateUserFromCredential(credential);
     } on Exception catch (ex) {
       _onAuthStateChangedController
-          .add(AuthState.authFailedState(message: "Unable to sign in\n$ex"));
-      _onMessageChangedController.add("Unable to sign in");
+          .add(AuthState.authFailedState(message: 'Unable to sign in\n$ex'));
+      _onMessageChangedController.add('Unable to sign in');
       return null;
     }
   }

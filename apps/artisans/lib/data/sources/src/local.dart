@@ -7,6 +7,7 @@
  * author: codelbas.quabynah@gmail.com
  */
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -20,35 +21,41 @@ import 'package:handyman/shared/shared.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:meta/meta.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sembast/sembast.dart';
+import 'package:sembast/sembast_io.dart';
 
 /// Read more -> https://docs.hivedb.dev/
-Future registerHiveDatabase() async {
-  /// initialize hive
-  await Hive.initFlutter();
+Future registerLocalDatabase([bool useHive = true]) async {
+  if (useHive) {
+    /// initialize hive
+    await Hive.initFlutter();
 
-  /// register adapters
-  Hive
-    ..registerAdapter(BookingAdapter())
-    ..registerAdapter(ServiceCategoryAdapter())
-    ..registerAdapter(ConversationAdapter())
-    ..registerAdapter(GalleryAdapter())
-    ..registerAdapter(ReviewAdapter())
-    ..registerAdapter(ArtisanAdapter())
-    ..registerAdapter(CustomerAdapter())
-    ..registerAdapter(BusinessAdapter())
-    ..registerAdapter(LocationMetadataAdapter())
-    ..registerAdapter(ArtisanServiceAdapter());
+    /// register adapters
+    Hive
+      ..registerAdapter(BookingAdapter())
+      ..registerAdapter(ServiceCategoryAdapter())
+      ..registerAdapter(ConversationAdapter())
+      ..registerAdapter(GalleryAdapter())
+      ..registerAdapter(ReviewAdapter())
+      ..registerAdapter(ArtisanAdapter())
+      ..registerAdapter(CustomerAdapter())
+      ..registerAdapter(BusinessAdapter())
+      ..registerAdapter(LocationMetadataAdapter())
+      ..registerAdapter(ArtisanServiceAdapter());
 
-  /// open boxes
-  await Hive.openBox<Booking>(RefUtils.kBookingRef);
-  await Hive.openBox<ServiceCategory>(RefUtils.kCategoryRef);
-  await Hive.openBox<Conversation>(RefUtils.kConversationRef);
-  await Hive.openBox<Gallery>(RefUtils.kGalleryRef);
-  await Hive.openBox<Review>(RefUtils.kReviewRef);
-  await Hive.openBox<Artisan>(RefUtils.kArtisanRef);
-  await Hive.openBox<Customer>(RefUtils.kCustomerRef);
-  await Hive.openBox<Business>(RefUtils.kBusinessRef);
-  await Hive.openBox<ArtisanService>(RefUtils.kServiceRef);
+    /// open boxes
+    await Hive.openBox<Booking>(RefUtils.kBookingRef);
+    await Hive.openBox<ServiceCategory>(RefUtils.kCategoryRef);
+    await Hive.openBox<Conversation>(RefUtils.kConversationRef);
+    await Hive.openBox<Gallery>(RefUtils.kGalleryRef);
+    await Hive.openBox<Review>(RefUtils.kReviewRef);
+    await Hive.openBox<Artisan>(RefUtils.kArtisanRef);
+    await Hive.openBox<Customer>(RefUtils.kCustomerRef);
+    await Hive.openBox<Business>(RefUtils.kBusinessRef);
+    await Hive.openBox<ArtisanService>(RefUtils.kServiceRef);
+  } else {}
 }
 
 class HiveLocalDatasource extends BaseLocalDatasource {
@@ -328,4 +335,352 @@ class HiveLocalDatasource extends BaseLocalDatasource {
           {@required String id,
           @required BaseArtisanService artisanService}) async =>
       await serviceBox.put(artisanService.id, artisanService);
+}
+
+class SemBastLocalDatasource extends BaseLocalDatasource {
+  SemBastLocalDatasource({
+    @required this.prefsRepo,
+    @required this.db,
+    @required this.categoryStore,
+    @required this.bookingStore,
+    @required this.reviewStore,
+    @required this.galleryStore,
+    @required this.customerStore,
+    @required this.conversationStore,
+    @required this.businessStore,
+    @required this.artisanStore,
+    @required this.serviceStore,
+  }) {
+    _performInitLoad();
+  }
+
+  final BasePreferenceRepository prefsRepo;
+  final Database db;
+  final StoreRef<String, Map<String, Object>> categoryStore;
+  final StoreRef<String, Map<String, Object>> bookingStore;
+  final StoreRef<String, Map<String, Object>> conversationStore;
+  final StoreRef<String, Map<String, Object>> galleryStore;
+  final StoreRef<String, Map<String, Object>> reviewStore;
+  final StoreRef<String, Map<String, Object>> artisanStore;
+  final StoreRef<String, Map<String, Object>> customerStore;
+  final StoreRef<String, Map<String, Object>> businessStore;
+  final StoreRef<String, Map<String, Object>> serviceStore;
+
+  void _performInitLoad() async {
+    if (prefsRepo.isLoggedIn) return;
+
+    /// decode categories from json
+    var categorySource = await rootBundle.loadString('assets/categories.json');
+    var decodedCategories = jsonDecode(categorySource) as List;
+    for (var json in decodedCategories) {
+      final item = ServiceCategory.fromJson(json);
+
+      /// put each one into box
+      await categoryStore.record(item.id).put(db, item.toJson());
+    }
+
+    /// decode services from json
+    var serviceSource = await rootBundle.loadString('assets/services.json');
+    var decodedServices = jsonDecode(serviceSource) as List;
+    for (var json in decodedServices) {
+      final item = ArtisanService.fromJson(json);
+
+      /// put each one into box
+      await serviceStore.record(item.id).put(db, item.toJson());
+    }
+  }
+
+  @override
+  Stream<List<BaseBooking>> bookingsForCustomerAndArtisan(
+      String customerId, String artisanId) async* {
+    var bookings = await bookingStore.find(db,
+        finder: Finder(
+            filter: Filter.matches('customer_id', customerId),
+            sortOrders: [SortOrder('id')]));
+    var keys = <String>[];
+    for (var value in bookings) {
+      keys.add(value.key);
+    }
+    yield (await bookingStore.records(keys).getSnapshots(db))
+        .map((e) => Booking.fromJson(e.value))
+        .where((element) => element.artisanId == artisanId)
+        .toList();
+  }
+
+  @override
+  Stream<BaseArtisan> currentUser() async* {
+    if (!prefsRepo.isLoggedIn) return;
+    artisanStore
+        .record(prefsRepo.userId)
+        .onSnapshot(db)
+        .map((event) => Artisan.fromJson(event.value));
+  }
+
+  @override
+  Future<void> deleteBooking({BaseBooking booking}) async {
+    await bookingStore.delete(db,
+        finder: Finder(filter: Filter.byKey(booking.id)));
+  }
+
+  @override
+  Future<void> deleteReviewById({String id}) async {
+    await reviewStore.delete(db, finder: Finder(filter: Filter.byKey(id)));
+  }
+
+  @override
+  Future<BaseArtisan> getArtisanById({String id}) async =>
+      Artisan.fromJson((await artisanStore.record(id).getSnapshot(db)).value);
+
+  @override
+  Future<List<BaseArtisanService>> getArtisanServices({String id}) async {
+    return (await serviceStore.find(
+      db,
+      finder: Finder(
+        filter: Filter.matches('id', id),
+        sortOrders: [
+          SortOrder('id'),
+        ],
+      ),
+    ))
+        .map((e) => ArtisanService.fromJson(e.value))
+        .toList();
+  }
+
+  @override
+  Stream<BaseBooking> getBookingById({String id}) async* {
+    yield* bookingStore
+        .record(id)
+        .onSnapshot(db)
+        .map((event) => Booking.fromJson(event.value));
+  }
+
+  @override
+  Stream<List<BaseBooking>> getBookingsByDueDate(
+      {String dueDate, String artisanId}) async* {
+    yield (await bookingStore.find(
+      db,
+      finder: Finder(
+        filter: Filter.and([
+          Filter.matches('due_date', dueDate),
+          Filter.matches('artisan_id', artisanId)
+        ]),
+        sortOrders: [
+          SortOrder('id'),
+        ],
+      ),
+    ))
+        .map((e) => Booking.fromJson(e.value))
+        .toList();
+  }
+
+  @override
+  Future<BaseBusiness> getBusinessById({String id}) async {
+    var json = await businessStore.record(id).get(db);
+    return Business.fromJson(json);
+  }
+
+  @override
+  Future<List<BaseBusiness>> getBusinessesForArtisan({String artisan}) async {
+    var list = await businessStore.find(db,
+        finder: Finder(filter: Filter.matches('artisan_id', artisan)));
+    return list.map((e) => Business.fromJson(e.value)).toList();
+  }
+
+  @override
+  Future<BaseUser> getCustomerById({String id}) {
+    // TODO: implement getCustomerById
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<List<BaseGallery>> getPhotosForArtisan({String userId}) {
+    // TODO: implement getPhotosForArtisan
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<BaseArtisan> observeArtisanById({String id}) {
+    // TODO: implement observeArtisanById
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<List<BaseArtisan>> observeArtisans({String category}) {
+    // TODO: implement observeArtisans
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<List<BaseBooking>> observeBookingsForArtisan(String id) {
+    // TODO: implement observeBookingsForArtisan
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<List<BaseBooking>> observeBookingsForCustomer(String id) {
+    // TODO: implement observeBookingsForCustomer
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<BaseBusiness> observeBusinessById({String id}) {
+    // TODO: implement observeBusinessById
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<List<BaseServiceCategory>> observeCategories(
+      {ServiceCategoryGroup categoryGroup}) async* {
+    var list = await categoryStore.find(db,
+        finder:
+            Finder(filter: Filter.matches('group_name', categoryGroup.name())));
+    yield list.map((e) => ServiceCategory.fromJson(e.value)).toList();
+  }
+
+  @override
+  Stream<BaseServiceCategory> observeCategoryById({String id}) {
+    // TODO: implement observeCategoryById
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<List<BaseConversation>> observeConversation(
+      {String sender, String recipient}) {
+    // TODO: implement observeConversation
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<BaseUser> observeCustomerById({String id}) {
+    // TODO: implement observeCustomerById
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<List<BaseReview>> observeReviewsByCustomer(String id) {
+    // TODO: implement observeReviewsByCustomer
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<List<BaseReview>> observeReviewsForArtisan(String id) {
+    // TODO: implement observeReviewsForArtisan
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> requestBooking({BaseBooking booking}) {
+    // TODO: implement requestBooking
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<BaseUser>> searchFor({String query, String categoryId}) {
+    // TODO: implement searchFor
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> sendMessage({BaseConversation conversation}) {
+    // TODO: implement sendMessage
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> sendReview({BaseReview review}) {
+    // TODO: implement sendReview
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateArtisanService(
+      {String id, BaseArtisanService artisanService}) {
+    // TODO: implement updateArtisanService
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateBooking({BaseBooking booking}) {
+    // TODO: implement updateBooking
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateBusiness({BaseBusiness business}) {
+    // TODO: implement updateBusiness
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateCategory({BaseServiceCategory category}) async =>
+      await categoryStore.update(db, category.toJson(),
+          finder: Finder(filter: Filter.byKey(category.id)));
+
+  @override
+  Future<void> updateGallery({BaseGallery gallery}) async {
+    // TODO: implement updateGallery
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateReview({BaseReview review}) {
+    // TODO: implement updateReview
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateUser(BaseArtisan user) {
+    // TODO: implement updateUser
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> uploadBusinessPhotos({List<BaseGallery> galleryItems}) {
+    // TODO: implement uploadBusinessPhotos
+    throw UnimplementedError();
+  }
+}
+
+/// sembast database setup
+///
+/// https://medium.com/flutterdevs/sembast-nosql-database-336a523a1567
+class AppDatabase {
+  // Singleton instance
+  static final AppDatabase _singleton = AppDatabase._();
+
+  // Singleton accessor
+  static AppDatabase get instance => _singleton;
+
+  // Completer is used for transforming synchronous code into asynchronous code.
+  Completer<Database> _dbOpenCompleter;
+
+  // A private constructor. Allows us to create instances of AppDatabase
+  // only from within the AppDatabase class itself.
+  AppDatabase._();
+
+  // Database object accessor
+  Future<Database> get database async {
+    // If completer is null, AppDatabaseClass is newly instantiated, so database is not yet opened
+    if (_dbOpenCompleter == null) {
+      _dbOpenCompleter = Completer();
+      // Calling _openDatabase will also complete the completer with database instance
+      await _openDatabase();
+    }
+    // If the database is already opened, awaiting the future will happen instantly.
+    // Otherwise, awaiting the returned future will take some time - until complete() is called
+    // on the Completer in _openDatabase() below.
+    return _dbOpenCompleter.future;
+  }
+
+  Future _openDatabase() async {
+    // Get a platform-specific directory where persistent app data can be stored
+    final appDocumentDir = await getApplicationDocumentsDirectory();
+    // Path with the form: /platform-specific-directory/demo.db
+    final dbPath = join(appDocumentDir.path, 'private-school-project.db');
+
+    final database = await databaseFactoryIo.openDatabase(dbPath);
+
+    // Any code awaiting the Completer's future will now start executing
+    _dbOpenCompleter?.complete(database);
+  }
 }

@@ -15,6 +15,14 @@ import 'package:uuid/uuid.dart';
 
 // todo -> show services picker for user
 // todo -> save prices for each service to remote database
+
+/// business details page
+///
+/// 1. update business name
+/// 2. setup business location
+/// 3. register service for business
+/// 4. setup prices for each service
+/// 5. save prices to database
 class BusinessDetailsPage extends StatefulWidget {
   const BusinessDetailsPage({
     Key key,
@@ -176,13 +184,10 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
           if (mounted) setState(() {});
         } else if (state is ErrorState) {
           _isLoading = false;
-          if (mounted) setState(() {});
-          await showCustomDialog(
-            context: context,
-            builder: (_) => InfoDialog(
-              message: Text(state.failure.toString()),
-            ),
-          );
+          if (mounted) {
+            setState(() {});
+            showSnackBarMessage(context, message: state.failure.toString());
+          }
         } else if (state is SuccessState<String>) {
           logger.d(state.data);
           _isLoading = false;

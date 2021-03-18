@@ -91,12 +91,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
           }
         } else if (state is ErrorState) {
           if (mounted) {
-            await showCustomDialog(
-              context: context,
-              builder: (_) => InfoDialog(
-                message: Text('Failed to update profile'),
-              ),
-            );
+            showSnackBarMessage(context, message: 'Failed to update profile');
           }
         }
       });
@@ -121,12 +116,7 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
           _isLoading = false;
           if (mounted) {
             setState(() {});
-            await showCustomDialog(
-              context: context,
-              builder: (_) => InfoDialog(
-                message: Text('Uploaded business profile completed'),
-              ),
-            );
+            showSnackBarMessage(context, message: 'Updated business profile');
 
             if (state.data != null) {
               _userBloc.add(
@@ -156,12 +146,8 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
           _isLoading = false;
           if (mounted) {
             setState(() {});
-            await showCustomDialog(
-              context: context,
-              builder: (_) => InfoDialog(
-                message: Text('Failed to save business information'),
-              ),
-            );
+            showSnackBarMessage(context,
+                message: 'Failed to save business information');
           }
         } else if (state is SuccessState<String>) {
           _docUrl = state.data;
@@ -507,12 +493,9 @@ class _BusinessProfilePageState extends State<BusinessProfilePage> {
                             ),
                           );
                         } else {
-                          await showCustomDialog(
-                            context: context,
-                            builder: (_) => InfoDialog(
-                                message: Text(
-                                    'Please add all required documents first')),
-                          );
+                          showSnackBarMessage(context,
+                              message:
+                                  'Please add all required documents first');
                         }
                       } else {
                         _businessBloc.add(BusinessEvent.updateBusiness(
