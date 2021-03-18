@@ -9,16 +9,16 @@
 
 import 'dart:io';
 
-import 'package:auto_route/auto_route.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:handyman/app/bloc/bloc.dart';
-import 'package:handyman/app/routes/routes.gr.dart' as gr;
+import 'package:handyman/app/pages/pages.dart';
 import 'package:handyman/domain/models/models.dart';
+import 'package:handyman/domain/repositories/repositories.dart';
+import 'package:handyman/main.dart';
 import 'package:handyman/shared/shared.dart';
 
 /// application instance -> entry point
@@ -42,6 +42,10 @@ class _HandyManAppState extends State<HandyManApp> {
   @override
   void initState() {
     super.initState();
+
+    var businessRepository = Injection.get<BaseBusinessRepository>();
+    businessRepository.updateBusiness(business: kSampleBusiness);
+
 
     /// setup local notifications
     _notificationService = ProviderContainer().read(notificationServiceProvider)
@@ -98,11 +102,13 @@ class _HandyManAppState extends State<HandyManApp> {
         debugShowCheckedModeBanner: false,
         theme: themeData(context),
         darkTheme: darkThemeData(context),
-        themeMode: kReleaseMode ? ThemeMode.system : ThemeMode.light,
-        builder: ExtendedNavigator<gr.Router>(
-          router: gr.Router(),
-          guards: [],
-        ),
+        themeMode: ThemeMode.system,
+        // builder: ExtendedNavigator<gr.Router>(
+        //   router: gr.Router(),
+        //   guards: [],
+        // ),
+        /// fixme -> remove this home route
+        home: BusinessDetailsPage(business: kSampleBusiness),
       ),
     );
   }

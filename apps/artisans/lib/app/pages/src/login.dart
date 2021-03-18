@@ -83,198 +83,200 @@ class _LoginPageState extends State<LoginPage> {
     final lightTheme = kTheme.brightness == Brightness.light;
 
     return Scaffold(
-      body: Stack(
-        children: [
-          /// base
-          Positioned.fill(
-            child: Container(
-              color: kTheme.colorScheme.primary,
-              padding: EdgeInsets.fromLTRB(
-                kSpacingX24,
-                kSpacingX36,
-                kSpacingX24,
-                kSpacingX48,
-              ),
-              child: SingleChildScrollView(
-                padding: EdgeInsets.only(top: kSpacingX36),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Image.asset(
-                      kLoginAsset,
-                      height: SizeConfig.screenHeight * 0.25,
-                      fit: BoxFit.cover,
-                      width: SizeConfig.screenWidth,
-                    ),
-                    SizedBox(height: kSpacingX36),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Let\'s sign you in",
-                            style: kTheme.textTheme.headline5.copyWith(
-                              color: kTheme.colorScheme.onPrimary,
-                            ),
-                          ),
-                          SizedBox(height: kSpacingX8),
-                          Text(
-                            'You have been missed!',
-                            style: kTheme.textTheme.headline6.copyWith(
-                              color: kTheme.colorScheme.onPrimary
-                                  .withOpacity(kEmphasisMedium),
-                            ),
-                          ),
-                        ],
+      backgroundColor: kTheme.colorScheme.primary,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            /// base
+            Positioned.fill(
+              child: Container(
+                padding: EdgeInsets.fromLTRB(
+                  kSpacingX24,
+                  kSpacingX36,
+                  kSpacingX24,
+                  kSpacingX48,
+                ),
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.only(top: kSpacingX36),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Image.asset(
+                        kLoginAsset,
+                        height: SizeConfig.screenHeight * 0.25,
+                        fit: BoxFit.cover,
+                        width: SizeConfig.screenWidth,
                       ),
-                    ),
-                    SizedBox(height: kSpacingX24),
-                    Align(
-                      alignment: Alignment.center,
-                      child: ButtonPrimary(
-                        width: SizeConfig.screenWidth * 0.9,
-                        onTap: () =>
-                            _authBloc.add(AuthEvent.federatedOAuthEvent()),
-                        label: 'Sign in with Google',
-                        color: kTheme.colorScheme.onBackground,
-                        textColor: kTheme.colorScheme.background,
-                        icon: kGoogleIcon,
-                        gravity: ButtonIconGravity.START,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: kSpacingX12,
-                        vertical: kSpacingX16,
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Divider(
-                              color: kTheme.colorScheme.onPrimary
-                                  .withOpacity(kEmphasisLow),
-                              thickness: 1,
+                      SizedBox(height: kSpacingX36),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Let\'s sign you in",
+                              style: kTheme.textTheme.headline5.copyWith(
+                                color: kTheme.colorScheme.onPrimary,
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: kSpacingX6,
-                            ),
-                            child: Text(
-                              'Or',
+                            SizedBox(height: kSpacingX8),
+                            Text(
+                              'You have been missed!',
                               style: kTheme.textTheme.headline6.copyWith(
                                 color: kTheme.colorScheme.onPrimary
                                     .withOpacity(kEmphasisMedium),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: Divider(
-                              color: kTheme.colorScheme.onPrimary
-                                  .withOpacity(kEmphasisLow),
-                              thickness: 1,
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          TextFormInput(
-                            labelText: 'Email address',
-                            controller: _emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
-                            enabled: !_isLoading,
-                            cursorColor: kTheme.colorScheme.onPrimary,
-                            color: kTheme.colorScheme.onPrimary,
-                            validator: (_) => _.isEmpty ? 'Required' : null,
-                          ),
-                          PasswordInput(
-                            labelText: 'Password',
-                            controller: _passwordController,
-                            textInputAction: TextInputAction.done,
-                            cursorColor: kTheme.colorScheme.onPrimary,
-                            enabled: !_isLoading,
-                            color: kTheme.colorScheme.onPrimary,
-                            validator: (_) => _.isEmpty ? 'Required' : null,
-                            onFieldSubmitted: (_) => _validateAndLogin(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: kSpacingX8),
-                    if (_isLoading) ...{
-                      Loading(color: kTheme.colorScheme.secondary),
-                    } else ...{
-                      Center(
+                      SizedBox(height: kSpacingX24),
+                      Align(
+                        alignment: Alignment.center,
                         child: ButtonPrimary(
                           width: SizeConfig.screenWidth * 0.9,
-                          onTap: () => _validateAndLogin(),
-                          label: 'Sign in',
-                          gravity: ButtonIconGravity.END,
-                          icon: kArrowIcon,
-                          color: lightTheme
-                              ? kTheme.colorScheme.background
-                                  .withOpacity(kEmphasisHigh)
-                              : kTheme.colorScheme.secondary,
-                          textColor: lightTheme
-                              ? kTheme.colorScheme.onBackground
-                              : kTheme.colorScheme.onSecondary,
-                        ),
-                      )
-                    }
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          /// action button
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: GestureDetector(
-              onTap: () => context.navigator.pushRegisterPage(),
-              child: Container(
-                margin: EdgeInsets.only(bottom: kSpacingX16),
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(text: "Don\'t have an account?\t"),
-                      TextSpan(
-                        text: 'Sign up here',
-                        style: kTheme.textTheme.button.copyWith(
-                          color: kTheme.colorScheme.secondary,
+                          onTap: () =>
+                              _authBloc.add(AuthEvent.federatedOAuthEvent()),
+                          label: 'Sign in with Google',
+                          color: kTheme.colorScheme.onBackground,
+                          textColor: kTheme.colorScheme.background,
+                          icon: kGoogleIcon,
+                          gravity: ButtonIconGravity.START,
                         ),
                       ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: kSpacingX12,
+                          vertical: kSpacingX16,
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Divider(
+                                color: kTheme.colorScheme.onPrimary
+                                    .withOpacity(kEmphasisLow),
+                                thickness: 1,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: kSpacingX6,
+                              ),
+                              child: Text(
+                                'Or',
+                                style: kTheme.textTheme.headline6.copyWith(
+                                  color: kTheme.colorScheme.onPrimary
+                                      .withOpacity(kEmphasisMedium),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Divider(
+                                color: kTheme.colorScheme.onPrimary
+                                    .withOpacity(kEmphasisLow),
+                                thickness: 1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            TextFormInput(
+                              labelText: 'Email address',
+                              controller: _emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.next,
+                              enabled: !_isLoading,
+                              cursorColor: kTheme.colorScheme.onPrimary,
+                              color: kTheme.colorScheme.onPrimary,
+                              validator: (_) => _.isEmpty ? 'Required' : null,
+                            ),
+                            PasswordInput(
+                              labelText: 'Password',
+                              controller: _passwordController,
+                              textInputAction: TextInputAction.done,
+                              cursorColor: kTheme.colorScheme.onPrimary,
+                              enabled: !_isLoading,
+                              color: kTheme.colorScheme.onPrimary,
+                              validator: (_) => _.isEmpty ? 'Required' : null,
+                              onFieldSubmitted: (_) => _validateAndLogin(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: kSpacingX8),
+                      if (_isLoading) ...{
+                        Loading(color: kTheme.colorScheme.secondary),
+                      } else ...{
+                        Center(
+                          child: ButtonPrimary(
+                            width: SizeConfig.screenWidth * 0.9,
+                            onTap: () => _validateAndLogin(),
+                            label: 'Sign in',
+                            gravity: ButtonIconGravity.END,
+                            icon: kArrowIcon,
+                            color: lightTheme
+                                ? kTheme.colorScheme.background
+                                    .withOpacity(kEmphasisHigh)
+                                : kTheme.colorScheme.secondary,
+                            textColor: lightTheme
+                                ? kTheme.colorScheme.onBackground
+                                : kTheme.colorScheme.onSecondary,
+                          ),
+                        )
+                      }
                     ],
-                  ),
-                  style: kTheme.textTheme.button.copyWith(
-                    color: kTheme.colorScheme.onPrimary,
                   ),
                 ),
               ),
             ),
-          ),
 
-          /// back button
-          Positioned(
-            top: kSpacingX36,
-            left: kSpacingX16,
-            child: IconButton(
-              icon: Icon(kBackIcon),
-              color: kTheme.colorScheme.onPrimary,
-              onPressed: () => context.navigator.pop(),
+            /// action button
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: GestureDetector(
+                onTap: () => context.navigator.pushRegisterPage(),
+                child: Container(
+                  margin: EdgeInsets.only(bottom: kSpacingX16),
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(text: "Don\'t have an account?\t"),
+                        TextSpan(
+                          text: 'Sign up here',
+                          style: kTheme.textTheme.button.copyWith(
+                            color: kTheme.colorScheme.secondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    style: kTheme.textTheme.button.copyWith(
+                      color: kTheme.colorScheme.onPrimary,
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
-        ],
+
+            /// back button
+            Positioned(
+              top: kSpacingX16,
+              left: kSpacingX16,
+              child: IconButton(
+                icon: Icon(kBackIcon),
+                color: kTheme.colorScheme.onPrimary,
+                onPressed: () => context.navigator.pop(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

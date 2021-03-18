@@ -10,8 +10,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:handyman/shared/shared.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 /// extensions on [List]
 extension ListX on List<dynamic> {
@@ -75,9 +76,13 @@ extension StringX on String {
   Future<String> _downloadAndSaveImage(String fileName) async {
     var directory = await getApplicationDocumentsDirectory();
     var filePath = '${directory.path}/$fileName';
-    var response = await http.get(this);
-    var file = File(filePath);
-    await file.writeAsBytes(response.bodyBytes);
+    try {
+      var response = await http.get(this);
+      var file = File(filePath);
+      await file.writeAsBytes(response.bodyBytes);
+    } catch (e) {
+      logger.e(e);
+    }
     return filePath;
   }
 }

@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
+import 'package:handyman/main.dart';
 import 'package:handyman/shared/shared.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -54,10 +55,10 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   BaseBusiness _business;
   LatLng _businessLocation;
   int _currentPage = 0;
-  BaseArtisan _currentUser;
-  var _servicesForCategory = const <BaseArtisanService>[];
-  var _categories = const <BaseServiceCategory>[];
-  var _selectedServices = const <String>[];
+  BaseArtisan _currentUser = kSampleArtisan;
+  var _servicesForCategory = <BaseArtisanService>[];
+  var _categories = <BaseServiceCategory>[];
+  var _selectedServices = <String>[];
   final _sheetController = SheetController();
   File _galleryImage;
   bool _isLoading = false;
@@ -199,6 +200,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     _kTheme = Theme.of(context);
 
     return Scaffold(
