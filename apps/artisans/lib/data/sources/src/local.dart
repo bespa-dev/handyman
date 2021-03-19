@@ -447,16 +447,15 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
   @override
   Future<List<BaseArtisanService>> getArtisanServices(
       {@required String id}) async {
-    // todo -> get artisan services
-    return (await serviceStore.find(
+    var keys = await serviceStore.findKeys(
       db,
       finder: Finder(
-        // filter: Filter.matches('id', id),
-        sortOrders: [SortOrder('id')],
+        filter: Filter.matches('artisan_id', id),
       ),
-    ))
-        .map((e) => ArtisanService.fromJson(e.value))
-        .toList();
+    );
+
+    var list = await serviceStore.records(keys).get(db);
+    return list.map((json) => ArtisanService.fromJson(json)).toList();
   }
 
   @override
@@ -697,9 +696,9 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
   Future<void> updateArtisanService(
           {@required String id,
           @required BaseArtisanService artisanService}) async =>
-      serviceStore.record(id).put(
+      serviceStore.record(artisanService.id).put(
             db,
-            artisanService.toJson(),
+            artisanService.copyWith(artisanId: id).toJson(),
             merge: true,
           );
 

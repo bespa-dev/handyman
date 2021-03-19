@@ -5,7 +5,8 @@ import 'package:meta/meta.dart';
 
 part 'service.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(
+    fieldRename: FieldRename.snake, genericArgumentFactories: true)
 @HiveType(typeId: 9)
 class ArtisanService extends BaseArtisanService {
   @override
@@ -24,11 +25,16 @@ class ArtisanService extends BaseArtisanService {
   @HiveField(3)
   final String name;
 
+  @override
+  @HiveField(4)
+  final String artisanId;
+
   ArtisanService({
     @required this.id,
     @required this.category,
     @required this.name,
     @required this.price,
+    this.artisanId,
   });
 
   @override
@@ -36,12 +42,14 @@ class ArtisanService extends BaseArtisanService {
     String category,
     String name,
     double price,
+    String artisanId,
   }) =>
       ArtisanService(
         id: id,
         name: name ??= this.name,
         category: category ??= this.category,
         price: price ??= this.price,
+        artisanId: artisanId ??= this.artisanId,
       );
 
   factory ArtisanService.fromJson(Map<String, dynamic> json) =>

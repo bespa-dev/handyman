@@ -3,11 +3,13 @@ abstract class BaseArtisanService {
   String category;
   String name;
   double price;
+  String artisanId;
 
   BaseArtisanService copyWith({
     String category,
     String name,
     double price,
+    String artisanId,
   });
 
   Map<String, dynamic> toJson();

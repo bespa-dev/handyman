@@ -17,11 +17,11 @@ part 'storage.super.dart';
 @superEnum
 enum _StorageProgress {
   @Data(
-    fields: [DataField<String>("url")],
+    fields: [DataField<String>('url')],
   )
   UploadSuccess,
   @Data(
-    fields: [DataField<String>("cause")],
+    fields: [DataField<String>('cause')],
   )
   UploadFailed,
   @object
@@ -32,8 +32,6 @@ enum _StorageProgress {
 
 /// base storage repository class
 abstract class BaseStorageRepository implements Exposable {
-  /// observe upload progress
-  Stream<StorageProgress> get onStorageUploadResponse;
 
   /// upload media file (pdf, image etc)
   Future<String> uploadFile(

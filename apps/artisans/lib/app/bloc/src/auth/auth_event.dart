@@ -15,22 +15,22 @@ part 'auth_event.super.dart';
 enum _AuthEvent {
   @Data(
     fields: [
-      DataField<String>("email"),
-      DataField<String>("password"),
+      DataField<String>('email'),
+      DataField<String>('password'),
     ],
   )
   EmailSignInEvent,
   @Data(
     fields: [
-      DataField<String>("username"),
-      DataField<String>("email"),
-      DataField<String>("password"),
+      DataField<String>('username'),
+      DataField<String>('email'),
+      DataField<String>('password'),
     ],
   )
   EmailSignUpEvent,
   @Data(
     fields: [
-      DataField<String>("email"),
+      DataField<String>('email'),
     ],
   )
   ResetPasswordEvent,
@@ -41,5 +41,5 @@ enum _AuthEvent {
   @object
   ObserveMessageEvent,
   @object
-  ObserveAuthStatetEvent,
+  ObserveAuthStateEvent,
 }
