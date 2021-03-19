@@ -20,15 +20,18 @@ class _ArtisanServiceListItemState extends State<ArtisanServiceListItem> {
   final _serviceBloc = ArtisanServiceBloc(repo: Injection.get());
   final _updateServiceBloc = ArtisanServiceBloc(repo: Injection.get());
   final _categoryBloc = CategoryBloc(repo: Injection.get());
+  final _prefsBloc = PrefsBloc(repo: Injection.get());
 
   /// UI
   final _controller = TextEditingController();
+  String _userId;
 
   @override
   void dispose() {
     _categoryBloc.close();
     _serviceBloc.close();
     _updateServiceBloc.close();
+    _prefsBloc.close();
     super.dispose();
   }
 
@@ -39,6 +42,15 @@ class _ArtisanServiceListItemState extends State<ArtisanServiceListItem> {
     if (mounted) {
       /// get service info
       _serviceBloc.add(ArtisanServiceEvent.getServiceById(id: widget.service));
+
+      _prefsBloc
+        ..add(PrefsEvent.getUserIdEvent())
+        ..listen((state) {
+          if (state is SuccessState<String>) {
+            _userId = state.data;
+            if (mounted) setState(() {});
+          }
+        });
     }
   }
 
@@ -62,9 +74,10 @@ class _ArtisanServiceListItemState extends State<ArtisanServiceListItem> {
                     hintText: 'e.g. 200',
                   ),
                 );
-                if (data != null) {
+                if (data != null && _userId != null) {
                   _updateServiceBloc.add(
                     ArtisanServiceEvent.updateArtisanService(
+                      id: _userId,
                       service:
                           state.data.copyWith(price: double.tryParse(data)),
                     ),
@@ -189,16 +202,19 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
   final _serviceBloc = ArtisanServiceBloc(repo: Injection.get());
   final _updateServiceBloc = ArtisanServiceBloc(repo: Injection.get());
   final _categoryBloc = CategoryBloc(repo: Injection.get());
+  final _prefsBloc = PrefsBloc(repo: Injection.get());
 
   /// UI
   final _controller = TextEditingController();
   BaseArtisanService _currentService;
+  String _userId;
 
   @override
   void dispose() {
     _categoryBloc.close();
     _serviceBloc.close();
     _updateServiceBloc.close();
+    _prefsBloc.close();
     super.dispose();
   }
 
@@ -208,18 +224,30 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
 
     if (mounted) {
       _currentService = widget.service;
-      if (mounted) setState(() {});
-      _categoryBloc
-          .add(CategoryEvent.observeCategoryById(id: widget.service.category));
+      setState(() {});
 
-      _serviceBloc
-        ..add(ArtisanServiceEvent.getServiceById(id: widget.service.id))
-        ..listen((state) {
-          if (state is SuccessState<BaseArtisanService>) {
-            _currentService = state.data;
-            if (mounted) setState(() {});
-          }
-        });
+      if (_currentService != null) {
+        _prefsBloc
+          ..add(PrefsEvent.getUserIdEvent())
+          ..listen((state) {
+            if (state is SuccessState<String>) {
+              _userId = state.data;
+              if (mounted) setState(() {});
+            }
+          });
+
+        _categoryBloc.add(
+            CategoryEvent.observeCategoryById(id: widget.service.category));
+
+        _serviceBloc
+          ..add(ArtisanServiceEvent.getServiceById(id: widget.service.id))
+          ..listen((state) {
+            if (state is SuccessState<BaseArtisanService>) {
+              _currentService = state.data;
+              if (mounted) setState(() {});
+            }
+          });
+      }
     }
   }
 
@@ -253,7 +281,7 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
                       hintText: 'e.g. 99.99',
                     ),
                   );
-                  if (data != null) {
+                  if (data != null && _userId != null) {
                     _currentService =
                         _currentService.copyWith(price: double.tryParse(data));
                     setState(() {});
@@ -262,7 +290,7 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
 
                     _updateServiceBloc.add(
                       ArtisanServiceEvent.updateArtisanService(
-                          service: _currentService),
+                          id: _userId, service: _currentService),
                     );
 
                     _serviceBloc.add(ArtisanServiceEvent.getServiceById(
@@ -270,7 +298,7 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
                   }
                 },
             title: Text(
-              _currentService.name,
+              _currentService?.name ?? '...',
               style: TextStyle(
                 color: widget.selected
                     ? widget.selectedColor ?? kTheme.colorScheme.secondary

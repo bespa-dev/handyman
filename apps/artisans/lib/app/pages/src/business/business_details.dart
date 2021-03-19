@@ -13,9 +13,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:uuid/uuid.dart';
 
-// todo -> show services picker for user
-// todo -> save prices for each service to remote database
-
 /// business details page
 ///
 /// 1. update business name
@@ -141,10 +138,11 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
               }
               if (mounted) setState(() {});
               logger.i(
-                  'User category -> ${user.categoryParent ?? user.category}');
+                  'User category -> ${user?.categoryParent ?? user?.category}');
 
               /// get services based on category
-              if (user.categoryParent != null || user.category != null) {
+              if (user != null &&
+                  (user.categoryParent != null || user.category != null)) {
                 _serviceBloc.add(
                   ArtisanServiceEvent.getArtisanServicesByCategory(
                       categoryId: user.categoryParent ?? user.category),
@@ -204,6 +202,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     _kTheme = Theme.of(context);
+
+    logger.i('services offered -> ${_currentUser?.services}');
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -371,22 +371,34 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                 ),
               ),
               SizedBox(height: kSpacingX24),
-              ..._currentUser.services
-                  .map(
-                    (id) => BlocBuilder<ArtisanServiceBloc, BlocState>(
-                      cubit: _serviceBloc
-                        ..add(ArtisanServiceEvent.getServiceById(id: id)),
-                      builder: (_, state) => ArtisanServiceListTile(
-                        service: state is SuccessState<BaseArtisanService>
-                            ? state.data
-                            : null,
-                        showLeadingIcon: false,
-                        selected: false,
-                        showPrice: true,
-                      ),
-                    ),
-                  )
-                  .toList(),
+              if (_currentUser != null && _currentUser.services.isNotEmpty) ...{
+                ..._currentUser.services
+                    .map(
+                      (id) {
+                        logger.i('service item(${_currentUser.services.indexOf(id)}) -> $id');
+                        return BlocBuilder<ArtisanServiceBloc, BlocState>(
+                        cubit: _serviceBloc
+                          ..add(ArtisanServiceEvent.getServiceById(id: id)),
+                        builder: (_, state) => state
+                                is SuccessState<BaseArtisanService>
+                            ? ArtisanServiceListTile(
+                                service: state.data,
+                                showLeadingIcon: false,
+                                selected: false,
+                                showPrice: true,
+                              )
+                            : state is LoadingState
+                                ? Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: kSpacingX16),
+                                    child: Text('loading service details...'),
+                                  )
+                                : SizedBox.shrink(),
+                      );
+                      },
+                    )
+                    .toList(),
+              },
               SizedBox(height: SizeConfig.screenHeight * 0.1),
             } else ...{
               Container(
@@ -533,8 +545,9 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                 padding: EdgeInsets.symmetric(horizontal: kSpacingX12),
                 child: Material(
                   type: MaterialType.transparency,
-                  child: _currentUser.categoryParent == null ||
-                          _currentUser.category == null
+                  child: _currentUser != null &&
+                          (_currentUser.categoryParent == null ||
+                              _currentUser.category == null)
                       ? Center(
                           child: InkWell(
                             onTap: _pickCategory,
@@ -547,28 +560,26 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                             ),
                           ),
                         )
-                      : SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ..._servicesForCategory
-                                  .map(
-                                    (service) => ArtisanServiceListTile(
-                                      service: service,
-                                      showLeadingIcon: false,
-                                      showTrailingIcon: false,
-                                      selected: _selectedServices
-                                          .contains(service.id),
-                                      onTap: () {
-                                        _selectedServices
-                                            .toggleAddOrRemove(service.id);
-                                        _sheetController.rebuild();
-                                      },
-                                    ),
-                                  )
-                                  .toList(),
-                            ],
-                          ),
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ..._servicesForCategory
+                                .map(
+                                  (service) => ArtisanServiceListTile(
+                                    service: service,
+                                    showLeadingIcon: false,
+                                    showTrailingIcon: false,
+                                    selected:
+                                        _selectedServices.contains(service.id),
+                                    onTap: () {
+                                      _selectedServices
+                                          .toggleAddOrRemove(service.id);
+                                      _sheetController.rebuild();
+                                    },
+                                  ),
+                                )
+                                .toList(),
+                          ],
                         ),
                 ),
               ),
@@ -580,7 +591,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
         builder: (_) => MenuItemPickerDialog(
           title: 'Select a category',
           onComplete: (item) {
-            if (_currentUser.category != item.key.value.toString()) {
+            if (_currentUser != null &&
+                _currentUser.category != item.key.value.toString()) {
               _currentUser = _currentUser.copyWith(
                 category: (item.key.value as BaseServiceCategory).id,
                 categoryParent: (item.key.value as BaseServiceCategory).parent,
