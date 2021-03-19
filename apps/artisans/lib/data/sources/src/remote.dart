@@ -63,15 +63,13 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
 
   @override
   Stream<BaseArtisan> currentUser() async* {
+    if (!prefsRepo.isLoggedIn) return;
     var snapshots = firestore
         .collection(RefUtils.kArtisanRef)
         .doc(prefsRepo.userId)
         .snapshots();
-    snapshots.listen((event) async* {
-      if (event.exists) {
-        yield Artisan.fromJson(event.data());
-      }
-    });
+    yield* snapshots
+        .map((event) => event.exists ? Artisan.fromJson(event.data()) : null);
   }
 
   @override
@@ -331,7 +329,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   @override
   Future<void> updateArtisanService(
       {@required String id,
-        @required BaseArtisanService artisanService}) async {
+      @required BaseArtisanService artisanService}) async {
     await await firestore
         .collection('${RefUtils.kArtisanRef}/$id/${RefUtils.kServiceRef}')
         .doc(artisanService.id)

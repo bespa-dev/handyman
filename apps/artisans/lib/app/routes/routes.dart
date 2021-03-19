@@ -53,7 +53,7 @@ import 'package:handyman/app/pages/pages.dart';
     /// endregion
 
     /// keep at the bottom
-    CustomRoute(page: UnknownRoutePage, path: "*"),
+    CustomRoute(page: UnknownRoutePage, path: '*'),
   ],
 )
 class $Router {}

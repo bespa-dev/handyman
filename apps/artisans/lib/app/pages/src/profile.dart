@@ -68,7 +68,22 @@ class _ProfilePageState extends State<ProfilePage> {
       _userBloc
         ..add(UserEvent.currentUserEvent())
         ..listen((state) {
-          if (state is SuccessState<void>) {
+          if (state is SuccessState<Stream<BaseArtisan>>) {
+            state.data.listen((user) {
+              _currentUser = user;
+              logger.d('user from snapshots -> $user');
+              if (mounted) setState(() {});
+
+              if (_currentUser?.category != null) {
+                _categoryBloc.add(
+                  CategoryEvent.observeAllCategories(
+                      group: ServiceCategoryGroup.featured()),
+                );
+                _serviceBloc.add(ArtisanServiceEvent.getArtisanServices(
+                    id: _currentUser.id));
+              }
+            });
+          } else if (state is SuccessState<void>) {
             _avatarFile = null;
             if (mounted) setState(() {});
           }
@@ -147,17 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ? StreamBuilder<BaseArtisan>(
                 stream: state.data,
                 builder: (_, snapshot) {
-                  if (_currentUser == null) {
-                    _currentUser = snapshot.data;
-                    if (_currentUser?.category != null) {
-                      _categoryBloc.add(
-                        CategoryEvent.observeAllCategories(
-                            group: ServiceCategoryGroup.featured()),
-                      );
-                      _serviceBloc.add(ArtisanServiceEvent.getArtisanServices(
-                          id: _currentUser.id));
-                    }
-                  }
+                  _currentUser ??= snapshot.data;
                   return SafeArea(
                     top: true,
                     child: AnimatedOpacity(

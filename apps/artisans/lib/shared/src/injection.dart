@@ -167,7 +167,7 @@ final _firebaseAuthRepositoryProvider =
 });
 
 final _firebaseStorageRepositoryProvider = Provider<BaseStorageRepository>((_) {
-  final bucket = FirebaseStorage.instance.ref().child(RefUtils.kBucketRef);
+  final bucket = FirebaseStorage.instance.ref(RefUtils.kBucketRef).child('/uploads');
   return StorageRepositoryImpl(bucket: bucket);
 });
 

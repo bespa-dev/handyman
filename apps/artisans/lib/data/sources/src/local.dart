@@ -420,7 +420,8 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
   @override
   Stream<BaseArtisan> currentUser() async* {
     if (!prefsRepo.isLoggedIn) return;
-    artisanStore
+
+    yield* artisanStore
         .record(prefsRepo.userId)
         .onSnapshot(db)
         .map((event) => Artisan.fromJson(event.value));
@@ -438,8 +439,10 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
   }
 
   @override
-  Future<BaseArtisan> getArtisanById({@required String id}) async =>
-      Artisan.fromJson((await artisanStore.record(id).getSnapshot(db)).value);
+  Future<BaseArtisan> getArtisanById({@required String id}) async {
+    var snapshot = await artisanStore.record(id).getSnapshot(db);
+    return snapshot == null ? null : Artisan.fromJson(snapshot.value);
+  }
 
   @override
   Future<List<BaseArtisanService>> getArtisanServices(

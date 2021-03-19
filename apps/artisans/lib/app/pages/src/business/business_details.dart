@@ -7,7 +7,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
-import 'package:handyman/main.dart';
 import 'package:handyman/shared/shared.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -55,7 +54,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   BaseBusiness _business;
   LatLng _businessLocation;
   int _currentPage = 0;
-  BaseArtisan _currentUser = kSampleArtisan;
+  BaseArtisan _currentUser;
   var _servicesForCategory = <BaseArtisanService>[];
   var _categories = <BaseServiceCategory>[];
   var _selectedServices = <String>[];

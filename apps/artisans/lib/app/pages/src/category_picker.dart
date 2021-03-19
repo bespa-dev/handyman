@@ -62,29 +62,19 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
     _updateUserBloc.listen((state) async {
       if (state is SuccessState<void>) {
         if (mounted) {
-          await showCustomDialog(
-            context: context,
-            builder: (_) => BasicDialog(
-              message: 'Profile updated successfully',
-              onComplete: () async {
-                _isLoading = !_isLoading;
-                setState(() {});
-                await context.navigator.pushBusinessProfilePage();
-              },
-            ),
-          );
+          showSnackBarMessage(context, message: 'Profile updated successfully');
+          _isLoading = !_isLoading;
+          setState(() {});
+          await context.navigator.pushBusinessProfilePage();
         }
       } else if (state is ErrorState) {
         if (mounted) {
+          _isLoading = !_isLoading;
+          setState(() {});
           await showCustomDialog(
             context: context,
-            builder: (_) => BasicDialog(
-              message: 'Failed to update profile',
-              onComplete: () async {
-                _isLoading = !_isLoading;
-                setState(() {});
-              },
-            ),
+            builder: (_) =>
+                InfoDialog(message: Text('Failed to update profile')),
           );
         }
       }
