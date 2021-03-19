@@ -20,6 +20,7 @@ class ArtisanServiceBloc extends BaseBloc<ArtisanServiceEvent> {
       updateArtisanService: (e) => _mapEventToState(e),
       getServiceById: (e) => _mapEventToState(e),
       getAllArtisanServices: () => _mapEventToState(event),
+      getArtisanServicesByCategory: (e) => _mapEventToState(e),
     );
   }
 
@@ -27,8 +28,7 @@ class ArtisanServiceBloc extends BaseBloc<ArtisanServiceEvent> {
     yield BlocState.loadingState();
 
     if (event is GetArtisanServices) {
-      var result = await GetArtisanServicesUseCase(_repo)
-          .execute(GetAllArtisanServicesUseCaseParams(id: event.id));
+      var result = await GetArtisanServicesUseCase(_repo).execute(event.id);
       if (result is UseCaseResultSuccess<List<BaseArtisanService>>) {
         yield BlocState<List<BaseArtisanService>>.successState(
             data: result.value);
@@ -43,6 +43,15 @@ class ArtisanServiceBloc extends BaseBloc<ArtisanServiceEvent> {
       } else {
         yield BlocState.errorState(failure: 'Failed to load services');
       }
+    } else if (event is GetArtisanServicesByCategory) {
+      var result = await GetArtisanServicesByCategoryUseCase(_repo)
+          .execute(event.categoryId);
+      if (result is UseCaseResultSuccess<List<BaseArtisanService>>) {
+        yield BlocState<List<BaseArtisanService>>.successState(
+            data: result.value);
+      } else {
+        yield BlocState.errorState(failure: 'Failed to load services');
+      }
     } else if (event is GetServiceById) {
       var result = await GetServiceByIdUseCase(_repo).execute(event.id);
       if (result is UseCaseResultSuccess<BaseArtisanService>) {
@@ -51,8 +60,9 @@ class ArtisanServiceBloc extends BaseBloc<ArtisanServiceEvent> {
         yield BlocState.errorState(failure: 'Failed to load services');
       }
     } else if (event is UpdateArtisanService) {
-      var result =
-          await UpdateArtisanServiceUseCase(_repo).execute(event.service);
+      var result = await UpdateArtisanServiceUseCase(_repo).execute(
+          UpdateArtisanServiceUseCaseParams(
+              id: event.id, service: event.service));
       if (result is UseCaseResultSuccess) {
         yield BlocState.successState();
       } else {

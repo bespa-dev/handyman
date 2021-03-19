@@ -11,8 +11,11 @@ class ImagePreviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kBlackColor,
       body: Stack(
         children: [
+
+          /// image
           Positioned.fill(
             child: ImageView(
               imageUrl: url,
@@ -25,11 +28,14 @@ class ImagePreviewPage extends StatelessWidget {
 
           /// back button
           Positioned(
-            top: kSpacingX36,
+            top: kSpacingX4,
             left: kSpacingX16,
-            child: IconButton(
-              icon: Icon(kBackIcon),
-              onPressed: () => context.navigator.pop(),
+            child: SafeArea(
+              child: IconButton(
+                icon: Icon(kBackIcon),
+                color: kWhiteColor,
+                onPressed: () => context.navigator.pop(),
+              ),
             ),
           ),
         ],

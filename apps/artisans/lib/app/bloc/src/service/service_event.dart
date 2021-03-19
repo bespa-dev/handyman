@@ -4,15 +4,18 @@ part 'service_event.super.dart';
 
 @superEnum
 enum _ArtisanServiceEvent {
-  @Data(fields: [
-    DataField<String>('id')
-  ])
+  @Data(fields: [DataField<String>('id')])
   GetArtisanServices,
   @Data(fields: [DataField<String>('id')])
   GetServiceById,
   @generic
-  @Data(fields: [DataField<Generic>('service')])
+  @Data(fields: [
+    DataField<String>('id'),
+    DataField<Generic>('service'),
+  ])
   UpdateArtisanService,
   @object
   GetAllArtisanServices,
+  @Data(fields: [DataField<String>('categoryId')])
+  GetArtisanServicesByCategory,
 }

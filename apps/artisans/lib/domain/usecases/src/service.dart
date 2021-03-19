@@ -6,15 +6,15 @@ import 'usecase/result.dart';
 import 'usecase/usecase.dart';
 
 class GetAllArtisanServicesUseCase
-    extends NoParamsUseCase<List<BaseArtisanService>> {
+    extends UseCase<List<BaseArtisanService>, String> {
   const GetAllArtisanServicesUseCase(this._repo);
 
   final BaseArtisanServiceRepository _repo;
 
   @override
-  Future<UseCaseResult<List<BaseArtisanService>>> execute(_) async {
+  Future<UseCaseResult<List<BaseArtisanService>>> execute(id) async {
     try {
-      var results = (await _repo.getArtisanServices()).toList();
+      var results = await _repo.getArtisanServices(id: id);
       return UseCaseResult<List<BaseArtisanService>>.success(results);
     } on Exception {
       return UseCaseResult.error();
@@ -22,17 +22,33 @@ class GetAllArtisanServicesUseCase
   }
 }
 
-class GetArtisanServicesUseCase extends UseCase<List<BaseArtisanService>,
-    GetAllArtisanServicesUseCaseParams> {
+class GetArtisanServicesByCategoryUseCase
+    extends UseCase<List<BaseArtisanService>, String> {
+  const GetArtisanServicesByCategoryUseCase(this._repo);
+
+  final BaseArtisanServiceRepository _repo;
+
+  @override
+  Future<UseCaseResult<List<BaseArtisanService>>> execute(categoryId) async {
+    try {
+      var results = await _repo.getArtisanServicesByCategory(categoryId: categoryId);
+      return UseCaseResult<List<BaseArtisanService>>.success(results);
+    } on Exception {
+      return UseCaseResult.error();
+    }
+  }
+}
+
+class GetArtisanServicesUseCase
+    extends UseCase<List<BaseArtisanService>, String> {
   const GetArtisanServicesUseCase(this._repo);
 
   final BaseArtisanServiceRepository _repo;
 
   @override
-  Future<UseCaseResult<List<BaseArtisanService>>> execute(
-      GetAllArtisanServicesUseCaseParams params) async {
+  Future<UseCaseResult<List<BaseArtisanService>>> execute(String id) async {
     try {
-      var results = await _repo.getArtisanServices(id: params.id);
+      var results = await _repo.getArtisanServices(id: id);
       return UseCaseResult<List<BaseArtisanService>>.success(results);
     } on Exception {
       return UseCaseResult.error();
@@ -48,8 +64,7 @@ class GetServiceByIdUseCase extends UseCase<BaseArtisanService, String> {
   @override
   Future<UseCaseResult<BaseArtisanService>> execute(String id) async {
     try {
-      var results = (await _repo.getArtisanServices())
-          .firstWhere((element) => element.id == id);
+      var results = await _repo.getArtisanServiceById(id: id);
       return UseCaseResult<BaseArtisanService>.success(results);
     } on Exception {
       return UseCaseResult.error();
@@ -58,15 +73,17 @@ class GetServiceByIdUseCase extends UseCase<BaseArtisanService, String> {
 }
 
 class UpdateArtisanServiceUseCase
-    extends CompletableUseCase<BaseArtisanService> {
+    extends CompletableUseCase<UpdateArtisanServiceUseCaseParams> {
   UpdateArtisanServiceUseCase(this._repo);
 
   final BaseArtisanServiceRepository _repo;
 
   @override
-  Future<UseCaseResult<void>> execute(BaseArtisanService service) async {
+  Future<UseCaseResult<void>> execute(
+      UpdateArtisanServiceUseCaseParams params) async {
     try {
-      await _repo.updateArtisanService(artisanService: service);
+      await _repo.updateArtisanService(
+          id: params.id, artisanService: params.service);
       return UseCaseResult.success();
     } on Exception {
       return UseCaseResult.error();
@@ -74,8 +91,12 @@ class UpdateArtisanServiceUseCase
   }
 }
 
-class GetAllArtisanServicesUseCaseParams {
-  const GetAllArtisanServicesUseCaseParams({@required this.id});
+class UpdateArtisanServiceUseCaseParams {
+  const UpdateArtisanServiceUseCaseParams({
+    @required this.id,
+    @required this.service,
+  });
 
   final String id;
+  final BaseArtisanService service;
 }

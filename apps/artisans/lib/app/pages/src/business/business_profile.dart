@@ -15,7 +15,6 @@ import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
 import 'package:uuid/uuid.dart';
 
-/// fixme -> uploading document keeps throwing storage exception error
 /// https://pub.dev/packages/google_maps_place_picker
 class BusinessProfilePage extends StatefulWidget {
   const BusinessProfilePage({Key key, this.business}) : super(key: key);

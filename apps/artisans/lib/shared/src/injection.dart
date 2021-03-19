@@ -17,14 +17,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:handyman/data/entities/entities.dart';
 import 'package:handyman/data/repositories/repositories.dart';
 import 'package:handyman/data/sources/sources.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/domain/repositories/repositories.dart';
 import 'package:handyman/domain/sources/sources.dart';
 import 'package:handyman/shared/shared.dart';
-import 'package:hive/hive.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:sembast/sembast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -191,23 +189,6 @@ final _firebaseRemoteDatasourceProvider =
       prefsRepo: prefs, firestore: FirebaseFirestore.instance);
 });
 
-/// HIVE datasource provider -> local source
-final _hiveDatasourceProvider = ChangeNotifierProvider.family<
-    BaseLocalDatasource, BasePreferenceRepository>((_, prefs) {
-  return HiveLocalDatasource(
-    prefsRepo: prefs,
-    bookingBox: Hive.box<Booking>(RefUtils.kBookingRef),
-    categoryBox: Hive.box<ServiceCategory>(RefUtils.kCategoryRef),
-    conversationBox: Hive.box<Conversation>(RefUtils.kConversationRef),
-    galleryBox: Hive.box<Gallery>(RefUtils.kGalleryRef),
-    reviewBox: Hive.box<Review>(RefUtils.kReviewRef),
-    artisanBox: Hive.box<Artisan>(RefUtils.kArtisanRef),
-    customerBox: Hive.box<Customer>(RefUtils.kCustomerRef),
-    businessBox: Hive.box<Business>(RefUtils.kBusinessRef),
-    serviceBox: Hive.box<ArtisanService>(RefUtils.kServiceRef),
-  );
-});
-
 final _localSembastDatabaseProvider =
     FutureProvider<Database>((_) async => AppDatabase.instance.database);
 final _sembastDatasourceProvider =
@@ -283,7 +264,7 @@ Future<void> initAppDependencies() async {
   await Firebase.initializeApp();
 
   /// register & open local database
-  await registerLocalDatabase(false);
+  await registerLocalDatabase();
 
   /// load environment variables
   await DotEnv().load('.env');

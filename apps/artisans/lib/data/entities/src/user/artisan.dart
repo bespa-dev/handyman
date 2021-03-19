@@ -32,6 +32,7 @@ class Artisan extends BaseArtisan {
     this.nationalId,
     this.category,
     this.categoryGroup,
+    this.categoryParent,
     this.rating = 2.5,
     this.bookingsCount = 0,
     this.requests = const [],
@@ -134,6 +135,10 @@ class Artisan extends BaseArtisan {
   @override
   final List<String> services;
 
+  @HiveField(22)
+  @override
+  final String categoryParent;
+
   @override
   int get cancelledBookingsCount => 0;
 
@@ -173,6 +178,7 @@ class Artisan extends BaseArtisan {
     String birthCert,
     String nationalId,
     String categoryGroup,
+    String categoryParent,
     String startWorkingHours,
     String endWorkingHours,
     double rating,
@@ -194,6 +200,7 @@ class Artisan extends BaseArtisan {
         category: category ??= this.category,
         businessId: businessId ??= this.businessId,
         categoryGroup: categoryGroup ??= this.categoryGroup,
+        categoryParent: categoryParent ??= this.categoryParent,
         startWorkingHours: startWorkingHours ??= this.startWorkingHours,
         endWorkingHours: endWorkingHours ??= this.endWorkingHours,
         rating: rating ??= this.rating,

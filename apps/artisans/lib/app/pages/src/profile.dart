@@ -71,7 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
           if (state is SuccessState<Stream<BaseArtisan>>) {
             state.data.listen((user) {
               _currentUser = user;
-              logger.d('user from snapshots -> $user');
+              logger.i('user from snapshots -> $user');
               if (mounted) setState(() {});
 
               if (_currentUser?.category != null) {
@@ -103,11 +103,18 @@ class _ProfilePageState extends State<ProfilePage> {
       _storageBloc.listen((state) {
         if (state is SuccessState<String>) {
           _avatarFile = null;
-          if (mounted) setState(() {});
           _currentUser = _currentUser.copyWith(avatar: state.data);
+          if (mounted) {
+            setState(() {});
+            showSnackBarMessage(context, message: 'Profile updated');
+          }
 
           /// update user profile image
           _updateUserBloc.add(UserEvent.updateUserEvent(user: _currentUser));
+        } else if (state is LoadingState) {
+          showSnackBarMessage(context, message: 'Updating profile...');
+        } else if (state is ErrorState) {
+          showSnackBarMessage(context, message: 'Failed to update profile');
         }
       });
     }
@@ -546,10 +553,12 @@ class _ProfilePageState extends State<ProfilePage> {
         builder: (_) => MenuItemPickerDialog(
           title: 'Select a category',
           onComplete: (item) {
-            if (_currentUser.category != item.key.value.toString()) {
+            if (_currentUser.category != null &&
+                _currentUser.category != item.key.value.toString()) {
               _currentUser = _currentUser.copyWith(
-                category: item.key.value.toString(),
+                category: (item.key.value as BaseServiceCategory).id,
                 categoryGroup: item.title,
+                categoryParent: (item.key.value as BaseServiceCategory).parent,
                 services: _currentUser.services ?? <String>[],
               );
               setState(() {});
@@ -567,7 +576,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     (e) => PickerMenuItem(
                       title: e.name,
                       icon: kCategoryIcon,
-                      key: ValueKey(e.id),
+                      key: ValueKey(e),
                     ),
                   )
                   .toList()

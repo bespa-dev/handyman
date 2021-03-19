@@ -101,6 +101,8 @@ abstract class BaseRemoteDatasource {
 
   Future<List<BaseArtisanService>> getArtisanServices({@required String id});
 
+  Future<BaseArtisanService> getArtisanServiceById({@required String id});
+
   Future<void> updateArtisanService(
       {@required String id, @required BaseArtisanService artisanService});
 }

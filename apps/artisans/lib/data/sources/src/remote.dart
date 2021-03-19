@@ -330,9 +330,20 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   Future<void> updateArtisanService(
       {@required String id,
       @required BaseArtisanService artisanService}) async {
-    await await firestore
+    await firestore
         .collection('${RefUtils.kArtisanRef}/$id/${RefUtils.kServiceRef}')
         .doc(artisanService.id)
         .set(artisanService.toJson(), SetOptions(merge: true));
+  }
+
+  @override
+  Future<BaseArtisanService> getArtisanServiceById(
+      {@required String id}) async {
+    var snapshot =
+        await firestore.collection(RefUtils.kServiceRef).doc(id).get();
+
+    return snapshot.exists
+        ? ArtisanService.fromJson(snapshot.data())
+        : null;
   }
 }

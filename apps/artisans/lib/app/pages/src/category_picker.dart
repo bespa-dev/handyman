@@ -163,6 +163,7 @@ class _CategoryPickerPageState extends State<CategoryPickerPage> {
                             final updatedUser = _currentUser.copyWith(
                               category: _selectedCategory.id,
                               categoryGroup: _selectedCategory.name,
+                              categoryParent: _selectedCategory.parent,
                             );
 
                             /// update user profile information

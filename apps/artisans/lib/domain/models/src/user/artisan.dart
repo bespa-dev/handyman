@@ -16,6 +16,7 @@ abstract class BaseArtisan extends BaseUser {
   String nationalId;
   String category;
   String categoryGroup;
+  String categoryParent;
   String startWorkingHours;
   String endWorkingHours;
   int bookingsCount;
@@ -54,6 +55,7 @@ abstract class BaseArtisan extends BaseUser {
     String nationalId,
     String birthCert,
     String categoryGroup,
+    String categoryParent,
     String startWorkingHours,
     String endWorkingHours,
     double rating,
