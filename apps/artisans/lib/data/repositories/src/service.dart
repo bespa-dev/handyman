@@ -2,6 +2,7 @@ import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/domain/repositories/repositories.dart';
 import 'package:handyman/domain/sources/src/local.dart';
 import 'package:handyman/domain/sources/src/remote.dart';
+import 'package:handyman/shared/shared.dart';
 import 'package:meta/meta.dart';
 
 class ArtisanServiceRepositoryImpl extends BaseArtisanServiceRepository {
@@ -26,21 +27,27 @@ class ArtisanServiceRepositoryImpl extends BaseArtisanServiceRepository {
   Future<void> updateArtisanService(
       {@required BaseArtisanService artisanService,
       @required String id}) async {
-    await remote.updateArtisanService(id: id, artisanService: artisanService);
     await local.updateArtisanService(artisanService: artisanService, id: id);
+    await remote.updateArtisanService(id: id, artisanService: artisanService);
   }
 
   @override
   Future<BaseArtisanService> getArtisanServiceById(
       {@required String id}) async {
-    // fetch service from remote repo
-    var service = await remote.getArtisanServiceById(id: id);
+    try {
+      // fetch service from remote repo
+      var service = await remote.getArtisanServiceById(id: id);
 
-    // update local
-    await local.updateArtisanService(id: id, artisanService: service);
-
-    // provide local service instance
-    return local.getArtisanServiceById(id: id);
+      // update local
+      if (service != null) {
+        await local.updateArtisanService(id: id, artisanService: service);
+      }
+    } catch (e) {
+      logger.e(e);
+    } finally {
+      // provide local service instance
+      return local.getArtisanServiceById(id: id);
+    }
   }
 
   @override

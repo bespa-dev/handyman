@@ -54,7 +54,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   BaseArtisan _currentUser;
   var _servicesForCategory = <BaseArtisanService>[];
   var _categories = <BaseServiceCategory>[];
-  var _selectedServices = <String>[];
+  var _selectedServices = <String>[], _userServices = <BaseArtisanService>[];
   final _sheetController = SheetController();
   File _galleryImage;
   bool _isLoading = false;
@@ -105,9 +105,8 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
         });
 
       /// get business for artisan
-      _businessBloc.add(
-        BusinessEvent.observeBusinessById(id: widget.business.id),
-      );
+      _businessBloc
+          .add(BusinessEvent.observeBusinessById(id: widget.business.id));
 
       /// get location coordinates from name
       _locationBloc
@@ -128,14 +127,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
           if (state is SuccessState<Stream<BaseArtisan>>) {
             state.data.listen((user) async {
               _currentUser = user;
-              if (_currentUser.services == null) {
-                _currentUser =
-                    _currentUser.copyWith(services: _selectedServices);
-                _updateUserBloc
-                    .add(UserEvent.updateUserEvent(user: _currentUser));
-              } else {
-                _selectedServices = _currentUser.services;
-              }
+              _selectedServices = _currentUser?.services ?? <String>[];
               if (mounted) setState(() {});
               logger.i(
                   'User category -> ${user?.categoryParent ?? user?.category}');
@@ -200,7 +192,6 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     _kTheme = Theme.of(context);
 
     logger.i('services offered -> ${_currentUser?.services}');
@@ -352,9 +343,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (_currentUser != null &&
-                _currentUser.services != null &&
-                _currentUser.services.isNotEmpty) ...{
+            if (_selectedServices.isNotEmpty) ...{
               Text(
                 'Services rendered',
                 style: _kTheme.textTheme.headline6.copyWith(
@@ -371,32 +360,54 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                 ),
               ),
               SizedBox(height: kSpacingX24),
-              if (_currentUser != null && _currentUser.services.isNotEmpty) ...{
-                ..._currentUser.services
-                    .map(
-                      (id) {
-                        logger.i('service item(${_currentUser.services.indexOf(id)}) -> $id');
-                        return BlocBuilder<ArtisanServiceBloc, BlocState>(
-                        cubit: _serviceBloc
-                          ..add(ArtisanServiceEvent.getServiceById(id: id)),
-                        builder: (_, state) => state
-                                is SuccessState<BaseArtisanService>
-                            ? ArtisanServiceListTile(
-                                service: state.data,
-                                showLeadingIcon: false,
-                                selected: false,
-                                showPrice: true,
-                              )
-                            : state is LoadingState
-                                ? Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: kSpacingX16),
-                                    child: Text('loading service details...'),
+              if (_selectedServices.isNotEmpty) ...{
+                ..._selectedServices
+                    .map((id) => ArtisanServiceListTile(
+                          key: ValueKey(id),
+                          serviceId: id,
+                          showLeadingIcon: false,
+                          selected: false,
+                          showPrice: true,
+
+                          onLongTap: (service) async => await showCustomDialog(
+                            context: context,
+                            builder: (_) => BasicDialog(
+                              message:
+                                  'Do you wish to remove this service from your services?',
+                              onComplete: () {
+                                /// remove service id from user's services
+                                _currentUser = _currentUser.copyWith(
+                                  services: _selectedServices
+                                    ..removeIfExists(id),
+                                );
+                                setState(() {});
+
+                                /// remove user id from service data
+                                _serviceBloc
+                                  ..add(
+                                    ArtisanServiceEvent.updateArtisanService(
+                                      id: _currentUser.id,
+                                      service: service.copyWith(
+                                        artisanId: null,
+                                        price: 0.99,
+                                      ),
+                                    ),
                                   )
-                                : SizedBox.shrink(),
-                      );
-                      },
-                    )
+                                  ..add(
+                                    ArtisanServiceEvent
+                                        .getArtisanServicesByCategory(
+                                      categoryId: _currentUser.categoryParent ??
+                                          _currentUser.category,
+                                    ),
+                                  );
+
+                                /// update user
+                                _updateUserBloc.add(UserEvent.updateUserEvent(
+                                    user: _currentUser));
+                              },
+                            ),
+                          ),
+                        ))
                     .toList(),
               },
               SizedBox(height: SizeConfig.screenHeight * 0.1),
@@ -522,6 +533,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                           setState(() {});
                           _currentUser = _currentUser.copyWith(
                               services: _selectedServices);
+                          setState(() {});
                           _updateUserBloc.add(
                               UserEvent.updateUserEvent(user: _currentUser));
                         },
@@ -545,9 +557,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                 padding: EdgeInsets.symmetric(horizontal: kSpacingX12),
                 child: Material(
                   type: MaterialType.transparency,
-                  child: _currentUser != null &&
-                          (_currentUser.categoryParent == null ||
-                              _currentUser.category == null)
+                  child: _servicesForCategory.isEmpty
                       ? Center(
                           child: InkWell(
                             onTap: _pickCategory,
@@ -560,26 +570,21 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                             ),
                           ),
                         )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ..._servicesForCategory
-                                .map(
-                                  (service) => ArtisanServiceListTile(
-                                    service: service,
-                                    showLeadingIcon: false,
-                                    showTrailingIcon: false,
-                                    selected:
-                                        _selectedServices.contains(service.id),
-                                    onTap: () {
-                                      _selectedServices
-                                          .toggleAddOrRemove(service.id);
-                                      _sheetController.rebuild();
-                                    },
-                                  ),
-                                )
-                                .toList(),
-                          ],
+                      : ListView.builder(
+                          padding: EdgeInsets.zero,
+                          itemCount: _servicesForCategory.length,
+                          itemBuilder: (_, index) => ArtisanServiceListTile(
+                            service: _servicesForCategory[index],
+                            showLeadingIcon: false,
+                            showTrailingIcon: false,
+                            selected: _selectedServices
+                                .contains(_servicesForCategory[index].id),
+                            onTap: () {
+                              _selectedServices.toggleAddOrRemove(
+                                  _servicesForCategory[index].id);
+                              _sheetController.rebuild();
+                            },
+                          ),
                         ),
                 ),
               ),
@@ -591,15 +596,14 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
         builder: (_) => MenuItemPickerDialog(
           title: 'Select a category',
           onComplete: (item) {
+            var selectedCategory = item.key.value as BaseServiceCategory;
             if (_currentUser != null &&
-                _currentUser.category != item.key.value.toString()) {
+                _currentUser.category != selectedCategory.id) {
               _currentUser = _currentUser.copyWith(
-                category: (item.key.value as BaseServiceCategory).id,
-                categoryParent: (item.key.value as BaseServiceCategory).parent,
+                category: selectedCategory.id,
+                categoryParent: selectedCategory.parent,
                 categoryGroup: item.title,
-                services: _currentUser.services ??
-                    _selectedServices ??
-                    <BaseArtisanService>[],
+                services: _selectedServices,
               );
 
               _updateUserBloc

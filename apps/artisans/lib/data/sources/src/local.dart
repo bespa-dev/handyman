@@ -104,7 +104,7 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
   final StoreRef<String, Map<String, Object>> serviceStore;
 
   void _performInitLoad() async {
-    // if (prefsRepo.isLoggedIn) return;
+    if (prefsRepo.isLoggedIn) return;
 
     /// decode categories from json
     var categorySource = await rootBundle.loadString('assets/categories.json');
@@ -135,229 +135,10 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
     }
   }
 
-  @override
-  Stream<List<BaseBooking>> bookingsForCustomerAndArtisan(
-      String customerId, String artisanId) async* {
-    var bookings = await bookingStore.find(db,
-        finder: Finder(
-            filter: Filter.matches('customer_id', customerId) &
-                Filter.matches('artisan_id', artisanId),
-            sortOrders: [SortOrder('id')]));
-    var keys = <String>[];
-    for (var value in bookings) {
-      keys.add(value.key);
-    }
-    yield (await bookingStore.records(keys).getSnapshots(db))
-        .map((e) => Booking.fromJson(e.value))
-        .toList();
-  }
-
-  @override
-  Stream<BaseArtisan> currentUser() async* {
-    if (!prefsRepo.isLoggedIn) return;
-
-    yield* artisanStore
-        .record(prefsRepo.userId)
-        .onSnapshot(db)
-        .map((event) => Artisan.fromJson(event.value));
-  }
-
-  @override
-  Future<void> deleteBooking({@required BaseBooking booking}) async {
-    await bookingStore.delete(db,
-        finder: Finder(filter: Filter.byKey(booking.id)));
-  }
-
+  /// region reviews
   @override
   Future<void> deleteReviewById({@required String id}) async {
     await reviewStore.delete(db, finder: Finder(filter: Filter.byKey(id)));
-  }
-
-  @override
-  Future<BaseArtisan> getArtisanById({@required String id}) async {
-    var snapshot = await artisanStore.record(id).getSnapshot(db);
-    return snapshot == null ? null : Artisan.fromJson(snapshot.value);
-  }
-
-  @override
-  Future<List<BaseArtisanService>> getArtisanServices(
-      {@required String id}) async {
-    var keys = await serviceStore.findKeys(
-      db,
-      finder: Finder(
-          // filter: Filter.matches('artisan_id', id),
-          sortOrders: [SortOrder('id')]),
-    );
-
-    var list = await serviceStore.records(keys).get(db);
-    return list.map((json) => ArtisanService.fromJson(json)).toList();
-  }
-
-  @override
-  Stream<BaseBooking> getBookingById({@required String id}) async* {
-    yield* bookingStore
-        .record(id)
-        .onSnapshot(db)
-        .map((event) => Booking.fromJson(event.value));
-  }
-
-  @override
-  Stream<List<BaseBooking>> getBookingsByDueDate(
-      {@required String dueDate, @required String artisanId}) async* {
-    yield (await bookingStore.find(
-      db,
-      finder: Finder(
-        filter: Filter.matches('due_date', dueDate) &
-            Filter.matches('artisan_id', artisanId),
-        sortOrders: [SortOrder('id')],
-      ),
-    ))
-        .map((e) => Booking.fromJson(e.value))
-        .toList();
-  }
-
-  @override
-  Future<BaseBusiness> getBusinessById({@required String id}) async {
-    var json = await businessStore.record(id).get(db);
-    return Business.fromJson(json);
-  }
-
-  @override
-  Future<List<BaseBusiness>> getBusinessesForArtisan(
-      {@required String artisan}) async {
-    var keys = await businessStore.findKeys(
-      db,
-      finder: Finder(
-        filter: Filter.matches('artisan_id', artisan),
-      ),
-    );
-    var list = await businessStore.records(keys).get(db);
-    return list.map((json) => Business.fromJson(json)).toList();
-  }
-
-  @override
-  Future<BaseUser> getCustomerById({@required String id}) async {
-    var map = await customerStore.record(id).get(db);
-    return Customer.fromJson(map);
-  }
-
-  @override
-  Stream<List<BaseGallery>> getPhotosForArtisan(
-      {@required String userId}) async* {
-    var keys = await galleryStore.findKeys(
-      db,
-      finder: Finder(
-        filter: Filter.matches('user_id', userId),
-      ),
-    );
-    var list = await galleryStore.records(keys).get(db);
-    yield list.map((json) => Gallery.fromJson(json)).toList();
-  }
-
-  @override
-  Stream<BaseArtisan> observeArtisanById({@required String id}) async* {
-    yield* artisanStore
-        .record(id)
-        .onSnapshot(db)
-        .map((event) => Artisan.fromJson(event.value));
-  }
-
-  @override
-  Stream<List<BaseArtisan>> observeArtisans({String category}) async* {
-    var keys = await artisanStore.findKeys(
-      db,
-      finder: Finder(
-        filter: Filter.matches('category', category),
-      ),
-    );
-    var list = await artisanStore.records(keys).get(db);
-    yield list.map((json) => Artisan.fromJson(json)).toList();
-  }
-
-  @override
-  Stream<List<BaseBooking>> observeBookingsForArtisan(String id) async* {
-    var keys = await bookingStore.findKeys(
-      db,
-      finder: Finder(
-        filter: Filter.matches('artisan_id', id),
-      ),
-    );
-
-    var list = await bookingStore.records(keys).get(db);
-    yield list.map((json) => Booking.fromJson(json)).toList();
-  }
-
-  @override
-  Stream<List<BaseBooking>> observeBookingsForCustomer(String id) async* {
-    var keys = await bookingStore.findKeys(
-      db,
-      finder: Finder(
-        filter: Filter.matches('customer_id', id),
-      ),
-    );
-    var list = await bookingStore.records(keys).get(db);
-    yield list.map((json) => Booking.fromJson(json)).toList();
-  }
-
-  @override
-  Stream<BaseBusiness> observeBusinessById({@required String id}) async* {
-    yield* businessStore
-        .record(id)
-        .onSnapshot(db)
-        .map((event) => Business.fromJson(event.value));
-  }
-
-  @override
-  Stream<List<BaseServiceCategory>> observeCategories(
-      {@required ServiceCategoryGroup categoryGroup}) async* {
-    var keys = await categoryStore.findKeys(
-      db,
-      finder: Finder(
-        filter: Filter.matches(
-          'group_name',
-          categoryGroup.name(),
-        ),
-      ),
-    );
-    var list = await categoryStore.records(keys).get(db);
-    yield list.map((json) => ServiceCategory.fromJson(json)).toList();
-  }
-
-  @override
-  Stream<BaseServiceCategory> observeCategoryById(
-      {@required String id}) async* {
-    yield* serviceStore
-        .record(id)
-        .onSnapshot(db)
-        .map((event) => ServiceCategory.fromJson(event.value));
-  }
-
-  @override
-  Stream<List<BaseConversation>> observeConversation(
-      {@required String sender, @required String recipient}) async* {
-    var keys = await conversationStore.findKeys(
-      db,
-      finder: Finder(
-        filter: Filter.and([
-              Filter.matches('author', sender),
-              Filter.matches('recipient', recipient),
-            ]) |
-            Filter.and([
-              Filter.matches('author', recipient),
-              Filter.matches('recipient', sender),
-            ]),
-      ),
-    );
-    var list = await conversationStore.records(keys).get(db);
-    yield list.map((json) => Conversation.fromJson(json)).toList();
-  }
-
-  @override
-  Stream<BaseUser> observeCustomerById({@required String id}) async* {
-    yield* customerStore
-        .record(id)
-        .onSnapshot(db)
-        .map((event) => Customer.fromJson(event.value));
   }
 
   @override
@@ -393,6 +174,83 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
           );
 
   @override
+  Future<void> sendReview({@required BaseReview review}) async =>
+      reviewStore.record(review.id).put(
+            db,
+            review.toJson(),
+            merge: true,
+          );
+
+  @override
+  Future<void> updateReview({@required BaseReview review}) async =>
+      reviewStore.record(review.id).put(
+            db,
+            review.toJson(),
+            merge: true,
+          );
+
+  /// endregion
+
+  /// region users
+  @override
+  Future<void> updateUser(BaseArtisan user) async =>
+      artisanStore.record(user.id).put(
+            db,
+            user.toJson(),
+            merge: true,
+          );
+
+  @override
+  Future<BaseUser> getCustomerById({@required String id}) async {
+    var map = await customerStore.record(id).get(db);
+    return Customer.fromJson(map);
+  }
+
+  @override
+  Stream<BaseArtisan> currentUser() async* {
+    if (!prefsRepo.isLoggedIn) return;
+
+    yield* artisanStore
+        .record(prefsRepo.userId)
+        .onSnapshot(db)
+        .map((event) => Artisan.fromJson(event.value));
+  }
+
+  @override
+  Future<BaseArtisan> getArtisanById({@required String id}) async {
+    var snapshot = await artisanStore.record(id).getSnapshot(db);
+    return snapshot == null ? null : Artisan.fromJson(snapshot.value);
+  }
+
+  @override
+  Stream<BaseArtisan> observeArtisanById({@required String id}) async* {
+    yield* artisanStore
+        .record(id)
+        .onSnapshot(db)
+        .map((event) => Artisan.fromJson(event.value));
+  }
+
+  @override
+  Stream<List<BaseArtisan>> observeArtisans({String category}) async* {
+    var keys = await artisanStore.findKeys(
+      db,
+      finder: Finder(
+        filter: Filter.matches('category', category),
+      ),
+    );
+    var list = await artisanStore.records(keys).get(db);
+    yield list.map((json) => Artisan.fromJson(json)).toList();
+  }
+
+  @override
+  Stream<BaseUser> observeCustomerById({@required String id}) async* {
+    yield* customerStore
+        .record(id)
+        .onSnapshot(db)
+        .map((event) => Customer.fromJson(event.value));
+  }
+
+  @override
   Future<List<BaseUser>> searchFor(
       {@required String query, @required String categoryId}) async {
     var keys = await customerStore.findKeys(
@@ -411,41 +269,35 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
     return list.map((json) => Customer.fromJson(json)).toList();
   }
 
-  @override
-  Future<void> sendMessage({@required BaseConversation conversation}) async =>
-      conversationStore.record(conversation.id).put(
-            db,
-            conversation.toJson(),
-            merge: true,
-          );
+  /// endregion
 
+  /// region businesses
   @override
-  Future<void> sendReview({@required BaseReview review}) async =>
-      reviewStore.record(review.id).put(
-            db,
-            review.toJson(),
-            merge: true,
-          );
-
-  @override
-  Future<void> updateArtisanService(
-      {@required String id,
-      @required BaseArtisanService artisanService}) async {
-    if (artisanService == null) return;
-    return serviceStore.record(artisanService.id).put(
-          db,
-          artisanService.copyWith(artisanId: id).toJson(),
-          merge: true,
-        );
+  Stream<BaseBusiness> observeBusinessById({@required String id}) async* {
+    yield* businessStore
+        .record(id)
+        .onSnapshot(db)
+        .map((event) => Business.fromJson(event.value));
   }
 
   @override
-  Future<void> updateBooking({@required BaseBooking booking}) async =>
-      bookingStore.record(booking.id).put(
-            db,
-            booking.toJson(),
-            merge: true,
-          );
+  Future<BaseBusiness> getBusinessById({@required String id}) async {
+    var json = await businessStore.record(id).get(db);
+    return Business.fromJson(json);
+  }
+
+  @override
+  Future<List<BaseBusiness>> getBusinessesForArtisan(
+      {@required String artisan}) async {
+    var keys = await businessStore.findKeys(
+      db,
+      finder: Finder(
+        filter: Filter.matches('artisan_id', artisan),
+      ),
+    );
+    var list = await businessStore.records(keys).get(db);
+    return list.map((json) => Business.fromJson(json)).toList();
+  }
 
   @override
   Future<void> updateBusiness({@required BaseBusiness business}) async =>
@@ -455,32 +307,147 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
             merge: true,
           );
 
+  /// endregion
+
+  /// region categories
+  @override
+  Stream<List<BaseServiceCategory>> observeCategories(
+      {@required ServiceCategoryGroup categoryGroup}) async* {
+    var keys = await categoryStore.findKeys(
+      db,
+      finder: Finder(
+        filter: Filter.matches(
+          'group_name',
+          categoryGroup.name(),
+        ),
+      ),
+    );
+    var list = await categoryStore.records(keys).get(db);
+    yield list.map((json) => ServiceCategory.fromJson(json)).toList();
+  }
+
+  @override
+  Stream<BaseServiceCategory> observeCategoryById(
+      {@required String id}) async* {
+    yield* serviceStore
+        .record(id)
+        .onSnapshot(db)
+        .map((event) => ServiceCategory.fromJson(event.value));
+  }
+
   @override
   Future<void> updateCategory({@required BaseServiceCategory category}) async =>
       await categoryStore.update(db, category.toJson(),
           finder: Finder(filter: Filter.byKey(category.id)));
+
+  /// endregion
+
+  /// region services
+  @override
+  Future<void> updateArtisanService(
+      {@required String id,
+      @required BaseArtisanService artisanService}) async {
+    if (artisanService == null) return;
+    artisanService = artisanService.copyWith(artisanId: id);
+    logger.e('updating -> $artisanService');
+    return serviceStore.record(artisanService.id).put(
+          db,
+          artisanService.toJson(),
+          merge: true,
+        );
+  }
+
+  @override
+  Future<BaseArtisanService> getArtisanServiceById(
+      {@required String id}) async {
+    var json = await serviceStore.record(id).get(db);
+    return ArtisanService.fromJson(json);
+  }
+
+  @override
+  Future<List<BaseArtisanService>> getArtisanServicesByCategory(
+      {@required String categoryId}) async {
+    var keys = await serviceStore.findKeys(
+      db,
+      finder: Finder(
+        filter: Filter.matches('category', categoryId),
+        sortOrders: [
+          SortOrder('id'),
+          SortOrder('category'),
+        ],
+      ),
+    );
+    var list = await serviceStore.records(keys).get(db);
+    logger.i('services by category($categoryId) -> $list');
+    return list.map((json) => ArtisanService.fromJson(json)).toList();
+  }
+
+  @override
+  Future<List<BaseArtisanService>> getArtisanServices(
+      {@required String id}) async {
+    var keys = await serviceStore.findKeys(
+      db,
+      finder: Finder(
+          // filter: Filter.matches('artisan_id', id),
+          sortOrders: [SortOrder('id')]),
+    );
+
+    var list = await serviceStore.records(keys).get(db);
+    return list.map((json) => ArtisanService.fromJson(json)).toList();
+  }
+
+  /// endregion
+
+  /// region conversations
+  @override
+  Stream<List<BaseConversation>> observeConversation(
+      {@required String sender, @required String recipient}) async* {
+    var keys = await conversationStore.findKeys(
+      db,
+      finder: Finder(
+        filter: Filter.and([
+              Filter.matches('author', sender),
+              Filter.matches('recipient', recipient),
+            ]) |
+            Filter.and([
+              Filter.matches('author', recipient),
+              Filter.matches('recipient', sender),
+            ]),
+      ),
+    );
+    var list = await conversationStore.records(keys).get(db);
+    yield list.map((json) => Conversation.fromJson(json)).toList();
+  }
+
+  @override
+  Future<void> sendMessage({@required BaseConversation conversation}) async =>
+      conversationStore.record(conversation.id).put(
+            db,
+            conversation.toJson(),
+            merge: true,
+          );
+
+  /// endregion
+
+  /// region galleries
+  @override
+  Stream<List<BaseGallery>> getPhotosForArtisan(
+      {@required String userId}) async* {
+    var keys = await galleryStore.findKeys(
+      db,
+      finder: Finder(
+        filter: Filter.matches('user_id', userId),
+      ),
+    );
+    var list = await galleryStore.records(keys).get(db);
+    yield list.map((json) => Gallery.fromJson(json)).toList();
+  }
 
   @override
   Future<void> updateGallery({@required BaseGallery gallery}) async =>
       galleryStore.record(gallery.id).put(
             db,
             gallery.toJson(),
-            merge: true,
-          );
-
-  @override
-  Future<void> updateReview({@required BaseReview review}) async =>
-      reviewStore.record(review.id).put(
-            db,
-            review.toJson(),
-            merge: true,
-          );
-
-  @override
-  Future<void> updateUser(BaseArtisan user) async =>
-      artisanStore.record(user.id).put(
-            db,
-            user.toJson(),
             merge: true,
           );
 
@@ -498,25 +465,88 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
     });
   }
 
+  /// endregion
+
+  /// region bookings
   @override
-  Future<BaseArtisanService> getArtisanServiceById(
-      {@required String id}) async {
-    var json = await serviceStore.record(id).get(db);
-    return ArtisanService.fromJson(json);
+  Stream<List<BaseBooking>> bookingsForCustomerAndArtisan(
+      String customerId, String artisanId) async* {
+    var bookings = await bookingStore.find(db,
+        finder: Finder(
+            filter: Filter.matches('customer_id', customerId) &
+                Filter.matches('artisan_id', artisanId),
+            sortOrders: [SortOrder('id')]));
+    var keys = <String>[];
+    for (var value in bookings) {
+      keys.add(value.key);
+    }
+    yield (await bookingStore.records(keys).getSnapshots(db))
+        .map((e) => Booking.fromJson(e.value))
+        .toList();
   }
 
   @override
-  Future<List<BaseArtisanService>> getArtisanServicesByCategory(
-      {@required String categoryId}) async {
-    var keys = await serviceStore.findKeys(
+  Future<void> deleteBooking({@required BaseBooking booking}) async {
+    await bookingStore.delete(db,
+        finder: Finder(filter: Filter.byKey(booking.id)));
+  }
+
+  @override
+  Stream<BaseBooking> getBookingById({@required String id}) async* {
+    yield* bookingStore
+        .record(id)
+        .onSnapshot(db)
+        .map((event) => Booking.fromJson(event.value));
+  }
+
+  @override
+  Stream<List<BaseBooking>> getBookingsByDueDate(
+      {@required String dueDate, @required String artisanId}) async* {
+    yield (await bookingStore.find(
       db,
       finder: Finder(
-        filter: Filter.matches('category', categoryId),
-        sortOrders: [SortOrder('id')]
+        filter: Filter.matches('due_date', dueDate) &
+            Filter.matches('artisan_id', artisanId),
+        sortOrders: [SortOrder('id')],
+      ),
+    ))
+        .map((e) => Booking.fromJson(e.value))
+        .toList();
+  }
+
+  @override
+  Stream<List<BaseBooking>> observeBookingsForArtisan(String id) async* {
+    var keys = await bookingStore.findKeys(
+      db,
+      finder: Finder(
+        filter: Filter.matches('artisan_id', id),
       ),
     );
-    var list = await serviceStore.records(keys).get(db);
-    logger.i('services by category($categoryId)-> $list');
-    return list.map((json) => ArtisanService.fromJson(json)).toList();
+
+    var list = await bookingStore.records(keys).get(db);
+    yield list.map((json) => Booking.fromJson(json)).toList();
   }
+
+  @override
+  Stream<List<BaseBooking>> observeBookingsForCustomer(String id) async* {
+    var keys = await bookingStore.findKeys(
+      db,
+      finder: Finder(
+        filter: Filter.matches('customer_id', id),
+      ),
+    );
+    var list = await bookingStore.records(keys).get(db);
+    yield list.map((json) => Booking.fromJson(json)).toList();
+  }
+
+  @override
+  Future<void> updateBooking({@required BaseBooking booking}) async =>
+      bookingStore.record(booking.id).put(
+            db,
+            booking.toJson(),
+            merge: true,
+          );
+
+  /// endregion
+
 }

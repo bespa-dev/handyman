@@ -22,7 +22,7 @@ extension ListX on List<dynamic> {
     if (!contains(item)) add(item);
   }
 
-  /// remove an [item] to an existing [List] if it does not already contain it
+  /// remove an [item] from an existing [List] if it already contains it
   void removeIfExists(dynamic item) {
     if (this == null) return;
     if (contains(item)) remove(item);

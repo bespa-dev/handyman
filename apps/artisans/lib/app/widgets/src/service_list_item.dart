@@ -174,22 +174,27 @@ class _ArtisanServiceListViewState extends State<ArtisanServiceListView> {
 class ArtisanServiceListTile extends StatefulWidget {
   const ArtisanServiceListTile({
     Key key,
-    @required this.service,
+    this.service,
+    this.serviceId,
     this.onTap,
+    this.onLongTap,
     this.selected = false,
     this.selectedColor,
     this.unselectedColor,
     this.showLeadingIcon = true,
     this.showTrailingIcon = true,
     this.showPrice = false,
-  }) : super(key: key);
+  })  : assert(serviceId != null || service != null),
+        super(key: key);
 
   final BaseArtisanService service;
+  final String serviceId;
   final bool selected;
   final bool showPrice;
   final bool showLeadingIcon;
   final bool showTrailingIcon;
   final Function() onTap;
+  final Function(BaseArtisanService) onLongTap;
   final Color selectedColor;
   final Color unselectedColor;
 
@@ -226,28 +231,26 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
       _currentService = widget.service;
       setState(() {});
 
-      if (_currentService != null) {
-        _prefsBloc
-          ..add(PrefsEvent.getUserIdEvent())
-          ..listen((state) {
-            if (state is SuccessState<String>) {
-              _userId = state.data;
-              if (mounted) setState(() {});
-            }
-          });
+      _prefsBloc
+        ..add(PrefsEvent.getUserIdEvent())
+        ..listen((state) {
+          if (state is SuccessState<String>) {
+            _userId = state.data;
+            if (mounted) setState(() {});
+          }
+        });
 
-        _categoryBloc.add(
-            CategoryEvent.observeCategoryById(id: widget.service.category));
-
-        _serviceBloc
-          ..add(ArtisanServiceEvent.getServiceById(id: widget.service.id))
-          ..listen((state) {
-            if (state is SuccessState<BaseArtisanService>) {
-              _currentService = state.data;
-              if (mounted) setState(() {});
-            }
-          });
-      }
+      _serviceBloc
+        ..add(ArtisanServiceEvent.getServiceById(
+            id: widget.serviceId ?? widget.service?.id))
+        ..listen((state) {
+          if (state is SuccessState<BaseArtisanService>) {
+            _currentService = state.data;
+            if (mounted) setState(() {});
+            _categoryBloc.add(CategoryEvent.observeCategoryById(
+                id: _currentService?.category));
+          }
+        });
     }
   }
 
@@ -271,6 +274,7 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
             borderRadius: BorderRadius.circular(kSpacingX4),
           ),
           child: ListTile(
+            onLongPress: () => widget.onLongTap(_currentService),
             onTap: widget.onTap ??
                 () async {
                   final data = await showCustomDialog(
@@ -286,7 +290,6 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
                         _currentService.copyWith(price: double.tryParse(data));
                     setState(() {});
                     _controller.clear();
-                    logger.d(_currentService);
 
                     _updateServiceBloc.add(
                       ArtisanServiceEvent.updateArtisanService(

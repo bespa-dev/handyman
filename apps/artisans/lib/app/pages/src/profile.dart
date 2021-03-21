@@ -71,7 +71,6 @@ class _ProfilePageState extends State<ProfilePage> {
           if (state is SuccessState<Stream<BaseArtisan>>) {
             state.data.listen((user) {
               _currentUser = user;
-              logger.i('user from snapshots -> $user');
               if (mounted) setState(() {});
 
               if (_currentUser?.category != null) {

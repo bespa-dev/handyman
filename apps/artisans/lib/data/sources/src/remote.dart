@@ -49,17 +49,62 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
     }
   }
 
+  /// region reviews
   @override
-  Stream<List<BaseBooking>> bookingsForCustomerAndArtisan(
-      String customerId, String artisanId) async* {
+  Future<void> deleteReviewById({@required String id}) async =>
+      await firestore.collection(RefUtils.kReviewRef).doc(id).delete();
+
+  @override
+  Future<void> sendReview({@required BaseReview review}) async =>
+      await firestore
+          .collection(RefUtils.kReviewRef)
+          .doc(review.id)
+          .set(review.toJson(), SetOptions(merge: true));
+
+  @override
+  Stream<List<BaseReview>> observeReviewsByCustomer(String id) async* {
     yield* firestore
-        .collection(RefUtils.kBookingRef)
-        .where('customer_id', isEqualTo: customerId)
-        .where('artisan_id', isEqualTo: artisanId)
+        .collection(RefUtils.kReviewRef)
+        .where('customer_id', isLessThanOrEqualTo: id)
         .snapshots()
         .map((event) =>
-            event.docs.map((e) => Booking.fromJson(e.data())).toList());
+            event.docs.map((e) => Review.fromJson(e.data())).toList());
   }
+
+  @override
+  Stream<List<BaseReview>> observeReviewsForArtisan(String id) async* {
+    yield* firestore
+        .collection(RefUtils.kReviewRef)
+        .where('artisan_id', isLessThanOrEqualTo: id)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Review.fromJson(e.data())).toList());
+  }
+
+  /// endregion
+
+  /// region users
+  @override
+  Future<BaseUser> getCustomerById({@required String id}) async {
+    var snapshot =
+        await firestore.collection(RefUtils.kCustomerRef).doc(id).get();
+    return snapshot.exists ? Customer.fromJson(snapshot.data()) : null;
+  }
+
+  @override
+  Stream<BaseUser> observeCustomerById({@required String id}) async* {
+    yield* firestore
+        .collection(RefUtils.kCustomerRef)
+        .doc(id)
+        .snapshots()
+        .map((event) => Customer.fromJson(event.data()));
+  }
+
+  @override
+  Future<void> updateUser(BaseUser user) async => await firestore
+      .collection(RefUtils.kArtisanRef)
+      .doc(user.id)
+      .set(user.toJson(), SetOptions(merge: true));
 
   @override
   Stream<BaseArtisan> currentUser() async* {
@@ -73,60 +118,10 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   }
 
   @override
-  Future<void> deleteBooking({@required BaseBooking booking}) async =>
-      await firestore
-          .collection(RefUtils.kBookingRef)
-          .doc(booking.id)
-          .set(booking.toJson(), SetOptions(merge: true));
-
-  @override
-  Future<void> deleteReviewById({@required String id}) async =>
-      await firestore.collection(RefUtils.kReviewRef).doc(id).delete();
-
-  @override
   Future<BaseArtisan> getArtisanById({@required String id}) async {
     var snapshot =
         await firestore.collection(RefUtils.kArtisanRef).doc(id).get();
     return snapshot.exists ? Artisan.fromJson(snapshot.data()) : null;
-  }
-
-  @override
-  Stream<BaseBooking> getBookingById({@required String id}) async* {
-    yield* firestore
-        .collection(RefUtils.kBookingRef)
-        .doc(id)
-        .snapshots()
-        .map((event) => event.exists ? Booking.fromJson(event.data()) : null);
-  }
-
-  @override
-  Stream<List<BaseBooking>> getBookingsByDueDate(
-      {@required String dueDate, @required String artisanId}) async* {
-    yield* firestore
-        .collection(RefUtils.kBookingRef)
-        .where('due_date', isLessThanOrEqualTo: dueDate)
-        .where('artisan_id', isEqualTo: artisanId)
-        .snapshots()
-        .map((event) =>
-            event.docs.map((e) => Booking.fromJson(e.data())).toList());
-  }
-
-  @override
-  Future<BaseUser> getCustomerById({@required String id}) async {
-    var snapshot =
-        await firestore.collection(RefUtils.kCustomerRef).doc(id).get();
-    return snapshot.exists ? Customer.fromJson(snapshot.data()) : null;
-  }
-
-  @override
-  Stream<List<BaseGallery>> getPhotosForArtisan(
-      {@required String userId}) async* {
-    yield* firestore
-        .collection(RefUtils.kGalleryRef)
-        .where('user_id', isEqualTo: userId)
-        .snapshots()
-        .map((event) =>
-            event.docs.map((e) => Gallery.fromJson(e.data())).toList());
   }
 
   @override
@@ -152,137 +147,9 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
             }).toList());
   }
 
-  @override
-  Stream<List<BaseBooking>> observeBookingsForArtisan(String id) async* {
-    yield* firestore
-        .collection(RefUtils.kBookingRef)
-        .where('artisan_id', isEqualTo: id)
-        .snapshots()
-        .map((event) =>
-            event.docs.map((e) => Booking.fromJson(e.data())).toList());
-  }
+  /// endregion
 
-  @override
-  Stream<List<BaseBooking>> observeBookingsForCustomer(String id) async* {
-    yield* firestore
-        .collection(RefUtils.kBookingRef)
-        .where('customer_id', isEqualTo: id)
-        .snapshots()
-        .map((event) =>
-            event.docs.map((e) => Booking.fromJson(e.data())).toList());
-  }
-
-  @override
-  Stream<List<BaseServiceCategory>> observeCategories(
-      {@required ServiceCategoryGroup categoryGroup}) async* {
-    yield* firestore
-        .collection(RefUtils.kCategoryRef)
-        .where('group_name', isEqualTo: categoryGroup.name())
-        .snapshots()
-        .map((event) =>
-            event.docs.map((e) => ServiceCategory.fromJson(e.data())).toList());
-  }
-
-  @override
-  Stream<BaseServiceCategory> observeCategoryById(
-      {@required String id}) async* {
-    yield* firestore
-        .collection(RefUtils.kCategoryRef)
-        .doc(id)
-        .snapshots()
-        .map((event) => ServiceCategory.fromJson(event.data()));
-  }
-
-  @override
-  Stream<List<BaseConversation>> observeConversation(
-      {@required String sender, @required String recipient}) async* {
-    yield* firestore
-        .collection(RefUtils.kConversationRef)
-        .snapshots()
-        .map((element) => element.docs
-            .map((e) => Conversation.fromJson(e.data()))
-            .where((item) =>
-                (item.author == sender || item.author == recipient) &&
-                (item.recipient == sender || item.recipient == recipient))
-            .sortByDescending<String>((r) => r.createdAt)
-            .toList())
-        .asBroadcastStream();
-  }
-
-  @override
-  Stream<BaseUser> observeCustomerById({@required String id}) async* {
-    yield* firestore
-        .collection(RefUtils.kCustomerRef)
-        .doc(id)
-        .snapshots()
-        .map((event) => Customer.fromJson(event.data()));
-  }
-
-  @override
-  Stream<List<BaseReview>> observeReviewsByCustomer(String id) async* {
-    yield* firestore
-        .collection(RefUtils.kReviewRef)
-        .where('customer_id', isLessThanOrEqualTo: id)
-        .snapshots()
-        .map((event) =>
-            event.docs.map((e) => Review.fromJson(e.data())).toList());
-  }
-
-  @override
-  Stream<List<BaseReview>> observeReviewsForArtisan(String id) async* {
-    yield* firestore
-        .collection(RefUtils.kReviewRef)
-        .where('artisan_id', isLessThanOrEqualTo: id)
-        .snapshots()
-        .map((event) =>
-            event.docs.map((e) => Review.fromJson(e.data())).toList());
-  }
-
-  @override
-  Future<void> requestBooking({@required BaseBooking booking}) async =>
-      await firestore
-          .collection(RefUtils.kBookingRef)
-          .doc(booking.id)
-          .set(booking.toJson(), SetOptions(merge: true));
-
-  @override
-  Future<void> sendMessage({@required BaseConversation conversation}) async =>
-      await firestore
-          .collection(RefUtils.kConversationRef)
-          .doc(conversation.id)
-          .set(conversation.toJson(), SetOptions(merge: true));
-
-  @override
-  Future<void> sendReview({@required BaseReview review}) async =>
-      await firestore
-          .collection(RefUtils.kReviewRef)
-          .doc(review.id)
-          .set(review.toJson(), SetOptions(merge: true));
-
-  @override
-  Future<void> updateBooking({@required BaseBooking booking}) async =>
-      await firestore
-          .collection(RefUtils.kBookingRef)
-          .doc(booking.id)
-          .set(booking.toJson(), SetOptions(merge: true));
-
-  @override
-  Future<void> updateUser(BaseUser user) async => await firestore
-      .collection(RefUtils.kArtisanRef)
-      .doc(user.id)
-      .set(user.toJson(), SetOptions(merge: true));
-
-  @override
-  Future<void> uploadBusinessPhotos(
-      {@required List<BaseGallery> galleryItems}) async {
-    for (var item in galleryItems) {
-      await firestore
-          .collection(RefUtils.kGalleryRef)
-          .doc(item.id)
-          .set(item.toJson(), SetOptions(merge: true));
-    }
-  }
-
+  /// region businesses
   @override
   Future<List<BaseBusiness>> getBusinessesForArtisan(
       {@required String artisan}) async {
@@ -315,6 +182,33 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
             snapshot.exists ? Business.fromJson(snapshot.data()) : null);
   }
 
+  /// endregion
+
+  /// region categories
+  @override
+  Stream<List<BaseServiceCategory>> observeCategories(
+      {@required ServiceCategoryGroup categoryGroup}) async* {
+    yield* firestore
+        .collection(RefUtils.kCategoryRef)
+        .where('group_name', isEqualTo: categoryGroup.name())
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => ServiceCategory.fromJson(e.data())).toList());
+  }
+
+  @override
+  Stream<BaseServiceCategory> observeCategoryById(
+      {@required String id}) async* {
+    yield* firestore
+        .collection(RefUtils.kCategoryRef)
+        .doc(id)
+        .snapshots()
+        .map((event) => ServiceCategory.fromJson(event.data()));
+  }
+
+  /// endregion
+
+  /// region services
   @override
   Future<List<BaseArtisanService>> getArtisanServices(
       {@required String id}) async {
@@ -330,6 +224,7 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   Future<void> updateArtisanService(
       {@required String id,
       @required BaseArtisanService artisanService}) async {
+    artisanService = artisanService.copyWith(artisanId: id);
     await firestore
         .collection('${RefUtils.kArtisanRef}/$id/${RefUtils.kServiceRef}')
         .doc(artisanService.id)
@@ -342,8 +237,137 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
     var snapshot =
         await firestore.collection(RefUtils.kServiceRef).doc(id).get();
 
-    return snapshot.exists
-        ? ArtisanService.fromJson(snapshot.data())
-        : null;
+    return snapshot.exists ? ArtisanService.fromJson(snapshot.data()) : null;
   }
+
+  /// endregion
+
+  /// region conversations
+  @override
+  Stream<List<BaseConversation>> observeConversation(
+      {@required String sender, @required String recipient}) async* {
+    yield* firestore
+        .collection(RefUtils.kConversationRef)
+        .snapshots()
+        .map((element) => element.docs
+            .map((e) => Conversation.fromJson(e.data()))
+            .where((item) =>
+                (item.author == sender || item.author == recipient) &&
+                (item.recipient == sender || item.recipient == recipient))
+            .sortByDescending<String>((r) => r.createdAt)
+            .toList())
+        .asBroadcastStream();
+  }
+
+  @override
+  Future<void> sendMessage({@required BaseConversation conversation}) async =>
+      await firestore
+          .collection(RefUtils.kConversationRef)
+          .doc(conversation.id)
+          .set(conversation.toJson(), SetOptions(merge: true));
+
+  /// endregion
+
+  /// region galleries
+  @override
+  Stream<List<BaseGallery>> getPhotosForArtisan(
+      {@required String userId}) async* {
+    yield* firestore
+        .collection(RefUtils.kGalleryRef)
+        .where('user_id', isEqualTo: userId)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Gallery.fromJson(e.data())).toList());
+  }
+
+  @override
+  Future<void> uploadBusinessPhotos(
+      {@required List<BaseGallery> galleryItems}) async {
+    for (var item in galleryItems) {
+      await firestore
+          .collection(RefUtils.kGalleryRef)
+          .doc(item.id)
+          .set(item.toJson(), SetOptions(merge: true));
+    }
+  }
+
+  /// endregion
+
+  /// region bookings
+  @override
+  Stream<List<BaseBooking>> bookingsForCustomerAndArtisan(
+      String customerId, String artisanId) async* {
+    yield* firestore
+        .collection(RefUtils.kBookingRef)
+        .where('customer_id', isEqualTo: customerId)
+        .where('artisan_id', isEqualTo: artisanId)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Booking.fromJson(e.data())).toList());
+  }
+
+  @override
+  Future<void> deleteBooking({@required BaseBooking booking}) async =>
+      await firestore
+          .collection(RefUtils.kBookingRef)
+          .doc(booking.id)
+          .set(booking.toJson(), SetOptions(merge: true));
+
+  @override
+  Stream<BaseBooking> getBookingById({@required String id}) async* {
+    yield* firestore
+        .collection(RefUtils.kBookingRef)
+        .doc(id)
+        .snapshots()
+        .map((event) => event.exists ? Booking.fromJson(event.data()) : null);
+  }
+
+  @override
+  Stream<List<BaseBooking>> getBookingsByDueDate(
+      {@required String dueDate, @required String artisanId}) async* {
+    yield* firestore
+        .collection(RefUtils.kBookingRef)
+        .where('due_date', isLessThanOrEqualTo: dueDate)
+        .where('artisan_id', isEqualTo: artisanId)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Booking.fromJson(e.data())).toList());
+  }
+
+  @override
+  Stream<List<BaseBooking>> observeBookingsForArtisan(String id) async* {
+    yield* firestore
+        .collection(RefUtils.kBookingRef)
+        .where('artisan_id', isEqualTo: id)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Booking.fromJson(e.data())).toList());
+  }
+
+  @override
+  Stream<List<BaseBooking>> observeBookingsForCustomer(String id) async* {
+    yield* firestore
+        .collection(RefUtils.kBookingRef)
+        .where('customer_id', isEqualTo: id)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Booking.fromJson(e.data())).toList());
+  }
+
+  @override
+  Future<void> requestBooking({@required BaseBooking booking}) async =>
+      await firestore
+          .collection(RefUtils.kBookingRef)
+          .doc(booking.id)
+          .set(booking.toJson(), SetOptions(merge: true));
+
+  @override
+  Future<void> updateBooking({@required BaseBooking booking}) async =>
+      await firestore
+          .collection(RefUtils.kBookingRef)
+          .doc(booking.id)
+          .set(booking.toJson(), SetOptions(merge: true));
+
+  /// endregion
+
 }

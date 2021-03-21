@@ -82,9 +82,12 @@ class _SplashPageState extends State<SplashPage>
                 if (mounted) setState(() {});
               } else if (event is AuthenticatedState) {
                 _isLoading = false;
-                if (mounted) setState(() {});
-                await context.navigator.pushAndRemoveUntil(
-                    Routes.categoryPickerPage, (route) => false);
+                if (mounted) {
+                  setState(() {});
+                  await context.navigator.pushAndRemoveUntil(
+                      Routes.categoryPickerPage, (route) => false);
+                  //  k4wot1FK22aaaHL9qXlBgdIT2h13
+                }
               }
             });
           } else if (state is SuccessState<Stream<String>>) {
