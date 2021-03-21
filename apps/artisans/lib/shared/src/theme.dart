@@ -32,7 +32,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
           borderRadius: BorderRadius.circular(kSpacingX20),
         ),
         backgroundColor: kSecondaryLightColor,
-        foregroundColor: kWhiteColor,
+        foregroundColor: kBlackColor,
       ),
       inputDecorationTheme: InputDecorationTheme(
         focusColor: kPrimaryColor,

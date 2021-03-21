@@ -54,7 +54,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
   BaseArtisan _currentUser;
   var _servicesForCategory = <BaseArtisanService>[];
   var _categories = <BaseServiceCategory>[];
-  var _selectedServices = <String>[], _userServices = <BaseArtisanService>[];
+  var _selectedServices = <String>[];
   final _sheetController = SheetController();
   File _galleryImage;
   bool _isLoading = false;
@@ -368,7 +368,6 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                           showLeadingIcon: false,
                           selected: false,
                           showPrice: true,
-
                           onLongTap: (service) async => await showCustomDialog(
                             context: context,
                             builder: (_) => BasicDialog(

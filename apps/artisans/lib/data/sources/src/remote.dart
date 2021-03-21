@@ -224,11 +224,12 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
   Future<void> updateArtisanService(
       {@required String id,
       @required BaseArtisanService artisanService}) async {
-    artisanService = artisanService.copyWith(artisanId: id);
-    await firestore
+    var doc = firestore
         .collection('${RefUtils.kArtisanRef}/$id/${RefUtils.kServiceRef}')
-        .doc(artisanService.id)
-        .set(artisanService.toJson(), SetOptions(merge: true));
+        .doc(artisanService.id);
+    await (artisanService.artisanId == null
+        ? doc.delete()
+        : doc.set(artisanService.toJson(), SetOptions(merge: true)));
   }
 
   @override

@@ -286,14 +286,18 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
                     ),
                   );
                   if (data != null && _userId != null) {
-                    _currentService =
-                        _currentService.copyWith(price: double.tryParse(data));
+                    _currentService = _currentService.copyWith(
+                      price: double.tryParse(data),
+                      artisanId: _userId,
+                    );
                     setState(() {});
                     _controller.clear();
 
                     _updateServiceBloc.add(
                       ArtisanServiceEvent.updateArtisanService(
-                          id: _userId, service: _currentService),
+                        id: _userId,
+                        service: _currentService,
+                      ),
                     );
 
                     _serviceBloc.add(ArtisanServiceEvent.getServiceById(
