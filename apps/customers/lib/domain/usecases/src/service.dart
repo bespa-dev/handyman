@@ -50,7 +50,7 @@ class GetCategoryServicesUseCase extends UseCase<List<BaseArtisanService>,
   Future<UseCaseResult<List<BaseArtisanService>>> execute(
       String id) async {
     try {
-      var results = await _repo.getCategoryServices(categoryId: id);
+      var results = await _repo.getArtisanServicesByCategory(categoryId: id);
       return UseCaseResult<List<BaseArtisanService>>.success(results);
     } on Exception {
       return UseCaseResult.error();

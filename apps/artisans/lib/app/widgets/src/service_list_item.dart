@@ -156,7 +156,6 @@ class _ArtisanServiceListViewState extends State<ArtisanServiceListView> {
             final item = widget.services[index];
             return ArtisanServiceListTile(
               service: item,
-              showLeadingIcon: widget.checkable,
               onTap: () {
                 if (widget.onItemSelected != null) widget.onItemSelected(item);
               },
@@ -181,7 +180,6 @@ class ArtisanServiceListTile extends StatefulWidget {
     this.selected = false,
     this.selectedColor,
     this.unselectedColor,
-    this.showLeadingIcon = true,
     this.showTrailingIcon = true,
     this.showPrice = false,
   })  : assert(serviceId != null || service != null),
@@ -191,7 +189,6 @@ class ArtisanServiceListTile extends StatefulWidget {
   final String serviceId;
   final bool selected;
   final bool showPrice;
-  final bool showLeadingIcon;
   final bool showTrailingIcon;
   final Function() onTap;
   final Function(BaseArtisanService) onLongTap;
@@ -206,7 +203,6 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
   /// blocs
   final _serviceBloc = ArtisanServiceBloc(repo: Injection.get());
   final _updateServiceBloc = ArtisanServiceBloc(repo: Injection.get());
-  final _categoryBloc = CategoryBloc(repo: Injection.get());
   final _prefsBloc = PrefsBloc(repo: Injection.get());
 
   /// UI
@@ -216,7 +212,6 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
 
   @override
   void dispose() {
-    _categoryBloc.close();
     _serviceBloc.close();
     _updateServiceBloc.close();
     _prefsBloc.close();
@@ -247,8 +242,6 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
           if (state is SuccessState<BaseArtisanService>) {
             _currentService = state.data;
             if (mounted) setState(() {});
-            _categoryBloc.add(CategoryEvent.observeCategoryById(
-                id: _currentService?.category));
           }
         });
     }
@@ -258,125 +251,114 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
   Widget build(BuildContext context) {
     final kTheme = Theme.of(context);
 
-    return BlocBuilder<ArtisanServiceBloc, BlocState>(
-      cubit: _serviceBloc,
-      builder: (_, serviceState) => BlocBuilder<CategoryBloc, BlocState>(
-        cubit: _categoryBloc,
-        builder: (_, state) => AnimatedContainer(
-          duration: kScaleDuration,
-          margin: EdgeInsets.symmetric(vertical: kSpacingX4),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: widget.selected
-                  ? widget.selectedColor ?? kTheme.colorScheme.secondary
-                  : widget.unselectedColor ?? kTheme.cardColor,
-            ),
-            borderRadius: BorderRadius.circular(kSpacingX4),
-          ),
-          child: ListTile(
-            onLongPress: () => widget.onLongTap(_currentService),
-            onTap: widget.onTap ??
-                () async {
-                  final data = await showCustomDialog(
-                    context: context,
-                    builder: (_) => ReplyMessageDialog(
-                      title: 'Set price for service',
-                      controller: _controller,
-                      hintText: 'e.g. 99.99',
-                    ),
-                  );
-                  if (data != null && _userId != null) {
-                    _currentService = _currentService.copyWith(
-                      price: double.tryParse(data),
-                      artisanId: _userId,
-                    );
-                    setState(() {});
-                    _controller.clear();
-
-                    _updateServiceBloc.add(
-                      ArtisanServiceEvent.updateArtisanService(
-                        id: _userId,
-                        service: _currentService,
-                      ),
-                    );
-
-                    _serviceBloc.add(ArtisanServiceEvent.getServiceById(
-                        id: _currentService.id));
-                  }
-                },
-            title: Text(
-              _currentService?.name ?? '...',
-              style: TextStyle(
-                color: widget.selected
-                    ? widget.selectedColor ?? kTheme.colorScheme.secondary
-                    : kTheme.colorScheme.onBackground
-                        .withOpacity(kEmphasisHigh),
+    return _currentService == null
+        ? SizedBox.shrink()
+        : BlocBuilder<ArtisanServiceBloc, BlocState>(
+            cubit: _serviceBloc,
+            builder: (_, serviceState) => AnimatedContainer(
+              duration: kScaleDuration,
+              margin: EdgeInsets.symmetric(vertical: kSpacingX4),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: widget.selected
+                      ? widget.selectedColor ?? kTheme.colorScheme.secondary
+                      : widget.unselectedColor ?? kTheme.cardColor,
+                ),
+                borderRadius: BorderRadius.circular(kSpacingX4),
               ),
-            ),
-            leading: state is SuccessState<Stream<BaseServiceCategory>> &&
-                    widget.showLeadingIcon
-                ? StreamBuilder<BaseServiceCategory>(
-                    stream: state.data,
-                    builder: (_, snapshot) => UserAvatar(
-                        url: snapshot.hasData ? snapshot.data.avatar : ''))
-                : null,
-            subtitle: state is SuccessState<Stream<BaseServiceCategory>>
-                ? StreamBuilder<BaseServiceCategory>(
-                    stream: state.data,
-                    builder: (_, snapshot) => Text(
-                          widget.showPrice || snapshot.hasError
-                              ? formatCurrency(_currentService.price)
-                              : snapshot.hasData
-                                  ? snapshot.data.name
-                                  : '...',
-                          style: TextStyle(
-                            color: widget.selected
-                                ? widget.selectedColor ??
-                                    kTheme.colorScheme.secondary
-                                : kTheme.colorScheme.onBackground
-                                    .withOpacity(kEmphasisMedium),
+              child: ListTile(
+                onLongPress: () => widget.onLongTap(_currentService),
+                onTap: widget.onTap ??
+                    () async {
+                      final data = await showCustomDialog(
+                        context: context,
+                        builder: (_) => ReplyMessageDialog(
+                          title: 'Set price for service',
+                          controller: _controller,
+                          hintText: 'e.g. 99.99',
+                        ),
+                      );
+                      if (data != null && _userId != null) {
+                        _currentService = _currentService.copyWith(
+                          price: double.tryParse(data),
+                          artisanId: _userId,
+                        );
+                        setState(() {});
+                        _controller.clear();
+
+                        _updateServiceBloc.add(
+                          ArtisanServiceEvent.updateArtisanService(
+                            id: _userId,
+                            service: _currentService,
                           ),
-                        ))
-                : SizedBox.shrink(),
-            trailing: widget.showTrailingIcon
-                ? IconButton(
-                    icon: Icon(kHelpIcon),
+                        );
+
+                        _serviceBloc.add(ArtisanServiceEvent.getServiceById(
+                            id: _currentService.id));
+                      }
+                    },
+                title: Text(
+                  _currentService?.name ?? '...',
+                  style: TextStyle(
                     color: widget.selected
                         ? widget.selectedColor ?? kTheme.colorScheme.secondary
                         : kTheme.colorScheme.onBackground
                             .withOpacity(kEmphasisHigh),
-                    onPressed: () => showCustomDialog(
-                      context: context,
-                      builder: (_) => InfoDialog(
-                        title: _currentService.name,
-                        message: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: kServiceHelperText),
+                  ),
+                ),
+                subtitle: Text(
+                  _currentService.hasIssues
+                      ? '${_currentService.issues.length} fixable issues'
+                      : widget.showPrice
+                          ? formatCurrency(_currentService.price)
+                          : '...',
+                  style: TextStyle(
+                    color: widget.selected
+                        ? widget.selectedColor ?? kTheme.colorScheme.secondary
+                        : kTheme.colorScheme.onBackground
+                            .withOpacity(kEmphasisMedium),
+                  ),
+                ),
+                trailing: widget.showTrailingIcon
+                    ? IconButton(
+                        icon: Icon(kHelpIcon),
+                        color: widget.selected
+                            ? widget.selectedColor ??
+                                kTheme.colorScheme.secondary
+                            : kTheme.colorScheme.onBackground
+                                .withOpacity(kEmphasisHigh),
+                        onPressed: () => showCustomDialog(
+                          context: context,
+                          builder: (_) => InfoDialog(
+                            title: _currentService.name,
+                            message: Text.rich(
                               TextSpan(
-                                  text: '\n\nPrice range starts from\t',
-                                  style: kTheme.textTheme.bodyText1.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  )),
-                              TextSpan(
-                                text: formatCurrency(_currentService.price),
-                                style: kTheme.textTheme.bodyText1.copyWith(
-                                  color: kTheme.colorScheme.secondary,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                children: [
+                                  TextSpan(text: kServiceHelperText),
+                                  TextSpan(
+                                      text: '\n\nPrice range starts from\t',
+                                      style:
+                                          kTheme.textTheme.bodyText1.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                  TextSpan(
+                                    text: formatCurrency(_currentService.price),
+                                    style: kTheme.textTheme.bodyText1.copyWith(
+                                      color: kTheme.colorScheme.secondary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  )
-                : null,
-            selected: widget.selected,
-            tileColor: widget.unselectedColor ?? kTheme.cardColor,
-          ),
-        ),
-      ),
-    );
+                      )
+                    : null,
+                selected: widget.selected,
+                tileColor: widget.unselectedColor ?? kTheme.cardColor,
+              ),
+            ),
+          );
   }
 }

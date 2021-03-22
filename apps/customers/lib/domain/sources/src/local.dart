@@ -81,8 +81,8 @@ abstract class BaseLocalDatasource extends ChangeNotifier {
   /// Send [BaseConversation]
   Future<void> sendMessage({@required BaseConversation conversation});
 
-  /// Update [BaseUser] profile information
-  Future<void> updateUser(BaseUser user);
+  /// Update [BaseArtisan] profile information
+  Future<void> updateUser(BaseArtisan user);
 
   /// Get [BaseBooking] by [id]
   Stream<BaseBooking> getBookingById({@required String id});
@@ -111,7 +111,10 @@ abstract class BaseLocalDatasource extends ChangeNotifier {
 
   Future<List<BaseArtisanService>> getArtisanServices({@required String id});
 
-  Future<List<BaseArtisanService>> getCategoryServices({@required String categoryId});
+  Future<BaseArtisanService> getArtisanServiceById({@required String id});
+
+  Future<List<BaseArtisanService>> getArtisanServicesByCategory(
+      {@required String categoryId});
 
   Future<void> updateArtisanService(
       {@required String id, @required BaseArtisanService artisanService});

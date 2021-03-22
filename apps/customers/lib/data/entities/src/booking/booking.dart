@@ -9,15 +9,13 @@
 
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:lite/data/entities/entities.dart' show LocationMetadata;
+import 'package:lite/data/entities/entities.dart' show LocationMetadata, LocationMetadataSerializer;
 import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 import 'package:meta/meta.dart';
 
 part 'booking.g.dart';
 
-/// todo -> always set this after rebuilding dependencies
-/// 'position': instance.position.toJson(),
 @HiveType(typeId: 0)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class Booking extends BaseBooking {
@@ -62,7 +60,8 @@ class Booking extends BaseBooking {
 
   @HiveField(5)
   @override
-  final LocationMetadata position;
+  @LocationMetadataSerializer()
+  final BaseLocationMetadata position;
 
   @HiveField(6)
   @override

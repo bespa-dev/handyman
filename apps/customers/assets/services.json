@@ -72,136 +72,796 @@
     "price": 0.99
   },
   {
-    "id": "78672ed4-e03b-46da-a14c-5c5e4a9c118e",
+    "id": "78672ed4-e03b-46da-a14c-5c5e4a9c118e ",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Toyota",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "2322a9e9-f441-4df3-88bd-9306ba270709",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Range Rover",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "0ea7eba6-7d90-4ed3-840d-34d759843566",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Mercedes Benz",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "dba89b64-3e59-42ad-860c-300fcb57278c",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Acura",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "a885170f-8643-41e5-ae42-cbdc66658ffb",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Chevrolet",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "976c9987-ecd0-4d20-a8c8-0949f019d512",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "BMW",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "e284550c-07fe-479c-9ce1-1011f2803e98",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Bentley",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "0e2a6f70-3b38-4219-9183-a2641a262d9e",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Honda",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "9cbcc566-a8eb-4ae9-9b01-0397ca846422",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Hyundai",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "95aaf546-5afc-4287-b26a-db08aa5f5d15",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Ford",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "477a2908-c78d-4c01-b088-1aa2958f7e8a",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Jaguar",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "c7cefe69-93a6-41b5-8af7-662822a88efd",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Cadillac",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "ceadfc6c-343a-4027-8787-b42f5e15c7a1",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Mitsubishi",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "da36dee8-59d6-4f29-b12a-826e79366a26",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Volkswagen",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "31782b49-195f-47c1-ac9f-2007c4a93005",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Rolls Royce",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "a6e95405-5b11-463b-9d2d-cf1f5c9aaaf4",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Nissan",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "3861157a-a45d-4876-81b6-496617188f91",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Kia",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "362b6aa5-aaa8-442f-be68-007b79235e8f",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Mazda",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "3d165b69-0172-40b8-b365-f4c23e5920cc",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Genesis",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "398af58b-6a1c-4a1d-814c-f60c179f749f",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Picanto",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "d62bfdbe-36b7-4ffa-a622-b890422a8b6b",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Dodge",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "bdedc392-7610-4525-a1f0-132bc694baaa",
     "category": "8ecf642d-429f-4b51-805b-0678a9af8e28",
     "name": "Chrysler",
-    "price": 0.99
+    "price": 0.99,
+    "issues": [
+      {
+        "name": "Brakes",
+        "price": 0.99
+      },
+      {
+        "name": "Engine",
+        "price": 0.99
+      },
+      {
+        "name": "Tire brake shoes",
+        "price": 0.99
+      },
+      {
+        "name": "Drive belt",
+        "price": 0.99
+      },
+      {
+        "name": "Transmissions",
+        "price": 0.99
+      },
+      {
+        "name": "Steering",
+        "price": 0.99
+      },
+      {
+        "name": "Gear",
+        "price": 0.99
+      }
+    ]
   },
   {
     "id": "58f36490-6197-4a54-85a5-09dff5e7b7b7",

@@ -365,7 +365,6 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                     .map((id) => ArtisanServiceListTile(
                           key: ValueKey(id),
                           serviceId: id,
-                          showLeadingIcon: false,
                           selected: false,
                           showPrice: true,
                           onLongTap: (service) async => await showCustomDialog(
@@ -574,7 +573,6 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                           itemCount: _servicesForCategory.length,
                           itemBuilder: (_, index) => ArtisanServiceListTile(
                             service: _servicesForCategory[index],
-                            showLeadingIcon: false,
                             showTrailingIcon: false,
                             selected: _selectedServices
                                 .contains(_servicesForCategory[index].id),

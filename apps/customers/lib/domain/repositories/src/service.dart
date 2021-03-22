@@ -11,7 +11,10 @@ abstract class BaseArtisanServiceRepository extends BaseRepository {
 
   Future<List<BaseArtisanService>> getArtisanServices({@required String id});
 
-  Future<List<BaseArtisanService>> getCategoryServices({@required String categoryId});
+  Future<BaseArtisanService> getArtisanServiceById({@required String id});
+
+  Future<List<BaseArtisanService>> getArtisanServicesByCategory(
+      {@required String categoryId});
 
   Future<void> updateArtisanService(
       {@required String id, @required BaseArtisanService artisanService});
