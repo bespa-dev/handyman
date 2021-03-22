@@ -27,7 +27,7 @@ class BookingAdapter extends TypeAdapter<Booking> {
       dueDate: fields[8] as String,
       currentState: fields[11] as String,
       serviceType: fields[12] as String,
-      position: fields[5] as LocationMetadata,
+      position: fields[5] as BaseLocationMetadata,
       cost: fields[6] as double,
       progress: fields[7] as double,
     );
@@ -92,9 +92,8 @@ Booking _$BookingFromJson(Map<String, dynamic> json) {
     dueDate: json['due_date'] as String,
     currentState: json['current_state'] as String,
     serviceType: json['service_type'] as String,
-    position: json['position'] == null
-        ? null
-        : LocationMetadata.fromJson(json['position'] as Map<String, dynamic>),
+    position: const LocationMetadataSerializer()
+        .fromJson(json['position'] as Map<String, dynamic>),
     cost: (json['cost'] as num)?.toDouble(),
     progress: (json['progress'] as num)?.toDouble(),
   );
@@ -106,7 +105,7 @@ Map<String, dynamic> _$BookingToJson(Booking instance) => <String, dynamic>{
       'category': instance.category,
       'image_url': instance.imageUrl,
       'description': instance.description,
-      'position': instance.position.toJson(),
+      'position': const LocationMetadataSerializer().toJson(instance.position),
       'cost': instance.cost,
       'progress': instance.progress,
       'due_date': instance.dueDate,

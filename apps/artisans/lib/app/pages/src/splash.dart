@@ -86,7 +86,6 @@ class _SplashPageState extends State<SplashPage>
                   setState(() {});
                   await context.navigator.pushAndRemoveUntil(
                       Routes.categoryPickerPage, (route) => false);
-                  //  k4wot1FK22aaaHL9qXlBgdIT2h13
                 }
               }
             });
@@ -299,7 +298,6 @@ class _SplashPageState extends State<SplashPage>
       ..add(PrefsEvent.getUserIdEvent())
       ..listen((state) async {
         if (state is SuccessState<String>) {
-          /// get all bookings for current user
           if (state.data == null) {
             _isLoading = true;
             if (mounted) setState(() {});
@@ -312,6 +310,7 @@ class _SplashPageState extends State<SplashPage>
                 if (state is SuccessState<Stream<List<BaseServiceCategory>>>) {
                   var list = await state.data.single;
                   list.forEach((element) async {
+                    if (element.avatar == null) return;
                     await precacheImage(
                         CachedNetworkImageProvider(element.avatar), context);
                   });
@@ -325,6 +324,7 @@ class _SplashPageState extends State<SplashPage>
                 }
               });
           } else {
+            /// get all bookings for current user
             _bookingBloc
                 .add(BookingEvent.observeBookingForArtisan(id: state.data));
           }

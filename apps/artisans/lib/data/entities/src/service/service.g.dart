@@ -21,6 +21,7 @@ class ArtisanServiceAdapter extends TypeAdapter<ArtisanService> {
       category: fields[1] as String,
       name: fields[3] as String,
       price: fields[2] as double,
+      issues: (fields[5] as List)?.cast<BaseServiceIssue>(),
       artisanId: fields[4] as String,
     );
   }
@@ -28,7 +29,7 @@ class ArtisanServiceAdapter extends TypeAdapter<ArtisanService> {
   @override
   void write(BinaryWriter writer, ArtisanService obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class ArtisanServiceAdapter extends TypeAdapter<ArtisanService> {
       ..writeByte(3)
       ..write(obj.name)
       ..writeByte(4)
-      ..write(obj.artisanId);
+      ..write(obj.artisanId)
+      ..writeByte(5)
+      ..write(obj.issues);
   }
 
   @override
@@ -56,12 +59,29 @@ class ArtisanServiceAdapter extends TypeAdapter<ArtisanService> {
 // JsonSerializableGenerator
 // **************************************************************************
 
+ServiceIssue _$ServiceIssueFromJson(Map<String, dynamic> json) {
+  return ServiceIssue(
+    name: json['name'] as String,
+    price: (json['price'] as num)?.toDouble(),
+  );
+}
+
+Map<String, dynamic> _$ServiceIssueToJson(ServiceIssue instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'price': instance.price,
+    };
+
 ArtisanService _$ArtisanServiceFromJson(Map<String, dynamic> json) {
   return ArtisanService(
     id: json['id'] as String,
     category: json['category'] as String,
     name: json['name'] as String,
     price: (json['price'] as num)?.toDouble(),
+    issues: (json['issues'] as List)
+        ?.map((e) => const BaseServiceIssueSerializer()
+            .fromJson(e as Map<String, dynamic>))
+        ?.toList(),
     artisanId: json['artisan_id'] as String,
   );
 }
@@ -73,4 +93,7 @@ Map<String, dynamic> _$ArtisanServiceToJson(ArtisanService instance) =>
       'price': instance.price,
       'name': instance.name,
       'artisan_id': instance.artisanId,
+      'issues': instance.issues
+          ?.map(const BaseServiceIssueSerializer().toJson)
+          ?.toList(),
     };

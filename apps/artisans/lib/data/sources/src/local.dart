@@ -208,7 +208,6 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
 
   @override
   Stream<BaseArtisan> currentUser() async* {
-    if (!prefsRepo.isLoggedIn) return;
 
     yield* artisanStore
         .record(prefsRepo.userId)

@@ -5,6 +5,19 @@ import 'package:meta/meta.dart';
 
 part 'location.g.dart';
 
+class LocationMetadataSerializer
+    implements JsonConverter<BaseLocationMetadata, Map<String, dynamic>> {
+  const LocationMetadataSerializer();
+
+  @override
+  BaseLocationMetadata fromJson(Map<String, dynamic> json) =>
+      LocationMetadata.fromJson(json);
+
+  @override
+  Map<String, dynamic> toJson(BaseLocationMetadata instance) =>
+      instance.toJson();
+}
+
 @HiveType(typeId: 8)
 @JsonSerializable(genericArgumentFactories: true)
 class LocationMetadata extends BaseLocationMetadata {

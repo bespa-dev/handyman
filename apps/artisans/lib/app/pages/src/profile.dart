@@ -169,13 +169,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 stream: state.data,
                 builder: (_, snapshot) {
                   _currentUser ??= snapshot.data;
+                  logger.i('current user => $_currentUser');
                   return SafeArea(
                     top: true,
                     child: AnimatedOpacity(
                       opacity: _currentUser == null ? 0 : 1,
                       duration: kScaleDuration,
                       child: _currentUser == null
-                          ? SizedBox.shrink()
+                          ? Loading()
                           : SingleChildScrollView(
                               padding: EdgeInsets.only(
                                 top: kSpacingX16,
