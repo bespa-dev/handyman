@@ -45,6 +45,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                         initialData: [],
                         builder: (_, snapshot) {
                           final artisans = snapshot.data ?? [];
+                          logger.i(artisans);
                           return snapshot.connectionState ==
                                   ConnectionState.waiting
                               ? Loading()

@@ -21,10 +21,11 @@ import 'package:uuid/uuid.dart';
 
 class StorageRepositoryImpl implements BaseStorageRepository {
   StorageRepositoryImpl({@required this.bucket});
+
   final Reference bucket;
 
   final _onStorageUploadResponseController =
-      StreamController<StorageProgress>.broadcast();
+  StreamController<StorageProgress>.broadcast();
 
   @override
   void dispose() {
@@ -32,40 +33,25 @@ class StorageRepositoryImpl implements BaseStorageRepository {
   }
 
   @override
-  Stream<StorageProgress> get onStorageUploadResponse =>
-      _onStorageUploadResponseController.stream;
-
-  @override
-  Future<String> uploadFile(String filePath,
-      {String path, bool isImageFile = true}) async {
+  Future<String> uploadFile(
+      String filePath, {
+        String path,
+        bool isImageFile = true,
+      }) async {
+    // compress image
     var compressedFile = await compressMedia(filePath, isImageFile);
-    var uploadTask = bucket.child(path ??= Uuid().v4()).putFile(compressedFile);
+    try {
+      // upload to server
+      var uploadTask =
+      await bucket.child(path ??= Uuid().v4()).putFile(compressedFile);
 
-    /// listen for live stream of events from upload
-    uploadTask.snapshotEvents.listen((event) async {
-      switch (event.state) {
-        case TaskState.success:
-          var url = await event.ref.getDownloadURL();
-          _onStorageUploadResponseController
-              .add(StorageProgress.uploadSuccess(url: url));
-          break;
-        case TaskState.error:
-        case TaskState.canceled:
-          _onStorageUploadResponseController
-              .add(StorageProgress.uploadFailed(cause: 'Failed with error'));
-          break;
-        case TaskState.paused:
-          _onStorageUploadResponseController
-              .add(StorageProgress.uploadPaused());
-          break;
-        case TaskState.running:
-          _onStorageUploadResponseController
-              .add(StorageProgress.uploadInProgress());
-          break;
-      }
-    });
-    var snapshot = await uploadTask.snapshot; // get snapshot upon completion
-    return await snapshot.ref.getDownloadURL(); // return download url
+      // return download url
+      return await uploadTask.ref.getDownloadURL();
+    } catch (ex) {
+      logger.e(ex);
+      return Future<String>.error(
+          'Failed to upload file. This is a server issue. Try again later');
+    }
   }
 
   /// compress video & image files
@@ -97,7 +83,8 @@ class StorageRepositoryImpl implements BaseStorageRepository {
         // return a file for upload from path
         return File(filePath);
       }
-    } on Exception {
+    } on Exception catch (e) {
+      logger.e(e);
       return null;
     }
   }

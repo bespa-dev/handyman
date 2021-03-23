@@ -25,6 +25,7 @@ abstract class BaseArtisanService {
     String name,
     double price,
     String artisanId,
+    List<BaseServiceIssue> issues,
   });
 
   Map<String, dynamic> toJson();

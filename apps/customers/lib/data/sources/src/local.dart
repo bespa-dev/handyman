@@ -193,17 +193,19 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
 
   /// region users
   @override
-  Future<void> updateUser(BaseArtisan user) async =>
-      artisanStore.record(user.id).put(
-            db,
-            user.toJson(),
-            merge: true,
-          );
+  Future<void> updateUser(BaseUser user) async {
+    logger.i('updating -> $user');
+    return customerStore.record(user.id).put(
+          db,
+          user.toJson(),
+          merge: true,
+        );
+  }
 
   @override
   Future<BaseUser> getCustomerById({@required String id}) async {
     var map = await customerStore.record(id).get(db);
-    return Customer.fromJson(map);
+    return map == null ? null : Customer.fromJson(map);
   }
 
   @override
@@ -236,8 +238,11 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
         filter: Filter.matches('category', category),
       ),
     );
+    var controller = StreamController<List<BaseArtisan>>();
     var list = await artisanStore.records(keys).get(db);
-    yield list.map((json) => Artisan.fromJson(json)).toList();
+    var mappedListOfUsers = list.map((json) => Artisan.fromJson(json)).toList();
+    controller.sink.add(mappedListOfUsers);
+    yield* controller.stream;
   }
 
   @override
@@ -375,7 +380,6 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
       ),
     );
     var list = await serviceStore.records(keys).get(db);
-    logger.i('services by category($categoryId) -> $list');
     return list.map((json) => ArtisanService.fromJson(json)).toList();
   }
 

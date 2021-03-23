@@ -17,7 +17,9 @@ class ArtisanServiceRepositoryImpl extends BaseArtisanServiceRepository {
     var services = await remote.getArtisanServices(id: id);
     if (services.isNotEmpty) {
       for (var service in services) {
-        await local.updateArtisanService(id: id, artisanService: service);
+        if (service != null) {
+          await local.updateArtisanService(id: id, artisanService: service);
+        }
       }
     }
     return await local.getArtisanServices(id: id);

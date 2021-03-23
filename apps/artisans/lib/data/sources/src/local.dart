@@ -127,12 +127,21 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
       final item = ArtisanService.fromJson(json);
 
       /// put each one into box
-      await serviceStore.record(item.id).put(
-            db,
-            item.toJson(),
-            merge: true,
-          );
+      await serviceStore.record(item.id).put(db, item.toJson());
     }
+
+    // var keys = await serviceStore.findKeys(
+    //   db,
+    //   finder: Finder(
+    //     filter:
+    //         Filter.matches('category', '8ecf642d-429f-4b51-805b-0678a9af8e28') |
+    //             Filter.matches('artisan_id', 'k4wot1FK22aaaHL9qXlBgdIT2h13'),
+    //   ),
+    // );
+    // var services = await serviceStore
+    //     .records(keys)
+    //     .get(db);
+    // logger.i('service => $services');
   }
 
   /// region reviews
@@ -208,7 +217,6 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
 
   @override
   Stream<BaseArtisan> currentUser() async* {
-
     yield* artisanStore
         .record(prefsRepo.userId)
         .onSnapshot(db)

@@ -71,7 +71,7 @@ class ArtisanService extends BaseArtisanService {
     @required this.category,
     @required this.name,
     @required this.price,
-    this.issues = const <BaseServiceIssue>[],
+    this.issues,
     this.artisanId,
   });
 
@@ -81,6 +81,7 @@ class ArtisanService extends BaseArtisanService {
     String name,
     double price,
     String artisanId,
+    List<BaseServiceIssue> issues,
   }) =>
       ArtisanService(
         id: id,
@@ -88,6 +89,7 @@ class ArtisanService extends BaseArtisanService {
         category: category ??= this.category,
         price: price ??= this.price,
         artisanId: artisanId ??= this.artisanId,
+        issues: issues ??= this.issues,
       );
 
   factory ArtisanService.fromJson(Map<String, dynamic> json) =>

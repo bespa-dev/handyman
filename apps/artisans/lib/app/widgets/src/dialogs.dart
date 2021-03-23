@@ -315,8 +315,8 @@ class _MenuItemPickerDialogState extends State<MenuItemPickerDialog> {
               _CustomDialogButton(
                 label: 'Confirm',
                 onTap: () {
-                  widget.onComplete(_selectedItem);
                   context.navigator.pop();
+                  widget.onComplete(_selectedItem);
                 },
                 isPrimary: true,
               ),

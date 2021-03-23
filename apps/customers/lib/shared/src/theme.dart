@@ -29,9 +29,10 @@ ThemeData themeData(BuildContext context) => ThemeData(
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(kSpacingX8),
+          borderRadius: BorderRadius.circular(kSpacingX20),
         ),
         backgroundColor: kSecondaryLightColor,
+        foregroundColor: kBlackColor,
       ),
       inputDecorationTheme: InputDecorationTheme(
         focusColor: kPrimaryColor,
@@ -50,7 +51,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
           fontFamily: _kBodyFontFamily,
           fontWeight: FontWeight.normal,
         ),
-        fillColor: kCardLightColor,
+        // fillColor: kCardLightColor,
         filled: true,
       ),
       tabBarTheme: TabBarTheme(
@@ -72,7 +73,6 @@ ThemeData themeData(BuildContext context) => ThemeData(
       ),
       backgroundColor: kBackgroundLightColor,
       iconTheme: IconThemeData(color: kPrimaryIconLightColor),
-      accentIconTheme: IconThemeData(color: kAccentIconLightColor),
       primaryIconTheme: IconThemeData(color: kPrimaryIconLightColor),
       textTheme: TextTheme(
         headline1: TextStyle(
@@ -138,7 +138,8 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(kSpacingX16),
         ),
-        backgroundColor: kPrimaryColorDark,
+        backgroundColor: kSecondaryDarkColor,
+        foregroundColor: kBlackColor,
       ),
       tabBarTheme: TabBarTheme(
         labelColor: kPrimaryColorDark,
@@ -161,7 +162,6 @@ ThemeData darkThemeData(BuildContext context) => ThemeData.dark().copyWith(
       ),
       backgroundColor: kBackgroundDarkColor,
       iconTheme: IconThemeData(color: kPrimaryIconDarkColor),
-      accentIconTheme: IconThemeData(color: kAccentIconDarkColor),
       primaryIconTheme: IconThemeData(color: kPrimaryIconDarkColor),
       cardColor: kCardDarkColor,
       textTheme: TextTheme(

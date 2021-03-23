@@ -32,15 +32,13 @@ enum _StorageProgress {
 
 /// base storage repository class
 abstract class BaseStorageRepository implements Exposable {
-  /// observe upload progress
-  Stream<StorageProgress> get onStorageUploadResponse;
 
   /// upload media file (pdf, image etc)
   Future<String> uploadFile(
-    String filePath, {
-    String path,
-    bool isImageFile = true,
-  });
+      String filePath, {
+        String path,
+        bool isImageFile = true,
+      });
 
   /// close all streams, if any
   void dispose();

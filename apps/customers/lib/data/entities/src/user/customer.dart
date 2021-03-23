@@ -55,7 +55,7 @@ class Customer extends BaseUser {
   });
 
   @override
-  get model => this;
+  Customer get model => this;
 
   @override
   Map<String, dynamic> toJson() => _$CustomerToJson(this);
@@ -72,11 +72,11 @@ class Customer extends BaseUser {
     String phone,
   }) =>
       Customer(
-        id: this.id,
+        id: id,
         name: name ?? this.name,
         email: email ?? this.email,
         avatar: avatar ?? this.avatar,
-        createdAt: this.createdAt,
+        createdAt: createdAt,
         token: token ?? this.token,
         phone: phone ?? this.phone,
       );

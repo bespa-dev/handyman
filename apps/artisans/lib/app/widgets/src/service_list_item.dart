@@ -250,6 +250,7 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
   @override
   Widget build(BuildContext context) {
     final kTheme = Theme.of(context);
+    logger.i('service info -> $_currentService');
 
     return _currentService == null
         ? SizedBox.shrink()
@@ -268,37 +269,11 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
               ),
               child: ListTile(
                 onLongPress: () => widget.onLongTap(_currentService),
-                onTap: widget.onTap ??
-                    () async {
-                      final data = await showCustomDialog(
-                        context: context,
-                        builder: (_) => ReplyMessageDialog(
-                          title: 'Set price for service',
-                          controller: _controller,
-                          hintText: 'e.g. 99.99',
-                        ),
-                      );
-                      if (data != null && _userId != null) {
-                        _currentService = _currentService.copyWith(
-                          price: double.tryParse(data),
-                          artisanId: _userId,
-                        );
-                        setState(() {});
-                        _controller.clear();
-
-                        _updateServiceBloc.add(
-                          ArtisanServiceEvent.updateArtisanService(
-                            id: _userId,
-                            service: _currentService,
-                          ),
-                        );
-
-                        _serviceBloc.add(ArtisanServiceEvent.getServiceById(
-                            id: _currentService.id));
-                      }
-                    },
+                onTap: () => widget.onTap() ?? _currentService.hasIssues
+                    ? _showIssuesDialog
+                    : _performDefaultClickAction,
                 title: Text(
-                  _currentService?.name ?? '...',
+                  _currentService.name ?? '...',
                   style: TextStyle(
                     color: widget.selected
                         ? widget.selectedColor ?? kTheme.colorScheme.secondary
@@ -360,5 +335,88 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
               ),
             ),
           );
+  }
+
+  void _showIssuesDialog() async {
+    await showCustomDialog(
+      context: context,
+      builder: (_) => MenuItemPickerDialog(
+        title: 'Select an issue',
+        onComplete: (issue) => _showPriceSetupDialog(issue.key.value),
+        items: [
+          ..._currentService.issues.map(
+            (e) => PickerMenuItem(
+                title: e.name, icon: kCategoryIcon, key: ValueKey(e)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _performDefaultClickAction() async {
+    final data = await showCustomDialog(
+      context: context,
+      builder: (_) => ReplyMessageDialog(
+        title: 'Set price for service',
+        controller: _controller,
+        hintText: 'e.g. 99.99',
+      ),
+    );
+    if (data != null && _userId != null) {
+      _currentService = _currentService.copyWith(
+        price: double.tryParse(data),
+        artisanId: _userId,
+      );
+      setState(() {});
+      _controller.clear();
+
+      _updateServiceBloc.add(
+        ArtisanServiceEvent.updateArtisanService(
+          id: _userId,
+          service: _currentService,
+        ),
+      );
+
+      _serviceBloc
+          .add(ArtisanServiceEvent.getServiceById(id: _currentService.id));
+    }
+  }
+
+  void _showPriceSetupDialog(BaseServiceIssue issue) async {
+    final data = await showCustomDialog(
+      context: context,
+      builder: (_) => ReplyMessageDialog(
+        title: 'Set base price',
+        controller: _controller,
+        hintText: 'e.g. 99.99',
+      ),
+    );
+    if (data != null && _userId != null) {
+      /// update issues list
+      var updatedIssues = _currentService.issues;
+      var index = updatedIssues.indexOf(
+          updatedIssues.firstWhere((element) => element.name == issue.name));
+      updatedIssues
+        ..removeWhere((element) => element.name == issue.name)
+        ..insert(index, issue.copyWith(price: double.tryParse(data)));
+
+      /// update current service
+      _currentService = _currentService.copyWith(
+        artisanId: _userId,
+        issues: updatedIssues,
+      );
+      setState(() {});
+      _controller.clear();
+
+      _updateServiceBloc.add(
+        ArtisanServiceEvent.updateArtisanService(
+          id: _userId,
+          service: _currentService,
+        ),
+      );
+
+      _serviceBloc
+          .add(ArtisanServiceEvent.getServiceById(id: _currentService.id));
+    }
   }
 }

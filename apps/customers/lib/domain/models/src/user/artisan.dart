@@ -7,7 +7,7 @@
  * author: codelbas.quabynah@gmail.com
  */
 
-import 'package:lite/domain/models/models.dart' show BaseArtisanService, BaseUser;
+import 'package:lite/domain/models/models.dart' show BaseUser;
 
 /// base artisan class
 abstract class BaseArtisan extends BaseUser {

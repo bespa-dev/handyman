@@ -194,9 +194,8 @@ const kAccentLightColor = kSecondaryLightColor;
 const kBackgroundLightColor = Color(0xFFfafafa);
 // const kBackgroundLightColor = Color(0xFFf1f0f2);
 const kCardLightColor = Color(0xffF5F6FA);
-// const kCardLightColor = Color(0xFFFFFFFF);
 
-const kPrimaryColorDark = Color(0xFF222222);
+const kPrimaryColorDark = Color(0xFF232323);
 const kSecondaryDarkColor = Color(0xFF1875FB);
 const kErrorDarkColor = Color(0xffEC407A);
 const kAccentDarkColor = kWhiteColor;

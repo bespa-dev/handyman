@@ -61,18 +61,15 @@ class AuthRepositoryImpl extends BaseAuthRepository {
       _prefsRepo.userId = newUser.id;
       _onAuthStateChangedController
           .add(AuthState.authenticatedState(user: newUser));
-      _onMessageChangedController.add("New account created successfully");
+      _onMessageChangedController.add('New account created successfully');
       return newUser;
     } else {
       _prefsRepo.userId = user.id;
       await _userRepo.updateUser(
-        user: user.copyWith(
-          token: await _messaging.getToken(),
-        ),
-      );
+          user: user.copyWith(token: await _messaging.getToken()));
       _onAuthStateChangedController
           .add(AuthState.authenticatedState(user: user));
-      _onMessageChangedController.add("Signed in successfully");
+      _onMessageChangedController.add('Signed in successfully');
       return user;
     }
   }
@@ -85,7 +82,7 @@ class AuthRepositoryImpl extends BaseAuthRepository {
         !Validators.validatePassword(password)) {
       _onAuthStateChangedController
           .add(AuthState.authInvalidCredentialsState());
-      _onMessageChangedController.add("Invalid credentials");
+      _onMessageChangedController.add('Invalid credentials');
       return null;
     }
     try {
@@ -97,8 +94,8 @@ class AuthRepositoryImpl extends BaseAuthRepository {
           forcedUsername: username);
     } on Exception catch (ex) {
       _onAuthStateChangedController.add(
-          AuthState.authFailedState(message: "Unable to create new user\n$ex"));
-      _onMessageChangedController.add("Unable to create new user");
+          AuthState.authFailedState(message: 'Unable to create new user\n$ex'));
+      _onMessageChangedController.add('Unable to create new user');
       return null;
     }
   }
@@ -173,7 +170,7 @@ class AuthRepositoryImpl extends BaseAuthRepository {
       }
       var authentication = await account.authentication;
       var credential =
-      await _auth.signInWithCredential(GoogleAuthProvider.credential(
+          await _auth.signInWithCredential(GoogleAuthProvider.credential(
         idToken: authentication.idToken,
         accessToken: authentication.accessToken,
       ));
