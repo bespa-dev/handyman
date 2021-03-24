@@ -269,7 +269,10 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
               ),
               child: ListTile(
                 onLongPress: () => widget.onLongTap(_currentService),
-                onTap: () => widget.onTap() ?? _currentService.hasIssues
+                onTap: widget.onTap ??
+                        _currentService.hasIssues ||
+                            (_currentService.category ==
+                                '8ecf642d-429f-4b51-805b-0678a9af8e28')
                     ? _showIssuesDialog
                     : _performDefaultClickAction,
                 title: Text(

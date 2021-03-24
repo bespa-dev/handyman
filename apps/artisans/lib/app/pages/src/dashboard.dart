@@ -140,7 +140,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                             BorderRadius.circular(kSpacingX4),
                                         splashColor: kTheme.splashColor,
                                         onTap: () {
-                                          /// fixme -> add to v1.3.0
+                                          /// fixme -> add to v1.3.*
                                           /// todo -> nav to earnings page
                                         },
                                         child: Container(

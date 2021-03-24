@@ -51,8 +51,10 @@ class UserRepositoryImpl extends BaseUserRepository {
   @override
   Stream<List<BaseArtisan>> observeArtisans(
       {@required String category}) async* {
-    yield* local.observeArtisans(category: category);
-    remote.observeArtisans(category: category).listen((event) async {
+    // yield* local.observeArtisans(category: category);
+    // todo -> should rather listen from local cache
+    yield* remote.observeArtisans(category: category)
+      ..listen((event) async {
       for (var value in event) {
         if (value != null) await local.updateUser(value);
       }
