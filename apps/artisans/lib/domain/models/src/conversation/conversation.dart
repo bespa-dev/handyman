@@ -28,8 +28,8 @@ abstract class BaseConversation extends BaseModel {
 }
 
 extension ConversationFormatX on ConversationFormat {
-  String name() => this.toString().replaceAll("()", "").toLowerCase();
+  String name() => toString().replaceAll('()', '').toLowerCase();
 
   ConversationFormat fromName(String name) =>
-      name.contains(this.toString()) ? this : ConversationFormat.textFormat();
+      name.contains(toString()) ? this : ConversationFormat.textFormat();
 }

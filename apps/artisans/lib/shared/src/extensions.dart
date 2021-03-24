@@ -73,7 +73,7 @@ extension ItemX on Object {
 
 extension StringX on String {
   /// download and save image file locally
-  Future<String> _downloadAndSaveImage(String fileName) async {
+  Future<String> downloadAndSaveImage(String fileName) async {
     var directory = await getApplicationDocumentsDirectory();
     var filePath = '${directory.path}/$fileName';
     try {

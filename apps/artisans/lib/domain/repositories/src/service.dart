@@ -18,4 +18,6 @@ abstract class BaseArtisanServiceRepository extends BaseRepository {
 
   Future<void> updateArtisanService(
       {@required String id, @required BaseArtisanService artisanService});
+
+  Future<void> resetAllPrices();
 }

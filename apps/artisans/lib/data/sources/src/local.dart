@@ -202,17 +202,20 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
 
   /// region users
   @override
-  Future<void> updateUser(BaseUser user) async => user is BaseUser
-      ? customerStore.record(user.id).put(
+  Future<void> updateUser(BaseUser user) async {
+    logger.i('updating (${user.runtimeType}) -> $user');
+    return user is BaseArtisan
+      ? artisanStore.record(user.id).put(
             db,
             user.toJson(),
             merge: true,
           )
-      : artisanStore.record(user.id).put(
+      : customerStore.record(user.id).put(
             db,
             user.toJson(),
             merge: true,
           );
+  }
 
   @override
   Future<BaseUser> getCustomerById({@required String id}) async {
@@ -247,11 +250,11 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
       {@required String category}) async* {
     yield* artisanStore
         .query(
-      finder: Finder(
-          filter: Filter.equals('category', category) &
-          Filter.equals('approved', true),
-          sortOrders: [SortOrder('id')]),
-    )
+          finder: Finder(
+              filter: Filter.equals('category', category) &
+                  Filter.equals('approved', true),
+              sortOrders: [SortOrder('id')]),
+        )
         .onSnapshots(db)
         .transform(_artisanListTransformer);
   }
@@ -407,6 +410,30 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
 
     var list = await serviceStore.records(keys).get(db);
     return list.map((json) => ArtisanService.fromJson(json)).toList();
+  }
+
+  @override
+  Future<void> resetAllPrices() async {
+    await db.transaction((transaction) async {
+      /// get all services
+      var keys = await serviceStore.findKeys(db, finder: Finder(limit: 100));
+      var services = (await serviceStore.records(keys).get(db))
+          .map((e) => ArtisanService.fromJson(e))
+          .toList();
+
+      /// perform transaction
+      services.forEach((element) async {
+        var issues = <BaseServiceIssue>[];
+        element.issues?.forEach((element) {
+          issues.add(element.copyWith(price: 0.00));
+        });
+        await serviceStore.record(element.id).put(
+              db,
+              element.copyWith().toJson(),
+              merge: true,
+            );
+      });
+    });
   }
 
   /// endregion

@@ -6,7 +6,8 @@ import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
 
 class ArtisanServiceListItem extends StatefulWidget {
-  const ArtisanServiceListItem({Key key, @required this.service,@required this.category})
+  const ArtisanServiceListItem(
+      {Key key, @required this.service, @required this.category})
       : super(key: key);
 
   final String service;
@@ -183,11 +184,13 @@ class ArtisanServiceListTile extends StatefulWidget {
     this.unselectedColor,
     this.showTrailingIcon = true,
     this.showPrice = false,
+    this.categoryId,
   })  : assert(serviceId != null || service != null),
         super(key: key);
 
   final BaseArtisanService service;
   final String serviceId;
+  final String categoryId;
   final bool selected;
   final bool showPrice;
   final bool showTrailingIcon;
@@ -269,11 +272,16 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
                 borderRadius: BorderRadius.circular(kSpacingX4),
               ),
               child: ListTile(
-                onLongPress: () => widget.onLongTap(_currentService),
-                onTap: widget.onTap ??
-                        _currentService.hasIssues
-                    ? _showIssuesDialog
-                    : _performDefaultClickAction,
+                onLongPress: widget.onLongTap == null
+                    ? null
+                    : () => widget.onLongTap(_currentService),
+                onTap: widget.onTap != null
+                    ? () => widget.onTap()
+                    : (_currentService.hasIssues &&
+                            widget.categoryId != null &&
+                            widget.categoryId == _currentService.category)
+                        ? _showIssuesDialog
+                        : _performDefaultClickAction,
                 title: Text(
                   _currentService.name ?? '...',
                   style: TextStyle(
@@ -284,7 +292,9 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
                   ),
                 ),
                 subtitle: Text(
-                  _currentService.hasIssues
+                  (_currentService.hasIssues &&
+                          widget.categoryId != null &&
+                          widget.categoryId == _currentService.category)
                       ? '${_currentService.issues.length} fixable issues'
                       : widget.showPrice
                           ? formatCurrency(_currentService.price)

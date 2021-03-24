@@ -118,4 +118,6 @@ abstract class BaseLocalDatasource extends ChangeNotifier {
 
   Future<void> updateArtisanService(
       {@required String id, @required BaseArtisanService artisanService});
+
+  Future<void> resetAllPrices();
 }

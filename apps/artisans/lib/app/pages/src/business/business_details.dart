@@ -367,6 +367,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                           serviceId: id,
                           selected: false,
                           showPrice: true,
+                          categoryId: _currentUser.category,
                           onLongTap: (service) async => await showCustomDialog(
                             context: context,
                             builder: (_) => BasicDialog(
@@ -574,6 +575,7 @@ class _BusinessDetailsPageState extends State<BusinessDetailsPage> {
                           itemBuilder: (_, index) => ArtisanServiceListTile(
                             service: _servicesForCategory[index],
                             showTrailingIcon: false,
+                            categoryId: _currentUser.category,
                             selected: _selectedServices
                                 .contains(_servicesForCategory[index].id),
                             onTap: () {

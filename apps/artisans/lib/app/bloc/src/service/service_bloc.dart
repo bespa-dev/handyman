@@ -21,6 +21,7 @@ class ArtisanServiceBloc extends BaseBloc<ArtisanServiceEvent> {
       getServiceById: (e) => _mapEventToState(e),
       getAllArtisanServices: () => _mapEventToState(event),
       getArtisanServicesByCategory: (e) => _mapEventToState(e),
+      resetAllPrices: () => _mapEventToState(event),
     );
   }
 
@@ -67,6 +68,13 @@ class ArtisanServiceBloc extends BaseBloc<ArtisanServiceEvent> {
         yield BlocState.successState();
       } else {
         yield BlocState.errorState(failure: 'Failed to update service');
+      }
+    } else if (event is ResetAllPrices) {
+      var result = await ResetAllServicePricesUseCase(_repo).execute(null);
+      if (result is UseCaseResultSuccess) {
+        yield BlocState.successState();
+      } else {
+        yield BlocState.errorState(failure: 'Failed to reset prices');
       }
     }
   }

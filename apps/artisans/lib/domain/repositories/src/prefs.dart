@@ -26,5 +26,6 @@ abstract class BasePreferenceRepository extends ChangeNotifier with Exposable {
 
   Future<void> signOut();
 
+  @override
   void dispose();
 }

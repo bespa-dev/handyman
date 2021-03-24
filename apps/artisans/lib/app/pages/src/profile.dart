@@ -64,6 +64,19 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
 
     if (mounted) {
+      /// observe all categories
+      _categoryBloc
+        ..add(CategoryEvent.observeAllCategories(
+            group: ServiceCategoryGroup.featured()))
+        ..listen((state) {
+          if (state is SuccessState<Stream<List<BaseServiceCategory>>>) {
+            state.data.listen((event) {
+              _categories = event;
+              if (mounted) setState(() {});
+            });
+          }
+        });
+
       /// observe current user info
       _userBloc
         ..add(UserEvent.currentUserEvent())
@@ -72,31 +85,12 @@ class _ProfilePageState extends State<ProfilePage> {
             state.data.listen((user) {
               _currentUser = user;
               if (mounted) setState(() {});
-
-              if (_currentUser?.category != null) {
-                _categoryBloc.add(
-                  CategoryEvent.observeAllCategories(
-                      group: ServiceCategoryGroup.featured()),
-                );
-                _serviceBloc.add(ArtisanServiceEvent.getArtisanServices(
-                    id: _currentUser.id));
-              }
             });
           } else if (state is SuccessState<void>) {
             _avatarFile = null;
             if (mounted) setState(() {});
           }
         });
-
-      /// get category of artisan
-      _categoryBloc.listen((state) {
-        if (state is SuccessState<Stream<List<BaseServiceCategory>>>) {
-          state.data.listen((event) {
-            _categories = event;
-            if (mounted) setState(() {});
-          });
-        }
-      });
 
       /// observe upload state
       _storageBloc.listen((state) {
@@ -558,15 +552,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 category: (item.key.value as BaseServiceCategory).id,
                 categoryGroup: item.title,
                 categoryParent: (item.key.value as BaseServiceCategory).parent,
-                services: _currentUser.services ?? <String>[],
+                services: <String>[],
               );
               setState(() {});
 
               _updateUserBloc
                   .add(UserEvent.updateUserEvent(user: _currentUser));
-              _serviceBloc.add(
-                ArtisanServiceEvent.getArtisanServices(id: _currentUser.id),
-              );
+              _serviceBloc.add(ArtisanServiceEvent.resetAllPrices());
             }
           },
           items: _categories.isNotEmpty

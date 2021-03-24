@@ -56,4 +56,7 @@ class ArtisanServiceRepositoryImpl extends BaseArtisanServiceRepository {
   Future<List<BaseArtisanService>> getArtisanServicesByCategory(
           {@required String categoryId}) async =>
       await local.getArtisanServicesByCategory(categoryId: categoryId);
+
+  @override
+  Future<void> resetAllPrices() async => await local.resetAllPrices();
 }

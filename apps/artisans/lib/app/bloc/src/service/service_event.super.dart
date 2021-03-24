@@ -27,6 +27,8 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
   factory ArtisanServiceEvent.getArtisanServicesByCategory(
       {@required String categoryId}) = GetArtisanServicesByCategory<T>.create;
 
+  factory ArtisanServiceEvent.resetAllPrices() = ResetAllPrices<T>.create;
+
   final _ArtisanServiceEvent _type;
 
   /// The [when] method is the equivalent to pattern matching.
@@ -42,13 +44,16 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
           R Function() getAllArtisanServices,
       @required
           R Function(GetArtisanServicesByCategory<T>)
-              getArtisanServicesByCategory}) {
+              getArtisanServicesByCategory,
+      @required
+          R Function() resetAllPrices}) {
     assert(() {
       if (getArtisanServices == null ||
           getServiceById == null ||
           updateArtisanService == null ||
           getAllArtisanServices == null ||
-          getArtisanServicesByCategory == null) {
+          getArtisanServicesByCategory == null ||
+          resetAllPrices == null) {
         throw 'check for all possible cases';
       }
       return true;
@@ -65,6 +70,8 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
       case _ArtisanServiceEvent.GetArtisanServicesByCategory:
         return getArtisanServicesByCategory(
             this as GetArtisanServicesByCategory);
+      case _ArtisanServiceEvent.ResetAllPrices:
+        return resetAllPrices();
     }
   }
 
@@ -79,6 +86,7 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
       R Function(UpdateArtisanService<T>) updateArtisanService,
       R Function() getAllArtisanServices,
       R Function(GetArtisanServicesByCategory<T>) getArtisanServicesByCategory,
+      R Function() resetAllPrices,
       @required R Function(ArtisanServiceEvent<T>) orElse}) {
     assert(() {
       if (orElse == null) {
@@ -103,6 +111,9 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
         if (getArtisanServicesByCategory == null) break;
         return getArtisanServicesByCategory(
             this as GetArtisanServicesByCategory);
+      case _ArtisanServiceEvent.ResetAllPrices:
+        if (resetAllPrices == null) break;
+        return resetAllPrices();
     }
     return orElse(this);
   }
@@ -115,13 +126,15 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
       void Function(UpdateArtisanService<T>) updateArtisanService,
       void Function() getAllArtisanServices,
       void Function(GetArtisanServicesByCategory<T>)
-          getArtisanServicesByCategory}) {
+          getArtisanServicesByCategory,
+      void Function() resetAllPrices}) {
     assert(() {
       if (getArtisanServices == null &&
           getServiceById == null &&
           updateArtisanService == null &&
           getAllArtisanServices == null &&
-          getArtisanServicesByCategory == null) {
+          getArtisanServicesByCategory == null &&
+          resetAllPrices == null) {
         throw 'provide at least one branch';
       }
       return true;
@@ -143,6 +156,9 @@ abstract class ArtisanServiceEvent<T> extends Equatable {
         if (getArtisanServicesByCategory == null) break;
         return getArtisanServicesByCategory(
             this as GetArtisanServicesByCategory);
+      case _ArtisanServiceEvent.ResetAllPrices:
+        if (resetAllPrices == null) break;
+        return resetAllPrices();
     }
   }
 
@@ -310,4 +326,19 @@ class _GetArtisanServicesByCategoryImpl<T>
       'GetArtisanServicesByCategory(categoryId: ${this.categoryId})';
   @override
   List<Object> get props => [categoryId];
+}
+
+@immutable
+abstract class ResetAllPrices<T> extends ArtisanServiceEvent<T> {
+  const ResetAllPrices() : super(_ArtisanServiceEvent.ResetAllPrices);
+
+  factory ResetAllPrices.create() = _ResetAllPricesImpl<T>;
+}
+
+@immutable
+class _ResetAllPricesImpl<T> extends ResetAllPrices<T> {
+  const _ResetAllPricesImpl() : super();
+
+  @override
+  String toString() => 'ResetAllPrices()';
 }

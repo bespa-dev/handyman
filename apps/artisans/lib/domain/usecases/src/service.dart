@@ -31,7 +31,8 @@ class GetArtisanServicesByCategoryUseCase
   @override
   Future<UseCaseResult<List<BaseArtisanService>>> execute(categoryId) async {
     try {
-      var results = await _repo.getArtisanServicesByCategory(categoryId: categoryId);
+      var results =
+          await _repo.getArtisanServicesByCategory(categoryId: categoryId);
       return UseCaseResult<List<BaseArtisanService>>.success(results);
     } on Exception {
       return UseCaseResult.error();
@@ -99,4 +100,16 @@ class UpdateArtisanServiceUseCaseParams {
 
   final String id;
   final BaseArtisanService service;
+}
+
+class ResetAllServicePricesUseCase extends VoidableUseCase {
+  ResetAllServicePricesUseCase(this._repo);
+
+  final BaseArtisanServiceRepository _repo;
+
+  @override
+  Future<UseCaseResult<void>> execute(_) async {
+    await _repo.resetAllPrices();
+    return UseCaseResult<void>.success();
+  }
 }

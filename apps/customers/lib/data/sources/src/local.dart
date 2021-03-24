@@ -195,19 +195,17 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
   @override
   Future<void> updateUser(BaseUser user) async {
     logger.i('updating (${user.runtimeType}) -> $user');
-    if (user is BaseArtisan) {
-      await artisanStore.record(user.id).put(
-            db,
-            user.toJson(),
-            merge: true,
-          );
-    } else {
-      await customerStore.record(user.id).put(
-            db,
-            user.toJson(),
-            merge: true,
-          );
-    }
+    return user is BaseArtisan
+        ? artisanStore.record(user.id).put(
+              db,
+              user.toJson(),
+              merge: true,
+            )
+        : customerStore.record(user.id).put(
+              db,
+              user.toJson(),
+              merge: true,
+            );
   }
 
   @override

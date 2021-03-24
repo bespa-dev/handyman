@@ -18,4 +18,6 @@ enum _ArtisanServiceEvent {
   GetAllArtisanServices,
   @Data(fields: [DataField<String>('categoryId')])
   GetArtisanServicesByCategory,
+  @object
+  ResetAllPrices,
 }
