@@ -6,10 +6,11 @@ import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
 
 class ArtisanServiceListItem extends StatefulWidget {
-  const ArtisanServiceListItem({Key key, @required this.service})
+  const ArtisanServiceListItem({Key key, @required this.service,@required this.category})
       : super(key: key);
 
   final String service;
+  final String category;
 
   @override
   _ArtisanServiceListItemState createState() => _ArtisanServiceListItemState();
@@ -270,9 +271,7 @@ class _ArtisanServiceListTileState extends State<ArtisanServiceListTile> {
               child: ListTile(
                 onLongPress: () => widget.onLongTap(_currentService),
                 onTap: widget.onTap ??
-                        _currentService.hasIssues ||
-                            (_currentService.category ==
-                                '8ecf642d-429f-4b51-805b-0678a9af8e28')
+                        _currentService.hasIssues
                     ? _showIssuesDialog
                     : _performDefaultClickAction,
                 title: Text(

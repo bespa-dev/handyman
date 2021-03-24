@@ -81,8 +81,8 @@ abstract class BaseLocalDatasource extends ChangeNotifier {
   /// Send [BaseConversation]
   Future<void> sendMessage({@required BaseConversation conversation});
 
-  /// Update [BaseArtisan] profile information
-  Future<void> updateUser(BaseArtisan user);
+  /// Update [BaseUser] profile information
+  Future<void> updateUser(BaseUser user);
 
   /// Get [BaseBooking] by [id]
   Stream<BaseBooking> getBookingById({@required String id});

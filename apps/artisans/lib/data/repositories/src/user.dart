@@ -15,7 +15,6 @@ import 'package:handyman/shared/shared.dart';
 import 'package:meta/meta.dart';
 
 class UserRepositoryImpl extends BaseUserRepository {
-
   const UserRepositoryImpl({
     @required BaseLocalDatasource local,
     @required BaseRemoteDatasource remote,
@@ -23,11 +22,10 @@ class UserRepositoryImpl extends BaseUserRepository {
 
   @override
   Stream<BaseArtisan> currentUser() async* {
-    yield* local.currentUser();
     remote.currentUser().listen((event) async {
-      logger.d('Updating user -> $event');
       if (event != null) await local.updateUser(event);
     });
+    yield* local.currentUser();
   }
 
   @override
@@ -44,29 +42,29 @@ class UserRepositoryImpl extends BaseUserRepository {
 
   @override
   Stream<BaseArtisan> observeArtisanById({@required String id}) async* {
-    yield* local.observeArtisanById(id: id);
     remote.observeArtisanById(id: id).listen((event) async {
       if (event != null) await local.updateUser(event);
     });
+    yield* local.observeArtisanById(id: id);
   }
 
   @override
   Stream<List<BaseArtisan>> observeArtisans(
       {@required String category}) async* {
-    yield* local.observeArtisans(category: category);
     remote.observeArtisans(category: category).listen((event) async {
       for (var value in event) {
         if (value != null) await local.updateUser(value);
       }
     });
+    yield* local.observeArtisans(category: category);
   }
 
   @override
   Stream<BaseUser> observeCustomerById({@required String id}) async* {
-    yield* local.observeCustomerById(id: id);
     remote.observeCustomerById(id: id).listen((event) async {
       if (event != null) await local.updateUser(event);
     });
+    yield* local.observeCustomerById(id: id);
   }
 
   @override

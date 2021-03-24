@@ -202,8 +202,13 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
 
   /// region users
   @override
-  Future<void> updateUser(BaseArtisan user) async =>
-      artisanStore.record(user.id).put(
+  Future<void> updateUser(BaseUser user) async => user is BaseUser
+      ? customerStore.record(user.id).put(
+            db,
+            user.toJson(),
+            merge: true,
+          )
+      : artisanStore.record(user.id).put(
             db,
             user.toJson(),
             merge: true,
@@ -218,9 +223,9 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
   @override
   Stream<BaseArtisan> currentUser() async* {
     yield* artisanStore
-        .record(prefsRepo.userId)
+        .query(finder: Finder(filter: Filter.byKey(prefsRepo.userId)))
         .onSnapshot(db)
-        .map((event) => Artisan.fromJson(event.value));
+        .transform(_artisanTransformer);
   }
 
   @override
@@ -232,29 +237,31 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
   @override
   Stream<BaseArtisan> observeArtisanById({@required String id}) async* {
     yield* artisanStore
-        .record(id)
+        .query(finder: Finder(filter: Filter.byKey(id)))
         .onSnapshot(db)
-        .map((event) => Artisan.fromJson(event.value));
+        .transform(_artisanTransformer);
   }
 
   @override
-  Stream<List<BaseArtisan>> observeArtisans({String category}) async* {
-    var keys = await artisanStore.findKeys(
-      db,
+  Stream<List<BaseArtisan>> observeArtisans(
+      {@required String category}) async* {
+    yield* artisanStore
+        .query(
       finder: Finder(
-        filter: Filter.matches('category', category),
-      ),
-    );
-    var list = await artisanStore.records(keys).get(db);
-    yield list.map((json) => Artisan.fromJson(json)).toList();
+          filter: Filter.equals('category', category) &
+          Filter.equals('approved', true),
+          sortOrders: [SortOrder('id')]),
+    )
+        .onSnapshots(db)
+        .transform(_artisanListTransformer);
   }
 
   @override
   Stream<BaseUser> observeCustomerById({@required String id}) async* {
     yield* customerStore
-        .record(id)
+        .query(finder: Finder(filter: Filter.byKey(id)))
         .onSnapshot(db)
-        .map((event) => Customer.fromJson(event.value));
+        .transform(_customerTransformer);
   }
 
   @override
@@ -552,6 +559,39 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
             booking.toJson(),
             merge: true,
           );
+
+  /// endregion
+
+  /// region transformers
+  final _artisanListTransformer = StreamTransformer<
+      List<RecordSnapshot<String, Map<String, Object>>>,
+      List<BaseArtisan>>.fromHandlers(handleData: (snapshotList, sink) {
+    sink.add(snapshotList.map((e) => Artisan.fromJson(e.value)).toList());
+  });
+
+  final _artisanTransformer = StreamTransformer<
+      RecordSnapshot<String, Map<String, Object>>,
+      BaseArtisan>.fromHandlers(handleData: (snapshot, sink) {
+    sink.add(snapshot == null ? null : Artisan.fromJson(snapshot.value));
+  });
+
+  final _customerListTransformer = StreamTransformer<
+      List<RecordSnapshot<String, Map<String, Object>>>,
+      List<BaseUser>>.fromHandlers(handleData: (snapshotList, sink) {
+    sink.add(snapshotList.map((e) => Customer.fromJson(e.value)).toList());
+  });
+
+  final _customerTransformer = StreamTransformer<
+      RecordSnapshot<String, Map<String, Object>>,
+      BaseUser>.fromHandlers(handleData: (snapshot, sink) {
+    sink.add(snapshot == null ? null : Customer.fromJson(snapshot.value));
+  });
+
+  final _conversationsListTransformer = StreamTransformer<
+      List<RecordSnapshot<String, Map<String, Object>>>,
+      List<BaseConversation>>.fromHandlers(handleData: (snapshotList, sink) {
+    sink.add(snapshotList.map((e) => Conversation.fromJson(e.value)).toList());
+  });
 
   /// endregion
 

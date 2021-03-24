@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lite/app/bloc/bloc.dart';
 import 'package:lite/app/widgets/src/artisan_card.dart';
 import 'package:lite/app/widgets/widgets.dart';
@@ -20,6 +19,8 @@ class CategoryDetailsPage extends StatefulWidget {
 class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
   final _userBloc = UserBloc(repo: Injection.get());
   ThemeData kTheme;
+  List<BaseArtisan> _artisans = [];
+  bool _loading = true;
 
   @override
   void dispose() {
@@ -28,46 +29,52 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    if (mounted) {
+      _userBloc
+        ..add(UserEvent.observeArtisansEvent(category: widget.category.id))
+        ..listen((state) {
+          _loading = true;
+          if (mounted) setState(() {});
+
+          if (state is SuccessState<Stream<List<BaseArtisan>>>) {
+            state.data.listen((event) {
+              _artisans = event;
+              _loading = false;
+              if (mounted) setState(() {});
+            });
+          }
+        });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     kTheme = Theme.of(context);
-    return BlocBuilder<UserBloc, BlocState>(
-      cubit: _userBloc
-        ..add(
-          UserEvent.observeArtisansEvent(category: widget.category.id),
-        ),
-      builder: (_, state) => Scaffold(
-        body: state is SuccessState<Stream<List<BaseArtisan>>>
-            ? Stack(
-                children: [
-                  Positioned.fill(
-                    child: StreamBuilder<List<BaseArtisan>>(
-                        stream: state.data,
-                        initialData: [],
-                        builder: (_, snapshot) {
-                          final artisans = snapshot.data;
-                          logger.i(artisans);
-                          return snapshot.connectionState ==
-                                  ConnectionState.waiting
-                              ? Loading()
-                              : (snapshot.hasError || artisans.isEmpty)
-                                  ? _buildEmptyState()
-                                  : _buildArtisansUI(snapshot.data);
-                        }),
-                  ),
+    return Scaffold(
+      body: _loading
+          ? Loading()
+          : Stack(
+              children: [
+                Positioned.fill(
+                  child: _artisans.isEmpty
+                      ? _buildEmptyState()
+                      : _buildArtisansUI(),
+                ),
 
-                  /// back button
-                  Positioned(
-                    top: kSpacingX36,
-                    left: kSpacingX16,
-                    child: IconButton(
-                      icon: Icon(kBackIcon),
-                      onPressed: () => context.navigator.pop(),
-                    ),
+                /// back button
+                Positioned(
+                  top: kSpacingX36,
+                  left: kSpacingX16,
+                  child: IconButton(
+                    icon: Icon(kBackIcon),
+                    onPressed: () => context.navigator.pop(),
                   ),
-                ],
-              )
-            : Loading(),
-      ),
+                ),
+              ],
+            ),
     );
   }
 
@@ -81,7 +88,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
         ),
       );
 
-  Widget _buildArtisansUI(List<BaseArtisan> data) => SafeArea(
+  Widget _buildArtisansUI() => SafeArea(
         child: Container(
           width: SizeConfig.screenWidth,
           height: SizeConfig.screenHeight,
@@ -108,10 +115,10 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                   clipBehavior: Clip.hardEdge,
                   cacheExtent: 200,
                   itemBuilder: (_, index) {
-                    final artisan = data[index];
+                    final artisan = _artisans[index];
                     return GridArtisanCardItem(artisan: artisan);
                   },
-                  itemCount: data.length,
+                  itemCount: _artisans.length,
                   scrollDirection: Axis.vertical,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2),

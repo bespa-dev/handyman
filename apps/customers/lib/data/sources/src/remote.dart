@@ -139,11 +139,13 @@ class FirebaseRemoteDatasource implements BaseRemoteDatasource {
         .collection(RefUtils.kArtisanRef)
         .where('category', isEqualTo: category)
         .where('id', isNotEqualTo: prefsRepo.userId)
+        // disabling this will result in fetching snapshots when any changes
+        // are made to the artisans collection. the check for approved will be
+        // done locally
+        // .where('approved', isEqualTo: true)
         .snapshots()
-        .map((event) => event.docs.map((e) {
-              logger.d(e.data());
-              return Artisan.fromJson(e.data());
-            }).toList());
+        .map((event) =>
+            event.docs.map((e) => Artisan.fromJson(e.data())).toList());
   }
 
   /// endregion
