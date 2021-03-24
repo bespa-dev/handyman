@@ -13,6 +13,7 @@ class ImagePreviewPage extends StatelessWidget {
     final kTheme = Theme.of(context);
 
     return Scaffold(
+      backgroundColor: kBlackColor,
       body: Stack(
         children: [
           Positioned.fill(
@@ -27,12 +28,14 @@ class ImagePreviewPage extends StatelessWidget {
 
           /// back button
           Positioned(
-            top: kSpacingX36,
+            top: kSpacingNone,
             left: kSpacingX16,
-            child: IconButton(
-              icon: Icon(kBackIcon),
-              color: kTheme.colorScheme.onPrimary,
-              onPressed: () => context.navigator.pop(),
+            child: SafeArea(
+              child: IconButton(
+                icon: Icon(kBackIcon),
+                color: kWhiteColor,
+                onPressed: () => context.navigator.pop(),
+              ),
             ),
           ),
         ],

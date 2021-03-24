@@ -200,19 +200,25 @@ class _RequestPageState extends State<RequestPage> {
       }
 
       if (widget.artisan.services == null || widget.artisan.services.isEmpty) {
-        _categoryBloc
-          ..add(CategoryEvent.observeCategoryById(id: widget.artisan.category))
-          ..listen((state) {
-            if (state is SuccessState<Stream<BaseServiceCategory>>) {
-              state.data.listen((event) {
-                _issues = event.issues ?? [];
-                if (mounted) setState(() {});
-                logger.d('${event.name} issues -> $_issues}');
-                _serviceBloc.add(ArtisanServiceEvent.getCategoryServices(
-                    categoryId: event.hasParent ? event.parent : event.id));
-              });
-            }
-          });
+        // _categoryBloc
+        //   ..add(CategoryEvent.observeCategoryById(id: widget.artisan.category))
+        //   ..listen((state) {
+        //     if (state is SuccessState<Stream<BaseServiceCategory>>) {
+        //       state.data.listen((event) {
+        //         _issues = event.issues ?? [];
+        //         if (mounted) setState(() {});
+        //         logger.d('${event.name} issues -> $_issues}');
+        //         _serviceBloc.add(ArtisanServiceEvent.getCategoryServices(
+        //             categoryId: event.hasParent ? event.parent : event.id));
+        //       });
+        //     }
+        //   });
+        Future.delayed(kSheetDuration)
+            .then((value) => _pageController.animateToPage(
+          ++_currentPage,
+          duration: kSheetDuration,
+          curve: Curves.fastLinearToSlowEaseIn,
+        ));
       } else {
         _serviceBloc
             .add(ArtisanServiceEvent.getArtisanServices(id: widget.artisan.id));
@@ -225,6 +231,7 @@ class _RequestPageState extends State<RequestPage> {
           if (state is SuccessState<String> && state.data != null) {
             _userId = state.data;
             if (mounted) setState(() {});
+
           }
         });
 
@@ -239,9 +246,7 @@ class _RequestPageState extends State<RequestPage> {
           BusinessEvent.getBusinessesForArtisan(artisanId: widget.artisan.id));
 
       /// get services for category
-      _serviceBloc
-        ..add(ArtisanServiceEvent.getArtisanServices(id: widget.artisan.id))
-        ..listen((state) {
+      _serviceBloc.listen((state) {
           if (state is SuccessState<List<BaseArtisanService>>) {
             _services = state.data;
             if (mounted) setState(() {});

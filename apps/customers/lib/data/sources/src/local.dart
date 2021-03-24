@@ -356,7 +356,7 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
       {@required String id,
       @required BaseArtisanService artisanService}) async {
     if (artisanService == null) return;
-    logger.d('updating -> $artisanService');
+    logger.i('updating -> $artisanService');
     return serviceStore.record(artisanService.id).put(
           db,
           artisanService.toJson(),
