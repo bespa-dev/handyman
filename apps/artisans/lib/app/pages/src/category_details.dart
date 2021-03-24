@@ -1,16 +1,17 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:handyman/app/bloc/bloc.dart';
 import 'package:handyman/app/widgets/widgets.dart';
 import 'package:handyman/domain/models/models.dart';
 import 'package:handyman/shared/shared.dart';
-import 'package:auto_route/auto_route.dart';
 
 class CategoryDetailsPage extends StatefulWidget {
   const CategoryDetailsPage({Key key, @required this.category})
       : super(key: key);
 
   final BaseServiceCategory category;
+
   @override
   _CategoryDetailsPageState createState() => _CategoryDetailsPageState();
 }
@@ -31,9 +32,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
 
     if (mounted) {
       _userBloc.add(
-        UserEvent.observeArtisansEvent(
-          category: widget.category.groupName,
-        ),
+        UserEvent.observeArtisansEvent(category: widget.category.id),
       );
     }
   }

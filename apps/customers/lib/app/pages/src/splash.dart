@@ -86,10 +86,12 @@ class _SplashPageState extends State<SplashPage>
                 }
               } else if (event is AuthenticatedState) {
                 _isLoading = false;
-                if (mounted) setState(() {});
-                context.navigator
-                  ..popUntilRoot()
-                  ..pushHomePage();
+                if (mounted) {
+                  setState(() {});
+                  context.navigator
+                    ..popUntilRoot()
+                    ..pushHomePage();
+                }
               }
             });
           } else if (state is SuccessState<Stream<String>>) {

@@ -42,16 +42,16 @@ ThemeData themeData(BuildContext context) => ThemeData(
           fontFamily: _kBodyFontFamily,
         ),
         hintStyle: TextStyle(
-          color: kPrimaryColor,
+          color: kBlackColor,
           fontFamily: _kBodyFontFamily,
           fontWeight: FontWeight.normal,
         ),
         suffixStyle: TextStyle(
-          color: kPrimaryColor,
+          color: kBlackColor,
           fontFamily: _kBodyFontFamily,
           fontWeight: FontWeight.normal,
         ),
-        // fillColor: kCardLightColor,
+        fillColor: kCardLightColor,
         filled: true,
       ),
       tabBarTheme: TabBarTheme(
