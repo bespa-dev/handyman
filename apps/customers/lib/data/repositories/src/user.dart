@@ -36,8 +36,8 @@ class UserRepositoryImpl extends BaseUserRepository {
 
   @override
   Future<BaseUser> getCustomerById({@required String id}) async {
-    var customer = await local.getCustomerById(id: id);
-    return customer ??= await remote.getCustomerById(id: id);
+    var customer = await remote.getCustomerById(id: id);
+    return customer ??= await local.getCustomerById(id: id);
   }
 
   @override

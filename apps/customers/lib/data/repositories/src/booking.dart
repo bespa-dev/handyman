@@ -23,7 +23,6 @@ class BookingRepositoryImpl extends BaseBookingRepository {
   @override
   Stream<List<BaseBooking>> bookingsForCustomerAndArtisan(
       {@required String customerId, @required String artisanId}) async* {
-    yield* local.bookingsForCustomerAndArtisan(customerId, artisanId);
     remote
         .bookingsForCustomerAndArtisan(customerId, artisanId)
         .listen((event) async {
@@ -31,6 +30,7 @@ class BookingRepositoryImpl extends BaseBookingRepository {
         if (value != null) await local.updateBooking(booking: value);
       }
     });
+    yield* local.bookingsForCustomerAndArtisan(customerId, artisanId);
   }
 
   @override
@@ -41,16 +41,15 @@ class BookingRepositoryImpl extends BaseBookingRepository {
 
   @override
   Stream<BaseBooking> getBookingById({String id}) async* {
-    yield* local.getBookingById(id: id);
     remote.getBookingById(id: id).listen((event) async {
       if (event != null) await local.updateBooking(booking: event);
     });
+    yield* local.getBookingById(id: id);
   }
 
   @override
   Stream<List<BaseBooking>> getBookingsByDueDate(
       {String dueDate, String artisanId}) async* {
-    yield* local.getBookingsByDueDate(dueDate: dueDate, artisanId: artisanId);
     remote
         .getBookingsByDueDate(dueDate: dueDate, artisanId: artisanId)
         .listen((event) async {
@@ -58,6 +57,7 @@ class BookingRepositoryImpl extends BaseBookingRepository {
         if (value != null) await local.updateBooking(booking: value);
       }
     });
+    yield* local.getBookingsByDueDate(dueDate: dueDate, artisanId: artisanId);
   }
 
   @override
@@ -104,21 +104,21 @@ class BookingRepositoryImpl extends BaseBookingRepository {
 
   @override
   Stream<List<BaseBooking>> observeBookingsForArtisan(String id) async* {
-    yield* local.observeBookingsForArtisan(id);
     remote.observeBookingsForArtisan(id).listen((event) async {
       for (var value in event) {
         if (value != null) await local.updateBooking(booking: value);
       }
     });
+    yield* local.observeBookingsForArtisan(id);
   }
 
   @override
   Stream<List<BaseBooking>> observeBookingsForCustomer(String id) async* {
-    yield* local.observeBookingsForCustomer(id);
     remote.observeBookingsForCustomer(id).listen((event) async {
       for (var value in event) {
         if (value != null) await local.updateBooking(booking: value);
       }
     });
+    yield* local.observeBookingsForCustomer(id);
   }
 }

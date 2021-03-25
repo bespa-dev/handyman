@@ -12,7 +12,6 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -99,7 +98,7 @@ class _HandyManAppState extends State<HandyManApp> {
         debugShowCheckedModeBanner: false,
         theme: themeData(context),
         darkTheme: darkThemeData(context),
-        themeMode: kReleaseMode ? ThemeMode.system : ThemeMode.light,
+        themeMode: ThemeMode.system,
         builder: ExtendedNavigator<gr.Router>(
           router: gr.Router(),
           guards: [],

@@ -260,25 +260,27 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   /// address
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Address'.toUpperCase(),
-                        style: kTheme.textTheme.headline6.copyWith(
-                          fontSize: kTheme.textTheme.bodyText2.fontSize,
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Address'.toUpperCase(),
+                          style: kTheme.textTheme.headline6.copyWith(
+                            fontSize: kTheme.textTheme.bodyText2.fontSize,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: kSpacingX4),
-                      Text(
-                        booking.position.name,
-                        style: kTheme.textTheme.bodyText1.copyWith(
-                          color: kTheme.textTheme.bodyText1.color
-                              .withOpacity(kEmphasisLow),
+                        SizedBox(height: kSpacingX4),
+                        Text(
+                          booking.position.name,
+                          style: kTheme.textTheme.bodyText1.copyWith(
+                            color: kTheme.textTheme.bodyText1.color
+                                .withOpacity(kEmphasisLow),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
 
                   GestureDetector(
@@ -376,7 +378,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                                 ? state.data
                                 : Stream.empty(),
                             builder: (_, snapshot) => Text(
-                              snapshot.hasData ? snapshot.data.name : '...',
+                              'Service for: ${service.name}',
                               style: kTheme.textTheme.bodyText1.copyWith(
                                 color: kTheme.textTheme.bodyText1.color
                                     .withOpacity(kEmphasisLow),

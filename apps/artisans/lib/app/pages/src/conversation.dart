@@ -126,12 +126,6 @@ class _ConversationPageState extends State<ConversationPage> {
                       extendBody: true,
                       appBar: AppBar(
                         titleSpacing: kSpacingNone,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(kSpacingX16),
-                            bottomRight: Radius.circular(kSpacingX16),
-                          ),
-                        ),
                         toolbarHeight: kSpacingX64,
                         automaticallyImplyLeading: false,
                         leading: IconButton(
@@ -225,13 +219,17 @@ class _ConversationPageState extends State<ConversationPage> {
         child: Container(
           height: SizeConfig.screenHeight * 0.07,
           alignment: Alignment.center,
-          color: kTheme.colorScheme.background,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(kSpacingX24),
+            color: kTheme.colorScheme.surface,
+          ),
+          clipBehavior: Clip.hardEdge,
           child: Container(
             height: SizeConfig.screenHeight * 0.06,
             width: SizeConfig.screenWidth,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(kSpacingX24),
-              color: kTheme.cardColor,
+              color: kTheme.colorScheme.surface,
             ),
             clipBehavior: Clip.hardEdge,
             margin: EdgeInsets.symmetric(horizontal: kSpacingX16),
@@ -245,11 +243,11 @@ class _ConversationPageState extends State<ConversationPage> {
                       border: InputBorder.none,
                       hintText: 'Type your message',
                       hintStyle: TextStyle(
-                        color: kTheme.colorScheme.onBackground
+                        color: kTheme.colorScheme.onSurface
                             .withOpacity(kEmphasisLow),
                       ),
                     ),
-                    cursorColor: kTheme.colorScheme.onBackground,
+                    cursorColor: kTheme.colorScheme.surface,
                     textCapitalization: TextCapitalization.sentences,
                     keyboardType: TextInputType.multiline,
                     textInputAction: TextInputAction.send,

@@ -226,7 +226,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
 
                                 /// bottom bar
                                 Positioned(
-                                  bottom: kSpacingX12,
+                                  bottom: kSpacingNone,
                                   left: kSpacingNone,
                                   right: kSpacingNone,
                                   height: kToolbarHeight,
@@ -255,25 +255,27 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   /// address
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Address'.toUpperCase(),
-                        style: kTheme.textTheme.headline6.copyWith(
-                          fontSize: kTheme.textTheme.bodyText2.fontSize,
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Address'.toUpperCase(),
+                          style: kTheme.textTheme.headline6.copyWith(
+                            fontSize: kTheme.textTheme.bodyText2.fontSize,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: kSpacingX4),
-                      Text(
-                        booking.position.name,
-                        style: kTheme.textTheme.bodyText1.copyWith(
-                          color: kTheme.textTheme.bodyText1.color
-                              .withOpacity(kEmphasisLow),
+                        SizedBox(height: kSpacingX4),
+                        Text(
+                          booking.position.name,
+                          style: kTheme.textTheme.bodyText1.copyWith(
+                            color: kTheme.textTheme.bodyText1.color
+                                .withOpacity(kEmphasisLow),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
 
                   GestureDetector(
@@ -339,50 +341,56 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
 
   Widget _buildUserCard(
           BaseUser user, BaseArtisanService service, BaseBooking booking) =>
-      Card(
-        child: Padding(
-          padding: const EdgeInsets.all(kSpacingX12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  UserAvatar(url: user.avatar, isCircular: true),
-                  SizedBox(width: kSpacingX8),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user.name ?? 'Anonymous',
-                        style: kTheme.textTheme.headline6.copyWith(
-                          fontSize: kTheme.textTheme.bodyText2.fontSize,
-                        ),
-                      ),
-                      if (service != null) ...{
-                        SizedBox(height: kSpacingX4),
+      GestureDetector(
+        onTap: () => context.navigator.pushConversationPage(
+          recipientId: user.id,
+          recipient: user,
+        ),
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(kSpacingX12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    UserAvatar(url: user.avatar, isCircular: true),
+                    SizedBox(width: kSpacingX8),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Text(
-                          'Due by: ${parseFromTimestamp(booking.dueDate)}',
-                          style: kTheme.textTheme.bodyText1.copyWith(
-                            color: kTheme.textTheme.bodyText1.color
-                                .withOpacity(kEmphasisLow),
+                          user.name ?? 'Anonymous',
+                          style: kTheme.textTheme.headline6.copyWith(
+                            fontSize: kTheme.textTheme.bodyText2.fontSize,
                           ),
                         ),
-                      }
-                    ],
-                  ),
-                ],
-              ),
-              Text(
-                formatCurrency(booking.cost),
-                style: kTheme.textTheme.button.copyWith(
-                  fontSize: kTheme.textTheme.headline5.fontSize,
-                  color:
-                      kTheme.colorScheme.secondary.withOpacity(kEmphasisHigh),
+                        if (service != null) ...{
+                          SizedBox(height: kSpacingX4),
+                          Text(
+                            'Due by: ${parseFromTimestamp(booking.dueDate)}',
+                            style: kTheme.textTheme.bodyText1.copyWith(
+                              color: kTheme.textTheme.bodyText1.color
+                                  .withOpacity(kEmphasisLow),
+                            ),
+                          ),
+                        }
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                Text(
+                  formatCurrency(booking.cost),
+                  style: kTheme.textTheme.button.copyWith(
+                    fontSize: kTheme.textTheme.headline5.fontSize,
+                    color:
+                        kTheme.colorScheme.secondary.withOpacity(kEmphasisHigh),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -450,10 +458,10 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
             await showCustomDialog(
               context: context,
               builder: (_) => BasicDialog(
-                message: 'Do you wish to cancel this job request?',
+                message: 'Do you wish to accept this job request?',
                 onComplete: () {
                   booking = booking.copyWith(
-                      currentState: BookingState.cancelled().name());
+                      currentState: BookingState.pending().name());
                   setState(() {});
                   _updateBookingBloc
                       .add(BookingEvent.updateBooking(booking: booking));
@@ -462,12 +470,12 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
             );
           },
           child: Container(
-            color: kTheme.colorScheme.error,
+            color: kTheme.colorScheme.secondary,
             alignment: Alignment.center,
             child: Text(
-              'Cancel request'.toUpperCase(),
+              'Accept request'.toUpperCase(),
               style: kTheme.textTheme.button.copyWith(
-                color: kTheme.colorScheme.onError,
+                color: kTheme.colorScheme.onSecondary,
               ),
             ),
           ),
@@ -477,23 +485,17 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
           : Container(
               width: SizeConfig.screenWidth,
               clipBehavior: Clip.hardEdge,
-              margin: EdgeInsets.symmetric(
-                  horizontal: SizeConfig.screenWidth * 0.05),
-              decoration: BoxDecoration(
-                color: kTheme.cardColor.withOpacity(kEmphasisHigh),
-                borderRadius: BorderRadius.circular(kSpacingX24),
-              ),
+              decoration: BoxDecoration(color: kTheme.colorScheme.surface),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Flexible(
-                    flex: 2,
+                  Expanded(
                     child: GestureDetector(
                       onTap: () async => showCustomDialog(
                         context: context,
                         builder: (_) => BasicDialog(
-                          message: 'Do you wish to cancel this job request?',
+                          message: 'Do you wish to cancel this job?',
                           onComplete: () {
                             booking = booking.copyWith(
                                 currentState: BookingState.cancelled().name());
@@ -517,35 +519,35 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                       ),
                     ),
                   ),
-                  Flexible(
-                    flex: 3,
-                    child: GestureDetector(
-                      onTap: () async => showCustomDialog(
-                        context: context,
-                        builder: (_) => BasicDialog(
-                          message: 'Do you wish to accept this job request?',
-                          onComplete: () {
-                            booking = booking.copyWith(
-                                currentState: BookingState.pending().name());
-                            setState(() {});
-                            _updateBookingBloc.add(
-                                BookingEvent.updateBooking(booking: booking));
-                          },
+                  GestureDetector(
+                    onTap: () async => showCustomDialog(
+                      context: context,
+                      builder: (_) => BasicDialog(
+                        message: 'Do you wish to mark this job as complete?',
+                        onComplete: () {
+                          booking = booking.copyWith(
+                              currentState: BookingState.complete().name());
+                          setState(() {});
+                          _updateBookingBloc.add(
+                              BookingEvent.updateBooking(booking: booking));
+                        },
+                      ),
+                    ),
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: SizeConfig.screenWidth * 0.5,
+                      height: kToolbarHeight,
+                      decoration: BoxDecoration(
+                        color: kTheme.colorScheme.primary,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(kSpacingX16),
+                          bottomLeft: Radius.circular(kSpacingX16),
                         ),
                       ),
-                      child: Container(
-                        alignment: Alignment.center,
-                        width: double.infinity,
-                        height: kToolbarHeight,
-                        decoration: BoxDecoration(
-                          color: kGreenColor,
-                          borderRadius: BorderRadius.circular(kSpacingX24),
-                        ),
-                        child: Text(
-                          'Accept',
-                          style: kTheme.textTheme.button.copyWith(
-                            color: kTheme.colorScheme.onBackground,
-                          ),
+                      child: Text(
+                        'End Job',
+                        style: kTheme.textTheme.button.copyWith(
+                          color: kTheme.colorScheme.onPrimary,
                         ),
                       ),
                     ),

@@ -40,15 +40,14 @@ class GetArtisanServicesUseCase extends UseCase<List<BaseArtisanService>,
   }
 }
 
-class GetCategoryServicesUseCase extends UseCase<List<BaseArtisanService>,
-    String> {
+class GetCategoryServicesUseCase
+    extends UseCase<List<BaseArtisanService>, String> {
   const GetCategoryServicesUseCase(this._repo);
 
   final BaseArtisanServiceRepository _repo;
 
   @override
-  Future<UseCaseResult<List<BaseArtisanService>>> execute(
-      String id) async {
+  Future<UseCaseResult<List<BaseArtisanService>>> execute(String id) async {
     try {
       var results = await _repo.getArtisanServicesByCategory(categoryId: id);
       return UseCaseResult<List<BaseArtisanService>>.success(results);
@@ -66,8 +65,7 @@ class GetServiceByIdUseCase extends UseCase<BaseArtisanService, String> {
   @override
   Future<UseCaseResult<BaseArtisanService>> execute(String id) async {
     try {
-      var results = (await _repo.getArtisanServices())
-          .firstWhere((element) => element.id == id);
+      var results = await _repo.getArtisanServiceById(id: id);
       return UseCaseResult<BaseArtisanService>.success(results);
     } on Exception {
       return UseCaseResult.error();

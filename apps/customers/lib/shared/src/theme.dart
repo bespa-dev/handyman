@@ -19,7 +19,9 @@ final _kBodyFontFamily = GoogleFonts.rubik().fontFamily;
 /// Light theme
 ThemeData themeData(BuildContext context) => ThemeData(
       selectedRowColor: kSecondaryLightColor,
-      appBarTheme: appBarTheme,
+      appBarTheme: appBarTheme.copyWith(
+
+      ),
       disabledColor: kDisabledColor,
       errorColor: kErrorLightColor,
       toggleableActiveColor: kPrimaryColor,
@@ -51,7 +53,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
           fontFamily: _kBodyFontFamily,
           fontWeight: FontWeight.normal,
         ),
-        fillColor: kCardLightColor,
+        fillColor: kWhiteColor,
         filled: true,
       ),
       tabBarTheme: TabBarTheme(
@@ -70,6 +72,7 @@ ThemeData themeData(BuildContext context) => ThemeData(
         primary: kPrimaryColor,
         onSecondary: kBlackColor,
         onPrimary: kWhiteColor,
+        background: kBackgroundLightColor,
       ),
       backgroundColor: kBackgroundLightColor,
       iconTheme: IconThemeData(color: kPrimaryIconLightColor),

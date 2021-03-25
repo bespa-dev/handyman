@@ -22,7 +22,6 @@ import 'package:lite/domain/models/models.dart';
 import 'package:lite/shared/shared.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
-/// fixme -> last page of service request
 class RequestPage extends StatefulWidget {
   const RequestPage({
     Key key,
@@ -74,8 +73,8 @@ class _RequestPageState extends State<RequestPage> {
       _useCurrentLocation = false,
       _isHomeAddress = false,
       _isWorkAddress = false;
-  var _services = const <BaseArtisanService>[];
-  var _issues = const <String>[];
+  var _services = <BaseArtisanService>[];
+  var _issues = <String>[];
   BaseArtisanService _selectedService;
   String _selectedIssue;
   ThemeData kTheme;
@@ -215,10 +214,10 @@ class _RequestPageState extends State<RequestPage> {
         //   });
         Future.delayed(kSheetDuration)
             .then((value) => _pageController.animateToPage(
-          ++_currentPage,
-          duration: kSheetDuration,
-          curve: Curves.fastLinearToSlowEaseIn,
-        ));
+                  ++_currentPage,
+                  duration: kSheetDuration,
+                  curve: Curves.fastLinearToSlowEaseIn,
+                ));
       } else {
         _serviceBloc
             .add(ArtisanServiceEvent.getArtisanServices(id: widget.artisan.id));
@@ -231,7 +230,6 @@ class _RequestPageState extends State<RequestPage> {
           if (state is SuccessState<String> && state.data != null) {
             _userId = state.data;
             if (mounted) setState(() {});
-
           }
         });
 
@@ -247,11 +245,11 @@ class _RequestPageState extends State<RequestPage> {
 
       /// get services for category
       _serviceBloc.listen((state) {
-          if (state is SuccessState<List<BaseArtisanService>>) {
-            _services = state.data;
-            if (mounted) setState(() {});
-          }
-        });
+        if (state is SuccessState<List<BaseArtisanService>>) {
+          _services = state.data;
+          if (mounted) setState(() {});
+        }
+      });
 
       /// get location
       _locationBloc.listen((state) {
@@ -273,8 +271,8 @@ class _RequestPageState extends State<RequestPage> {
           if (mounted) setState(() {});
         } else if (state is SuccessState<String>) {
           logger.d('Location address -> ${state.data}');
-
-          /// todo -> show location name
+          _controller.text = state.data;
+          if (mounted) setState(() {});
         }
       });
 
@@ -296,12 +294,7 @@ class _RequestPageState extends State<RequestPage> {
               ),
             );
           } else {
-            await showCustomDialog(
-              context: context,
-              builder: (_) => InfoDialog(
-                message: Text('Request sent successfully'),
-              ),
-            );
+            showSnackBarMessage(context, message: 'Request sent successfully');
             context.navigator.pop();
           }
         }
@@ -534,7 +527,11 @@ class _RequestPageState extends State<RequestPage> {
                     ),
                     SizedBox(height: kSpacingX12),
                     SearchView(
-                      onQueryComplete: (_) {},
+                      onQueryComplete: (_) {
+                        if (_ == null || _.isEmpty) return;
+                        _locationBloc.add(
+                            LocationEvent.getLocationCoordinates(address: _));
+                      },
                       onQueryChange: (_) {},
                       focusNode: _focusNode,
                       hint: 'Enter a location',
@@ -679,7 +676,6 @@ class _RequestPageState extends State<RequestPage> {
         child: Container(
           height: SizeConfig.screenHeight,
           width: SizeConfig.screenWidth,
-          color: kPlaceholderColor,
           padding: EdgeInsets.only(top: kSpacingX24, bottom: kSpacingX64),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -703,12 +699,14 @@ class _RequestPageState extends State<RequestPage> {
                   margin: EdgeInsets.only(
                     top: kSpacingX12,
                     bottom: kSpacingX24,
+                    left: kSpacingX24,
+                    right: kSpacingX24,
                   ),
                   height: SizeConfig.screenHeight * 0.2,
                   width: SizeConfig.screenWidth,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(kSpacingX8),
-                    color: kTheme.cardColor,
+                    color: kTheme.colorScheme.surface,
                   ),
                   clipBehavior: Clip.hardEdge,
                   child: ImageView(
@@ -746,18 +744,14 @@ class _RequestPageState extends State<RequestPage> {
                   padding: const EdgeInsets.symmetric(horizontal: kSpacingX24),
                   child: Form(
                     key: _formKey,
-                    child: Column(
-                      children: [
-                        TextFormInput(
-                          labelText: 'Specify other...',
-                          controller: _bodyController,
-                          textCapitalization: TextCapitalization.words,
-                          enabled: !_isRequesting && _selectedIssue == null,
-                          cursorColor: kTheme.colorScheme.onBackground,
-                          maxLines: 3,
-                          keyboardType: TextInputType.multiline,
-                        ),
-                      ],
+                    child: TextFormInput(
+                      labelText: 'Specify other...',
+                      controller: _bodyController,
+                      textCapitalization: TextCapitalization.words,
+                      enabled: !_isRequesting && _selectedIssue == null,
+                      cursorColor: kTheme.colorScheme.onBackground,
+                      maxLines: 3,
+                      keyboardType: TextInputType.multiline,
                     ),
                   ),
                 ),

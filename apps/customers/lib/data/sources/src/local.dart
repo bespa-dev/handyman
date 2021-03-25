@@ -394,7 +394,7 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
     var keys = await serviceStore.findKeys(
       db,
       finder: Finder(
-          // filter: Filter.matches('artisan_id', id),
+          filter: Filter.equals('artisan_id', id),
           sortOrders: [SortOrder('id')]),
     );
 
@@ -412,13 +412,14 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
         .query(
             finder: Finder(
           filter: Filter.and([
-                Filter.matches('author', sender),
-                Filter.matches('recipient', recipient),
-              ]) |
-              Filter.and([
                 Filter.matches('author', recipient),
                 Filter.matches('recipient', sender),
+              ]) |
+              Filter.and([
+                Filter.matches('author', sender),
+                Filter.matches('recipient', recipient),
               ]),
+          sortOrders: [SortOrder('created_at', false)],
         ))
         .onSnapshots(db)
         .transform(_conversationsListTransformer);
@@ -476,18 +477,16 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
   @override
   Stream<List<BaseBooking>> bookingsForCustomerAndArtisan(
       String customerId, String artisanId) async* {
-    var bookings = await bookingStore.find(db,
-        finder: Finder(
+    yield* bookingStore
+        .query(
+          finder: Finder(
             filter: Filter.matches('customer_id', customerId) &
                 Filter.matches('artisan_id', artisanId),
-            sortOrders: [SortOrder('id')]));
-    var keys = <String>[];
-    for (var value in bookings) {
-      keys.add(value.key);
-    }
-    yield (await bookingStore.records(keys).getSnapshots(db))
-        .map((e) => Booking.fromJson(e.value))
-        .toList();
+            sortOrders: [SortOrder('id')],
+          ),
+        )
+        .onSnapshots(db)
+        .transform(_bookingsListTransformer);
   }
 
   @override
@@ -507,41 +506,40 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
   @override
   Stream<List<BaseBooking>> getBookingsByDueDate(
       {@required String dueDate, @required String artisanId}) async* {
-    yield (await bookingStore.find(
-      db,
-      finder: Finder(
-        filter: Filter.matches('due_date', dueDate) &
-            Filter.matches('artisan_id', artisanId),
-        sortOrders: [SortOrder('id')],
-      ),
-    ))
-        .map((e) => Booking.fromJson(e.value))
-        .toList();
+    yield* bookingStore
+        .query(
+          finder: Finder(
+            filter: Filter.matches('due_date', dueDate) &
+                Filter.matches('artisan_id', artisanId),
+            sortOrders: [SortOrder('id')],
+          ),
+        )
+        .onSnapshots(db)
+        .transform(_bookingsListTransformer);
   }
 
   @override
   Stream<List<BaseBooking>> observeBookingsForArtisan(String id) async* {
-    var keys = await bookingStore.findKeys(
-      db,
-      finder: Finder(
-        filter: Filter.matches('artisan_id', id),
-      ),
-    );
-
-    var list = await bookingStore.records(keys).get(db);
-    yield list.map((json) => Booking.fromJson(json)).toList();
+    yield* bookingStore
+        .query(
+          finder: Finder(
+            filter: Filter.matches('artisan_id', id),
+          ),
+        )
+        .onSnapshots(db)
+        .transform(_bookingsListTransformer);
   }
 
   @override
   Stream<List<BaseBooking>> observeBookingsForCustomer(String id) async* {
-    var keys = await bookingStore.findKeys(
-      db,
-      finder: Finder(
-        filter: Filter.matches('customer_id', id),
-      ),
-    );
-    var list = await bookingStore.records(keys).get(db);
-    yield list.map((json) => Booking.fromJson(json)).toList();
+    yield* bookingStore
+        .query(
+          finder: Finder(
+            filter: Filter.matches('customer_id', id),
+          ),
+        )
+        .onSnapshots(db)
+        .transform(_bookingsListTransformer);
   }
 
   @override
@@ -583,6 +581,12 @@ class SemBastLocalDatasource extends BaseLocalDatasource {
       List<RecordSnapshot<String, Map<String, Object>>>,
       List<BaseConversation>>.fromHandlers(handleData: (snapshotList, sink) {
     sink.add(snapshotList.map((e) => Conversation.fromJson(e.value)).toList());
+  });
+
+  final _bookingsListTransformer = StreamTransformer<
+      List<RecordSnapshot<String, Map<String, Object>>>,
+      List<BaseBooking>>.fromHandlers(handleData: (snapshotList, sink) {
+    sink.add(snapshotList.map((e) => Booking.fromJson(e.value)).toList());
   });
 
   /// endregion
