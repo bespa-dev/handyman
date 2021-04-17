@@ -149,7 +149,7 @@ app.*.symbols
 npm-debug.log
 testem.log
 /typings
-/docs
+# /docs
 **/exports/Runner/*
 !**/exports/screenshots/
 
